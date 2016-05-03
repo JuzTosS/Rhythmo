@@ -12,7 +12,7 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/nameField"
+            android:id="@+id/name_field"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Text"
@@ -27,8 +27,7 @@
             android:layout_height="wrap_content"
             android:text="Text"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_below="@+id/nameField"
-            android:layout_toRightOf="@+id/drag_handle"
+            android:layout_below="@+id/name_field"
             android:layout_toEndOf="@+id/drag_handle" />
 
         <ImageView
@@ -37,7 +36,6 @@
             android:id="@+id/drag_handle"
             android:src="@drawable/icon_drag"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:contentDescription="drag handle"
             android:paddingRight="0dp"
@@ -50,7 +48,6 @@
             android:src="@drawable/play_button_normal"
             android:contentDescription="drag handle"
             android:layout_alignTop="@+id/drag_handle"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
     <!-- Surface View End -->

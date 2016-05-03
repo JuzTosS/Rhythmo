@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".views.MainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -50,7 +50,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/primary_dark"
+            android:background="@color/primaryDark"
             android:layout_alignParentBottom="true"
             android:layout_alignLeft="@+id/view"
             android:layout_alignStart="@+id/view" />
@@ -74,7 +74,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/primary_dark"/>
+            android:background="@color/primaryDark"/>
 
         <SeekBar
             android:layout_width="match_parent"
