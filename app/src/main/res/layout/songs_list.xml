@@ -90,8 +90,8 @@
             android:id="@+id/imageButton"
             android:src="@drawable/icon_previous"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/imageButton3"
-            android:layout_toStartOf="@+id/imageButton3"
+            android:layout_toLeftOf="@+id/play_button"
+            android:layout_toStartOf="@+id/play_button"
             android:layout_marginRight="24dp"
             android:layout_marginEnd="24dp" />
         <ImageButton
@@ -102,12 +102,12 @@
             android:layout_marginLeft="27dp"
             android:layout_marginStart="27dp"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/imageButton3"
-            android:layout_toEndOf="@+id/imageButton3" />
+            android:layout_toRightOf="@+id/play_button"
+            android:layout_toEndOf="@+id/play_button" />
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageButton3"
+            android:id="@+id/play_button"
             android:src="@drawable/play_button_large"
             android:layout_above="@+id/seekBar"
             android:layout_centerHorizontal="true" />

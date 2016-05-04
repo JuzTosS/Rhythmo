@@ -1,12 +1,14 @@
 package juztoss.com.bpmplayer.views;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.view.MenuItem;
 
+import juztoss.com.bpmplayer.PlaybackService;
 import juztoss.com.bpmplayer.R;
 import juztoss.com.bpmplayer.presenters.BPMPlayerApp;
 
@@ -17,6 +19,10 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent playbackServiceIntent = new Intent(this, PlaybackService.class);
+        startService(playbackServiceIntent);
+
         mApp = (BPMPlayerApp) getApplication();
         setContentView(R.layout.decor);
 

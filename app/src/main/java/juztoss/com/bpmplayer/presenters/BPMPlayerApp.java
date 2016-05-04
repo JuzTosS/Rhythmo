@@ -2,7 +2,9 @@ package juztoss.com.bpmplayer.presenters;
 
 import android.app.Application;
 import android.content.res.Configuration;
+import android.support.annotation.Nullable;
 
+import juztoss.com.bpmplayer.PlaybackService;
 import juztoss.com.bpmplayer.models.ISongSource;
 
 /**
@@ -13,6 +15,7 @@ public class BPMPlayerApp extends Application {
     private ISongSource mSongsFolder;
     private BrowserPresenter mBrowserPresenter;
     private PlayerPresenter mPlayerPresenter;
+    private PlaybackService mPlaybackService;
 
     @Override
     public void onCreate() {
@@ -45,5 +48,17 @@ public class BPMPlayerApp extends Application {
 
     public ISongSource getSongsFolder() {
         return mSongsFolder;
+    }
+
+    public void setPlaybackService(@Nullable PlaybackService playbackService) {
+        this.mPlaybackService = playbackService;
+    }
+
+    public PlaybackService getPlaybackService() {
+        return mPlaybackService;
+    }
+
+    public boolean isServiceRunning() {
+        return mPlaybackService != null;
     }
 }

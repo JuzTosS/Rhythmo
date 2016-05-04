@@ -12,8 +12,8 @@ import android.widget.ListView;
 import java.util.List;
 
 import juztoss.com.bpmplayer.R;
-import juztoss.com.bpmplayer.models.IExplorerElement;
 import juztoss.com.bpmplayer.models.Song;
+import juztoss.com.bpmplayer.presenters.BPMPlayerApp;
 import juztoss.com.bpmplayer.presenters.PlayerPresenter;
 
 /**
@@ -22,9 +22,12 @@ import juztoss.com.bpmplayer.presenters.PlayerPresenter;
 public class PlayerFragment extends android.app.Fragment implements IBaseRenderer, DrawerLayout.DrawerListener, AdapterView.OnItemClickListener {
     private PlayerPresenter mPresenter;
     private SongsListAdapter mSongsListAdapter;
+    private View mPlayButton;
+    private BPMPlayerApp mApp;
 
     public void init(PlayerPresenter p) {
         mPresenter = p;
+        mApp = (BPMPlayerApp) getActivity().getApplicationContext();
         mSongsListAdapter = new SongsListAdapter(getActivity(), R.layout.song_list_element);
         ListView list = (ListView) getView().findViewById(R.id.listView);
         list.setOnItemClickListener(this);
@@ -33,8 +36,19 @@ public class PlayerFragment extends android.app.Fragment implements IBaseRendere
         DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
         drawer.addDrawerListener(this);
 
+        mPlayButton = getView().findViewById(R.id.play_button);
+        mPlayButton.setOnClickListener(mPlayButtonListenter);
+
         getLoaderManager().initLoader(0, null, mPresenter);
     }
+
+    private View.OnClickListener mPlayButtonListenter = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(mApp.isServiceRunning())
+                mApp.getPlaybackService().togglePlaybackState();
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +57,11 @@ public class PlayerFragment extends android.app.Fragment implements IBaseRendere
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Song song = (Song)mSongsListAdapter.getItem(position);
+        if(mApp.isServiceRunning()) {
+            mApp.getPlaybackService().setSource(song);
+            mApp.getPlaybackService().startPlayback();
+        }
 
     }
 
