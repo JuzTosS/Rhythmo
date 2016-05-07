@@ -58,7 +58,7 @@ public class BPMPlayerApp extends Application {
         return mPlaybackService;
     }
 
-    public boolean isServiceRunning() {
+    public boolean isPlaybackServiceRunning() {
         return mPlaybackService != null;
     }
 }

@@ -6,11 +6,15 @@
     <application
         android:name=".presenters.BPMPlayerApp"
         android:allowBackup="true"
+        android:enabled="true"
         android:icon="@drawable/ic_queue_music_white_48dp"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.MainActivity">
+        <activity
+            android:name=".views.MainActivity"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -21,9 +25,13 @@
             android:name=".PlaybackService"
             android:enabled="true" />
 
-        <receiver android:name=".PlaybackActionReceiver">
+        <receiver
+            android:name=".PlaybackActionReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-                <action android:name="juztoss.com.bpmplayer" />
+                <action android:name="juztoss.com.bpmplayer.action.LAUNCH_NOW_PLAYING" />
+                <action android:name="juztoss.com.bpmplayer.action.SWITCH_PLAYBACK" />
             </intent-filter>
         </receiver>
     </application>

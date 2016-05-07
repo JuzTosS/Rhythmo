@@ -50,7 +50,7 @@ public class FileTree {
         List<IExplorerElement> dirs = new ArrayList<>();
         List<IExplorerElement> files = new ArrayList<>();
 
-        if(mCurrentDir.getParentFile() != null)
+        if(mCurrentDir.getParentFile() != null &&  mCurrentDir.getParentFile().list() != null && mCurrentDir.getParentFile().list().length > 0)
             dirs.add(new ParentLink(mCurrentDir.getParentFile()));
 
         for (File file : allFiles) {

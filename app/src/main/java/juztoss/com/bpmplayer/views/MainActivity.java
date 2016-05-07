@@ -1,8 +1,10 @@
 package juztoss.com.bpmplayer.views;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
@@ -20,11 +22,13 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent playbackServiceIntent = new Intent(this, PlaybackService.class);
-        startService(playbackServiceIntent);
-
         mApp = (BPMPlayerApp) getApplication();
         setContentView(R.layout.decor);
+
+        if (!mApp.isPlaybackServiceRunning()) {
+            Intent playbackServiceIntent = new Intent(this, PlaybackService.class);
+            startService(playbackServiceIntent);
+        }
 
         BrowserFragment explorerView = (BrowserFragment) getFragmentManager().findFragmentById(R.id.file_tree);
         mApp.getFileTreePresenter().init(explorerView);
@@ -39,6 +43,15 @@ public class MainActivity extends Activity {
         mHamburger = new DrawerArrowDrawable(this);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeAsUpIndicator(mHamburger);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                0);
     }
 
     @Override
