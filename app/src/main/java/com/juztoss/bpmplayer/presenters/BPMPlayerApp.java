@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.ContentValues;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
@@ -50,13 +49,15 @@ public class BPMPlayerApp extends Application
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.SETTING_NAME, DatabaseHelper.SETTINGS_SONG_FOLDER);
         values.put(DatabaseHelper.SETTING_VALUE, songsFolder.source().getPath());
-        DatabaseHelper.db().updateWithOnConflict(DatabaseHelper.TABLE_SETTINGS,
+        if (DatabaseHelper.db().update(DatabaseHelper.TABLE_SETTINGS,
                 values, DatabaseHelper.SETTING_NAME + "= ?",
-                new String[]{DatabaseHelper.SETTINGS_SONG_FOLDER},
-                SQLiteDatabase.CONFLICT_REPLACE);
+                new String[]{DatabaseHelper.SETTINGS_SONG_FOLDER}) <= 0)
+        {
+            DatabaseHelper.db().insert(DatabaseHelper.TABLE_SETTINGS, null, values);
+        }
     }
 
-    public BrowserPresenter getFileTreePresenter()
+    public BrowserPresenter getBrowserPresenter()
     {
         return mBrowserPresenter;
     }

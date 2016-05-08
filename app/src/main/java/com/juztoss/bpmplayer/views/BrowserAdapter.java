@@ -43,7 +43,7 @@ public class BrowserAdapter extends ArrayAdapter<IExplorerElement> {
         }
 
         /* We pull out the ImageView and TextViews so we can set their properties.*/
-        ImageView iv = (ImageView) v.findViewById(R.id.imageView);
+        ImageView iv = (ImageView) v.findViewById(R.id.playing_state);
 
         TextView nameView = (TextView) v.findViewById(R.id.name_text_view);
 

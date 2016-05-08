@@ -1,15 +1,21 @@
 package com.juztoss.bpmplayer.views;
 
 import android.content.Context;
+import android.text.format.DateUtils;
+import android.util.TimeUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.juztoss.bpmplayer.PlaybackService;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.IExplorerElement;
+import com.juztoss.bpmplayer.models.Song;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by JuzTosS on 4/20/2016.
@@ -70,10 +76,28 @@ public class SongsListAdapter extends BaseAdapter
             v = inflater.inflate(R.layout.song_list_element, null);
         }
 
-        TextView nameView = (TextView) v.findViewById(R.id.name_field);
-        IExplorerElement file = (IExplorerElement) getItem(position);
 
-        nameView.setText(file.name());
+        Song file = (Song) getItem(position);
+
+        TextView firstLine = (TextView) v.findViewById(R.id.first_line);
+        firstLine.setText(file.name());
+
+        TextView secondLine = (TextView) v.findViewById(R.id.second_line);
+        secondLine.setText(DateUtils.formatElapsedTime(file.length() / 1000));
+
+        View playingState = v.findViewById(R.id.playing_state);
+        playingState.setVisibility(View.INVISIBLE);
+        if (mApp.isPlaybackServiceRunning())
+        {
+            PlaybackService service = mApp.getPlaybackService();
+            if(service.getCurrentSongIndex() == position)
+            {
+                playingState.setVisibility(View.VISIBLE);
+                playingState.setSelected(!service.isPlaying());
+            }
+
+        }
+
 
         return v;
     }

@@ -6,15 +6,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import java.util.List;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.juztoss.bpmplayer.PlaybackService;
 import com.juztoss.bpmplayer.R;
@@ -22,19 +24,24 @@ import com.juztoss.bpmplayer.models.Song;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.presenters.PlayerPresenter;
 
+import java.util.List;
+
 /**
  * Created by JuzTosS on 4/20/2016.
  */
 public class PlayerFragment extends android.app.Fragment implements DrawerLayout.DrawerListener, AdapterView.OnItemClickListener
 {
-    private PlayerPresenter mPresenter;
     private SongsListAdapter mSongsListAdapter;
     private View mPlayButton;
+    private TextView mTimePassed;
+    private TextView mTimeLeft;
+    private SeekBar mSeekbar;
     private BPMPlayerApp mApp;
 
-    public void init(PlayerPresenter p)
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
     {
-        mPresenter = p;
+        super.onCreate(savedInstanceState);
         mApp = (BPMPlayerApp) getActivity().getApplicationContext();
         mSongsListAdapter = new SongsListAdapter(getActivity());
         ListView list = (ListView) getView().findViewById(R.id.listView);
@@ -44,13 +51,73 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
         DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
         drawer.addDrawerListener(this);
 
+        mTimePassed = (TextView) getView().findViewById(R.id.time_passed);
+        mTimeLeft = (TextView) getView().findViewById(R.id.time_left);
+        mSeekbar = (SeekBar) getView().findViewById(R.id.seekbar);
+        mSeekbar.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
+
         mPlayButton = getView().findViewById(R.id.play_button);
         mPlayButton.setOnClickListener(mPlayButtonListenter);
 
-        getLoaderManager().initLoader(0, null, mPresenter);
+        View nextButton = getView().findViewById(R.id.next_button);
+        nextButton.setOnClickListener(mNextButtonListener);
+        View previousButton = getView().findViewById(R.id.previous_button);
+        previousButton.setOnClickListener(mPreviousButtonListener);
+
+        getLoaderManager().initLoader(0, null, mApp.getPlayerPresenter());
 
         LocalBroadcastManager.getInstance(mApp).registerReceiver(mUpdateUIReceiver, new IntentFilter(PlaybackService.UPDATE_UI_ACTION));
     }
+
+    private SeekBar.OnSeekBarChangeListener mOnSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener()
+    {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+        {
+            int timePassed = progress;
+            int timeLeft = seekBar.getMax() - timePassed;
+            mTimePassed.setText(DateUtils.formatElapsedTime(timePassed / 1000));
+            mTimeLeft.setText(DateUtils.formatElapsedTime(timeLeft / 1000));
+
+            if (mApp.isPlaybackServiceRunning())
+            {
+                if (fromUser)
+                    mApp.getPlaybackService().seekTo(progress);
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar)
+        {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar)
+        {
+
+        }
+    };
+
+    private View.OnClickListener mNextButtonListener = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            if (mApp.isPlaybackServiceRunning())
+                mApp.getPlaybackService().gotoNext();
+        }
+    };
+
+    private View.OnClickListener mPreviousButtonListener = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            if (mApp.isPlaybackServiceRunning())
+                mApp.getPlaybackService().gotoPrevious();
+        }
+    };
 
     @Override
     public void onStart()
@@ -64,11 +131,38 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if(!mApp.isPlaybackServiceRunning()) return;
+            if (!mApp.isPlaybackServiceRunning()) return;
 
-            mPlayButton.setSelected(!mApp.getPlaybackService().getIsPlaying());
+            PlaybackService service = mApp.getPlaybackService();
 
+            mPlayButton.setSelected(!service.isPlaying());
             mSongsListAdapter.notifyDataSetChanged();
+
+            mSeekbar.setMax(service.getDuration());
+            mHandler.post(mSeekbarUpdateRunnable);
+        }
+    };
+
+
+    private Handler mHandler = new Handler();
+    private Runnable mSeekbarUpdateRunnable = new Runnable()
+    {
+        public void run()
+        {
+            try
+            {
+                if (!mApp.isPlaybackServiceRunning())
+                    return;
+
+                mSeekbar.setProgress(mApp.getPlaybackService().getCurrentPosition());
+
+                if (mApp.getPlaybackService().isPlaying())
+                    mHandler.postDelayed(mSeekbarUpdateRunnable, 100);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     };
 
@@ -118,7 +212,7 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
     {
         Bundle path = new Bundle();
         path.putParcelable(PlayerPresenter.BUNDLE_PATH, mApp.getSongsFolder());
-        Loader<List<Song>> loader = getLoaderManager().restartLoader(0, path, mPresenter);
+        Loader<List<Song>> loader = getLoaderManager().restartLoader(0, path, mApp.getPlayerPresenter());
         loader.forceLoad();
     }
 

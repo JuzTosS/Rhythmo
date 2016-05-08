@@ -28,9 +28,9 @@ public class PlaybackService extends Service
 {
 
     public static final int NOTIFICATION_ID = 42;
-    public static final String LAUNCH_NOW_PLAYING_ACTION = "juztoss.com.bpmplayer.action.LAUNCH_NOW_PLAYING";
-    public static final String SWITCH_PLAYBACK_ACTION = "juztoss.com.bpmplayer.action.SWITCH_PLAYBACK";
-    public static final String UPDATE_UI_ACTION = "juztoss.com.bpmplayer.action.UPDATE_UI";
+    public static final String LAUNCH_NOW_PLAYING_ACTION = "com.juztoss.bpmplayer.action.LAUNCH_NOW_PLAYING";
+    public static final String SWITCH_PLAYBACK_ACTION = "com.juztoss.bpmplayer.action.SWITCH_PLAYBACK";
+    public static final String UPDATE_UI_ACTION = "com.juztoss.bpmplayer.action.UPDATE_UI";
 
     private MediaPlayer mPlayer;
     private BPMPlayerApp mApp;
@@ -58,11 +58,27 @@ public class PlaybackService extends Service
             gotoNext();
         }
     };
+    private boolean mIsPrepared = false;
 
-    private void gotoNext()
+    public void gotoNext()
     {
         clearQueue();
-        putAction(new ActionPrepare(mPlaylist.songs().get(++mCurrentSongIndex)));//TODO: Proper next song processing
+        mCurrentSongIndex++;
+        if(mCurrentSongIndex >= mPlaylist.songs().size())
+            mCurrentSongIndex = mPlaylist.songs().size() - 1;
+
+        putAction(new ActionPrepare(mPlaylist.songs().get(mCurrentSongIndex)));
+        putAction(new ActionPlay());
+    }
+
+    public void gotoPrevious()
+    {
+        clearQueue();
+        mCurrentSongIndex--;
+        if(mCurrentSongIndex < 0)
+            mCurrentSongIndex = 0;
+
+        putAction(new ActionPrepare(mPlaylist.songs().get(mCurrentSongIndex)));
         putAction(new ActionPlay());
     }
 
@@ -72,8 +88,8 @@ public class PlaybackService extends Service
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mApp);
         broadcastManager.sendBroadcast(intent);
 
-        NotificationManager notifManager = (NotificationManager) mApp.getSystemService(Context.NOTIFICATION_SERVICE);
-        notifManager.notify(NOTIFICATION_ID, PlaybackNotification.create(this));
+        NotificationManager notificationManager = (NotificationManager) mApp.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, PlaybackNotification.create(this));
     }
 
     private void putAction(BaseAction action)
@@ -91,6 +107,8 @@ public class PlaybackService extends Service
         mQueue.clear();
         if (mActionInProgress != null)
             mActionInProgress.interrupt();
+
+        mActionInProgress = null;
 
         mPlayer.reset();
     }
@@ -124,6 +142,7 @@ public class PlaybackService extends Service
 
     public void setSource(int index)
     {
+        mCurrentSongIndex = index;
         clearQueue();
         putAction(new ActionPrepare(mPlaylist.songs().get(index)));
     }
@@ -132,19 +151,17 @@ public class PlaybackService extends Service
     {
         mIsPlaying = value;
         if (mIsPlaying)
-        {
             startForeground(NOTIFICATION_ID, PlaybackNotification.create(this));
-        }
     }
 
-    public boolean getIsPlaying()
+    public boolean isPlaying()
     {
         return mIsPlaying;
     }
 
     public void togglePlaybackState()
     {
-        if (getIsPlaying())
+        if (isPlaying())
             pausePlayback();
         else
             startPlayback();
@@ -175,6 +192,30 @@ public class PlaybackService extends Service
     public Playlist getPlaylist()
     {
         return mPlaylist;
+    }
+
+    public int getCurrentSongIndex()
+    {
+        return mCurrentSongIndex;
+    }
+
+    public int getCurrentPosition()
+    {
+        if(mIsPrepared)
+            return mPlayer.getCurrentPosition();
+        else
+            return 0;
+    }
+
+    public int getDuration()
+    {
+        return mPlayer.getDuration();
+    }
+
+    public void seekTo(int position)
+    {
+        if(mIsPrepared)
+            mPlayer.seekTo(position);
     }
 
     private class BaseAction
@@ -210,6 +251,7 @@ public class PlaybackService extends Service
             @Override
             public void onPrepared(MediaPlayer mp)
             {
+                mIsPrepared = true;
                 doNext();
             }
         };
@@ -227,6 +269,7 @@ public class PlaybackService extends Service
             setIsPlaying(true);
             try
             {
+                mIsPrepared = false;
                 mPlayer.setOnPreparedListener(mOnPrepared);
                 mPlayer.setDataSource(mSelf, android.net.Uri.fromFile(mSong.source()));
                 mPlayer.prepareAsync();
@@ -280,6 +323,7 @@ public class PlaybackService extends Service
             setIsPlaying(false);
             mPlayer.stop();
             mPlayer.reset();
+            mIsPrepared = false;
             updateUI();
             doNext();
         }

@@ -24,7 +24,7 @@ public class PlaybackNotification
         notificationBuilder.setContentIntent(launchNowPlayingPendingIntent);
 
         RemoteViews notificationView = new RemoteViews(service.getPackageName(), R.layout.notification_layout);
-        if(service.getIsPlaying())
+        if(service.isPlaying())
             notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_pause_normal);
         else
             notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_play_normal);

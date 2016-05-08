@@ -1,5 +1,6 @@
 package com.juztoss.bpmplayer.models;
 
+import android.media.MediaMetadataRetriever;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -33,6 +34,16 @@ public class Song implements IExplorerElement, Parcelable
     public String name()
     {
         return mSource.getName();
+    }
+
+    public int length()
+    {
+        //TODO: Cache value
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(source().getPath());
+        int duration = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+        retriever.release();
+        return duration;
     }
 
     @Override

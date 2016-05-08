@@ -12,7 +12,7 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/name_field"
+            android:id="@+id/first_line"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Text"
@@ -22,12 +22,12 @@
             android:layout_toEndOf="@+id/drag_handle" />
 
         <TextView
-            android:id="@+id/lengthField"
+            android:id="@+id/second_line"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Text"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_below="@+id/name_field"
+            android:layout_below="@+id/first_line"
             android:layout_toEndOf="@+id/drag_handle" />
 
         <ImageView
@@ -44,7 +44,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
+            android:id="@+id/playing_state"
             android:src="@drawable/play_button_normal"
             android:contentDescription="drag handle"
             android:layout_alignTop="@+id/drag_handle"

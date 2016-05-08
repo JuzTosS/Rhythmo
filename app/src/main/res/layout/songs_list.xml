@@ -79,15 +79,15 @@
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/seekBar"
-            android:layout_below="@+id/imageButton"
+            android:id="@+id/seekbar"
+            android:layout_below="@+id/previous_button"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageButton"
+            android:id="@+id/previous_button"
             android:src="@drawable/icon_previous"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/play_button"
@@ -97,7 +97,7 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageButton2"
+            android:id="@+id/next_button"
             android:src="@drawable/icon_next"
             android:layout_marginLeft="27dp"
             android:layout_marginStart="27dp"
@@ -109,7 +109,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/play_button"
             android:src="@drawable/play_button_large"
-            android:layout_above="@+id/seekBar"
+            android:layout_above="@+id/seekbar"
             android:layout_centerHorizontal="true" />
 
         <TextView
@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Small Text"
-            android:id="@+id/textView"
+            android:id="@+id/time_passed"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -127,7 +127,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Small Text"
-            android:id="@+id/textView2"
+            android:id="@+id/time_left"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
