@@ -29,35 +29,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="89ef32e6-a83d-4932-997d-9b2da026c83e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/DatabaseHelper.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/Playlist.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/Song.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/presenters/BPMPlayerApp.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/SongsListAdapter.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/models/Song.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/presenters/BPMPlayerApp.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/views/SongsListAdapter.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/androidTest/java/juztoss/com/bpmplayer/ApplicationTest.java" afterPath="$PROJECT_DIR$/app/src/androidTest/java/com/juztoss/bpmplayer/ApplicationTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/PlaybackActionReceiver.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/PlaybackActionReceiver.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/PlaybackNotification.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/PlaybackNotification.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/PlaybackService.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/PlaybackService.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/models/FileTree.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/FileTree.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/models/Folder.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/Folder.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/models/IExplorerElement.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/IExplorerElement.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/models/ISongSource.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/ISongSource.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/models/ParentLink.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/ParentLink.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/presenters/BasePresenter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/presenters/BasePresenter.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/presenters/BrowserPresenter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/presenters/BrowserPresenter.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/presenters/PlayerPresenter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/presenters/PlayerPresenter.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/views/BrowserAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/BrowserAdapter.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/views/BrowserFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/BrowserFragment.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/views/IBaseRenderer.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/IBaseRenderer.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/views/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/MainActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/views/PlayerFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/PlayerFragment.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/test/java/juztoss/com/bpmplayer/ExampleUnitTest.java" afterPath="$PROJECT_DIR$/app/src/test/java/com/juztoss/bpmplayer/ExampleUnitTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/decor.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/decor.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/PlaybackService.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/PlaybackService.java" />
     </list>
     <ignored path="BPMPlayer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -98,16 +71,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ParentLink.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/ParentLink.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="PlayerPresenter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/presenters/PlayerPresenter.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -131,11 +94,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PlayerFragment.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="PlayerFragment.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/PlayerFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.21931818">
-              <caret line="38" column="64" selection-start-line="38" selection-start-column="64" selection-end-line="38" selection-end-column="64" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="52" column="5" selection-start-line="52" selection-start-column="5" selection-end-line="52" selection-end-column="5" />
               <folding>
                 <element signature="e#2057#2385#0" expanded="true" />
                 <element signature="e#2384#2385#0" expanded="true" />
@@ -156,6 +119,34 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="PlaybackService.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/PlaybackService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.6522727">
+              <caret line="64" column="106" selection-start-line="64" selection-start-column="106" selection-end-line="64" selection-end-column="106" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1478#1746#0" expanded="true" />
+                <element signature="e#1745#1746#0" expanded="true" />
+                <element signature="e#1817#1978#0" expanded="true" />
+                <element signature="e#1977#1978#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Playlist.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/Playlist.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="SongsListAdapter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/SongsListAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -165,16 +156,6 @@
                 <element signature="e#737#738#0" expanded="true" />
                 <element signature="e#768#769#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BaseAdapter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/widget/BaseAdapter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="29" column="22" selection-start-line="29" selection-start-column="22" selection-end-line="29" selection-end-column="22" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -1760,8 +1741,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/models/File.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/models/ExplorerElement.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/models/RootLink.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/presenters/BasePresenter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/juztoss/com/bpmplayer/presenters/BPMPlayerAppPresenter.java" />
@@ -1811,6 +1790,8 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/SongsListAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/PlayerFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/Playlist.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/PlaybackService.java" />
       </list>
     </option>
   </component>
@@ -2675,6 +2656,13 @@
       <option name="number" value="Default" />
       <updated>1460813924130</updated>
     </task>
+    <task id="LOCAL-00001" summary="wip">
+      <created>1462729648871</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1462729648871</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView">
@@ -2732,6 +2720,12 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="wip" />
+    <option name="LAST_COMMIT_MESSAGE" value="wip" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -3103,51 +3097,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/Playlist.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="23" selection-start-line="24" selection-start-column="23" selection-end-line="24" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#253#254#0" expanded="true" />
-            <element signature="e#289#290#0" expanded="true" />
-            <element signature="e#326#327#0" expanded="true" />
-            <element signature="e#355#356#0" expanded="true" />
-            <element signature="e#387#388#0" expanded="true" />
-            <element signature="e#417#418#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/PlaybackService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="151" column="5" selection-start-line="151" selection-start-column="5" selection-end-line="151" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3772#3773#0" expanded="true" />
-            <element signature="e#3804#3805#0" expanded="true" />
-            <element signature="e#4654#4655#0" expanded="true" />
-            <element signature="e#4690#4691#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/presenters/BPMPlayerApp.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/PlaybackActionReceiver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="56" selection-start-line="12" selection-start-column="56" selection-end-line="12" selection-end-column="56" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3227,11 +3181,45 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/views/PlayerFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.21931818">
-          <caret line="38" column="64" selection-start-line="38" selection-start-column="64" selection-end-line="38" selection-end-column="64" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="52" column="5" selection-start-line="52" selection-start-column="5" selection-end-line="52" selection-end-column="5" />
           <folding>
             <element signature="e#2057#2385#0" expanded="true" />
             <element signature="e#2384#2385#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/PlaybackActionReceiver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="12" column="56" selection-start-line="12" selection-start-column="56" selection-end-line="12" selection-end-column="56" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/models/Playlist.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/juztoss/bpmplayer/PlaybackService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6522727">
+          <caret line="64" column="106" selection-start-line="64" selection-start-column="106" selection-end-line="64" selection-end-column="106" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1478#1746#0" expanded="true" />
+            <element signature="e#1745#1746#0" expanded="true" />
+            <element signature="e#1817#1978#0" expanded="true" />
+            <element signature="e#1977#1978#0" expanded="true" />
           </folding>
         </state>
       </provider>

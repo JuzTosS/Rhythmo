@@ -36,11 +36,35 @@ public class PlaybackService extends Service
     private BPMPlayerApp mApp;
     private PlaybackService mSelf = this;
     private Playlist mPlaylist = new Playlist();
-
+    private int mCurrentSongIndex = 0;
     private Queue<BaseAction> mQueue = new LinkedList<>();
 
     private BaseAction mActionInProgress;
     private boolean mIsPlaying = false;
+    private MediaPlayer.OnErrorListener mOnErrorListener = new MediaPlayer.OnErrorListener()
+    {
+        @Override
+        public boolean onError(MediaPlayer mp, int what, int extra)
+        {
+            Log.e(this.getClass().toString(), "MEDIA PLAYER ERROR! " + what + ":" + extra);
+            return true;
+        }
+    };
+    private MediaPlayer.OnCompletionListener mOnCompletionListener = new MediaPlayer.OnCompletionListener()
+    {
+        @Override
+        public void onCompletion(MediaPlayer mp)
+        {
+            gotoNext();
+        }
+    };
+
+    private void gotoNext()
+    {
+        clearQueue();
+        putAction(new ActionPrepare(mPlaylist.songs().get(++mCurrentSongIndex)));//TODO: Proper next song processing
+        putAction(new ActionPlay());
+    }
 
     private void updateUI()
     {
@@ -86,6 +110,8 @@ public class PlaybackService extends Service
         mApp.setPlaybackService(this);
         mPlayer = new MediaPlayer();
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mPlayer.setOnErrorListener(mOnErrorListener);
+        mPlayer.setOnCompletionListener(mOnCompletionListener);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -246,14 +272,16 @@ public class PlaybackService extends Service
         }
     }
 
-    class ActionStop extends ActionPause
+    class ActionStop extends BaseAction
     {
         @Override
         public void doAction()
         {
             setIsPlaying(false);
-            mPlayer.seekTo(0);
-            super.doAction();
+            mPlayer.stop();
+            mPlayer.reset();
+            updateUI();
+            doNext();
         }
     }
 }
