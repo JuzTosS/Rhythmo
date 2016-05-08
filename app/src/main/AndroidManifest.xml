@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="juztoss.com.bpmplayer">
+    package="com.juztoss.bpmplayer">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
-        android:name=".presenters.BPMPlayerApp"
+        android:name="com.juztoss.bpmplayer.presenters.BPMPlayerApp"
         android:allowBackup="true"
         android:enabled="true"
         android:icon="@drawable/ic_queue_music_white_48dp"
@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".views.MainActivity"
+            android:name="com.juztoss.bpmplayer.views.MainActivity"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -22,11 +22,11 @@
         </activity>
 
         <service
-            android:name=".PlaybackService"
+            android:name="com.juztoss.bpmplayer.PlaybackService"
             android:enabled="true" />
 
         <receiver
-            android:name=".PlaybackActionReceiver"
+            android:name="com.juztoss.bpmplayer.PlaybackActionReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

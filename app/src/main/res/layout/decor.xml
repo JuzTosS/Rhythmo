@@ -11,7 +11,7 @@
     <fragment
         android:id="@+id/drawer_content"
         android:fitsSystemWindows="true"
-        android:name="juztoss.com.bpmplayer.views.PlayerFragment"
+        android:name="com.juztoss.bpmplayer.views.PlayerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -49,7 +49,7 @@
         <fragment
             android:id="@+id/file_tree"
             android:fitsSystemWindows="true"
-            android:name="juztoss.com.bpmplayer.views.BrowserFragment"
+            android:name="com.juztoss.bpmplayer.views.BrowserFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
