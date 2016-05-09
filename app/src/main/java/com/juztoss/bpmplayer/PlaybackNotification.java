@@ -25,9 +25,9 @@ public class PlaybackNotification
 
         RemoteViews notificationView = new RemoteViews(service.getPackageName(), R.layout.notification_layout);
         if(service.isPlaying())
-            notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_pause_normal);
+            notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_pause_large);
         else
-            notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_play_normal);
+            notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_play_large);
 
         Intent switchPlaybackIntent = new Intent(PlaybackService.SWITCH_PLAYBACK_ACTION);
         PendingIntent switchPlaybackPendingIntent = PendingIntent.getBroadcast(service, 0, switchPlaybackIntent, 0);

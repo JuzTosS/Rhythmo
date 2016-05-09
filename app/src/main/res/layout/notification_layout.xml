@@ -1,38 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/notification_base"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_vertical"
+    android:layout_height="60dp"
     android:orientation="horizontal"
-    tools:ignore="ContentDescription">
+    android:paddingBottom="9dp"
+    android:paddingTop="9dp"
+    android:weightSum="3">
 
-    <LinearLayout
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentLeft="true"/>
 
-        <TextView
-            android:id="@+id/notification_base_line_one"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent.Title" />
+    <TextView
+        android:id="@+id/actionbar_titleview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="Song name"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentLeft="true"/>
 
-        <TextView
-            android:id="@+id/notification_base_line_two"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent" />
+    <ImageButton
+        android:id="@+id/notification_previous"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/notification_pause"
+        android:background="@null"
+        android:padding="10dp"
+        android:src="@drawable/icon_previous" />
 
-    </LinearLayout>
 
     <ImageButton
         android:id="@+id/notification_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_play_normal"/>
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/notification_next"
+        android:background="@null"
+        android:padding="10dp"
+        android:src="@drawable/icon_play_large"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
 
-</LinearLayout>
+    <ImageButton
+        android:id="@+id/notification_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@null"
+        android:padding="10dp"
+        android:src="@drawable/icon_next"
+        android:layout_marginRight="10dp" />
+
+</RelativeLayout>

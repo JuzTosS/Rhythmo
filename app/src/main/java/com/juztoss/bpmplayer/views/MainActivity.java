@@ -9,14 +9,19 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.juztoss.bpmplayer.PlaybackService;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
-public class MainActivity extends Activity
+public class MainActivity extends AppCompatActivity
 {
     private DrawerArrowDrawable mHamburger;
     private BPMPlayerApp mApp;
@@ -27,7 +32,7 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
 
         mApp = (BPMPlayerApp) getApplication();
-        setContentView(R.layout.decor);
+        setContentView(R.layout.activity_main);
 
         if (!mApp.isPlaybackServiceRunning())
         {
@@ -36,9 +41,25 @@ public class MainActivity extends Activity
         }
 
         //Add hamburger
+        setupActionBar();
+    }
+
+    private void setupActionBar()
+    {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         mHamburger = new DrawerArrowDrawable(this);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeAsUpIndicator(mHamburger);
+        getSupportActionBar().setHomeAsUpIndicator(mHamburger);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+        View actionBarLayout = getLayoutInflater().inflate(R.layout.action_bar, null);
+        TextView actionBarTitleview = (TextView) actionBarLayout.findViewById(R.id.actionbar_titleview);
+        actionBarTitleview.setText("My Custom ActionBar Title");
+        actionBar.setCustomView(actionBarLayout);
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
