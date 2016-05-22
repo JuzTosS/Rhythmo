@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:orientation="horizontal"
-    android:paddingBottom="9dp"
-    android:paddingTop="9dp"
-    android:weightSum="3">
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:paddingBottom="9dp"
+                android:paddingTop="9dp"
+                android:weightSum="3">
+
+
+    <TextView
+        android:id="@+id/actionbar_titleview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:text="Song name"
+        android:textAppearance="@style/NotificationTitle"
+        android:textSize="18sp"/>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
         android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_marginLeft="10dp"
-        android:layout_alignParentLeft="true"/>
-
-    <TextView
-        android:id="@+id/actionbar_titleview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:text="Song name"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        android:layout_marginLeft="10dp"
-        android:layout_alignParentLeft="true"/>
+        android:textAppearance="@style/NotificationText"/>
 
     <ImageButton
         android:id="@+id/notification_previous"
@@ -36,9 +38,10 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/notification_pause"
+        android:layout_toStartOf="@+id/notification_pause"
         android:background="@null"
         android:padding="10dp"
-        android:src="@drawable/icon_previous" />
+        android:src="@drawable/icon_previous"/>
 
 
     <ImageButton
@@ -46,23 +49,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_toLeftOf="@+id/notification_next"
+        android:layout_toStartOf="@+id/notification_next"
         android:background="@null"
         android:padding="10dp"
-        android:src="@drawable/icon_play_large"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:src="@drawable/icon_play_large"/>
 
     <ImageButton
         android:id="@+id/notification_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="false"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
         android:background="@null"
         android:padding="10dp"
-        android:src="@drawable/icon_next"
-        android:layout_marginRight="10dp" />
+        android:src="@drawable/icon_next"/>
 
 </RelativeLayout>

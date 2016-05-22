@@ -1,20 +1,61 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.model.application'
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def superpowered_sdk_path = properties.getProperty('superpowered.dir')
 
-    defaultConfig {
-        applicationId "com.juztoss.bpmplayer"
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+model {
+    repositories {
+        libs(PrebuiltLibraries) {
+            superpowered { // this is where you declare the "superpowered" static library
+                headers.srcDir "${superpowered_sdk_path}"
+                binaries.withType(StaticLibraryBinary) { // attaching library files to each platform
+                    def platformName = targetPlatform.getName()
+                    if (platformName == "armeabi-v7a") {
+                        staticLibraryFile = file("${superpowered_sdk_path}/libSuperpoweredAndroidARM.a")
+                    } else if (platformName == "arm64-v8a") {
+                        staticLibraryFile = file("${superpowered_sdk_path}/libSuperpoweredAndroidARM64.a")
+                    } else if (platformName == "x86") {
+                        staticLibraryFile = file("${superpowered_sdk_path}/libSuperpoweredAndroidX86.a")
+                    } else if (platformName == "x86_64") {
+                        staticLibraryFile = file("${superpowered_sdk_path}/libSuperpoweredAndroidX86_64.a")
+                    }
+                }
+            }
+        }
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+    android { // main settings for your application
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.3"
+
+        defaultConfig {
+            applicationId "com.juztoss.bpmplayer"
+            minSdkVersion.apiLevel = 15
+            targetSdkVersion.apiLevel = 23
+            versionCode 1
+            versionName "1.0"
+        }
+    }
+
+    android.ndk { // your application's native layer parameters
+        moduleName = "AdvancedMediaPlayer"
+        toolchain "clang"
+        platformVersion = 23 // this will not limit it to run on older devices, it's just the NDK platform to build with
+        stl = "c++_static"
+        CFlags.addAll(["-O3", "-fsigned-char", "-lstdc++"]) // full optimization, char data type is signed
+        cppFlags.addAll(["-fno-exceptions", "-fsigned-char", "-I${superpowered_sdk_path}".toString()])
+        ldLibs.addAll(["log", "android", "OpenSLES"]) // load these libraries: log, android, OpenSL ES (for audio)
+        abiFilters.addAll(["armeabi-v7a", "arm64-v8a", "x86", "x86_64"]) // these platforms cover 99% percent of all Android devices
+    }
+
+    android.sources.main.jni {
+        source {
+            srcDir "jni"
+            srcDir "${superpowered_sdk_path}/AndroidIO"
+        }
+        dependencies {
+            library "superpowered" linkage "static"
         }
     }
 }

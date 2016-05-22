@@ -1,7 +1,16 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="CustomizedActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background" tools:ignore="NewApi">@color/primary</item>
+        <item name="background">@color/primary</item>
     </style>
 
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:actionBarStyle" tools:ignore="NewApi">@style/CustomizedActionBar</item>
+        <item name="actionBarStyle">@style/CustomizedActionBar</item>
+    </style>
+
+    <style name="NotificationText" parent="@android:style/TextAppearance.StatusBar.EventContent"/>
+
+    <style name="NotificationTitle" parent="@android:style/TextAppearance.StatusBar.EventContent.Title"/>
 </resources>

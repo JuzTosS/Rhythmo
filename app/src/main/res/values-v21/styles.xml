@@ -1,0 +1,12 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:colorPrimaryDark">#303F9F</item>
+        <item name="android:colorPrimary">#3F51B5</item>
+        <item name="android:colorAccent">#9E9E9E</item>
+    </style>
+
+    <style name="NotificationText" parent="android:TextAppearance.Material.Notification"/>
+
+    <style name="NotificationTitle" parent="android:TextAppearance.Material.Notification.Title"/>
+</resources>
