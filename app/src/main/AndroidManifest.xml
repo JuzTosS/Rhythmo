@@ -22,7 +22,7 @@
         </activity>
 
         <service
-            android:name="com.juztoss.bpmplayer.PlaybackService"
+            android:name=".services.PlaybackService"
             android:enabled="true" />
 
         <receiver

@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer;
+package com.juztoss.bpmplayer.audio;
 
 import android.util.Log;
 

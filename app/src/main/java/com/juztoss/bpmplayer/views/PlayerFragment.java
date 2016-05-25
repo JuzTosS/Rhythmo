@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.juztoss.bpmplayer.PlaybackService;
+import com.juztoss.bpmplayer.services.PlaybackService;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Song;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;

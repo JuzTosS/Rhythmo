@@ -2,20 +2,16 @@ package com.juztoss.bpmplayer.views;
 
 import android.content.Context;
 import android.text.format.DateUtils;
-import android.util.TimeUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.juztoss.bpmplayer.PlaybackService;
+import com.juztoss.bpmplayer.services.PlaybackService;
 import com.juztoss.bpmplayer.R;
-import com.juztoss.bpmplayer.models.IExplorerElement;
 import com.juztoss.bpmplayer.models.Song;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by JuzTosS on 4/20/2016.

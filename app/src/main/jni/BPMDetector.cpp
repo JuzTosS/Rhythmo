@@ -5,7 +5,7 @@
 #include <malloc.h>
 #include <SuperpoweredSimple.h>
 
-extern "C" JNIEXPORT jdouble Java_com_juztoss_bpmplayer_BpmDetector_detect(JNIEnv *env,
+extern "C" JNIEXPORT jdouble Java_com_juztoss_bpmplayer_audio_BpmDetector_detect(JNIEnv *env,
                                                                               jobject instance,
                                                                               jstring source
                                                                               ) {

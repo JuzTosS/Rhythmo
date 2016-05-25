@@ -1,7 +1,6 @@
 package com.juztoss.bpmplayer.views;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -17,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.juztoss.bpmplayer.PlaybackService;
+import com.juztoss.bpmplayer.services.PlaybackService;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 

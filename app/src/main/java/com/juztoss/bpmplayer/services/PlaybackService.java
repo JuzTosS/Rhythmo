@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer;
+package com.juztoss.bpmplayer.services;
 
 import android.app.NotificationManager;
 import android.app.Service;
@@ -11,6 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.juztoss.bpmplayer.R;
+import com.juztoss.bpmplayer.audio.AdvancedMediaPlayer;
+import com.juztoss.bpmplayer.audio.BpmDetector;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.models.Song;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
