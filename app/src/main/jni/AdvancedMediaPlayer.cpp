@@ -6,17 +6,17 @@
 #include <SuperpoweredSimple.h>
 #include <android/log.h>
 
-static BPMAdvancedMediaPlayer *sPlayer = NULL;
+static AdvancedMediaPlayer *sPlayer = NULL;
 
 static bool audioProcessing(void *clientdata, short int *audioIO, int numberOfSamples,
                             int __unused samplerate) {
-    return ((BPMAdvancedMediaPlayer *) clientdata)->process(audioIO,
-                                                            (unsigned int) numberOfSamples);
+    return ((AdvancedMediaPlayer *) clientdata)->process(audioIO,
+                                                         (unsigned int) numberOfSamples);
 }
 
-void BPMAdvancedMediaPlayer::playerEvent(void *clientData,
-                                         SuperpoweredAdvancedAudioPlayerEvent event,
-                                         void *value) {
+void AdvancedMediaPlayer::playerEvent(void *clientData,
+                                      SuperpoweredAdvancedAudioPlayerEvent event,
+                                      void *value) {
     switch (event) {
         case SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess: {
             JNIEnv *env;
@@ -67,8 +67,8 @@ static void playerEventCallback(void *__unused clientData,
     sPlayer->playerEvent(clientData, event, value);
 }
 
-BPMAdvancedMediaPlayer::BPMAdvancedMediaPlayer(unsigned int samplerate, unsigned int buffersize,
-                                               JNIEnv *env, jobject *listener) {
+AdvancedMediaPlayer::AdvancedMediaPlayer(unsigned int samplerate, unsigned int buffersize,
+                                         JNIEnv *env, jobject *listener) {
     mListener = env->NewGlobalRef(*listener);
     jclass cls = env->GetObjectClass(*listener);
     mListenerClass = (jclass) env->NewGlobalRef(cls);
@@ -85,7 +85,7 @@ BPMAdvancedMediaPlayer::BPMAdvancedMediaPlayer(unsigned int samplerate, unsigned
                                                  buffersize * 2);
 }
 
-BPMAdvancedMediaPlayer::~BPMAdvancedMediaPlayer() {
+AdvancedMediaPlayer::~AdvancedMediaPlayer() {
     JNIEnv *env;
     mJavaVM->AttachCurrentThread(&env, NULL);
     env->DeleteGlobalRef(mListener);
@@ -96,7 +96,7 @@ BPMAdvancedMediaPlayer::~BPMAdvancedMediaPlayer() {
     free(stereoBuffer);
 }
 
-bool BPMAdvancedMediaPlayer::process(short int *output, unsigned int numberOfSamples) {
+bool AdvancedMediaPlayer::process(short int *output, unsigned int numberOfSamples) {
     bool silence = !mPlayer->process(stereoBuffer, false, numberOfSamples);
     if (!silence)
         SuperpoweredFloatToShortInt(stereoBuffer, output, numberOfSamples);
@@ -104,29 +104,47 @@ bool BPMAdvancedMediaPlayer::process(short int *output, unsigned int numberOfSam
     return !silence;
 }
 
-void BPMAdvancedMediaPlayer::setSource(const char *path) {
+void AdvancedMediaPlayer::setSource(const char *path) {
     mPlayer->open(path);
 }
 
-unsigned int BPMAdvancedMediaPlayer::getDuration() {
+unsigned int AdvancedMediaPlayer::getDuration() {
     return mPlayer->durationMs;
 }
 
-void BPMAdvancedMediaPlayer::play() {
+void AdvancedMediaPlayer::play() {
     mPlayer->play(false);
 }
 
-void BPMAdvancedMediaPlayer::pause() {
+void AdvancedMediaPlayer::pause() {
     mPlayer->pause();
 }
 
-unsigned int BPMAdvancedMediaPlayer::getPosition() {
+unsigned int AdvancedMediaPlayer::getPosition() {
     return (unsigned int) mPlayer->positionMs;
 }
 
-void BPMAdvancedMediaPlayer::setPosition(unsigned int position) {
+void AdvancedMediaPlayer::setPosition(unsigned int position) {
     mPlayer->setPosition(position, false, false);
 }
+
+
+void AdvancedMediaPlayer::setBPM(double bpm) {
+    mPlayer->setBpm(bpm);
+}
+
+
+void AdvancedMediaPlayer::setNewBPM(double bpm) {
+    if (mPlayer->bpm > 10.0) {
+        double tempo = bpm / mPlayer->bpm;
+        mPlayer->setTempo(tempo, true);
+    }
+    else {
+        __android_log_print(ANDROID_LOG_DEBUG, "setNewBPM", "Bpm is less than 10.0, unable to do time stretching. Bpm is = ",
+                            mPlayer->bpm);
+    }
+}
+
 
 extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_AdvancedMediaPlayer_init(JNIEnv *env,
                                                                               jobject instance,
@@ -134,8 +152,8 @@ extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_AdvancedMediaPlayer_init(JN
                                                                               jint buffersize) {
 
 
-    sPlayer = new BPMAdvancedMediaPlayer((unsigned int) samplerate, (unsigned int) buffersize, env,
-                                         &instance);
+    sPlayer = new AdvancedMediaPlayer((unsigned int) samplerate, (unsigned int) buffersize, env,
+                                      &instance);
 }
 
 extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_AdvancedMediaPlayer_setSource(JNIEnv *env,
@@ -171,4 +189,18 @@ extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_AdvancedMediaPlayer_setPosi
                                                                                      jobject instance,
                                                                                      jint offset) {
     sPlayer->setPosition((unsigned int) offset);
+}
+
+extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_AdvancedMediaPlayer_setBPM(JNIEnv *env,
+                                                                                jobject instance,
+                                                                                jdouble bpm) {
+    sPlayer->setBPM((double) bpm);
+
+}
+
+extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_AdvancedMediaPlayer_setNewBPM(JNIEnv *env,
+                                                                                   jobject instance,
+                                                                                   jdouble bpm) {
+    sPlayer->setNewBPM((double) bpm);
+
 }

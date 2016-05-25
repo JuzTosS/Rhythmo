@@ -45,6 +45,10 @@ public class AdvancedMediaPlayer
 
     public native void setPosition(int offset);
 
+    public native void setBPM(double bpm);
+
+    public native void setNewBPM(double bpm);
+
     /**
      * JNI callbacks
      */

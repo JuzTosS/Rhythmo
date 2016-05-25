@@ -5,12 +5,12 @@
 #include <SuperpoweredAdvancedAudioPlayer.h>
 #include <pthread.h>
 
-class BPMAdvancedMediaPlayer {
+class AdvancedMediaPlayer {
 public:
-    BPMAdvancedMediaPlayer(unsigned int samplerate, unsigned int buffersize, JNIEnv *env,
-                           jobject *listener);
+    AdvancedMediaPlayer(unsigned int samplerate, unsigned int buffersize, JNIEnv *env,
+                        jobject *listener);
 
-    ~BPMAdvancedMediaPlayer();
+    ~AdvancedMediaPlayer();
 
     void setSource(const char *string);
 
@@ -28,6 +28,10 @@ public:
     void setPosition(unsigned int position);
 
     bool process(short int *output, unsigned int numberOfSamples);
+
+    void setBPM(double bpm);
+
+    void setNewBPM(double bpm);
 
 private:
     SuperpoweredAdvancedAudioPlayer *mPlayer;
