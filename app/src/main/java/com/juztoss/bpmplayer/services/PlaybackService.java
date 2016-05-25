@@ -123,7 +123,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         mApp = (BPMPlayerApp) getApplicationContext();
         mApp.setPlaybackService(this);
 
-        System.loadLibrary("AdvancedMediaPlayer");
+        System.loadLibrary(AdvancedMediaPlayer.LIBRARY_NAME);
 
         String sampleRateString = null, bufferSizeString = null;
         if (Build.VERSION.SDK_INT >= 17)
@@ -144,7 +144,14 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             @Override
             public void run()
             {
-                mPlayer = new AdvancedMediaPlayer(sampleRate, bufferSize);
+                try
+                {
+                    mPlayer = new AdvancedMediaPlayer(sampleRate, bufferSize);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
                 mPlayer.setOnEndListener(self);
                 mPlayer.setOnErrorListener(self);
             }

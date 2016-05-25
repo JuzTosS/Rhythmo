@@ -7,12 +7,17 @@ import android.util.Log;
  */
 public class AdvancedMediaPlayer
 {
+    private static int totalObjectsCreated = 0;
+    public static String LIBRARY_NAME = "AdvancedMediaPlayer";
+    private final int mId;
+
     private OnEndListener mOnEndListener;
     private OnErrorListener mOnErrorListener;
     private OnPreparedListener mOnPreparedListener;
 
     public AdvancedMediaPlayer(int samplerate, int buffersize)
     {
+        mId = ++totalObjectsCreated;
         init(samplerate, buffersize);
     }
 
@@ -49,6 +54,13 @@ public class AdvancedMediaPlayer
 
     public native void setNewBPM(double bpm);
 
+    public native void release();
+
+    private int getIdJNI()
+    {
+        return mId;
+    }
+
     /**
      * JNI callbacks
      */
@@ -72,7 +84,6 @@ public class AdvancedMediaPlayer
         if(mOnErrorListener != null)
             mOnErrorListener.onError(message);
     }
-
     public interface OnEndListener
     {
         void onEnd();
@@ -86,5 +97,11 @@ public class AdvancedMediaPlayer
     public interface OnErrorListener
     {
         void onError(String message);
+    }
+
+    @Override
+    protected void finalize() throws Throwable
+    {
+        super.finalize();
     }
 }

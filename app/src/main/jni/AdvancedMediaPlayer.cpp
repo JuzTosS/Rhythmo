@@ -5,8 +5,9 @@
 #include "AdvancedMediaPlayer.h"
 #include <SuperpoweredSimple.h>
 #include <android/log.h>
+#include <map>
 
-static AdvancedMediaPlayer *sPlayer = NULL;
+static std::map<int, AdvancedMediaPlayer *> sPlayersMap;
 
 static bool audioProcessing(void *clientdata, short int *audioIO, int numberOfSamples,
                             int __unused samplerate) {
@@ -14,9 +15,8 @@ static bool audioProcessing(void *clientdata, short int *audioIO, int numberOfSa
                                                          (unsigned int) numberOfSamples);
 }
 
-void AdvancedMediaPlayer::playerEvent(void *clientData,
-                                      SuperpoweredAdvancedAudioPlayerEvent event,
-                                      void *value) {
+void AdvancedMediaPlayer::playerEvent(void *__unused clientData,
+                                      SuperpoweredAdvancedAudioPlayerEvent event, void *value) {
     switch (event) {
         case SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess: {
             mIsPrepared = true;
@@ -66,7 +66,8 @@ void AdvancedMediaPlayer::playerEvent(void *clientData,
 
 static void playerEventCallback(void *__unused clientData,
                                 SuperpoweredAdvancedAudioPlayerEvent event, void *value) {
-    sPlayer->playerEvent(clientData, event, value);
+    AdvancedMediaPlayer *player = (AdvancedMediaPlayer *) clientData;
+    player->playerEvent(clientData, event, value);
 }
 
 AdvancedMediaPlayer::AdvancedMediaPlayer(unsigned int samplerate, unsigned int buffersize,
@@ -78,7 +79,7 @@ AdvancedMediaPlayer::AdvancedMediaPlayer(unsigned int samplerate, unsigned int b
     env->GetJavaVM(&mJavaVM);
 
     stereoBuffer = (float *) malloc(sizeof(float) * 2 * buffersize + 128);
-    mPlayer = new SuperpoweredAdvancedAudioPlayer(&mPlayer,
+    mPlayer = new SuperpoweredAdvancedAudioPlayer(this,
                                                   playerEventCallback,
                                                   samplerate,
                                                   0);
@@ -116,14 +117,14 @@ unsigned int AdvancedMediaPlayer::getDuration() {
 }
 
 void AdvancedMediaPlayer::play() {
-    if(mIsPrepared)
+    if (mIsPrepared)
         mPlayer->play(false);
     else
         __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
 }
 
 void AdvancedMediaPlayer::pause() {
-    if(mIsPrepared)
+    if (mIsPrepared)
         mPlayer->pause();
     else
         __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
@@ -134,7 +135,7 @@ unsigned int AdvancedMediaPlayer::getPosition() {
 }
 
 void AdvancedMediaPlayer::setPosition(unsigned int position) {
-    if(mIsPrepared)
+    if (mIsPrepared)
         mPlayer->setPosition(position, false, false);
     else
         __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
@@ -142,7 +143,7 @@ void AdvancedMediaPlayer::setPosition(unsigned int position) {
 
 
 void AdvancedMediaPlayer::setBPM(double bpm) {
-    if(mIsPrepared)
+    if (mIsPrepared)
         mPlayer->setBpm(bpm);
     else
         __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
@@ -150,8 +151,7 @@ void AdvancedMediaPlayer::setBPM(double bpm) {
 
 
 void AdvancedMediaPlayer::setNewBPM(double bpm) {
-    if(!mIsPrepared)
-    {
+    if (!mIsPrepared) {
         __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
         return;
     }
@@ -166,62 +166,104 @@ void AdvancedMediaPlayer::setNewBPM(double bpm) {
     }
 }
 
+static AdvancedMediaPlayer *getPlayer(jobject *instance, JNIEnv *env) {
+    jclass cls = env->GetObjectClass(*instance);
+    jmethodID method = env->GetMethodID(cls, "getIdJNI", "()I");
+    int id = env->CallIntMethod(*instance, method);
+
+    typedef std::map<int, AdvancedMediaPlayer *>::iterator it_type;
+    for (it_type iterator = sPlayersMap.begin(); iterator != sPlayersMap.end(); iterator++) {
+        if (id == iterator->first)
+            return iterator->second;
+    }
+
+    __android_log_print(ANDROID_LOG_ERROR, __func__, "A player with id=%d not found!", id);
+    return NULL;
+}
+
+extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_release(JNIEnv *env, jobject instance) {
+    jclass cls = env->GetObjectClass(instance);
+    jmethodID method = env->GetMethodID(cls, "getIdJNI", "()I");
+    int id = env->CallIntMethod(instance, method);
+
+    AdvancedMediaPlayer *player = getPlayer(&instance, env);
+    sPlayersMap.erase(id);
+    delete player;
+}
 
 extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_init(JNIEnv *env,
-                                                                              jobject instance,
-                                                                              jint samplerate,
-                                                                              jint buffersize) {
+                                                                                    jobject instance,
+                                                                                    jint samplerate,
+                                                                                    jint buffersize) {
+    AdvancedMediaPlayer *player = new AdvancedMediaPlayer((unsigned int) samplerate, (unsigned int) buffersize, env,
+                                                          &instance);
 
-
-    sPlayer = new AdvancedMediaPlayer((unsigned int) samplerate, (unsigned int) buffersize, env,
-                                      &instance);
+    jclass cls = env->GetObjectClass(instance);
+    jmethodID method = env->GetMethodID(cls, "getIdJNI", "()I");
+    int id = env->CallIntMethod(instance, method);
+    sPlayersMap.insert(std::pair<int, AdvancedMediaPlayer *>(id, player));
 }
 
 extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_setSource(JNIEnv *env,
-                                                                                   jobject instance,
-                                                                                   jstring source) {
+                                                                                         jobject instance,
+                                                                                         jstring source) {
+    if (source == NULL) {
+        jclass cls = env->GetObjectClass(instance);
+        jmethodID method = env->GetMethodID(cls, "onError",
+                                            "(Ljava/lang/String;)V");
+        env->CallVoidMethod(instance, method, env->NewStringUTF((char *) "Trying to set null source"));
+        return;
+    }
     const char *path = env->GetStringUTFChars(source, JNI_FALSE);
-    sPlayer->setSource(path);
+    AdvancedMediaPlayer *player = getPlayer(&instance, env);
+    player->setSource(path);
     env->ReleaseStringUTFChars(source, path);
 
 }
 
 extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_play(JNIEnv *env,
-                                                                              jobject instance) {
-    sPlayer->play();
+                                                                                    jobject instance) {
+    AdvancedMediaPlayer *player = getPlayer(&instance, env);
+    player->play();
 }
 
 extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_pause(JNIEnv *env,
-                                                                               jobject instance) {
-    sPlayer->pause();
+                                                                                     jobject instance) {
+    AdvancedMediaPlayer *player = getPlayer(&instance, env);
+    player->pause();
 }
 
 extern "C" JNIEXPORT jint Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_getDuration(JNIEnv *env,
-                                                                                     jobject instance) {
-    return (jint) sPlayer->getDuration();
+                                                                                           jobject instance) {
+    AdvancedMediaPlayer *player = getPlayer(&instance, env);
+    return (jint) player->getDuration();
 }
 
 extern "C" JNIEXPORT jint Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_getPosition(JNIEnv *env,
-                                                                                     jobject instance) {
-    return (jint) sPlayer->getPosition();
+                                                                                           jobject instance) {
+    AdvancedMediaPlayer *player = getPlayer(&instance, env);
+    return (jint) player->getPosition();
 }
 
 extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_setPosition(JNIEnv *env,
-                                                                                     jobject instance,
-                                                                                     jint offset) {
-    sPlayer->setPosition((unsigned int) offset);
+                                                                                           jobject instance,
+                                                                                           jint offset) {
+    AdvancedMediaPlayer *player = getPlayer(&instance, env);
+    player->setPosition((unsigned int) offset);
 }
 
 extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_setBPM(JNIEnv *env,
-                                                                                jobject instance,
-                                                                                jdouble bpm) {
-    sPlayer->setBPM((double) bpm);
+                                                                                      jobject instance,
+                                                                                      jdouble bpm) {
+    AdvancedMediaPlayer *player = getPlayer(&instance, env);
+    player->setBPM((double) bpm);
 
 }
 
 extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_setNewBPM(JNIEnv *env,
-                                                                                   jobject instance,
-                                                                                   jdouble bpm) {
-    sPlayer->setNewBPM((double) bpm);
+                                                                                         jobject instance,
+                                                                                         jdouble bpm) {
+    AdvancedMediaPlayer *player = getPlayer(&instance, env);
+    player->setNewBPM((double) bpm);
 
 }
