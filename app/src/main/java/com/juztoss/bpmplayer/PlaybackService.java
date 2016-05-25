@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.models.Song;
@@ -22,7 +23,7 @@ import java.util.Queue;
 /**
  * Created by JuzTosS on 5/3/2016.
  */
-public class PlaybackService extends Service implements AdvancedMediaPlayer.AdvancedMediaPlayerListener
+public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener
 {
 
     public static final int NOTIFICATION_ID = 42;
@@ -51,7 +52,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.Adva
     @Override
     public void onError(String message)
     {
-
+        clearQueue();
+        Log.e(getResources().getString(R.string.app_name), "Player error: " + message);
     }
 
     public void gotoNext()
@@ -121,7 +123,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.Adva
         System.loadLibrary("AdvancedMediaPlayer");
 
         String sampleRateString = null, bufferSizeString = null;
-        if (Build.VERSION.SDK_INT >= 17) {
+        if (Build.VERSION.SDK_INT >= 17)
+        {
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             sampleRateString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
             bufferSizeString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
@@ -138,7 +141,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.Adva
             @Override
             public void run()
             {
-                mPlayer = new AdvancedMediaPlayer(sampleRate, bufferSize, self);
+                mPlayer = new AdvancedMediaPlayer(sampleRate, bufferSize);
+                mPlayer.setOnEndListener(self);
+                mPlayer.setOnErrorListener(self);
             }
         };
         new Thread(process).start();
@@ -155,7 +160,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.Adva
     public void setSource(int index)
     {
         final Song song = mPlaylist.songs().get(index);
-        mPlayer.setSource(song.source().getAbsolutePath());
+        putAction(new ActionPrepare(song));
     }
 
     private void setIsPlaying(boolean value)
@@ -247,6 +252,34 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.Adva
 
         public void interrupt()
         {
+        }
+    }
+
+    class ActionPrepare extends BaseAction
+    {
+
+        private AdvancedMediaPlayer.OnPreparedListener mOnPrepared = new AdvancedMediaPlayer.OnPreparedListener()
+        {
+            @Override
+            public void onPrepared()
+            {
+                doNext();
+            }
+        };
+
+        private Song mSong;
+
+        public ActionPrepare(Song song)
+        {
+            mSong = song;
+        }
+
+        @Override
+        public void doAction()
+        {
+            setIsPlaying(true);
+            mPlayer.setOnPreparedListener(mOnPrepared);
+            mPlayer.setSource(mSong.source().getAbsolutePath());
         }
     }
 
