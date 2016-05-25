@@ -19,6 +19,8 @@ void AdvancedMediaPlayer::playerEvent(void *clientData,
                                       void *value) {
     switch (event) {
         case SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess: {
+            mIsPrepared = true;
+
             JNIEnv *env;
             mJavaVM->AttachCurrentThread(&env, NULL);
             jmethodID method = env->GetMethodID(mListenerClass, "onPrepared", "()V");
@@ -105,6 +107,7 @@ bool AdvancedMediaPlayer::process(short int *output, unsigned int numberOfSample
 }
 
 void AdvancedMediaPlayer::setSource(const char *path) {
+    mIsPrepared = false;
     mPlayer->open(path);
 }
 
@@ -113,11 +116,17 @@ unsigned int AdvancedMediaPlayer::getDuration() {
 }
 
 void AdvancedMediaPlayer::play() {
-    mPlayer->play(false);
+    if(mIsPrepared)
+        mPlayer->play(false);
+    else
+        __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
 }
 
 void AdvancedMediaPlayer::pause() {
-    mPlayer->pause();
+    if(mIsPrepared)
+        mPlayer->pause();
+    else
+        __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
 }
 
 unsigned int AdvancedMediaPlayer::getPosition() {
@@ -125,22 +134,34 @@ unsigned int AdvancedMediaPlayer::getPosition() {
 }
 
 void AdvancedMediaPlayer::setPosition(unsigned int position) {
-    mPlayer->setPosition(position, false, false);
+    if(mIsPrepared)
+        mPlayer->setPosition(position, false, false);
+    else
+        __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
 }
 
 
 void AdvancedMediaPlayer::setBPM(double bpm) {
-    mPlayer->setBpm(bpm);
+    if(mIsPrepared)
+        mPlayer->setBpm(bpm);
+    else
+        __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
 }
 
 
 void AdvancedMediaPlayer::setNewBPM(double bpm) {
+    if(!mIsPrepared)
+    {
+        __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
+        return;
+    }
+
     if (mPlayer->bpm > 10.0) {
         double tempo = bpm / mPlayer->bpm;
         mPlayer->setTempo(tempo, true);
     }
     else {
-        __android_log_print(ANDROID_LOG_DEBUG, "setNewBPM", "Bpm is less than 10.0, unable to do time stretching. Bpm is = ",
+        __android_log_print(ANDROID_LOG_DEBUG, "setNewBPM", "Bpm is less than 10.0, unable to do time stretching. Bpm is = %f",
                             mPlayer->bpm);
     }
 }

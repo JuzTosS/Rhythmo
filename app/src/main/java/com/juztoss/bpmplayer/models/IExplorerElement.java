@@ -9,5 +9,4 @@ import java.util.List;
  */
 public interface IExplorerElement extends Comparable<IExplorerElement>, Parcelable, ISongSource {
     String name();
-//    List<IExplorerElement> getLinked();
 }

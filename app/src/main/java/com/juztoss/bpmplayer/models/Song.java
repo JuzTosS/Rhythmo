@@ -47,12 +47,6 @@ public class Song implements IExplorerElement, Parcelable
     }
 
     @Override
-    public int compareTo(Object another)
-    {
-        return 0;
-    }
-
-    @Override
     public int describeContents()
     {
         return 0;
@@ -88,5 +82,10 @@ public class Song implements IExplorerElement, Parcelable
         int dotPosition= name.lastIndexOf(".");
         String extension = name.substring(dotPosition + 1, name.length());
         return SUPPORTED_FORMATS.contains(extension);
+    }
+
+    @Override
+    public int compareTo(IExplorerElement another) {
+        return mSource.compareTo((another).source());
     }
 }

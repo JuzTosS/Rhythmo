@@ -17,7 +17,7 @@ public class LinkToMenu implements IExplorerElement
     }
 
     @Override
-    public int compareTo(Object another)
+    public int compareTo(IExplorerElement another)
     {
         return 0;
     }

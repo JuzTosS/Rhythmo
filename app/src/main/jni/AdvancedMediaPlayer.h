@@ -41,7 +41,7 @@ private:
     JavaVM *mJavaVM = NULL;
     float *stereoBuffer;
 
-    bool mIsPrepared;
+    bool mIsPrepared = false;
 };
 
 #endif

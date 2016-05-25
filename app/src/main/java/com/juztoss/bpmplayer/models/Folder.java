@@ -37,8 +37,8 @@ public class Folder implements IExplorerElement, Parcelable{
     }
 
     @Override
-    public int compareTo(Object another) {
-        return mSource.compareTo(((IExplorerElement)another).source());
+    public int compareTo(IExplorerElement another) {
+        return mSource.compareTo((another).source());
     }
 
     public static final Parcelable.Creator<Folder> CREATOR = new Creator<Folder>() {

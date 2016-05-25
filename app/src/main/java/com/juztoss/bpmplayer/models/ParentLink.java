@@ -26,8 +26,8 @@ public class ParentLink implements IExplorerElement, Parcelable{
     }
 
     @Override
-    public int compareTo(Object another) {
-        return mSource.compareTo(((IExplorerElement)another).source());
+    public int compareTo(IExplorerElement another) {
+        return mSource.compareTo((another).source());
     }
 
     @Override
