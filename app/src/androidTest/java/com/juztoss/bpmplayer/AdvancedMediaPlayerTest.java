@@ -1,5 +1,7 @@
 package com.juztoss.bpmplayer;
 
+import android.database.Cursor;
+import android.provider.MediaStore;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 
@@ -11,7 +13,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AdvancedMediaPlayerTest extends InstrumentationTestCase
 {
+    private static String mPath;
     private static AdvancedMediaPlayer mPlayer;
+    private static AdvancedMediaPlayer mPlayer2;
 
     @Override
     public void setUp() throws Exception
@@ -20,7 +24,32 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
 
         System.loadLibrary(AdvancedMediaPlayer.LIBRARY_NAME);
         mPlayer = new AdvancedMediaPlayer(44100, 400);
-        assertNotNull("Setup failed", mPlayer);
+        mPlayer2 = new AdvancedMediaPlayer(48000, 500);
+        assertNotNull("Setup first player failed", mPlayer);
+        assertNotNull("Setup second player failed", mPlayer2);
+
+        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
+
+        String[] projection = {
+                MediaStore.Audio.Media.DATA,
+        };
+
+        Cursor cursor = getInstrumentation().getContext().getContentResolver().query(
+                MediaStore.Audio.Media.INTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                null,
+                null);
+
+        while(cursor.moveToNext()) {
+            String audioPath = cursor.getString(0);
+            if(audioPath.toLowerCase().endsWith(".mp3"))
+            {
+                mPath = cursor.getString(0);
+                break;
+            }
+        }
+        cursor.close();
     }
 
     @Override
@@ -28,6 +57,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
     {
         super.tearDown();
         mPlayer.release();
+        mPlayer2.release();
     }
 
     private void setSourceOnErrorTest(String source) throws Exception
@@ -96,18 +126,19 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         });
 
 
-        mPlayer.setSource(getInstrumentation().getContext().getPackageResourcePath());
+        mPlayer.setSource(mPath);
         signal.await(2, TimeUnit.SECONDS);
         assertFalse("OnError mustn't have been called for correct source", onErrorIsCalled.get());
+        assertTrue("Non zero signal count!", signal.getCount() == 0);
         mPlayer.setOnPreparedListener(null);
         mPlayer.setOnErrorListener(null);
     }
 
-    public void testPlayback() throws Exception
+    public void doPlayback(AdvancedMediaPlayer player, CountDownLatch playbackFinished) throws Exception
     {
         final CountDownLatch signal = new CountDownLatch(1);
-
-        mPlayer.setOnErrorListener(new AdvancedMediaPlayer.OnErrorListener()
+        final AdvancedMediaPlayer playerClosure = player;
+        player.setOnErrorListener(new AdvancedMediaPlayer.OnErrorListener()
         {
             @Override
             public void onError(String message)
@@ -117,7 +148,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
                 signal.countDown();
             }
         });
-        mPlayer.setOnPreparedListener(new AdvancedMediaPlayer.OnPreparedListener()
+        player.setOnPreparedListener(new AdvancedMediaPlayer.OnPreparedListener()
         {
             @Override
             public void onPrepared()
@@ -133,7 +164,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
                 signal.countDown();
             }
         });
-        mPlayer.setOnEndListener(new AdvancedMediaPlayer.OnEndListener()
+        player.setOnEndListener(new AdvancedMediaPlayer.OnEndListener()
         {
             @Override
             public void onEnd()
@@ -143,9 +174,51 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
             }
         });
 
-        assertTrue("Non-zero duration before setSource!", mPlayer.getDuration() == 0);
-        mPlayer.setSource(getInstrumentation().getContext().getPackageResourcePath());
+        assertTrue("Non-zero duration before setSource!", player.getDuration() == 0);
+        player.setSource(mPath);
         signal.await(2, TimeUnit.SECONDS);
+        assertTrue("Non zero signal count!", signal.getCount() == 0);
+        playbackFinished.countDown();
+    }
+
+    public void testPlayback() throws Exception
+    {
+        final CountDownLatch signal = new CountDownLatch(2);
+        Runnable run1 = new Runnable(){
+            @Override
+            public void run()
+            {
+                try
+                {
+                    doPlayback(mPlayer, signal);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    assertTrue("Exception during playback",false);
+                }
+            }
+        };
+        Runnable run2 = new Runnable(){
+            @Override
+            public void run()
+            {
+                try
+                {
+                    doPlayback(mPlayer2, signal);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    assertTrue("Exception during playback",false);
+                }
+            }
+        };
+
+        new Thread(run1).start();
+        new Thread(run2).start();
+        signal.await(5, TimeUnit.SECONDS);
+        assertTrue("Non zero signal count!", signal.getCount() == 0);
     }
 
     public void testBPM() throws Exception
@@ -191,7 +264,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         });
 
         mPlayer.setBPM(100);//There is no crash if setting a bpm before source
-        mPlayer.setSource(getInstrumentation().getContext().getPackageResourcePath());
+        mPlayer.setSource(mPath);
         signal.await(2, TimeUnit.SECONDS);
     }
 }
