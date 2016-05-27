@@ -120,6 +120,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        super.onStartCommand(intent, flags, startId);
+
         mApp = (BPMPlayerApp) getApplicationContext();
         mApp.setPlaybackService(this);
 
@@ -157,7 +159,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             }
         };
         new Thread(process).start();
-        return super.onStartCommand(intent, flags, startId);
+
+        return START_STICKY;
     }
 
     @Override

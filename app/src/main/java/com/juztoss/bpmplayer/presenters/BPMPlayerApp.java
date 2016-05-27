@@ -22,6 +22,8 @@ public class BPMPlayerApp extends Application
     private BrowserPresenter mBrowserPresenter;
     private PlayerPresenter mPlayerPresenter;
     private PlaybackService mPlaybackService;
+    private boolean mIsBuildingLibrary;
+    private boolean mIsScanFinished;
 
     @Override
     public void onCreate()
@@ -96,5 +98,15 @@ public class BPMPlayerApp extends Application
     public boolean isPlaybackServiceRunning()
     {
         return mPlaybackService != null;
+    }
+
+    public void setIsBuildingLibrary(boolean isBuildingLibrary)
+    {
+        mIsBuildingLibrary = isBuildingLibrary;
+    }
+
+    public void setIsScanFinished(boolean isScanFinished)
+    {
+        mIsScanFinished = isScanFinished;
     }
 }

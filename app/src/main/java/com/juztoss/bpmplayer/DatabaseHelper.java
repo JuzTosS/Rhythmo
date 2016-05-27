@@ -12,13 +12,24 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 {
     private static SQLiteDatabase mDb;
     private static final String DATABASE_NAME = "main.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
+
+
+    //TABLE SETTINGS
     public static final String TABLE_SETTINGS = "settings";
 
     public static final String SETTING_NAME = "name";
     public static final String SETTING_VALUE = "value";
 
     public static final String SETTINGS_SONG_FOLDER = "song_folder";
+
+
+    //TABLE MUSIC_LIBRARY_TABLE
+    public static final String TABLE_MUSIC_LIBRARY = "music_library";
+
+    public static final String MUSIC_LIBRARY_MEDIA_ID = "media_id";
+    public static final String MUSIC_LIBRARY_PATH = "path";
+
 
     public DatabaseHelper(Context context)
     {
@@ -33,12 +44,19 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
                 + TABLE_SETTINGS + " (" + BaseColumns._ID + " integer primary key autoincrement, "
                 + SETTING_NAME + " text not null, "
                 + SETTING_VALUE + " text); ");
+
+        db.execSQL("create table "
+                + TABLE_MUSIC_LIBRARY + " (" + BaseColumns._ID + " integer primary key autoincrement, "
+                + MUSIC_LIBRARY_MEDIA_ID + " integer, "
+                + MUSIC_LIBRARY_PATH + " text key); ");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_SETTINGS + "';");
+        db.execSQL("DROP TABLE IF EXISTS '" + TABLE_MUSIC_LIBRARY + "';");
+
         onCreate(db);
     }
 

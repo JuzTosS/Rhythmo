@@ -42,7 +42,7 @@ model {
     android.ndk { // your application's native layer parameters
         moduleName = "AdvancedMediaPlayer"
         toolchain "clang"
-        platformVersion = 23 // this will not limit it to run on older devices, it's just the NDK platform to build with
+        platformVersion = 15 // this will not limit it to run on older devices, it's just the NDK platform to build with
         stl = "c++_static"
         CFlags.addAll(["-O3", "-fsigned-char", "-lstdc++"]) // full optimization, char data type is signed
         cppFlags.addAll(["-fno-exceptions", "-fsigned-char", "-I${superpowered_sdk_path}".toString()])
@@ -62,13 +62,12 @@ model {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
     compile 'com.android.support:support-v4:23.3.0'
     compile 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
-
     androidTestCompile 'com.android.support:support-annotations:23.3.0'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
