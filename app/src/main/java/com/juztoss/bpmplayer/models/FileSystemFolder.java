@@ -44,14 +44,15 @@ public class FileSystemFolder extends BaseExplorerElement
     public List<BaseExplorerElement> getChildren()
     {
         File[] allFiles = mSource.listFiles();
-        if (allFiles == null)
-            return new ArrayList<>();
 
         List<BaseExplorerElement> dirs = new ArrayList<>();
         List<BaseExplorerElement> files = new ArrayList<>();
 
         if (mParent != null)
             dirs.add(new ParentLink(mParent));
+
+        if (allFiles == null)
+            return dirs;
 
         for (File file : allFiles)
         {
