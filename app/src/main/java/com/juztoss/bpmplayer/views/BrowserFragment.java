@@ -1,29 +1,39 @@
 package com.juztoss.bpmplayer.views;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 
 import com.juztoss.bpmplayer.R;
-import com.juztoss.bpmplayer.models.IExplorerElement;
+import com.juztoss.bpmplayer.models.BaseExplorerElement;
+import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.presenters.BrowserPresenter;
+
+import java.util.List;
 
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class BrowserFragment extends android.app.ListFragment implements DrawerLayout.DrawerListener
+public class BrowserFragment extends android.app.ListFragment implements DrawerLayout.DrawerListener, BrowserPresenter.OnDataChangedListener
 {
     private BrowserAdapter mBrowserAdapter;
     private BPMPlayerApp mApp;
+    private Switch mTypeSwitcher;
+
+    private CompoundButton.OnCheckedChangeListener mSwitcherListener = new CompoundButton.OnCheckedChangeListener()
+    {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+        {
+            mApp.getBrowserPresenter().switchMode();
+        }
+    };
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
@@ -35,40 +45,36 @@ public class BrowserFragment extends android.app.ListFragment implements DrawerL
         setListAdapter(mBrowserAdapter);
         getLoaderManager().initLoader(0, null, mApp.getBrowserPresenter());
 
+        mTypeSwitcher = (Switch) getView().findViewById(R.id.browser_type_switcher);
+        mTypeSwitcher.setOnCheckedChangeListener(mSwitcherListener);
+
         DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-        LocalBroadcastManager.getInstance(mApp).registerReceiver(mUpdateUIReceiver, new IntentFilter(BrowserPresenter.UPDATE_FILE_TREE));
+        mApp.getBrowserPresenter().setOnDataChangedListener(this);
+
         drawer.addDrawerListener(this);
     }
 
-    private BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
+    @Override
+    public void onDataChanged()
     {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            updateList();
-        }
-    };
+        mBrowserAdapter.clear();
+        mBrowserAdapter.addAll(mApp.getBrowserPresenter().getFileList());
+        mBrowserAdapter.notifyDataSetChanged();
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         return inflater.inflate(R.layout.listfragment_main, container, false);
     }
 
     @Override
-    public void onListItemClick(ListView listView, android.view.View view, int position, long id) {
+    public void onListItemClick(ListView listView, android.view.View view, int position, long id)
+    {
         super.onListItemClick(listView, view, position, id);
-        IExplorerElement element = mBrowserAdapter.getItem(position);
-        if(!element.source().isDirectory())
-            return;
-
+        BaseExplorerElement element = mBrowserAdapter.getItem(position);
         mApp.getBrowserPresenter().listItemClicked(element);
         getLoaderManager().restartLoader(0, null, mApp.getBrowserPresenter());
-    }
-
-    private void updateList() {
-        mBrowserAdapter.clear();
-        mBrowserAdapter.addAll(mApp.getBrowserPresenter().getFileList());
-        mBrowserAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -86,7 +92,13 @@ public class BrowserFragment extends android.app.ListFragment implements DrawerL
     @Override
     public void onDrawerClosed(View drawerView)
     {
+        if(mApp.isPlaybackServiceRunning())
+        {
+            List<Composition> compositions = mApp.getBrowserPresenter().getCurrentElementCompositions();
 
+            if(compositions != null)
+                mApp.getPlaybackService().resetPlaylist(compositions);
+        }
     }
 
     @Override

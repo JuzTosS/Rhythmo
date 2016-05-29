@@ -14,8 +14,7 @@ import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by JuzTosS on 5/27/2016.
@@ -149,21 +148,24 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     }
 
     /**
-     * Iterates through mediaStoreCursor and transfers its data
+     * Iterates through mediaStoreCursor and transfers its mId
      * over to Jams' private database.
      */
     private void saveMediaStoreDataToDB(Cursor mediaStoreCursor)
     {
         try
         {
-            Set<String> savedFolders = new HashSet<>();
-
             //Initialize the database transaction manually (improves performance).
             DatabaseHelper.db().beginTransaction();
 
             //Clear out the table.
             DatabaseHelper.db()
                     .delete(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                            null,
+                            null);
+
+            DatabaseHelper.db()
+                    .delete(DatabaseHelper.TABLE_FOLDERS,
                             null,
                             null);
 
@@ -178,6 +180,32 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 subProgress = 250000 / 1;
             }
 
+            class Node
+            {
+                public Node(long id)
+                {
+                    mId = id;
+                }
+
+                public void add(Node node, String name)
+                {
+                    mChildren.add(node);
+                    mChildrenNames.add(name);
+                    node.mParent = this;
+                }
+
+                public Long mId;
+                Node mParent;
+                public List<Node> mChildren = new ArrayList<>();
+                public List<String> mChildrenNames = new ArrayList<>();
+
+                public Node get(String folder)
+                {
+                    return mChildren.get(mChildrenNames.indexOf(folder));
+                }
+            }
+
+            Node folderIds = new Node(-1);
 
             //Prefetch each column's index.
             final int filePathColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
@@ -189,11 +217,20 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 mOverallProgress += subProgress;
                 publishProgress();
 
-                String songFilePath = mediaStoreCursor.getString(filePathColIndex);
+                String songFileFullPath = mediaStoreCursor.getString(filePathColIndex);
                 String songId = mediaStoreCursor.getString(idColIndex);
 
+                String[] folders = songFileFullPath.split("/");
+                StringBuilder b = new StringBuilder(songFileFullPath);
+                String songFileName = folders[folders.length - 1];
+
+                String songNameWithSlash = "/" + songFileName;
+                b.replace(songFileFullPath.lastIndexOf(songNameWithSlash), songFileFullPath.lastIndexOf(songNameWithSlash) + songNameWithSlash.length(), "");
+                String songFileFolder = b.toString();
+
                 ContentValues values = new ContentValues();
-                values.put(DatabaseHelper.MUSIC_LIBRARY_PATH, songFilePath);
+                values.put(DatabaseHelper.MUSIC_LIBRARY_PATH, songFileFolder);
+                values.put(DatabaseHelper.MUSIC_LIBRARY_NAME, songFileName);
                 values.put(DatabaseHelper.MUSIC_LIBRARY_MEDIA_ID, songId);
 
                 //Add all the entries to the database to build the songs library.
@@ -201,25 +238,29 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                         null,
                         values);
 
-
-                String[] folders = songFilePath.split("/");
-
-                for (int j = 0; j < (folders.length - 1); j++)
+                Node parentNode = folderIds;
+                for (int j = 1; j < (folders.length - 1); j++)
                 {
                     String folder = folders[j];
-                    if (folder.isEmpty() || savedFolders.contains(folder)) continue;
+                    if(parentNode.mChildrenNames.contains(folder))
+                    {
+                        parentNode = parentNode.get(folder);
+                        continue;
+                    }
 
-                    String parentFolder = (j <= 0) ? "" : folders[j - 1];
                     ContentValues folderValues = new ContentValues();
                     folderValues.put(DatabaseHelper.FOLDERS_NAME, folder);
-                    folderValues.put(DatabaseHelper.FOLDERS_PARENT, parentFolder);
-                    if (j == (folders.length - 2))//This is last segment
+
+                    folderValues.put(DatabaseHelper.FOLDERS_PARENT_ID, parentNode.mId);
+                    if (j == (folders.length - 2))//This is the last segment
                         folderValues.put(DatabaseHelper.FOLDERS_HAS_SONGS, true);
 
-                    DatabaseHelper.db().insert(DatabaseHelper.TABLE_FOLDERS, null, folderValues);
-
-                    savedFolders.add(folder);
+                    long id = DatabaseHelper.db().insert(DatabaseHelper.TABLE_FOLDERS, null, folderValues);
+                    Node newNode = new Node(id);
+                    parentNode.add(newNode, folder);
+                    parentNode = newNode;
                 }
+
 
             }
 

@@ -9,16 +9,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juztoss.bpmplayer.R;
-import com.juztoss.bpmplayer.models.IExplorerElement;
+import com.juztoss.bpmplayer.models.BaseExplorerElement;
 
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class BrowserAdapter extends ArrayAdapter<IExplorerElement> {
+public class BrowserAdapter extends ArrayAdapter<BaseExplorerElement>
+{
     private Context mContext;
     private int mResource;
 
-    public BrowserAdapter(Context c, int res) {
+    public BrowserAdapter(Context c, int res)
+    {
         super(c, res);
         mContext = c;
         mResource = res;
@@ -33,10 +35,12 @@ public class BrowserAdapter extends ArrayAdapter<IExplorerElement> {
      * @param parent      - The parent ViewGroup that holds the rows.  In this case, the ListView.
      ***/
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
         View v = convertView;
 
-        if (v == null) {
+        if (v == null)
+        {
             LayoutInflater inflater = (LayoutInflater.from(mContext));
 
             v = inflater.inflate(mResource, null);
@@ -47,17 +51,10 @@ public class BrowserAdapter extends ArrayAdapter<IExplorerElement> {
 
         TextView nameView = (TextView) v.findViewById(R.id.name_text_view);
 
-        IExplorerElement file = getItem(position);
+        BaseExplorerElement element = getItem(position);
 
-        /* If the file is a dir, set the image view's image to a folder, else, a file. */
-        if (file.source().isDirectory()) {
-            iv.setImageResource(R.drawable.ic_folder_black_24dp);
-        } else {
-            iv.setImageResource(0);
-        }
-
-        //Finally, set the name of the file or directory.
-        nameView.setText(file.name());
+        //Finally, set the name of the element or directory.
+        nameView.setText(element.name());
 
         //Send the view back so the ListView can show it as a row, the way we modified it.
         return v;

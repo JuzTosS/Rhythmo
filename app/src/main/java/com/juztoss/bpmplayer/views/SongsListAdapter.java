@@ -1,16 +1,15 @@
 package com.juztoss.bpmplayer.views;
 
 import android.content.Context;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.services.PlaybackService;
 import com.juztoss.bpmplayer.R;
-import com.juztoss.bpmplayer.models.Song;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 /**
@@ -73,13 +72,13 @@ public class SongsListAdapter extends BaseAdapter
         }
 
 
-        Song file = (Song) getItem(position);
+        Composition song = (Composition) getItem(position);
 
         TextView firstLine = (TextView) v.findViewById(R.id.first_line);
-        firstLine.setText(file.name());
+        firstLine.setText(song.name());
 
-        TextView secondLine = (TextView) v.findViewById(R.id.second_line);
-        secondLine.setText(DateUtils.formatElapsedTime(file.length() / 1000));
+//        TextView secondLine = (TextView) v.findViewById(R.id.second_line);
+//        secondLine.setText(DateUtils.formatElapsedTime(song.length() / 1000));
 
         View playingState = v.findViewById(R.id.playing_state);
         playingState.setVisibility(View.INVISIBLE);

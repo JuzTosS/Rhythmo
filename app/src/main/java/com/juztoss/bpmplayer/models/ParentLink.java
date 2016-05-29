@@ -1,55 +1,40 @@
 package com.juztoss.bpmplayer.models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import java.io.File;
+import java.util.List;
 
 /**
  * Created by JuzTosS on 4/25/2016.
  */
-public class ParentLink implements IExplorerElement, Parcelable{
-    private File mSource;
-    public ParentLink(File source)
+public class ParentLink extends BaseExplorerElement
+{
+    private BaseExplorerElement mSource;
+
+    public ParentLink(BaseExplorerElement element)
     {
-        mSource = source;
+        mSource = element;
     }
 
-    public File source()
-    {
-        return mSource;
-    }
-
+    @Override
     public String name()
     {
         return "..";
     }
 
     @Override
-    public int compareTo(IExplorerElement another) {
-        return mSource.compareTo((another).source());
+    public ExplorerPriority priority()
+    {
+        return ExplorerPriority.PARENT_LINK;
     }
 
     @Override
-    public int describeContents() {
-        return 0;
+    public List<BaseExplorerElement> getChildren()
+    {
+        return mSource.getChildren();
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        if(source() != null)
-            dest.writeString(source().getAbsolutePath());
+    public List<Composition> getCompositions()
+    {
+        return mSource.getCompositions();
     }
-
-    public static final Parcelable.Creator<ParentLink> CREATOR = new Creator<ParentLink>() {
-        @Override
-        public ParentLink createFromParcel(Parcel source) {
-            return null;
-        }
-
-        @Override
-        public ParentLink[] newArray(int size) {
-            return new ParentLink[size];
-        }
-    };
 }

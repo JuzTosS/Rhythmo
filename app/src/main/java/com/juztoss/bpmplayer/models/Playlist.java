@@ -8,13 +8,13 @@ import java.util.List;
  */
 public class Playlist
 {
-    private List<Song> mSongs = new LinkedList<>();
-    public void add(List<Song> songs)
+    private List<Composition> mSongs = new LinkedList<>();
+    public void add(List<Composition> songs)
     {
         mSongs.addAll(songs);
     }
 
-    public List<Song> songs()
+    public List<Composition> songs()
     {
         return mSongs;
     }

@@ -2,75 +2,98 @@ package com.juztoss.bpmplayer.presenters;
 
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 
-import com.juztoss.bpmplayer.models.FileTree;
-import com.juztoss.bpmplayer.models.IExplorerElement;
+import com.juztoss.bpmplayer.models.BaseExplorerElement;
+import com.juztoss.bpmplayer.models.Composition;
+import com.juztoss.bpmplayer.models.CustomExplorerElement;
+import com.juztoss.bpmplayer.models.ExplorerPriority;
+import com.juztoss.bpmplayer.models.FileSystemFolder;
+import com.juztoss.bpmplayer.models.MediaFolder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class BrowserPresenter extends BasePresenter implements LoaderManager.LoaderCallbacks<List<IExplorerElement>>
+public class BrowserPresenter extends BasePresenter implements LoaderManager.LoaderCallbacks<List<BaseExplorerElement>>
 {
-    public static final String UPDATE_FILE_TREE = "com.juztoss.bpmplayer.action.UPDATE_FILE_TREE";
-    private FileTree fileTree;
-    private List<IExplorerElement> mData;
-    private AsyncTaskLoader<List<IExplorerElement>> mFileLoader;
+    BaseExplorerElement mCurrent;
+    private OnDataChangedListener mListener;
+
+    private List<BaseExplorerElement> mData;
 
     public BrowserPresenter(BPMPlayerApp app)
     {
         super(app);
-        fileTree = new FileTree();
+        CustomExplorerElement root = new CustomExplorerElement("", new ArrayList<BaseExplorerElement>(), ExplorerPriority.HIGHEST);
+        root.add(new FileSystemFolder(new File("/"), "File system", root));
+        root.add(new MediaFolder(-1, "Media", false, root));
+
+        mCurrent = root;
+
         mData = new ArrayList<>();
     }
 
-    public void listItemClicked(IExplorerElement element)
+    public void listItemClicked(BaseExplorerElement element)
     {
-        if (element.source().isDirectory())
-        {
-            getApp().setSongsFolder(element);
-            fileTree.gotoNext(element.source());
-        }
+        mCurrent = element;
     }
 
     @Override
-    public Loader<List<IExplorerElement>> onCreateLoader(int id, Bundle args)
+    public Loader<List<BaseExplorerElement>> onCreateLoader(int id, Bundle args)
     {
-        mFileLoader = new AsyncTaskLoader<List<IExplorerElement>>(getApp())
+        AsyncTaskLoader<List<BaseExplorerElement>> fileLoader = new AsyncTaskLoader<List<BaseExplorerElement>>(getApp())
         {
             @Override
-            public List<IExplorerElement> loadInBackground()
+            public List<BaseExplorerElement> loadInBackground()
             {
-                return fileTree.getAllFiles(fileTree.getCurrentDir());
+                return mCurrent.getChildren();
             }
         };
-        mFileLoader.forceLoad();
-        return mFileLoader;
+        fileLoader.forceLoad();
+        return fileLoader;
     }
 
     @Override
-    public void onLoadFinished(Loader<List<IExplorerElement>> loader, List<IExplorerElement> data)
+    public void onLoadFinished(Loader<List<BaseExplorerElement>> loader, List<BaseExplorerElement> data)
     {
-        this.mData = data;
-        Intent intent = new Intent(UPDATE_FILE_TREE);
-        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getApp());
-        broadcastManager.sendBroadcast(intent);
+        mData = data;
+        if (mListener != null)
+            mListener.onDataChanged();
     }
 
     @Override
-    public void onLoaderReset(Loader<List<IExplorerElement>> loader)
+    public void onLoaderReset(Loader<List<BaseExplorerElement>> loader)
     {
 
     }
 
-    public List<IExplorerElement> getFileList()
+    public List<BaseExplorerElement> getFileList()
     {
         return mData;
+    }
+
+    public void switchMode()
+    {
+
+    }
+
+    public void setOnDataChangedListener(OnDataChangedListener listener)
+    {
+        mListener = listener;
+    }
+
+    public List<Composition> getCurrentElementCompositions()
+    {
+        return mCurrent.getCompositions();
+    }
+
+    public interface OnDataChangedListener
+    {
+        void onDataChanged();
     }
 }

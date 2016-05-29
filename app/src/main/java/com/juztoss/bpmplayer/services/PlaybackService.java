@@ -13,9 +13,8 @@ import android.util.Log;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.audio.AdvancedMediaPlayer;
-import com.juztoss.bpmplayer.audio.BpmDetector;
 import com.juztoss.bpmplayer.models.Playlist;
-import com.juztoss.bpmplayer.models.Song;
+import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.LinkedList;
@@ -140,25 +139,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         final int sampleRate = Integer.parseInt(sampleRateString);
         final int bufferSize = Integer.parseInt(bufferSizeString);
 
-        final PlaybackService self = this;
-        Runnable process = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    mPlayer = new AdvancedMediaPlayer(sampleRate, bufferSize);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                mPlayer.setOnEndListener(self);
-                mPlayer.setOnErrorListener(self);
-            }
-        };
-        new Thread(process).start();
+        mPlayer = new AdvancedMediaPlayer(sampleRate, bufferSize);
+        mPlayer.setOnEndListener(this);
+        mPlayer.setOnErrorListener(this);
 
         return START_STICKY;
     }
@@ -172,7 +155,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     public void setSource(int index)
     {
-        final Song song = mPlaylist.songs().get(index);
+        final Composition song = mPlaylist.songs().get(index);
         putAction(new ActionPrepare(song));
     }
 
@@ -211,7 +194,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         putAction(new ActionStop());
     }
 
-    public void resetPlaylist(List<Song> data)
+    public void resetPlaylist(List<Composition> data)
     {
         mPlaylist.clear();
         mPlaylist.add(data);
@@ -280,9 +263,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             }
         };
 
-        private Song mSong;
+        private Composition mSong;
 
-        public ActionPrepare(Song song)
+        public ActionPrepare(Composition song)
         {
             mSong = song;
         }
@@ -292,7 +275,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         {
             setIsPlaying(true);
             mPlayer.setOnPreparedListener(mOnPrepared);
-            mPlayer.setSource(mSong.source().getAbsolutePath());
+            mPlayer.setSource(mSong.getAbsolutePath());
         }
     }
 

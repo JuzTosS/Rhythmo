@@ -35,14 +35,13 @@ model {
             targetSdkVersion.apiLevel = 23
             versionCode 1
             versionName "1.0"
-//            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         }
     }
 
     android.ndk { // your application's native layer parameters
         moduleName = "AdvancedMediaPlayer"
         toolchain "clang"
-        platformVersion = 15 // this will not limit it to run on older devices, it's just the NDK platform to build with
+        platformVersion = 16
         stl = "c++_static"
         CFlags.addAll(["-O3", "-fsigned-char", "-lstdc++"]) // full optimization, char data type is signed
         cppFlags.addAll(["-fno-exceptions", "-fsigned-char", "-I${superpowered_sdk_path}".toString()])

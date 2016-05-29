@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
@@ -18,13 +17,9 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.juztoss.bpmplayer.services.PlaybackService;
 import com.juztoss.bpmplayer.R;
-import com.juztoss.bpmplayer.models.Song;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
-import com.juztoss.bpmplayer.presenters.PlayerPresenter;
-
-import java.util.List;
+import com.juztoss.bpmplayer.services.PlaybackService;
 
 /**
  * Created by JuzTosS on 4/20/2016.
@@ -63,8 +58,6 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
         nextButton.setOnClickListener(mNextButtonListener);
         View previousButton = getView().findViewById(R.id.previous_button);
         previousButton.setOnClickListener(mPreviousButtonListener);
-
-        getLoaderManager().initLoader(0, null, mApp.getPlayerPresenter());
 
         LocalBroadcastManager.getInstance(mApp).registerReceiver(mUpdateUIReceiver, new IntentFilter(PlaybackService.UPDATE_UI_ACTION));
     }
@@ -123,7 +116,20 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
     public void onStart()
     {
         super.onStart();
-        updateList();
+        updateAll();
+    }
+
+    protected void updateAll()
+    {
+        if (!mApp.isPlaybackServiceRunning()) return;
+
+        PlaybackService service = mApp.getPlaybackService();
+
+        mPlayButton.setSelected(!service.isPlaying());
+        mSongsListAdapter.notifyDataSetChanged();
+
+        mSeekbar.setMax(service.getDuration());
+        mHandler.post(mSeekbarUpdateRunnable);
     }
 
     BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
@@ -131,15 +137,7 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if (!mApp.isPlaybackServiceRunning()) return;
-
-            PlaybackService service = mApp.getPlaybackService();
-
-            mPlayButton.setSelected(!service.isPlaying());
-            mSongsListAdapter.notifyDataSetChanged();
-
-            mSeekbar.setMax(service.getDuration());
-            mHandler.post(mSeekbarUpdateRunnable);
+            updateAll();
         }
     };
 
@@ -205,15 +203,7 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
     @Override
     public void onDrawerClosed(View drawerView)
     {
-        updateList();
-    }
-
-    private void updateList()
-    {
-        Bundle path = new Bundle();
-        path.putParcelable(PlayerPresenter.BUNDLE_PATH, mApp.getSongsFolder());
-        Loader<List<Song>> loader = getLoaderManager().restartLoader(0, path, mApp.getPlayerPresenter());
-        loader.forceLoad();
+        updateAll();
     }
 
 
