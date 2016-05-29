@@ -12,7 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 {
     private static SQLiteDatabase mDb;
     private static final String DATABASE_NAME = "main.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
 
     //TABLE SETTINGS
@@ -30,6 +30,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
     public static final String MUSIC_LIBRARY_MEDIA_ID = "media_id";
     public static final String MUSIC_LIBRARY_PATH = "path";
 
+    //TABLE FOLDERS
+    public static final String TABLE_FOLDERS = "folders";
+
+    public static final String FOLDERS_NAME = "name";
+    public static final String FOLDERS_PARENT = "parent";
+    public static final String FOLDERS_HAS_SONGS = "has_songs";
 
     public DatabaseHelper(Context context)
     {
@@ -48,7 +54,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
         db.execSQL("create table "
                 + TABLE_MUSIC_LIBRARY + " (" + BaseColumns._ID + " integer primary key autoincrement, "
                 + MUSIC_LIBRARY_MEDIA_ID + " integer, "
-                + MUSIC_LIBRARY_PATH + " text key); ");
+                + MUSIC_LIBRARY_PATH + " text key unique); ");
+
+        db.execSQL("create table "
+                + TABLE_FOLDERS + " (" + FOLDERS_NAME + " text key unique, "
+                + FOLDERS_PARENT + " text primary key unique, "
+                + FOLDERS_HAS_SONGS + " boolean); ");
     }
 
     @Override
@@ -56,6 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
     {
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_SETTINGS + "';");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_MUSIC_LIBRARY + "';");
+        db.execSQL("DROP TABLE IF EXISTS '" + TABLE_FOLDERS + "';");
 
         onCreate(db);
     }

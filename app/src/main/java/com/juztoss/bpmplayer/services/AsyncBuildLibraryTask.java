@@ -11,10 +11,12 @@ import android.os.PowerManager;
 import android.provider.MediaStore;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
-import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by JuzTosS on 5/27/2016.
  */
@@ -55,8 +57,8 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
          * Called whenever mOverall Progress has been updated.
          */
         void onProgressUpdate(AsyncBuildLibraryTask task,
-                                     int overallProgress, int maxProgress,
-                                     boolean mediaStoreTransferDone);
+                              int overallProgress, int maxProgress,
+                              boolean mediaStoreTransferDone);
 
         /**
          * Called when this AsyncTask finishes executing
@@ -124,7 +126,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 //        //Grab the cursor of MediaStore entries.
 //        if (musicFoldersCursor == null || musicFoldersCursor.getCount() < 1)
 //        {
-            //No folders were selected by the user. Grab all songs in MediaStore.
+        //No folders were selected by the user. Grab all songs in MediaStore.
 //            mediaStoreCursor = MediaStoreAccessHelper.getAllSongs(mContext, projection, sortOrder);
         ContentResolver contentResolver = mContext.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -154,6 +156,8 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     {
         try
         {
+            Set<String> savedFolders = new HashSet<>();
+
             //Initialize the database transaction manually (improves performance).
             DatabaseHelper.db().beginTransaction();
 
@@ -198,12 +202,30 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                         values);
 
 
+                String[] folders = songFilePath.split("/");
+
+                for (int j = 0; j < (folders.length - 1); j++)
+                {
+                    String folder = folders[j];
+                    if (folder.isEmpty() || savedFolders.contains(folder)) continue;
+
+                    String parentFolder = (j <= 0) ? "" : folders[j - 1];
+                    ContentValues folderValues = new ContentValues();
+                    folderValues.put(DatabaseHelper.FOLDERS_NAME, folder);
+                    folderValues.put(DatabaseHelper.FOLDERS_PARENT, parentFolder);
+                    if (j == (folders.length - 2))//This is last segment
+                        folderValues.put(DatabaseHelper.FOLDERS_HAS_SONGS, true);
+
+                    DatabaseHelper.db().insert(DatabaseHelper.TABLE_FOLDERS, null, folderValues);
+
+                    savedFolders.add(folder);
+                }
+
             }
 
         }
         catch (SQLException e)
         {
-            // TODO Auto-generated method stub.
             e.printStackTrace();
         }
         finally
