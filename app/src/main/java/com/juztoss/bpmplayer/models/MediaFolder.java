@@ -15,22 +15,75 @@ import java.util.List;
  */
 public class MediaFolder extends BaseExplorerElement
 {
-    private String mName;
-    private long mId;
+    private String mFirstName;
+    private String mFullName;
+    private long mFirstId;
+    private long mLastId;
     private BaseExplorerElement mParent;
-    private boolean mHasSongs;
+    private boolean mFirstHasSongs;
+    private boolean mLastHasSongs;
 
     public MediaFolder(long mediaFolderId, String folderName, boolean hasSongs, @Nullable BaseExplorerElement parent)
     {
-        mId = mediaFolderId;
-        mName = folderName;
+        this(mediaFolderId, folderName, hasSongs, parent, true);
+    }
+
+    public MediaFolder(long mediaFolderId, String folderName, boolean hasSongs, @Nullable BaseExplorerElement parent, boolean isTunnalable)
+    {
+        mFirstId = mLastId = mediaFolderId;
+        mFirstName = mFullName = folderName;
         mParent = parent;
-        mHasSongs = hasSongs;
+        mFirstHasSongs = mLastHasSongs = hasSongs;
+
+        if(isTunnalable)
+            checkTunneling();
+    }
+
+    private void checkTunneling()
+    {
+        long currentId = mFirstId;
+        String currentName = mFirstName;
+        boolean currentHasSongs = mFirstHasSongs;
+
+        mFullName = "";
+        mLastId = mFirstId;
+        while (true)
+        {
+            if (mFullName.length() > 0) mFullName += "/";
+
+            mFullName += currentName;
+            mLastId = currentId;
+            mLastHasSongs = currentHasSongs;
+
+            if (!currentHasSongs)
+            {
+                Cursor foldersCursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_FOLDERS,
+                        new String[]{DatabaseHelper._ID, DatabaseHelper.FOLDERS_NAME, DatabaseHelper.FOLDERS_PARENT_ID, DatabaseHelper.FOLDERS_HAS_SONGS},
+                        DatabaseHelper.FOLDERS_PARENT_ID + "= ?",
+                        new String[]{Long.toString(currentId)},
+                        null, null, null);
+
+                if(foldersCursor.getCount() == 1)
+                {
+                    foldersCursor.moveToFirst();
+                    int idIndex = foldersCursor.getColumnIndex(DatabaseHelper._ID);
+                    int nameIndex = foldersCursor.getColumnIndex(DatabaseHelper.FOLDERS_NAME);
+                    int hasSongsIndex = foldersCursor.getColumnIndex(DatabaseHelper.FOLDERS_HAS_SONGS);
+                    currentId = foldersCursor.getInt(idIndex);
+                    currentName = foldersCursor.getString(nameIndex);
+                    currentHasSongs = foldersCursor.getInt(hasSongsIndex) > 0;
+                }
+                else
+                    break;
+            }
+            else
+                break;
+        }
     }
 
     public String name()
     {
-        return mName;
+        return mFullName;
     }
 
     @Override
@@ -50,7 +103,7 @@ public class MediaFolder extends BaseExplorerElement
         Cursor foldersCursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_FOLDERS,
                 new String[]{DatabaseHelper._ID, DatabaseHelper.FOLDERS_NAME, DatabaseHelper.FOLDERS_PARENT_ID, DatabaseHelper.FOLDERS_HAS_SONGS},
                 DatabaseHelper.FOLDERS_PARENT_ID + "= ?",
-                new String[]{Long.toString(mId)},
+                new String[]{Long.toString(mLastId)},
                 null, null, null);
 
         int idIndex = foldersCursor.getColumnIndex(DatabaseHelper._ID);
@@ -74,7 +127,7 @@ public class MediaFolder extends BaseExplorerElement
 
         Collections.sort(result);
 
-        if (mHasSongs)
+        if (mLastHasSongs)
         {
             List<BaseExplorerElement> songs = new ArrayList<>();
             Cursor songsCursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
@@ -131,7 +184,7 @@ public class MediaFolder extends BaseExplorerElement
     @Override
     public List<Composition> getCompositions()
     {
-        if(mHasSongs)
+        if (mLastHasSongs)
         {
             List<Composition> songList = new ArrayList<>();
             Cursor songsCursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
