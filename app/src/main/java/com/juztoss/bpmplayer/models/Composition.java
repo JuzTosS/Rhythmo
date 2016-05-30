@@ -10,13 +10,15 @@ public class Composition
     private String mFolderName;
     private String mSongName;
     private String mAbsolutePath;
+    private float mBPM;
 
-    public Composition(String songId, String folderName, String songName)
+    public Composition(String songId, String folderName, String songName, float bpm)
     {
         mId = songId;
         mFolderName = folderName;
         mSongName = songName;
         mAbsolutePath = folderName + "/" + songName;
+        mBPM = bpm;
     }
 
     public String getAbsolutePath()
@@ -27,5 +29,10 @@ public class Composition
     public String name()
     {
         return mSongName;
+    }
+
+    public float bpm()
+    {
+        return mBPM;
     }
 }

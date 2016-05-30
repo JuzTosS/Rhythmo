@@ -188,7 +188,7 @@ public class MediaFolder extends BaseExplorerElement
         {
             List<Composition> songList = new ArrayList<>();
             Cursor songsCursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                    new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME},
+                    new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10},
                     DatabaseHelper.MUSIC_LIBRARY_PATH + "= ?",
                     new String[]{resolvePath()},
                     null, null, null);
@@ -196,6 +196,7 @@ public class MediaFolder extends BaseExplorerElement
             int idIndex = songsCursor.getColumnIndex(DatabaseHelper._ID);
             int pathIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH);
             int songNameIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME);
+            int bpmx10Index = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10);
             try
             {
                 while (songsCursor.moveToNext())
@@ -203,8 +204,9 @@ public class MediaFolder extends BaseExplorerElement
                     String songId = songsCursor.getString(idIndex);
                     String folderName = songsCursor.getString(pathIndex);
                     String songName = songsCursor.getString(songNameIndex);
+                    float bpm = songsCursor.getInt(bpmx10Index) / 10;
 
-                    songList.add(new Composition(songId, folderName, songName));
+                    songList.add(new Composition(songId, folderName, songName, bpm));
                 }
             }
             finally

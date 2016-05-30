@@ -12,7 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 {
     private static SQLiteDatabase mDb;
     private static final String DATABASE_NAME = "main.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
 
     //TABLE SETTINGS
@@ -30,6 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
     public static final String MUSIC_LIBRARY_MEDIA_ID = "media_id";
     public static final String MUSIC_LIBRARY_PATH = "path";
     public static final String MUSIC_LIBRARY_NAME = "name";
+    public static final String MUSIC_LIBRARY_BPMX10 = "bpmX10";
 
     //TABLE FOLDERS
     public static final String TABLE_FOLDERS = "folders";
@@ -54,8 +55,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 
         db.execSQL("create table "
                 + TABLE_MUSIC_LIBRARY + " (" + BaseColumns._ID + " integer primary key autoincrement, "
-                + MUSIC_LIBRARY_MEDIA_ID + " integer, "
+                + MUSIC_LIBRARY_MEDIA_ID + " integer key, "
                 + MUSIC_LIBRARY_PATH + " text key, "
+                + MUSIC_LIBRARY_BPMX10 + " integer key, "
                 + MUSIC_LIBRARY_NAME + " text); ");
 
         db.execSQL("create table "

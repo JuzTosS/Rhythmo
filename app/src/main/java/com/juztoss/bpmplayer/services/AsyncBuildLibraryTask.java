@@ -9,12 +9,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
+import com.juztoss.bpmplayer.audio.BpmDetector;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.utils.SystemHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by JuzTosS on 5/27/2016.
@@ -22,6 +27,8 @@ import java.util.List;
 
 public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 {
+    private final String UPDATE_COMPLETE = "UpdateComplete";
+    private final int MAX_PROGRESS_VALUE = 1000000;
     private Context mContext;
     private BPMPlayerApp mApp;
     public ArrayList<OnBuildLibraryProgressUpdate> mBuildLibraryProgressUpdate;
@@ -92,17 +99,67 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     protected Void doInBackground(String... params)
     {
         Cursor mediaStoreCursor = getSongsFromMediaStore();
-
-        if (mediaStoreCursor != null)
+        try
         {
-            saveMediaStoreDataToDB(mediaStoreCursor);
+            if (mediaStoreCursor != null)
+            {
+                saveMediaStoreDataToDB(mediaStoreCursor);
+                detectSongsBpm(mediaStoreCursor);
+            }
+        }
+        finally
+        {
             mediaStoreCursor.close();
         }
-
-        //Notify all listeners that the MediaStore transfer is complete.
-        publishProgress(new String[]{"MEDIASTORE_TRANSFER_COMPLETE"});
-
+        publishProgress(UPDATE_COMPLETE);
         return null;
+    }
+
+    private void detectSongsBpm(Cursor mediaStoreCursor)
+    {
+        final int subprogress = (MAX_PROGRESS_VALUE - mOverallProgress) / mediaStoreCursor.getCount();
+        int numOfCores = SystemHelper.getNumberOfCores() - 1;
+        if (numOfCores <= 0)
+            numOfCores = 1;
+        final ExecutorService es = Executors.newFixedThreadPool(numOfCores);
+        final int filePathColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+        final int idColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media._ID);
+
+        class SongBpmDetector implements Runnable
+        {
+            private final String mFullPath;
+            private final String mediaId;
+
+            public SongBpmDetector(String songMediaId, String fullPath)
+            {
+                mFullPath = fullPath;
+                mediaId = songMediaId;
+            }
+
+            @Override
+            public void run()
+            {
+                double bpm = BpmDetector.detect(mFullPath);
+                int bpmX10 = (int) (bpm * 10);
+                ContentValues values = new ContentValues();
+                values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, bpmX10);
+                DatabaseHelper.db().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper.MUSIC_LIBRARY_MEDIA_ID + "= ?", new String[]{mediaId});
+
+                Log.e("DEBUG", mFullPath + " : " + bpmX10);
+                mOverallProgress += subprogress;
+                publishProgress();
+            }
+        }
+
+        for (int i = 0; i < mediaStoreCursor.getCount(); i++)
+        {
+            mediaStoreCursor.moveToPosition(i);
+            String songFileFullPath = mediaStoreCursor.getString(filePathColIndex);
+            String songId = mediaStoreCursor.getString(idColIndex);
+            es.execute(new SongBpmDetector(songId, songFileFullPath));
+        }
+
+        while (!es.isTerminated());
     }
 
     /**
@@ -155,30 +212,17 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     {
         try
         {
-            //Initialize the database transaction manually (improves performance).
             DatabaseHelper.db().beginTransaction();
 
-            //Clear out the table.
-            DatabaseHelper.db()
-                    .delete(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                            null,
-                            null);
-
-            DatabaseHelper.db()
-                    .delete(DatabaseHelper.TABLE_FOLDERS,
-                            null,
-                            null);
+            DatabaseHelper.db().delete(DatabaseHelper.TABLE_MUSIC_LIBRARY, null, null);
+            DatabaseHelper.db().delete(DatabaseHelper.TABLE_FOLDERS, null, null);
 
             //Tracks the progress of this method.
-            int subProgress = 0;
+            int subProgress;
             if (mediaStoreCursor.getCount() != 0)
-            {
-                subProgress = 250000 / (mediaStoreCursor.getCount());
-            }
+                subProgress = mOverallProgress / 4 / (mediaStoreCursor.getCount());
             else
-            {
-                subProgress = 250000 / 1;
-            }
+                subProgress = mOverallProgress / 4;
 
             class Node
             {
@@ -242,7 +286,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 for (int j = 1; j < (folders.length - 1); j++)
                 {
                     String folder = folders[j];
-                    if(parentNode.mChildrenNames.contains(folder))
+                    if (parentNode.mChildrenNames.contains(folder))
                     {
                         parentNode = parentNode.get(folder);
                         continue;
@@ -322,12 +366,12 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     {
         super.onProgressUpdate(progressParams);
 
-        if (progressParams.length > 0 && progressParams[0].equals("MEDIASTORE_TRANSFER_COMPLETE"))
+        if (progressParams.length > 0 && progressParams[0].equals(UPDATE_COMPLETE))
         {
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
                 if (mBuildLibraryProgressUpdate.get(i) != null)
                     mBuildLibraryProgressUpdate.get(i).onProgressUpdate(this, mOverallProgress,
-                            1000000, true);
+                            MAX_PROGRESS_VALUE, true);
 
             return;
         }
@@ -335,7 +379,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
                 if (mBuildLibraryProgressUpdate.get(i) != null)
-                    mBuildLibraryProgressUpdate.get(i).onProgressUpdate(this, mOverallProgress, 1000000, false);
+                    mBuildLibraryProgressUpdate.get(i).onProgressUpdate(this, mOverallProgress, MAX_PROGRESS_VALUE, false);
 
     }
 

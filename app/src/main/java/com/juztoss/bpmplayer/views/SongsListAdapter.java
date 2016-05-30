@@ -77,8 +77,8 @@ public class SongsListAdapter extends BaseAdapter
         TextView firstLine = (TextView) v.findViewById(R.id.first_line);
         firstLine.setText(song.name());
 
-//        TextView secondLine = (TextView) v.findViewById(R.id.second_line);
-//        secondLine.setText(DateUtils.formatElapsedTime(song.length() / 1000));
+        TextView secondLine = (TextView) v.findViewById(R.id.second_line);
+        secondLine.setText(String.format("%.1f" , song.bpm()));
 
         View playingState = v.findViewById(R.id.playing_state);
         playingState.setVisibility(View.INVISIBLE);
