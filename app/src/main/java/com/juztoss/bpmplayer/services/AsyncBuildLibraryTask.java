@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by JuzTosS on 5/27/2016.
@@ -139,6 +140,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
             @Override
             public void run()
             {
+                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
                 double bpm = BpmDetector.detect(mFullPath);
                 int bpmX10 = (int) (bpm * 10);
                 ContentValues values = new ContentValues();
@@ -159,7 +161,15 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
             es.execute(new SongBpmDetector(songId, songFileFullPath));
         }
 
-        while (!es.isTerminated());
+        es.shutdown();
+        try
+        {
+            es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**

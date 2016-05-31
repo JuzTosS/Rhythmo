@@ -32,4 +32,4 @@ proguard/
 captures/
 
 # AndroidStudio workspace files
-./idea
+.idea

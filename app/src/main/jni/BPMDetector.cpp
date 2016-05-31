@@ -15,12 +15,25 @@ extern "C" JNIEXPORT jdouble Java_com_juztoss_bpmplayer_audio_BpmDetector_detect
     const char *openError = decoder->open(path, false, 0, 0);
 
     if (openError) {
-        __android_log_print(ANDROID_LOG_DEBUG, __func__, " Decoder error, path %s, error: %s", path, openError);
+        __android_log_print(ANDROID_LOG_ERROR, __func__, " Decoder error, path %s, error: %s", path, openError);
         delete decoder;
         env->ReleaseStringUTFChars(source, path);
         return -1;
     };
 
+
+    const int samplesToDetect = 500000;
+    int64_t duration = decoder->durationSamples;
+    int64_t start = duration / 2 - samplesToDetect / 2;
+    int64_t end = start + samplesToDetect;
+
+    if(start <= 0)
+    {
+        start = 0;
+        end = decoder->durationSamples;
+    }
+
+    decoder->seekTo(start, false);
     SuperpoweredOfflineAnalyzer * analyzer = new SuperpoweredOfflineAnalyzer(decoder->samplerate, 0, decoder->durationSeconds);
 
     // Create a buffer for the 16-bit integer samples coming from the decoder.
@@ -29,7 +42,7 @@ extern "C" JNIEXPORT jdouble Java_com_juztoss_bpmplayer_audio_BpmDetector_detect
     float *floatBuffer = (float *)malloc(decoder->samplesPerFrame * 2 * sizeof(float) + 1024);
 
     // Processing.
-    while (true) {
+    while (decoder->samplePosition <= end) {
         // Decode one frame. samplesDecoded will be overwritten with the actual decoded number of samples.
         unsigned int samplesDecoded = decoder->samplesPerFrame;
         if (decoder->decode(intBuffer, &samplesDecoded) == SUPERPOWEREDDECODER_ERROR) break;
