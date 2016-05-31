@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import com.juztoss.bpmplayer.R;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+
 /**
  * Created by JuzTosS on 5/27/2016.
  */
@@ -44,10 +47,8 @@ public class BuildMusicLibraryService extends Service implements AsyncBuildLibra
         mNotifyManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotification = mBuilder.build();
         mNotification.flags |= Notification.FLAG_INSISTENT | Notification.FLAG_NO_CLEAR;
+        mNotifyManager.notify(NOTIFICATION_ID, mNotification);
 
-        startForeground(NOTIFICATION_ID, mNotification);
-
-        //Go crazy with a full-on scan.
         AsyncBuildLibraryTask task = new AsyncBuildLibraryTask(mContext);
         task.setOnBuildLibraryProgressUpdate(this);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -78,9 +79,8 @@ public class BuildMusicLibraryService extends Service implements AsyncBuildLibra
         mBuilder.setTicker(header);
         mBuilder.setContentText("");
         mBuilder.setProgress(maxProgress, overallProgress, false);
-
-        mNotifyManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotification = mBuilder.build();
+
         mNotification.flags |= Notification.FLAG_INSISTENT | Notification.FLAG_NO_CLEAR;
         mNotifyManager.notify(NOTIFICATION_ID, mNotification);
     }

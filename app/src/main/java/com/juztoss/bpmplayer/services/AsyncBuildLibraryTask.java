@@ -14,7 +14,6 @@ import android.util.Log;
 import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.audio.BpmDetector;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
-import com.juztoss.bpmplayer.utils.SystemHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +98,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     @Override
     protected Void doInBackground(String... params)
     {
+        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         Cursor mediaStoreCursor = getSongsFromMediaStore();
         try
         {
@@ -119,9 +119,9 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     private void detectSongsBpm(Cursor mediaStoreCursor)
     {
         final int subprogress = (MAX_PROGRESS_VALUE - mOverallProgress) / mediaStoreCursor.getCount();
-        int numOfCores = SystemHelper.getNumberOfCores() - 1;
-        if (numOfCores <= 0)
-            numOfCores = 1;
+//        int numOfCores = SystemHelper.getNumberOfCores() - 1;
+//        if (numOfCores <= 0)///Set numOfCores bigger value while playing causes lags
+        int numOfCores = 1;
         final ExecutorService es = Executors.newFixedThreadPool(numOfCores);
         final int filePathColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
         final int idColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media._ID);

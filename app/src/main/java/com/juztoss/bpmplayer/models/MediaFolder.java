@@ -35,7 +35,7 @@ public class MediaFolder extends BaseExplorerElement
         mParent = parent;
         mFirstHasSongs = mLastHasSongs = hasSongs;
 
-        if(isTunnalable)
+        if (isTunnalable)
             checkTunneling();
     }
 
@@ -63,18 +63,30 @@ public class MediaFolder extends BaseExplorerElement
                         new String[]{Long.toString(currentId)},
                         null, null, null);
 
-                if(foldersCursor.getCount() == 1)
+                try
                 {
-                    foldersCursor.moveToFirst();
-                    int idIndex = foldersCursor.getColumnIndex(DatabaseHelper._ID);
-                    int nameIndex = foldersCursor.getColumnIndex(DatabaseHelper.FOLDERS_NAME);
-                    int hasSongsIndex = foldersCursor.getColumnIndex(DatabaseHelper.FOLDERS_HAS_SONGS);
-                    currentId = foldersCursor.getInt(idIndex);
-                    currentName = foldersCursor.getString(nameIndex);
-                    currentHasSongs = foldersCursor.getInt(hasSongsIndex) > 0;
+                    if (foldersCursor.getCount() == 1)
+                    {
+                        foldersCursor.moveToFirst();
+                        int idIndex = foldersCursor.getColumnIndex(DatabaseHelper._ID);
+                        int nameIndex = foldersCursor.getColumnIndex(DatabaseHelper.FOLDERS_NAME);
+                        int hasSongsIndex = foldersCursor.getColumnIndex(DatabaseHelper.FOLDERS_HAS_SONGS);
+                        currentId = foldersCursor.getInt(idIndex);
+                        currentName = foldersCursor.getString(nameIndex);
+                        currentHasSongs = foldersCursor.getInt(hasSongsIndex) > 0;
+                    }
+                    else
+                        break;
                 }
-                else
+                catch (Exception e)
+                {
+                    e.printStackTrace();
                     break;
+                }
+                finally
+                {
+                    foldersCursor.close();
+                }
             }
             else
                 break;
