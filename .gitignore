@@ -33,3 +33,4 @@ captures/
 
 # AndroidStudio workspace files
 .idea
+*.iml
