@@ -19,7 +19,8 @@
             android:layout_toEndOf="@+id/drag_handle"
             android:layout_toRightOf="@+id/drag_handle"
             android:text="Text"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:maxLines="1"/>
 
         <TextView
             android:id="@+id/second_line"

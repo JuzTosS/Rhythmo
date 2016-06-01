@@ -45,7 +45,7 @@ void AdvancedMediaPlayer::playerEvent(void *__unused clientData,
                                 (char *) value);
             break;
         case SuperpoweredAdvancedAudioPlayerEvent_EOF: {
-            audioSystem->stop();
+            audioSystem->onBackground();
             JNIEnv *env;
             mJavaVM->AttachCurrentThread(&env, NULL);
             jmethodID method = env->GetMethodID(mListenerClass, "onEnd", "()V");
@@ -119,7 +119,7 @@ unsigned int AdvancedMediaPlayer::getDuration() {
 
 void AdvancedMediaPlayer::play() {
     if (mIsPrepared) {
-        audioSystem->start();
+        audioSystem->onForeground();
         mPlayer->play(false);
     }
     else
@@ -129,7 +129,7 @@ void AdvancedMediaPlayer::play() {
 void AdvancedMediaPlayer::pause() {
     if (mIsPrepared) {
         mPlayer->pause();
-        audioSystem->stop();
+        audioSystem->onBackground();
     }
     else
         __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
