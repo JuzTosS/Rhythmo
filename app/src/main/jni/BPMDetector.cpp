@@ -22,7 +22,7 @@ extern "C" JNIEXPORT jdouble Java_com_juztoss_bpmplayer_audio_BpmDetector_detect
     };
 
 
-    const int samplesToDetect = 500000;
+    const int samplesToDetect = 524288; //The pow of 2 in case the fourier transform inside of the detector need it
     int64_t duration = decoder->durationSamples;
     int64_t start = duration / 2 - samplesToDetect / 2;
     int64_t end = start + samplesToDetect;
