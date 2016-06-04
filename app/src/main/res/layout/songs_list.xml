@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".views.MainActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Select BPM"
+        android:id="@+id/textView3"
+        android:layout_gravity="center_horizontal"/>
+
+    <com.juztoss.bpmplayer.views.RangeSeekBar
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/bpm_ranger"
+        android:layout_marginTop="-30dp"/>
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"

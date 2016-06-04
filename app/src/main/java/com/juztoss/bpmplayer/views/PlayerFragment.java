@@ -31,6 +31,7 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
     private TextView mTimePassed;
     private TextView mTimeLeft;
     private SeekBar mSeekbar;
+    private RangeSeekBar<Integer> mRangeSeekbar;
     private BPMPlayerApp mApp;
 
     @Override
@@ -51,6 +52,10 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
         mSeekbar = (SeekBar) getView().findViewById(R.id.seekbar);
         mSeekbar.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
 
+        mRangeSeekbar = (RangeSeekBar<Integer>) getView().findViewById(R.id.bpm_ranger);
+        mRangeSeekbar.setOnRangeSeekBarChangeListener(mOnBpmRangeChanged);
+        mRangeSeekbar.setRangeValues(50, 150);
+
         mPlayButton = getView().findViewById(R.id.play_button);
         mPlayButton.setOnClickListener(mPlayButtonListenter);
 
@@ -61,6 +66,18 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
 
         LocalBroadcastManager.getInstance(mApp).registerReceiver(mUpdateUIReceiver, new IntentFilter(PlaybackService.UPDATE_UI_ACTION));
     }
+
+    private RangeSeekBar.OnRangeSeekBarChangeListener<Integer> mOnBpmRangeChanged = new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
+    {
+        @Override
+        public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue)
+        {
+            if (mApp.isPlaybackServiceRunning())
+            {
+                mApp.getPlaybackService().getPlaylist().setRange(minValue, maxValue);
+            }
+        }
+    };
 
     private SeekBar.OnSeekBarChangeListener mOnSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener()
     {

@@ -20,7 +20,7 @@ extern "C" JNIEXPORT jdouble Java_com_juztoss_bpmplayer_audio_BpmDetector_detect
         env->ReleaseStringUTFChars(source, path);
         return -1;
     };
-
+    env->ReleaseStringUTFChars(source, path);
 
     const int samplesToDetect = 524288; //The pow of 2 in case the fourier transform inside of the detector need it
     int64_t duration = decoder->durationSamples;
@@ -53,10 +53,6 @@ extern "C" JNIEXPORT jdouble Java_com_juztoss_bpmplayer_audio_BpmDetector_detect
 
         // Submit samples to the analyzer.
         analyzer->process(floatBuffer, samplesDecoded);
-
-        // Update the progress indicator.
-//        int progress = (int)((double)decoder->samplePosition / (double)decoder->durationSamples * 100.0);
-//        __android1_log_print(ANDROID_LOG_DEBUG, __func__, "Progress: %d", progress);
     };
 
     // Get the result.
@@ -71,9 +67,6 @@ extern "C" JNIEXPORT jdouble Java_com_juztoss_bpmplayer_audio_BpmDetector_detect
     delete analyzer;
     free(intBuffer);
     free(floatBuffer);
-
-    __android_log_print(ANDROID_LOG_DEBUG, __func__, "Bpm detected, path: %s, value: %f", path, bpm);
-    env->ReleaseStringUTFChars(source, path);
 
     // Done with the result, free memory.
     if (averageWaveform) free(averageWaveform);

@@ -25,7 +25,7 @@ import java.util.Queue;
 /**
  * Created by JuzTosS on 5/3/2016.
  */
-public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener
+public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener, Playlist.OnChangedListener
 {
 
     public static final int NOTIFICATION_ID = 42;
@@ -120,6 +120,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         super.onStartCommand(intent, flags, startId);
+
+        mPlaylist.setOnChangedListener(this);
 
         mApp = (BPMPlayerApp) getApplicationContext();
         mApp.setPlaybackService(this);
@@ -224,6 +226,12 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public void seekTo(int position)
     {
         mPlayer.setPosition(position);
+    }
+
+    @Override
+    public void onListChanged()
+    {
+        updateUI();
     }
 
     private class BaseAction
