@@ -29,10 +29,109 @@
             android:elevation="6dp"
             android:minHeight="10dp"/>
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Select BPM"
+            android:id="@+id/textView3"
+            android:layout_gravity="center_horizontal"/>
+
+        <com.juztoss.bpmplayer.views.RangeSeekBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/bpm_ranger"
+            android:layout_marginTop="-30dp"/>
+
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
+            android:layout_weight="1"
             android:layout_height="fill_parent"/>
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="98dp"
+            android:id="@+id/playerBar">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:colorBackground"/>
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/seekbar"
+                android:layout_below="@+id/previous_button"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/previous_button"
+                android:src="@drawable/icon_previous"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/play_button"
+                android:layout_toLeftOf="@+id/play_button"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:background="@null"
+                android:padding="10dp" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/next_button"
+                android:src="@drawable/icon_next"
+                android:layout_marginStart="27dp"
+                android:layout_marginLeft="27dp"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/play_button"
+                android:layout_toRightOf="@+id/play_button"
+                android:background="@null"
+                android:padding="10dp" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/play_button"
+                android:src="@drawable/play_button_large"
+                android:layout_above="@+id/seekbar"
+                android:layout_centerHorizontal="true"
+                android:background="@null"
+                android:padding="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
+                android:id="@+id/time_passed"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:paddingLeft="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
+                android:id="@+id/time_left"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:paddingRight="20dp" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
