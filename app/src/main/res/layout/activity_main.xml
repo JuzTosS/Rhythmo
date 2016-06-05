@@ -20,15 +20,20 @@
             app:theme="@style/AppTheme"
             tools:context=".views.MainActivity"/>
 
-        <!-- The main content view -->
-        <fragment
-            android:id="@+id/drawer_content"
-            android:name="com.juztoss.bpmplayer.views.PlayerFragment"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:orientation="vertical"
-            tools:layout="@layout/songs_list"/>
+            android:layout_height="24dp"
+            android:background="?attr/colorPrimary"
+            app:tabMode="scrollable"
+            android:elevation="6dp"
+            android:minHeight="10dp"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"/>
+
     </LinearLayout>
 
     <!-- The navigation drawer -->

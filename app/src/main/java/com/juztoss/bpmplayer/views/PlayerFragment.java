@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.text.format.DateUtils;
@@ -24,9 +25,11 @@ import com.juztoss.bpmplayer.services.PlaybackService;
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class PlayerFragment extends android.app.Fragment implements DrawerLayout.DrawerListener, AdapterView.OnItemClickListener
+public class PlayerFragment extends Fragment implements DrawerLayout.DrawerListener, AdapterView.OnItemClickListener
 {
-    private SongsListAdapter mSongsListAdapter;
+    public static String PLAYLIST_INDEX = "PlaylistID";
+
+    private PlaylistAdapter mPlaylistAdapter;
     private View mPlayButton;
     private TextView mTimePassed;
     private TextView mTimeLeft;
@@ -34,15 +37,31 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
     private RangeSeekBar<Integer> mRangeSeekbar;
     private BPMPlayerApp mApp;
 
+    public static PlayerFragment newInstance(int playlistIndex) {
+        PlayerFragment fragment = new PlayerFragment();
+        Bundle args = new Bundle();
+        args.putInt(PLAYLIST_INDEX, playlistIndex);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         mApp = (BPMPlayerApp) getActivity().getApplicationContext();
-        mSongsListAdapter = new SongsListAdapter(getActivity());
+
+        Bundle arguments = getArguments();
+        if(arguments == null) return;
+        int playlistIndex = arguments.getInt(PLAYLIST_INDEX, -1);
+        if(playlistIndex < 0) return;
+
+        if(!mApp.isPlaybackServiceRunning()) return;
+
+        mPlaylistAdapter = new PlaylistAdapter(getActivity(), mApp.getPlaylists().get(playlistIndex));
         ListView list = (ListView) getView().findViewById(R.id.listView);
         list.setOnItemClickListener(this);
-        list.setAdapter(mSongsListAdapter);
+        list.setAdapter(mPlaylistAdapter);
 
         DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
         drawer.addDrawerListener(this);
@@ -74,7 +93,7 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
         {
             if (mApp.isPlaybackServiceRunning())
             {
-                mApp.getPlaybackService().getPlaylist().setRange(minValue, maxValue);
+                mPlaylistAdapter.setRange(minValue, maxValue);
             }
         }
     };
@@ -143,7 +162,7 @@ public class PlayerFragment extends android.app.Fragment implements DrawerLayout
         PlaybackService service = mApp.getPlaybackService();
 
         mPlayButton.setSelected(!service.isPlaying());
-        mSongsListAdapter.notifyDataSetChanged();
+        mPlaylistAdapter.notifyDataSetChanged();
 
         mSeekbar.setMax(service.getDuration());
         mHandler.post(mSeekbarUpdateRunnable);

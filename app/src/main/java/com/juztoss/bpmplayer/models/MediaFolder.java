@@ -28,18 +28,18 @@ public class MediaFolder extends BaseExplorerElement
         this(mediaFolderId, folderName, hasSongs, parent, true);
     }
 
-    public MediaFolder(long mediaFolderId, String folderName, boolean hasSongs, @Nullable BaseExplorerElement parent, boolean isTunnalable)
+    public MediaFolder(long mediaFolderId, String folderName, boolean hasSongs, @Nullable BaseExplorerElement parent, boolean isCompacting)
     {
         mFirstId = mLastId = mediaFolderId;
         mFirstName = mFullName = folderName;
         mParent = parent;
         mFirstHasSongs = mLastHasSongs = hasSongs;
 
-        if (isTunnalable)
-            checkTunneling();
+        if (isCompacting)
+            checkCompacting();
     }
 
-    private void checkTunneling()
+    private void checkCompacting()
     {
         long currentId = mFirstId;
         String currentName = mFirstName;

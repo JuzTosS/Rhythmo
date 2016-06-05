@@ -5,7 +5,11 @@ import android.content.res.Configuration;
 import android.support.annotation.Nullable;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
+import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.services.PlaybackService;
+
+import java.util.Dictionary;
+import java.util.List;
 
 /**
  * Created by JuzTosS on 4/16/2016.
@@ -17,6 +21,7 @@ public class BPMPlayerApp extends Application
     private PlaybackService mPlaybackService;
     private boolean mIsBuildingLibrary;
     private boolean mIsScanFinished;
+    private List<Playlist> mPlaylists;
 
     @Override
     public void onCreate()
@@ -24,6 +29,7 @@ public class BPMPlayerApp extends Application
         super.onCreate();
         new DatabaseHelper(this);
         mBrowserPresenter = new BrowserPresenter(this);
+        mPlaylists = Playlist.loadPlaylists();
     }
 
     @Override
@@ -95,5 +101,10 @@ public class BPMPlayerApp extends Application
     public void setIsScanFinished(boolean isScanFinished)
     {
         mIsScanFinished = isScanFinished;
+    }
+
+    public List<Playlist> getPlaylists()
+    {
+        return mPlaylists;
     }
 }

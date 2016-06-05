@@ -92,13 +92,13 @@ public class BrowserFragment extends android.app.ListFragment implements DrawerL
     @Override
     public void onDrawerClosed(View drawerView)
     {
-        if(mApp.isPlaybackServiceRunning())
-        {
-            List<Composition> compositions = mApp.getBrowserPresenter().getCurrentElementCompositions();
-
-            if(compositions != null)
-                mApp.getPlaybackService().resetPlaylist(compositions);
-        }
+//        if(mApp.isPlaybackServiceRunning())
+//        {
+//            List<Composition> compositions = mApp.getBrowserPresenter().getCurrentElementCompositions();
+//
+//            if(compositions != null)
+//                mApp.getPlaybackService().resetPlaylist(compositions);
+//        }
     }
 
     @Override

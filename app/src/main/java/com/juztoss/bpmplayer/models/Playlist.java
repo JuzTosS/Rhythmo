@@ -1,6 +1,11 @@
 package com.juztoss.bpmplayer.models;
 
-import java.util.LinkedList;
+import android.database.Cursor;
+import android.support.design.widget.TabLayout;
+
+import com.juztoss.bpmplayer.DatabaseHelper;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,63 +13,89 @@ import java.util.List;
  */
 public class Playlist
 {
-    private OnChangedListener mListener;
+    private String mName;
+    private Cursor mList;
 
-    private int mMinBPM = 0;
-    private int mMaxBPM = Integer.MAX_VALUE;
-
-    private List<Composition> mOriginalList = new LinkedList<>();
-    private List<Composition> mCurrentList = new LinkedList<>();
-
-    public void setOnChangedListener(OnChangedListener listener)
+    Playlist(String name)
     {
-        mListener = listener;
+        this(-1, name);
+    }
+
+    public Playlist(int playlist_id, String name)
+    {
+        mName = name;
     }
 
     public void add(List<Composition> songs)
     {
-        mOriginalList.addAll(songs);
-        applyFilter();
-
-        if(mListener != null)
-            mListener.onListChanged();
+        //TODO: Implement
     }
 
-    public List<Composition> songs()
+    public Cursor compositions()
     {
-        return mCurrentList;
+        return mList;
     }
 
     public void clear()
     {
-        mOriginalList.clear();
-        mOriginalList.clear();
+        //TODO: Implement
     }
 
     public void setRange(int minBPM, int maxBPM)
     {
-        mMinBPM = minBPM;
-        mMaxBPM = maxBPM;
-        applyFilter();
-
-        if(mListener != null)
-            mListener.onListChanged();
+        //TODO: Implement
     }
 
-    private void applyFilter()
+    public static List<Playlist> loadPlaylists()
     {
-        mCurrentList.clear();
-        for(Composition composition : mOriginalList)
+        List<Playlist> result = new ArrayList<>();
+
+        Cursor playlists = DatabaseHelper.db().query(DatabaseHelper.TABLE_PLAYLISTS,
+                new String[]{DatabaseHelper._ID, DatabaseHelper.PLAYLISTS_NAME},
+                null, null, null, null, null);
+
+        result.add(new StaticAllPlaylist());
+        int idIndex = playlists.getColumnIndex(DatabaseHelper._ID);
+        int nameIndex = playlists.getColumnIndex(DatabaseHelper.PLAYLISTS_NAME);
+
+        try
         {
-            if(composition.bpm() > mMinBPM && composition.bpm() < mMaxBPM)
+            while (playlists.moveToNext())
             {
-                mCurrentList.add(composition);
+                result.add(new Playlist(playlists.getInt(idIndex), playlists.getString(nameIndex)));
             }
+
+        }finally
+        {
+            playlists.close();
         }
+
+        return result;
     }
 
-    public interface OnChangedListener
+
+    public String getName()
     {
-        void onListChanged();
+        return mName;
+    }
+}
+
+class StaticAllPlaylist extends Playlist
+{
+    private Cursor mList;
+
+    public StaticAllPlaylist()
+    {
+        super("All songs");
+
+        mList = DatabaseHelper.db().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_FULL_PATH, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10},
+                null, null, null, null, DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " ASC");
+    }
+
+    @Override
+    public Cursor compositions()
+    {
+        return mList;
     }
 }

@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
@@ -11,21 +12,19 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.audio.AdvancedMediaPlayer;
-import com.juztoss.bpmplayer.models.Playlist;
-import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 
 /**
  * Created by JuzTosS on 5/3/2016.
  */
-public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener, Playlist.OnChangedListener
+public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener
 {
 
     public static final int NOTIFICATION_ID = 42;
@@ -37,8 +36,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private AdvancedMediaPlayer mPlayer;
     private BPMPlayerApp mApp;
-    private PlaybackService mSelf = this;
-    private Playlist mPlaylist = new Playlist();
+    private int mCurrentPlaylistId = 0;
     private int mCurrentSongIndex = 0;
     private Queue<BaseAction> mQueue = new LinkedList<>();
 
@@ -58,12 +56,17 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         Log.e(getResources().getString(R.string.app_name), "Player error: " + message);
     }
 
+    private Cursor getSongsList()
+    {
+        return mApp.getPlaylists().get(mCurrentPlaylistId).compositions();
+    }
+
     public void gotoNext()
     {
         clearQueue();
         mCurrentSongIndex++;
-        if (mCurrentSongIndex >= mPlaylist.songs().size())
-            mCurrentSongIndex = mPlaylist.songs().size() - 1;
+        if (mCurrentSongIndex >= getSongsList().getCount())
+            mCurrentSongIndex = getSongsList().getCount() - 1;
 
         putAction(new ActionPlay());
     }
@@ -121,8 +124,6 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     {
         super.onStartCommand(intent, flags, startId);
 
-        mPlaylist.setOnChangedListener(this);
-
         mApp = (BPMPlayerApp) getApplicationContext();
         mApp.setPlaybackService(this);
 
@@ -157,8 +158,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     public void setSource(int index)
     {
-        final Composition song = mPlaylist.songs().get(index);
-        putAction(new ActionPrepare(song));
+        int fullPathIndex = getSongsList().getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_FULL_PATH);
+        getSongsList().moveToPosition(index);
+        putAction(new ActionPrepare(getSongsList().getString(fullPathIndex)));
     }
 
     private void setIsPlaying(boolean value)
@@ -196,18 +198,6 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         putAction(new ActionStop());
     }
 
-    public void resetPlaylist(List<Composition> data)
-    {
-        mPlaylist.clear();
-        mPlaylist.add(data);
-        updateUI();
-    }
-
-    public Playlist getPlaylist()
-    {
-        return mPlaylist;
-    }
-
     public int getCurrentSongIndex()
     {
         return mCurrentSongIndex;
@@ -226,12 +216,6 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public void seekTo(int position)
     {
         mPlayer.setPosition(position);
-    }
-
-    @Override
-    public void onListChanged()
-    {
-        updateUI();
     }
 
     private class BaseAction
@@ -271,11 +255,11 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             }
         };
 
-        private Composition mSong;
+        private String mPath;
 
-        public ActionPrepare(Composition song)
+        public ActionPrepare(String path)
         {
-            mSong = song;
+            mPath = path;
         }
 
         @Override
@@ -283,7 +267,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         {
             setIsPlaying(true);
             mPlayer.setOnPreparedListener(mOnPrepared);
-            mPlayer.setSource(mSong.getAbsolutePath());
+            mPlayer.setSource(mPath);
         }
     }
 

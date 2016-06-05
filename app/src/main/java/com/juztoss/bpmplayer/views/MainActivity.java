@@ -4,9 +4,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +20,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.juztoss.bpmplayer.services.PlaybackService;
 import com.juztoss.bpmplayer.R;
+import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.services.PlaybackService;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -41,8 +46,44 @@ public class MainActivity extends AppCompatActivity
             startService(playbackServiceIntent);
         }
 
-        //Add hamburger
         setupActionBar();
+        setupPager();
+    }
+
+    private void setupPager()
+    {
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
+
+        List<Playlist> playlists = mApp.getPlaylists();
+        for (Playlist playlist : playlists)
+        {
+            tabLayout.addTab(tabLayout.newTab().setText(playlist.getName()));
+        }
+
+
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), playlists.size());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
+        {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab)
+            {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab)
+            {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab)
+            {
+            }
+        });
     }
 
     private void setupActionBar()
@@ -85,7 +126,7 @@ public class MainActivity extends AppCompatActivity
             drawer.openDrawer(GravityCompat.START);
             return true;
         }
-        else if(id == R.id.settings_menu)
+        else if (id == R.id.settings_menu)
         {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);

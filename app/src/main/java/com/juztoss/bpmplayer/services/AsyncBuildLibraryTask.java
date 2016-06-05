@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.PowerManager;
@@ -17,9 +18,6 @@ import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by JuzTosS on 5/27/2016.
@@ -105,7 +103,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
             if (mediaStoreCursor != null)
             {
                 saveMediaStoreDataToDB(mediaStoreCursor);
-                detectSongsBpm(mediaStoreCursor);
+                detectSongsBpm();
             }
         }
         finally
@@ -116,59 +114,46 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         return null;
     }
 
-    private void detectSongsBpm(Cursor mediaStoreCursor)
+    private void detectSongsBpm()
     {
-        final int subprogress = (MAX_PROGRESS_VALUE - mOverallProgress) / mediaStoreCursor.getCount();
-//        int numOfCores = SystemHelper.getNumberOfCores() - 1;
-//        if (numOfCores <= 0)///Set numOfCores bigger value while playing causes lags
-        int numOfCores = 1;
-        final ExecutorService es = Executors.newFixedThreadPool(numOfCores);
-        final int filePathColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-        final int idColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media._ID);
+        Cursor songsCursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME},
+                DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?",
+                new String[]{"0"}, null, null, null);
 
-        class SongBpmDetector implements Runnable
+        if(songsCursor.getCount() <= 0)
         {
-            private final String mFullPath;
-            private final String mediaId;
+            songsCursor.close();
+            return;
+        }
 
-            public SongBpmDetector(String songMediaId, String fullPath)
-            {
-                mFullPath = fullPath;
-                mediaId = songMediaId;
-            }
+        try
+        {
+            int idIndex = songsCursor.getColumnIndex(DatabaseHelper._ID);
+            int pathIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH);
+            int nameIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME);
+            final int subProgress = (MAX_PROGRESS_VALUE - mOverallProgress) / songsCursor.getCount();
 
-            @Override
-            public void run()
+            for (int i = 0; i < songsCursor.getCount(); i++)
             {
-                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-                double bpm = BpmDetector.detect(mFullPath);
+                songsCursor.moveToPosition(i);
+                String path = songsCursor.getString(pathIndex);
+                String name = songsCursor.getString(nameIndex);
+                String songId = songsCursor.getString(idIndex);
+                String fullPath = path + "/" + name;
+                double bpm = BpmDetector.detect(fullPath);
                 int bpmX10 = (int) (bpm * 10);
                 ContentValues values = new ContentValues();
                 values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, bpmX10);
-                DatabaseHelper.db().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper.MUSIC_LIBRARY_MEDIA_ID + "= ?", new String[]{mediaId});
+                int rowsAffected = DatabaseHelper.db().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + "= ?", new String[]{songId});
 
-                Log.e("DEBUG", mFullPath + " : " + bpmX10);
-                mOverallProgress += subprogress;
+                Log.e("DEBUG affected=", rowsAffected + ", " + fullPath + " : " + bpmX10);
+                mOverallProgress += subProgress;
                 publishProgress();
             }
-        }
-
-        for (int i = 0; i < mediaStoreCursor.getCount(); i++)
+        }finally
         {
-            mediaStoreCursor.moveToPosition(i);
-            String songFileFullPath = mediaStoreCursor.getString(filePathColIndex);
-            String songId = mediaStoreCursor.getString(idColIndex);
-            es.execute(new SongBpmDetector(songId, songFileFullPath));
-        }
-
-        es.shutdown();
-        try
-        {
-            es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
+            songsCursor.close();
         }
     }
 
@@ -224,7 +209,11 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         {
             DatabaseHelper.db().beginTransaction();
 
-            DatabaseHelper.db().delete(DatabaseHelper.TABLE_MUSIC_LIBRARY, null, null);
+            //Set all songs as deleted, we'll update each song that exists later
+            ContentValues cv = new ContentValues();
+            cv.put(DatabaseHelper.MUSIC_LIBRARY_DELETED, true);
+            DatabaseHelper.db().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, cv, DatabaseHelper.MUSIC_LIBRARY_MEDIA_ID + " >= 0", null);
+
             DatabaseHelper.db().delete(DatabaseHelper.TABLE_FOLDERS, null, null);
 
             //Tracks the progress of this method.
@@ -285,12 +274,19 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 ContentValues values = new ContentValues();
                 values.put(DatabaseHelper.MUSIC_LIBRARY_PATH, songFileFolder);
                 values.put(DatabaseHelper.MUSIC_LIBRARY_NAME, songFileName);
+                values.put(DatabaseHelper.MUSIC_LIBRARY_FULL_PATH, songFileFullPath);
                 values.put(DatabaseHelper.MUSIC_LIBRARY_MEDIA_ID, songId);
+                values.put(DatabaseHelper.MUSIC_LIBRARY_DELETED, false);
 
                 //Add all the entries to the database to build the songs library.
-                DatabaseHelper.db().insert(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                long rowId = DatabaseHelper.db().insertWithOnConflict(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                         null,
-                        values);
+                        values, SQLiteDatabase.CONFLICT_IGNORE);
+
+                if(rowId != -1)
+                {
+                    DatabaseHelper.db().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + " = ?", new String[]{Long.toString(rowId)});
+                }
 
                 Node parentNode = folderIds;
                 for (int j = 1; j < (folders.length - 1); j++)
@@ -330,6 +326,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
             DatabaseHelper.db().endTransaction();
         }
 
+        DatabaseHelper.db().delete(DatabaseHelper.TABLE_MUSIC_LIBRARY, DatabaseHelper.MUSIC_LIBRARY_DELETED + " = ?", new String[]{"true"});
     }
 //
 //    /**
