@@ -58,7 +58,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private Cursor getSongsList()
     {
-        return mApp.getPlaylists().get(mCurrentPlaylistId).compositions();
+        return mApp.getPlaylists().get(mCurrentPlaylistId).getNewCompositionsCursor();
     }
 
     public void gotoNext()

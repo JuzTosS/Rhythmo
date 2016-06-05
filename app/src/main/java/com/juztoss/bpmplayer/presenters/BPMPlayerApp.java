@@ -8,7 +8,7 @@ import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.services.PlaybackService;
 
-import java.util.Dictionary;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +22,10 @@ public class BPMPlayerApp extends Application
     private boolean mIsBuildingLibrary;
     private boolean mIsScanFinished;
     private List<Playlist> mPlaylists;
+    private float mMinBPM;
+    private float mMaxBPM;
+
+    private List<OnBPMChangedListener> mOnBPMChangedListeners;
 
     @Override
     public void onCreate()
@@ -43,35 +47,6 @@ public class BPMPlayerApp extends Application
     {
         super.onConfigurationChanged(newConfig);
     }
-//
-//    public void setLastFolder(ISongSource songsFolder)
-//    {
-//        ContentValues values = new ContentValues();
-//        values.put(DatabaseHelper.SETTING_NAME, DatabaseHelper.SETTINGS_SONG_FOLDER);
-//        values.put(DatabaseHelper.SETTING_VALUE, songsFolder.source().getPath());
-//        if (DatabaseHelper.db().update(DatabaseHelper.TABLE_SETTINGS,
-//                values, DatabaseHelper.SETTING_NAME + "= ?",
-//                new String[]{DatabaseHelper.SETTINGS_SONG_FOLDER}) <= 0)
-//        {
-//            DatabaseHelper.db().insert(DatabaseHelper.TABLE_SETTINGS, null, values);
-//        }
-//    }
-//
-//    public File getLastFolder()
-//    {
-//        Cursor cursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_SETTINGS,
-//                new String[]{DatabaseHelper.SETTING_VALUE},
-//                DatabaseHelper.SETTING_NAME + "= ?",
-//                new String[]{DatabaseHelper.SETTINGS_SONG_FOLDER},
-//                null, null, null);
-//        if (cursor.getCount() > 0)
-//        {
-//            cursor.moveToFirst();
-//            return new Folder(new File(cursor.getString(0)));
-//        }
-//        else
-//            return null;
-//    }
 
     public BrowserPresenter getBrowserPresenter()
     {
@@ -106,5 +81,46 @@ public class BPMPlayerApp extends Application
     public List<Playlist> getPlaylists()
     {
         return mPlaylists;
+    }
+
+    public void setBPMRange(float minBPM, float maxBPM)
+    {
+        mMinBPM = minBPM;
+        mMaxBPM = maxBPM;
+
+        for(Playlist playlist : mPlaylists)
+        {
+            playlist.setBPMFilter(mMinBPM, mMaxBPM);
+        }
+
+        callBPMListeners();
+    }
+
+    private void callBPMListeners()
+    {
+        if(mOnBPMChangedListeners == null) return;
+        for(OnBPMChangedListener listener : mOnBPMChangedListeners)
+        {
+            listener.onBPMChanged(mMinBPM, mMaxBPM);
+        }
+    }
+
+    public void addOnRangeChangedListener(OnBPMChangedListener listener)
+    {
+        if(mOnBPMChangedListeners == null)
+            mOnBPMChangedListeners = new ArrayList<>();
+
+        if(!mOnBPMChangedListeners.contains(listener))
+            mOnBPMChangedListeners.add(listener);
+    }
+
+    public void removeOnRangeChangedListener(OnBPMChangedListener listener)
+    {
+        mOnBPMChangedListeners.remove(listener);
+    }
+
+    public interface OnBPMChangedListener
+    {
+        void onBPMChanged(float minBPM, float maxBPM);
     }
 }

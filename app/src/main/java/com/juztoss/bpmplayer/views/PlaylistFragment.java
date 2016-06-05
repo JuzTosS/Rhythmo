@@ -1,14 +1,7 @@
 package com.juztoss.bpmplayer.views;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +14,7 @@ import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class PlaylistFragment extends Fragment implements AdapterView.OnItemClickListener
+public class PlaylistFragment extends Fragment implements AdapterView.OnItemClickListener, BPMPlayerApp.OnBPMChangedListener
 {
     public static String PLAYLIST_INDEX = "PlaylistID";
 
@@ -29,7 +22,8 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
 
     private BPMPlayerApp mApp;
 
-    public static PlaylistFragment newInstance(int playlistIndex) {
+    public static PlaylistFragment newInstance(int playlistIndex)
+    {
         PlaylistFragment fragment = new PlaylistFragment();
         Bundle args = new Bundle();
         args.putInt(PLAYLIST_INDEX, playlistIndex);
@@ -44,11 +38,11 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         mApp = (BPMPlayerApp) getActivity().getApplicationContext();
 
         Bundle arguments = getArguments();
-        if(arguments == null) return;
+        if (arguments == null) return;
         int playlistIndex = arguments.getInt(PLAYLIST_INDEX, -1);
-        if(playlistIndex < 0) return;
+        if (playlistIndex < 0) return;
 
-        if(!mApp.isPlaybackServiceRunning()) return;
+        if (!mApp.isPlaybackServiceRunning()) return;
 
         mPlaylistAdapter = new PlaylistAdapter(getActivity(), mApp.getPlaylists().get(playlistIndex));
         ListView list = (ListView) getView().findViewById(R.id.listView);
@@ -56,9 +50,12 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
         list.setAdapter(mPlaylistAdapter);
     }
 
+
+
     @Override
     public void onStart()
     {
+        mApp.addOnRangeChangedListener(this);
         super.onStart();
         mPlaylistAdapter.notifyDataSetChanged();
     }
@@ -77,5 +74,27 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
             mApp.getPlaybackService().setSource(position);
             mApp.getPlaybackService().startPlayback();
         }
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        mApp.removeOnRangeChangedListener(this);
+    }
+
+    public void onResumeFragment()
+    {
+        mApp.addOnRangeChangedListener(this);
+    }
+
+    public void onPauseFragment()
+    {
+        mApp.removeOnRangeChangedListener(this);
+    }
+
+    @Override
+    public void onBPMChanged(float minBPM, float maxBPM)
+    {
+        mPlaylistAdapter.updatePlaylist();
     }
 }

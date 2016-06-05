@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity
     private TextView mTimeLeft;
     private SeekBar mSeekbar;
     private RangeSeekBar<Integer> mRangeSeekbar;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), playlists.size());
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
         {
@@ -243,10 +244,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue)
         {
-            if (mApp.isPlaybackServiceRunning())
-            {
-//                mPlaylistAdapter.setRange(minValue, maxValue);
-            }
+            mApp.setBPMRange(minValue, maxValue);
         }
     };
 

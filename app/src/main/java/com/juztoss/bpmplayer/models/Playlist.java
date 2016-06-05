@@ -1,7 +1,6 @@
 package com.juztoss.bpmplayer.models;
 
 import android.database.Cursor;
-import android.support.design.widget.TabLayout;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
 
@@ -14,7 +13,6 @@ import java.util.List;
 public class Playlist
 {
     private String mName;
-    private Cursor mList;
 
     Playlist(String name)
     {
@@ -26,24 +24,9 @@ public class Playlist
         mName = name;
     }
 
-    public void add(List<Composition> songs)
+    public Cursor getNewCompositionsCursor()
     {
-        //TODO: Implement
-    }
-
-    public Cursor compositions()
-    {
-        return mList;
-    }
-
-    public void clear()
-    {
-        //TODO: Implement
-    }
-
-    public void setRange(int minBPM, int maxBPM)
-    {
-        //TODO: Implement
+        return null;
     }
 
     public static List<Playlist> loadPlaylists()
@@ -65,7 +48,8 @@ public class Playlist
                 result.add(new Playlist(playlists.getInt(idIndex), playlists.getString(nameIndex)));
             }
 
-        }finally
+        }
+        finally
         {
             playlists.close();
         }
@@ -78,24 +62,40 @@ public class Playlist
     {
         return mName;
     }
+
+    public void setBPMFilter(float minBPM, float maxBPM)
+    {
+
+    }
 }
 
 class StaticAllPlaylist extends Playlist
 {
-    private Cursor mList;
+    private int mMinBPMX10 = 0;
+    private int mMaxBPMX10 = Integer.MAX_VALUE;
 
     public StaticAllPlaylist()
     {
         super("All songs");
 
-        mList = DatabaseHelper.db().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_FULL_PATH, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10},
-                null, null, null, null, DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " ASC");
+
     }
 
     @Override
-    public Cursor compositions()
+    public Cursor getNewCompositionsCursor()
     {
-        return mList;
+        return DatabaseHelper.db().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_FULL_PATH, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10},
+                DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" + " AND " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?"
+                , new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10)},
+                null, null,
+                DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " ASC");
+    }
+
+    @Override
+    public void setBPMFilter(float minBPM, float maxBPM)
+    {
+        mMinBPMX10 = (int) (minBPM * 10);
+        mMaxBPMX10 = (int) (maxBPM * 10);
     }
 }

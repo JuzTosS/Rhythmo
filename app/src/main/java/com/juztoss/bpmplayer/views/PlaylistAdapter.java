@@ -26,12 +26,15 @@ public class PlaylistAdapter extends CursorAdapter
     private int mFullPathIndex;
     private int mBpmIndex;
 
+    private Playlist mPlaylist;
+
     public PlaylistAdapter(Context context, Playlist playlist)
     {
-        super(context, playlist.compositions(), false);
+        super(context, playlist.getNewCompositionsCursor(), false);
+        mPlaylist = playlist;
         mContext = context;
         mApp = (BPMPlayerApp) context.getApplicationContext();
-        setupIndexes(playlist.compositions());
+        setupIndexes(playlist.getNewCompositionsCursor());
     }
 
     @Override
@@ -83,8 +86,9 @@ public class PlaylistAdapter extends CursorAdapter
         }
     }
 
-    public void setRange(Integer minValue, Integer maxValue)
+    public void updatePlaylist()
     {
-
+        swapCursor(mPlaylist.getNewCompositionsCursor());
+        notifyDataSetChanged();
     }
 }
