@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.PlaybackService;
-import com.juztoss.bpmplayer.views.MainActivity;
+import com.juztoss.bpmplayer.views.PlayerActivity;
 
 /**
  * Created by JuzTosS on 5/3/2016.
@@ -19,7 +19,7 @@ public class PlaybackActionReceiver extends BroadcastReceiver
     {
         if (intent.getAction().equals(PlaybackService.LAUNCH_NOW_PLAYING_ACTION))
         {
-            Intent activityIntent = new Intent(context, MainActivity.class);
+            Intent activityIntent = new Intent(context, PlayerActivity.class);
             activityIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(activityIntent);
         }

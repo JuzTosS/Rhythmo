@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.juztoss.bpmplayer.views.MainActivity"
+            android:name=".views.PlayerActivity"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

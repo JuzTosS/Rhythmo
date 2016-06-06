@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
+import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,14 +23,16 @@ public class MediaFolder extends BaseExplorerElement
     private BaseExplorerElement mParent;
     private boolean mFirstHasSongs;
     private boolean mLastHasSongs;
+    private BPMPlayerApp mApp;
 
-    public MediaFolder(long mediaFolderId, String folderName, boolean hasSongs, @Nullable BaseExplorerElement parent)
+    public MediaFolder(long mediaFolderId, String folderName, boolean hasSongs, @Nullable BaseExplorerElement parent, BPMPlayerApp app)
     {
-        this(mediaFolderId, folderName, hasSongs, parent, true);
+        this(mediaFolderId, folderName, hasSongs, parent, true, app);
     }
 
-    public MediaFolder(long mediaFolderId, String folderName, boolean hasSongs, @Nullable BaseExplorerElement parent, boolean isCompacting)
+    public MediaFolder(long mediaFolderId, String folderName, boolean hasSongs, @Nullable BaseExplorerElement parent, boolean isCompacting, BPMPlayerApp app)
     {
+        mApp = app;
         mFirstId = mLastId = mediaFolderId;
         mFirstName = mFullName = folderName;
         mParent = parent;
@@ -57,7 +60,7 @@ public class MediaFolder extends BaseExplorerElement
 
             if (!currentHasSongs)
             {
-                Cursor foldersCursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_FOLDERS,
+                Cursor foldersCursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_FOLDERS,
                         new String[]{DatabaseHelper._ID, DatabaseHelper.FOLDERS_NAME, DatabaseHelper.FOLDERS_PARENT_ID, DatabaseHelper.FOLDERS_HAS_SONGS},
                         DatabaseHelper.FOLDERS_PARENT_ID + "= ?",
                         new String[]{Long.toString(currentId)},
@@ -112,7 +115,7 @@ public class MediaFolder extends BaseExplorerElement
         if (mParent != null)
             result.add(new ParentLink(mParent));
 
-        Cursor foldersCursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_FOLDERS,
+        Cursor foldersCursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_FOLDERS,
                 new String[]{DatabaseHelper._ID, DatabaseHelper.FOLDERS_NAME, DatabaseHelper.FOLDERS_PARENT_ID, DatabaseHelper.FOLDERS_HAS_SONGS},
                 DatabaseHelper.FOLDERS_PARENT_ID + "= ?",
                 new String[]{Long.toString(mLastId)},
@@ -129,7 +132,7 @@ public class MediaFolder extends BaseExplorerElement
                 String folderName = foldersCursor.getString(nameIndex);
                 Boolean hasSongs = foldersCursor.getInt(hasSongsIndex) > 0;
 
-                result.add(new MediaFolder(folderId, folderName, hasSongs, this));
+                result.add(new MediaFolder(folderId, folderName, hasSongs, this, mApp));
             }
         }
         finally
@@ -142,7 +145,7 @@ public class MediaFolder extends BaseExplorerElement
         if (mLastHasSongs)
         {
             List<BaseExplorerElement> songs = new ArrayList<>();
-            Cursor songsCursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+            Cursor songsCursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                     new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME},
                     DatabaseHelper.MUSIC_LIBRARY_PATH + "= ?",
                     new String[]{resolvePath()},
@@ -199,7 +202,7 @@ public class MediaFolder extends BaseExplorerElement
         if (mLastHasSongs)
         {
             List<Composition> songList = new ArrayList<>();
-            Cursor songsCursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+            Cursor songsCursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                     new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10},
                     DatabaseHelper.MUSIC_LIBRARY_PATH + "= ?",
                     new String[]{resolvePath()},
@@ -213,7 +216,7 @@ public class MediaFolder extends BaseExplorerElement
             {
                 while (songsCursor.moveToNext())
                 {
-                    String songId = songsCursor.getString(idIndex);
+                    long songId = songsCursor.getLong(idIndex);
                     String folderName = songsCursor.getString(pathIndex);
                     String songName = songsCursor.getString(songNameIndex);
                     float bpm = songsCursor.getInt(bpmx10Index) / 10;

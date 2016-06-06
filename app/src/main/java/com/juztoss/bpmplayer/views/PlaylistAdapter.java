@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.R;
+import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.PlaybackService;
@@ -30,11 +31,11 @@ public class PlaylistAdapter extends CursorAdapter
 
     public PlaylistAdapter(Context context, Playlist playlist)
     {
-        super(context, playlist.getNewCompositionsCursor(), false);
+        super(context, playlist.getNewCompositionsIds(), false);
         mPlaylist = playlist;
         mContext = context;
         mApp = (BPMPlayerApp) context.getApplicationContext();
-        setupIndexes(playlist.getNewCompositionsCursor());
+        setupIndexes(playlist.getNewCompositionsIds());
     }
 
     @Override
@@ -63,14 +64,14 @@ public class PlaylistAdapter extends CursorAdapter
     @Override
     public void bindView(View view, Context context, Cursor cursor)
     {
-        String name = cursor.getString(mNameIndex);
-        float bpm = cursor.getInt(mBpmIndex) / 10;
+        long songId = cursor.getLong(0);
+        Composition composition = mApp.getComposition(songId);
 
         TextView firstLine = (TextView) view.findViewById(R.id.first_line);
-        firstLine.setText(name);
+        firstLine.setText(composition.name());
 
         TextView secondLine = (TextView) view.findViewById(R.id.second_line);
-        secondLine.setText(String.format("%.1f", bpm));
+        secondLine.setText(String.format("%.1f", composition.bpm()));
 
         View playingState = view.findViewById(R.id.playing_state);
         playingState.setVisibility(View.INVISIBLE);
@@ -88,7 +89,7 @@ public class PlaylistAdapter extends CursorAdapter
 
     public void updatePlaylist()
     {
-        swapCursor(mPlaylist.getNewCompositionsCursor());
+        swapCursor(mPlaylist.getNewCompositionsIds());
         notifyDataSetChanged();
     }
 }

@@ -34,7 +34,7 @@ import com.juztoss.bpmplayer.services.PlaybackService;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
+public class PlayerActivity extends AppCompatActivity
 {
     private DrawerArrowDrawable mHamburger;
     private BPMPlayerApp mApp;
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     private TextView mTimeLeft;
     private SeekBar mSeekbar;
     private RangeSeekBar<Integer> mRangeSeekbar;
+    ViewPager mPlaylistsPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -84,29 +85,36 @@ public class MainActivity extends AppCompatActivity
         previousButton.setOnClickListener(mPreviousButtonListener);
     }
 
-    private void setupPager()
+    private void updateTabs()
     {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
-
+        tabLayout.removeAllTabs();
         List<Playlist> playlists = mApp.getPlaylists();
         for (Playlist playlist : playlists)
         {
             tabLayout.addTab(tabLayout.newTab().setText(playlist.getName()));
         }
 
-
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), playlists.size());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        ((TabsAdapter)viewPager.getAdapter()).setNumOfLists(playlists.size());
+    }
+
+    private void setupPager()
+    {
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
+
+        mPlaylistsPager = (ViewPager) findViewById(R.id.pager);
+        final TabsAdapter adapter = new TabsAdapter(getSupportFragmentManager(), mApp.getPlaylists().size());
+        mPlaylistsPager.setAdapter(adapter);
+        mPlaylistsPager.addOnPageChangeListener(adapter);
+        mPlaylistsPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
         {
             @Override
             public void onTabSelected(TabLayout.Tab tab)
             {
-                viewPager.setCurrentItem(tab.getPosition());
+                mPlaylistsPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
@@ -119,6 +127,8 @@ public class MainActivity extends AppCompatActivity
             {
             }
         });
+
+        updateTabs();
     }
 
     private void setupActionBar()
@@ -165,6 +175,16 @@ public class MainActivity extends AppCompatActivity
         {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
+        }
+        else if (id == R.id.new_playlist_menu)
+        {
+            mApp.createNewPlaylist("Playlist X");//TODO: A naming algorithm
+            updateTabs();
+        }
+        else if (id == R.id.remove_playlist_menu)
+        {
+            mApp.removePlaylist(mPlaylistsPager.getCurrentItem());
+            updateTabs();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -6,13 +6,13 @@ package com.juztoss.bpmplayer.models;
 public class Composition
 {
 
-    private String mId;
+    private long mId;
     private String mFolderName;
     private String mSongName;
     private String mAbsolutePath;
     private float mBPM;
 
-    public Composition(String songId, String folderName, String songName, float bpm)
+    public Composition(long songId, String folderName, String songName, float bpm)
     {
         mId = songId;
         mFolderName = folderName;

@@ -4,4 +4,12 @@
         android:id="@+id/settings_menu"
         android:title="@string/settings_title">
     </item>
+    <item
+        android:id="@+id/new_playlist_menu"
+        android:title="@string/new_playlist">
+    </item>
+    <item
+        android:id="@+id/remove_playlist_menu"
+        android:title="@string/remove_playlist">
+    </item>
 </menu>

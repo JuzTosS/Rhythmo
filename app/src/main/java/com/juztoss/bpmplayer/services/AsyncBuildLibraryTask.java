@@ -116,7 +116,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
     private void detectSongsBpm()
     {
-        Cursor songsCursor = DatabaseHelper.db().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+        Cursor songsCursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                 new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME},
                 DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?",
                 new String[]{"0"}, null, null, null);
@@ -145,7 +145,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 int bpmX10 = (int) (bpm * 10);
                 ContentValues values = new ContentValues();
                 values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, bpmX10);
-                int rowsAffected = DatabaseHelper.db().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + "= ?", new String[]{songId});
+                int rowsAffected = mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + "= ?", new String[]{songId});
 
                 Log.e("DEBUG affected=", rowsAffected + ", " + fullPath + " : " + bpmX10);
                 mOverallProgress += subProgress;
@@ -207,14 +207,14 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     {
         try
         {
-            DatabaseHelper.db().beginTransaction();
+            mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
 
             //Set all songs as deleted, we'll update each song that exists later
             ContentValues cv = new ContentValues();
             cv.put(DatabaseHelper.MUSIC_LIBRARY_DELETED, true);
-            DatabaseHelper.db().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, cv, DatabaseHelper.MUSIC_LIBRARY_MEDIA_ID + " >= 0", null);
+            mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, cv, DatabaseHelper.MUSIC_LIBRARY_MEDIA_ID + " >= 0", null);
 
-            DatabaseHelper.db().delete(DatabaseHelper.TABLE_FOLDERS, null, null);
+            mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_FOLDERS, null, null);
 
             //Tracks the progress of this method.
             int subProgress;
@@ -279,13 +279,13 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 values.put(DatabaseHelper.MUSIC_LIBRARY_DELETED, false);
 
                 //Add all the entries to the database to build the songs library.
-                long rowId = DatabaseHelper.db().insertWithOnConflict(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                long rowId = mApp.getDatabaseHelper().getWritableDatabase().insertWithOnConflict(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                         null,
                         values, SQLiteDatabase.CONFLICT_IGNORE);
 
                 if(rowId != -1)
                 {
-                    DatabaseHelper.db().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + " = ?", new String[]{Long.toString(rowId)});
+                    mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + " = ?", new String[]{Long.toString(rowId)});
                 }
 
                 Node parentNode = folderIds;
@@ -305,7 +305,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                     if (j == (folders.length - 2))//This is the last segment
                         folderValues.put(DatabaseHelper.FOLDERS_HAS_SONGS, true);
 
-                    long id = DatabaseHelper.db().insert(DatabaseHelper.TABLE_FOLDERS, null, folderValues);
+                    long id = mApp.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_FOLDERS, null, folderValues);
                     Node newNode = new Node(id);
                     parentNode.add(newNode, folder);
                     parentNode = newNode;
@@ -322,11 +322,11 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         finally
         {
             //Close the transaction.
-            DatabaseHelper.db().setTransactionSuccessful();
-            DatabaseHelper.db().endTransaction();
+            mApp.getDatabaseHelper().getWritableDatabase().setTransactionSuccessful();
+            mApp.getDatabaseHelper().getWritableDatabase().endTransaction();
         }
 
-        DatabaseHelper.db().delete(DatabaseHelper.TABLE_MUSIC_LIBRARY, DatabaseHelper.MUSIC_LIBRARY_DELETED + " = ?", new String[]{"true"});
+        mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_MUSIC_LIBRARY, DatabaseHelper.MUSIC_LIBRARY_DELETED + " = ?", new String[]{"true"});
     }
 //
 //    /**

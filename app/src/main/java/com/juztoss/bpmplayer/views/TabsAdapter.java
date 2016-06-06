@@ -4,19 +4,34 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.ViewGroup;
 
 /**
  * Created by JuzTosS on 6/4/2016.
  */
-public class PagerAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener
+public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener
 {
-    private final int mNumOfLists;
+    private int mNumOfLists;
     private int mCurrentPosition = 0;
+    private ViewGroup mContainer;
 
-    public PagerAdapter(FragmentManager supportFragmentManager, int numOfLists)
+    @Override
+    public void startUpdate(ViewGroup container)
+    {
+        super.startUpdate(container);
+        mContainer = container;
+    }
+
+    public TabsAdapter(FragmentManager supportFragmentManager, int numOfLists)
     {
         super(supportFragmentManager);
+        setNumOfLists(numOfLists);
+    }
+
+    public void setNumOfLists(int numOfLists)
+    {
         mNumOfLists = numOfLists;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -34,10 +49,11 @@ public class PagerAdapter extends FragmentStatePagerAdapter implements ViewPager
     @Override
     public void onPageSelected(int newPosition)
     {
-        PlaylistFragment fragmentToShow = (PlaylistFragment)getItem(newPosition);
+
+        PlaylistFragment fragmentToShow = (PlaylistFragment)instantiateItem(mContainer, newPosition);
         fragmentToShow.onResumeFragment();
 
-        PlaylistFragment fragmentToHide = (PlaylistFragment)getItem(mCurrentPosition);
+        PlaylistFragment fragmentToHide = (PlaylistFragment)instantiateItem(mContainer, mCurrentPosition);
         fragmentToHide.onPauseFragment();
 
         mCurrentPosition = newPosition;
@@ -47,7 +63,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter implements ViewPager
     public Fragment getItem(int position)
     {
         return PlaylistFragment.newInstance(position);
-
     }
 
     @Override

@@ -34,7 +34,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
+        super.onActivityCreated(savedInstanceState);
         mApp = (BPMPlayerApp) getActivity().getApplicationContext();
 
         Bundle arguments = getArguments();
@@ -55,6 +55,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onStart()
     {
+        super.onStart();
         mApp.addOnRangeChangedListener(this);
         super.onStart();
         mPlaylistAdapter.notifyDataSetChanged();
@@ -79,6 +80,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onDestroy()
     {
+        super.onDestroy();
         mApp.removeOnRangeChangedListener(this);
     }
 

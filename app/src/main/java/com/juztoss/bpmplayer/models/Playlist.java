@@ -1,62 +1,44 @@
 package com.juztoss.bpmplayer.models;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 /**
  * Created by JuzTosS on 5/8/2016.
  */
 public class Playlist
 {
-    private String mName;
+    protected BPMPlayerApp mApp;
+    protected String mName;
+    protected int mMinBPMX10 = 0;
+    protected int mMaxBPMX10 = Integer.MAX_VALUE;
+    private long mId;
 
-    Playlist(String name)
+    Playlist(String name, BPMPlayerApp app)
     {
-        this(-1, name);
+        this(-1, name, app);
     }
 
-    public Playlist(int playlist_id, String name)
+    public Playlist(long playlistId, String name, BPMPlayerApp app)
     {
+        mId = playlistId;
         mName = name;
+        mApp = app;
     }
 
-    public Cursor getNewCompositionsCursor()
+    public Cursor getNewCompositionsIds()
     {
-        return null;
+//        return null;
+        return mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+            new String[]{DatabaseHelper._ID},
+            DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" + " AND " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?"
+            , new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10)},
+            null, null,
+            DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " ASC");
     }
-
-    public static List<Playlist> loadPlaylists()
-    {
-        List<Playlist> result = new ArrayList<>();
-
-        Cursor playlists = DatabaseHelper.db().query(DatabaseHelper.TABLE_PLAYLISTS,
-                new String[]{DatabaseHelper._ID, DatabaseHelper.PLAYLISTS_NAME},
-                null, null, null, null, null);
-
-        result.add(new StaticAllPlaylist());
-        int idIndex = playlists.getColumnIndex(DatabaseHelper._ID);
-        int nameIndex = playlists.getColumnIndex(DatabaseHelper.PLAYLISTS_NAME);
-
-        try
-        {
-            while (playlists.moveToNext())
-            {
-                result.add(new Playlist(playlists.getInt(idIndex), playlists.getString(nameIndex)));
-            }
-
-        }
-        finally
-        {
-            playlists.close();
-        }
-
-        return result;
-    }
-
 
     public String getName()
     {
@@ -65,37 +47,27 @@ public class Playlist
 
     public void setBPMFilter(float minBPM, float maxBPM)
     {
+        mMinBPMX10 = (int)(minBPM * 10);
+        mMaxBPMX10 = (int)(maxBPM * 10);
+    }
 
+    public static Playlist create(String name, BPMPlayerApp app)
+    {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.PLAYLISTS_NAME, name);
+        long id = app.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_PLAYLISTS, null, values);
+        return new Playlist(id, name, app);
+    }
+
+    public static void remove(Playlist playlist, BPMPlayerApp app)
+    {
+        if(playlist.getId() >= 0)
+            app.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_PLAYLISTS, DatabaseHelper._ID + " = ?", new String[]{Long.toString(playlist.getId())});
+    }
+
+    public long getId()
+    {
+        return mId;
     }
 }
 
-class StaticAllPlaylist extends Playlist
-{
-    private int mMinBPMX10 = 0;
-    private int mMaxBPMX10 = Integer.MAX_VALUE;
-
-    public StaticAllPlaylist()
-    {
-        super("All songs");
-
-
-    }
-
-    @Override
-    public Cursor getNewCompositionsCursor()
-    {
-        return DatabaseHelper.db().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_FULL_PATH, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10},
-                DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" + " AND " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?"
-                , new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10)},
-                null, null,
-                DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " ASC");
-    }
-
-    @Override
-    public void setBPMFilter(float minBPM, float maxBPM)
-    {
-        mMinBPMX10 = (int) (minBPM * 10);
-        mMaxBPMX10 = (int) (maxBPM * 10);
-    }
-}

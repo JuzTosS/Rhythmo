@@ -2,10 +2,13 @@ package com.juztoss.bpmplayer.presenters;
 
 import android.app.Application;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
+import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
+import com.juztoss.bpmplayer.models.StaticAllPlaylist;
 import com.juztoss.bpmplayer.services.PlaybackService;
 
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ public class BPMPlayerApp extends Application
     private List<Playlist> mPlaylists;
     private float mMinBPM;
     private float mMaxBPM;
+    private DatabaseHelper mDatabaseHelper;
 
     private List<OnBPMChangedListener> mOnBPMChangedListeners;
 
@@ -31,9 +35,65 @@ public class BPMPlayerApp extends Application
     public void onCreate()
     {
         super.onCreate();
-        new DatabaseHelper(this);
+        mDatabaseHelper = new DatabaseHelper(this);
         mBrowserPresenter = new BrowserPresenter(this);
-        mPlaylists = Playlist.loadPlaylists();
+        mPlaylists = loadPlaylists();
+    }
+
+    public List<Playlist> loadPlaylists()
+    {
+        List<Playlist> result = new ArrayList<>();
+
+        Cursor playlists = getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_PLAYLISTS,
+                new String[]{DatabaseHelper._ID, DatabaseHelper.PLAYLISTS_NAME},
+                null, null, null, null, null);
+
+        result.add(new StaticAllPlaylist(this));
+        int idIndex = playlists.getColumnIndex(DatabaseHelper._ID);
+        int nameIndex = playlists.getColumnIndex(DatabaseHelper.PLAYLISTS_NAME);
+
+        try
+        {
+            while (playlists.moveToNext())
+            {
+                result.add(new Playlist(playlists.getInt(idIndex), playlists.getString(nameIndex), this));
+            }
+
+        }
+        finally
+        {
+            playlists.close();
+        }
+
+        return result;
+    }
+
+    public Composition getComposition(long id)
+    {
+        Cursor cursor = getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10},
+                DatabaseHelper._ID + "= ?",
+                new String[]{Long.toString(id)},
+                null, null, null);
+
+        Composition composition;
+        try
+        {
+            cursor.moveToFirst();
+
+            composition = new Composition(
+                    id,
+                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH)),
+                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME)),
+                    (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10)) / (float) 10);
+
+        }
+        finally
+        {
+            cursor.close();
+        }
+
+        return composition;
     }
 
     @Override
@@ -88,7 +148,7 @@ public class BPMPlayerApp extends Application
         mMinBPM = minBPM;
         mMaxBPM = maxBPM;
 
-        for(Playlist playlist : mPlaylists)
+        for (Playlist playlist : mPlaylists)
         {
             playlist.setBPMFilter(mMinBPM, mMaxBPM);
         }
@@ -98,8 +158,8 @@ public class BPMPlayerApp extends Application
 
     private void callBPMListeners()
     {
-        if(mOnBPMChangedListeners == null) return;
-        for(OnBPMChangedListener listener : mOnBPMChangedListeners)
+        if (mOnBPMChangedListeners == null) return;
+        for (OnBPMChangedListener listener : mOnBPMChangedListeners)
         {
             listener.onBPMChanged(mMinBPM, mMaxBPM);
         }
@@ -107,16 +167,36 @@ public class BPMPlayerApp extends Application
 
     public void addOnRangeChangedListener(OnBPMChangedListener listener)
     {
-        if(mOnBPMChangedListeners == null)
+        if (mOnBPMChangedListeners == null)
             mOnBPMChangedListeners = new ArrayList<>();
 
-        if(!mOnBPMChangedListeners.contains(listener))
+        if (!mOnBPMChangedListeners.contains(listener))
             mOnBPMChangedListeners.add(listener);
     }
 
     public void removeOnRangeChangedListener(OnBPMChangedListener listener)
     {
         mOnBPMChangedListeners.remove(listener);
+    }
+
+    public void createNewPlaylist(String name)
+    {
+        mPlaylists.add(Playlist.create(name, this));
+    }
+
+    public DatabaseHelper getDatabaseHelper()
+    {
+        return mDatabaseHelper;
+    }
+
+    public void removePlaylist(int playlistIndex)
+    {
+        Playlist playlist = mPlaylists.get(playlistIndex);
+        if(playlist != null)
+        {
+            Playlist.remove(playlist, this);
+            mPlaylists.remove(playlistIndex);
+        }
     }
 
     public interface OnBPMChangedListener

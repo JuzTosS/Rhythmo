@@ -58,7 +58,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private Cursor getSongsList()
     {
-        return mApp.getPlaylists().get(mCurrentPlaylistId).getNewCompositionsCursor();
+        return mApp.getPlaylists().get(mCurrentPlaylistId).getNewCompositionsIds();
     }
 
     public void gotoNext()
@@ -158,9 +158,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     public void setSource(int index)
     {
-        int fullPathIndex = getSongsList().getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_FULL_PATH);
+        int idIndex = getSongsList().getColumnIndex(DatabaseHelper._ID);
         getSongsList().moveToPosition(index);
-        putAction(new ActionPrepare(getSongsList().getString(fullPathIndex)));
+        putAction(new ActionPrepare(mApp.getComposition(getSongsList().getLong(idIndex)).getAbsolutePath()));
     }
 
     private void setIsPlaying(boolean value)
