@@ -13,14 +13,24 @@ public class StaticAllPlaylist extends Playlist
     }
 
     @Override
-    public Cursor getNewCompositionsIds()
+    protected void rebuild()
     {
-        return mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+        if (mList != null)
+            mList.close();
+
+        mList = mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                 new String[]{DatabaseHelper._ID},
                 DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" + " AND " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?"
                 , new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10)},
                 null, null,
                 DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " ASC");
+
+        mNeedRebuild = false;
     }
 
+    @Override
+    public void add(Cursor songIds)
+    {
+        //Do nothing
+    }
 }

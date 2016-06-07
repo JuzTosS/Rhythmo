@@ -31,11 +31,11 @@ public class PlaylistAdapter extends CursorAdapter
 
     public PlaylistAdapter(Context context, Playlist playlist)
     {
-        super(context, playlist.getNewCompositionsIds(), false);
+        super(context, playlist.getList(), false);
         mPlaylist = playlist;
         mContext = context;
         mApp = (BPMPlayerApp) context.getApplicationContext();
-        setupIndexes(playlist.getNewCompositionsIds());
+        setupIndexes(playlist.getList());
     }
 
     @Override
@@ -89,7 +89,7 @@ public class PlaylistAdapter extends CursorAdapter
 
     public void updatePlaylist()
     {
-        swapCursor(mPlaylist.getNewCompositionsIds());
+        swapCursor(mPlaylist.getList());
         notifyDataSetChanged();
     }
 }

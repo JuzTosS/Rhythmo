@@ -16,6 +16,8 @@ public class Playlist
     protected int mMinBPMX10 = 0;
     protected int mMaxBPMX10 = Integer.MAX_VALUE;
     private long mId;
+    protected Cursor mList;
+    protected boolean mNeedRebuild = true;
 
     Playlist(String name, BPMPlayerApp app)
     {
@@ -29,15 +31,47 @@ public class Playlist
         mApp = app;
     }
 
-    public Cursor getNewCompositionsIds()
+    public void add(Cursor songIds)
     {
-//        return null;
-        return mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-            new String[]{DatabaseHelper._ID},
-            DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" + " AND " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?"
-            , new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10)},
-            null, null,
-            DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " ASC");
+        songIds.moveToFirst();
+        mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
+        do
+        {
+            long songId = songIds.getLong(0);
+            ContentValues values = new ContentValues();
+            values.put(DatabaseHelper.SONGS_PLAYLIST_ID, mId);
+            values.put(DatabaseHelper.SONGS_SONG_ID, songId);
+            mApp.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_SONGS, null, values);
+
+        }while (songIds.moveToNext());
+
+        mApp.getDatabaseHelper().getWritableDatabase().setTransactionSuccessful();
+        mApp.getDatabaseHelper().getWritableDatabase().endTransaction();
+
+        mNeedRebuild = true;
+    }
+
+    protected void rebuild()
+    {
+        if(mList != null)
+            mList.close();
+
+        mList =  mApp.getDatabaseHelper().getWritableDatabase().rawQuery(
+                "select " + DatabaseHelper.SONGS_SONG_ID + " from "  + DatabaseHelper.TABLE_SONGS +
+                " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_SONGS + "." + DatabaseHelper.SONGS_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
+                " where "  + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." +  DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" + " AND " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?",
+                new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10)}
+        );
+
+        mNeedRebuild = false;
+    }
+
+    public Cursor getList()
+    {
+        if(mNeedRebuild)
+            rebuild();
+
+        return mList;
     }
 
     public String getName()
@@ -49,6 +83,7 @@ public class Playlist
     {
         mMinBPMX10 = (int)(minBPM * 10);
         mMaxBPMX10 = (int)(maxBPM * 10);
+        mNeedRebuild = true;
     }
 
     public static Playlist create(String name, BPMPlayerApp app)

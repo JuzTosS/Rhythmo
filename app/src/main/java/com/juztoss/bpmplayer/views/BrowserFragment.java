@@ -94,10 +94,10 @@ public class BrowserFragment extends android.app.ListFragment implements DrawerL
     {
 //        if(mApp.isPlaybackServiceRunning())
 //        {
-//            List<Composition> getNewCompositionsIds = mApp.getBrowserPresenter().getCurrentElementCompositions();
+//            List<Composition> getList = mApp.getBrowserPresenter().getCurrentElementCompositions();
 //
-//            if(getNewCompositionsIds != null)
-//                mApp.getPlaybackService().resetPlaylist(getNewCompositionsIds);
+//            if(getList != null)
+//                mApp.getPlaybackService().resetPlaylist(getList);
 //        }
     }
 

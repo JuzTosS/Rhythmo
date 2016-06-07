@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.audio.AdvancedMediaPlayer;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
@@ -58,7 +57,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private Cursor getSongsList()
     {
-        return mApp.getPlaylists().get(mCurrentPlaylistId).getNewCompositionsIds();
+        return mApp.getPlaylists().get(mCurrentPlaylistId).getList();
     }
 
     public void gotoNext()
@@ -158,9 +157,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     public void setSource(int index)
     {
-        int idIndex = getSongsList().getColumnIndex(DatabaseHelper._ID);
         getSongsList().moveToPosition(index);
-        putAction(new ActionPrepare(mApp.getComposition(getSongsList().getLong(idIndex)).getAbsolutePath()));
+        putAction(new ActionPrepare(mApp.getComposition(getSongsList().getLong(0)).getAbsolutePath()));
     }
 
     private void setIsPlaying(boolean value)
