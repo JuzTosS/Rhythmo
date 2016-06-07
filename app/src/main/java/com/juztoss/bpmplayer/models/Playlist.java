@@ -57,7 +57,7 @@ public class Playlist
             mList.close();
 
         mList =  mApp.getDatabaseHelper().getWritableDatabase().rawQuery(
-                "select " + DatabaseHelper.SONGS_SONG_ID + " from "  + DatabaseHelper.TABLE_SONGS +
+                "select " + DatabaseHelper.SONGS_SONG_ID + " as " + DatabaseHelper._ID + " from "  + DatabaseHelper.TABLE_SONGS +
                 " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_SONGS + "." + DatabaseHelper.SONGS_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
                 " where "  + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." +  DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" + " AND " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?",
                 new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10)}

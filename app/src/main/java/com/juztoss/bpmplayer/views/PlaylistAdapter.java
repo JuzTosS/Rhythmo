@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
@@ -23,10 +22,6 @@ public class PlaylistAdapter extends CursorAdapter
     private BPMPlayerApp mApp;
     private Context mContext;
 
-    private int mNameIndex;
-    private int mFullPathIndex;
-    private int mBpmIndex;
-
     private Playlist mPlaylist;
 
     public PlaylistAdapter(Context context, Playlist playlist)
@@ -35,21 +30,6 @@ public class PlaylistAdapter extends CursorAdapter
         mPlaylist = playlist;
         mContext = context;
         mApp = (BPMPlayerApp) context.getApplicationContext();
-        setupIndexes(playlist.getList());
-    }
-
-    @Override
-    public Cursor swapCursor(Cursor newCursor)
-    {
-        setupIndexes(newCursor);
-        return super.swapCursor(newCursor);
-    }
-
-    private void setupIndexes(Cursor newCursor)
-    {
-        mNameIndex = newCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME);
-        mFullPathIndex = newCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_FULL_PATH);
-        mBpmIndex = newCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10);
     }
 
     @Override
