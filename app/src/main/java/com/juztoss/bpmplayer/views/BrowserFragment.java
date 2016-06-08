@@ -1,7 +1,7 @@
 package com.juztoss.bpmplayer.views;
 
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +11,14 @@ import android.widget.Switch;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.BaseExplorerElement;
-import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.presenters.BrowserPresenter;
 
-import java.util.List;
 
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class BrowserFragment extends android.app.ListFragment implements DrawerLayout.DrawerListener, BrowserPresenter.OnDataChangedListener
+public class BrowserFragment extends ListFragment implements BrowserPresenter.OnDataChangedListener
 {
     private BrowserAdapter mBrowserAdapter;
     private BPMPlayerApp mApp;
@@ -47,11 +45,8 @@ public class BrowserFragment extends android.app.ListFragment implements DrawerL
 
         mTypeSwitcher = (Switch) getView().findViewById(R.id.browser_type_switcher);
         mTypeSwitcher.setOnCheckedChangeListener(mSwitcherListener);
-
-        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
         mApp.getBrowserPresenter().setOnDataChangedListener(this);
 
-        drawer.addDrawerListener(this);
     }
 
     @Override
@@ -77,33 +72,4 @@ public class BrowserFragment extends android.app.ListFragment implements DrawerL
         getLoaderManager().restartLoader(0, null, mApp.getBrowserPresenter());
     }
 
-    @Override
-    public void onDrawerSlide(View drawerView, float slideOffset)
-    {
-
-    }
-
-    @Override
-    public void onDrawerOpened(View drawerView)
-    {
-        getLoaderManager().restartLoader(0, null, mApp.getBrowserPresenter());
-    }
-
-    @Override
-    public void onDrawerClosed(View drawerView)
-    {
-//        if(mApp.isPlaybackServiceRunning())
-//        {
-//            List<Composition> getList = mApp.getBrowserPresenter().getCurrentElementCompositions();
-//
-//            if(getList != null)
-//                mApp.getPlaybackService().resetPlaylist(getList);
-//        }
-    }
-
-    @Override
-    public void onDrawerStateChanged(int newState)
-    {
-
-    }
 }

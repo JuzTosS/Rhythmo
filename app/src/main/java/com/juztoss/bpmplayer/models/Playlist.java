@@ -104,5 +104,10 @@ public class Playlist
     {
         return mId;
     }
+
+    public void add(String path)
+    {
+
+    }
 }
 

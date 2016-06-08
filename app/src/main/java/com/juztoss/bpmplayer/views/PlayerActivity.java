@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +25,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -34,7 +37,7 @@ import com.juztoss.bpmplayer.services.PlaybackService;
 
 import java.util.List;
 
-public class PlayerActivity extends AppCompatActivity
+public class PlayerActivity extends AppCompatActivity implements View.OnClickListener
 {
     private DrawerArrowDrawable mHamburger;
     private BPMPlayerApp mApp;
@@ -44,6 +47,10 @@ public class PlayerActivity extends AppCompatActivity
     private SeekBar mSeekbar;
     private RangeSeekBar<Integer> mRangeSeekbar;
     ViewPager mPlaylistsPager;
+    DrawerLayout mDrawer;
+    private Boolean isMenuOpen = false;
+    private FloatingActionButton fab, fab1;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -62,11 +69,68 @@ public class PlayerActivity extends AppCompatActivity
         setupActionBar();
         setupPager();
         setupAllOtherUI();
+        createFabs();
         LocalBroadcastManager.getInstance(mApp).registerReceiver(mUpdateUIReceiver, new IntentFilter(PlaybackService.UPDATE_UI_ACTION));
+    }
+
+    private Playlist getCurrentViewedPlaylist()
+    {
+        return mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
+    }
+
+    private void createFabs()
+    {
+        fab = (FloatingActionButton) findViewById(R.id.btnAddToPlaylist);
+        fab1 = (FloatingActionButton) findViewById(R.id.btnApplyFolderToPlaylist);
+        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
+        fab.setOnClickListener(this);
+        fab1.setOnClickListener(this);
+    }
+
+    public void changeBrowserState()
+    {
+        if (isMenuOpen)
+        {
+            mDrawer.closeDrawer(GravityCompat.START);
+            fab.startAnimation(rotate_backward);
+            fab1.startAnimation(fab_close);
+            fab1.setClickable(false);
+            isMenuOpen = false;
+        }
+        else
+        {
+            mDrawer.openDrawer(GravityCompat.START);
+            fab.startAnimation(rotate_forward);
+            fab1.startAnimation(fab_open);
+            fab1.setClickable(true);
+            isMenuOpen = true;
+
+        }
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        int id = v.getId();
+        switch (id)
+        {
+            case R.id.btnAddToPlaylist:
+                changeBrowserState();
+                break;
+            case R.id.btnApplyFolderToPlaylist:
+//                getCurrentViewedPlaylist().add(path);//TODO: Add files to playlist
+                changeBrowserState();
+                break;
+        }
     }
 
     private void setupAllOtherUI()
     {
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTimePassed = (TextView) findViewById(R.id.time_passed);
         mTimeLeft = (TextView) findViewById(R.id.time_left);
         mSeekbar = (SeekBar) findViewById(R.id.seekbar);
@@ -96,7 +160,7 @@ public class PlayerActivity extends AppCompatActivity
         }
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        ((TabsAdapter)viewPager.getAdapter()).setNumOfLists(playlists.size());
+        ((TabsAdapter) viewPager.getAdapter()).setNumOfLists(playlists.size());
     }
 
     private void setupPager()
@@ -146,7 +210,7 @@ public class PlayerActivity extends AppCompatActivity
         TextView actionBarTitleview = (TextView) actionBarLayout.findViewById(R.id.actionbar_titleview);
         actionBarTitleview.setText("My Custom ActionBar Title");
         actionBar.setCustomView(actionBarLayout);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -167,8 +231,7 @@ public class PlayerActivity extends AppCompatActivity
         int id = item.getItemId();
         if (id == android.R.id.home)
         {
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.openDrawer(GravityCompat.START);
+
             return true;
         }
         else if (id == R.id.settings_menu)

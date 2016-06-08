@@ -1,9 +1,9 @@
 package com.juztoss.bpmplayer.presenters;
 
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
-import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 
 import com.juztoss.bpmplayer.models.BaseExplorerElement;
 import com.juztoss.bpmplayer.models.Composition;
