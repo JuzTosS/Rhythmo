@@ -17,6 +17,7 @@ import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 public class PlaylistFragment extends Fragment implements AdapterView.OnItemClickListener, BPMPlayerApp.OnBPMChangedListener
 {
     public static String PLAYLIST_INDEX = "PlaylistID";
+    private int mPlaylistIndex;
 
     private PlaylistAdapter mPlaylistAdapter;
 
@@ -44,6 +45,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
 
         if (!mApp.isPlaybackServiceRunning()) return;
 
+        mPlaylistIndex = playlistIndex;
         mPlaylistAdapter = new PlaylistAdapter(getActivity(), mApp.getPlaylists().get(playlistIndex));
         ListView list = (ListView) getView().findViewById(R.id.listView);
         list.setOnItemClickListener(this);
@@ -72,7 +74,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     {
         if (mApp.isPlaybackServiceRunning())
         {
-            mApp.getPlaybackService().setSource(position);
+            mApp.getPlaybackService().setSource(mPlaylistIndex, position);
             mApp.getPlaybackService().startPlayback();
         }
     }

@@ -1,8 +1,8 @@
 package com.juztoss.bpmplayer.models;
 
-import com.juztoss.bpmplayer.presenters.ISongsDataSource;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +13,6 @@ public class CustomExplorerElement extends BaseExplorerElement
     private String mName;
     private ExplorerPriority mPriority;
     private List<BaseExplorerElement> mChildren;
-    private ISongsDataSource mSource = new EmptySongsSource();
 
     public CustomExplorerElement(String name, List<BaseExplorerElement> children, ExplorerPriority priority)
     {
@@ -45,9 +44,10 @@ public class CustomExplorerElement extends BaseExplorerElement
         mChildren.add(element);
     }
 
+    @Nullable
     @Override
-    public ISongsDataSource getSource()
+    public Cursor getSongIds()
     {
-        return mSource;
+        return null;
     }
 }

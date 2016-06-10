@@ -1,6 +1,7 @@
 package com.juztoss.bpmplayer.models;
 
-import com.juztoss.bpmplayer.presenters.ISongsDataSource;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
 import java.util.List;
 
@@ -14,7 +15,9 @@ public abstract class BaseExplorerElement implements Comparable<BaseExplorerElem
     abstract ExplorerPriority priority();
 
     public abstract List<BaseExplorerElement> getChildren();
-    public abstract ISongsDataSource getSource();
+
+    @Nullable
+    public abstract Cursor getSongIds();
 
     @Override
     public int compareTo(BaseExplorerElement another)

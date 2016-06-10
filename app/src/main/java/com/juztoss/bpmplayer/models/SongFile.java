@@ -1,6 +1,9 @@
 package com.juztoss.bpmplayer.models;
 
-import com.juztoss.bpmplayer.presenters.ISongsDataSource;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
+
+import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.io.File;
 import java.util.Arrays;
@@ -16,12 +19,14 @@ public class SongFile extends BaseExplorerElement
     private static final Set<String> SUPPORTED_FORMATS = new HashSet<>(Arrays.asList("wav", "mp3", "m4a", "aiff"));
 
     private File mFile;
-    private ISongsDataSource mSongsDataSource;
+    private boolean mDoCheckFileSystem;
+    private BPMPlayerApp mApp;
 
-    public SongFile(File source)
+    public SongFile(File source, boolean doCheckFileSystem, BPMPlayerApp app)
     {
         mFile = source;
-        mSongsDataSource = new SingleSongSource(source.getAbsolutePath());
+        mDoCheckFileSystem = doCheckFileSystem;
+        mApp = app;
     }
 
     public String name()
@@ -51,9 +56,10 @@ public class SongFile extends BaseExplorerElement
         return SUPPORTED_FORMATS.contains(extension);
     }
 
+    @Nullable
     @Override
-    public ISongsDataSource getSource()
+    public Cursor getSongIds()
     {
-        return mSongsDataSource;
+        return mApp.getMusicLibraryHelper().getSongIdsCursor(mFile.getAbsolutePath(), mDoCheckFileSystem);
     }
 }

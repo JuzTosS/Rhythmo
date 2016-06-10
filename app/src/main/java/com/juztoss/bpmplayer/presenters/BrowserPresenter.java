@@ -1,5 +1,6 @@
 package com.juztoss.bpmplayer.presenters;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -30,7 +31,7 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
     {
         super(app);
         CustomExplorerElement root = new CustomExplorerElement("", new ArrayList<BaseExplorerElement>(), ExplorerPriority.HIGHEST);
-        root.add(new FileSystemFolder(new File("/"), "File system", root));
+        root.add(new FileSystemFolder(new File("/"), "File system", root, app));
         root.add(new MediaFolder(-1, "Media", false, root, false, app));
 
         mCurrent = root;
@@ -72,9 +73,9 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
 
     }
 
-    public List<BaseExplorerElement> getFileList()
+    public Cursor getSongIds()
     {
-        return mData;
+        return mCurrent.getSongIds();
     }
 
     public void switchMode()
@@ -87,12 +88,9 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
         mListener = listener;
     }
 
-    public ISongsDataSource getCurrentSource()
+    public List<BaseExplorerElement> getList()
     {
-        if(mCurrent != null)
-            return mCurrent.getSource();
-        else
-            return null;
+        return mData;
     }
 
     public interface OnDataChangedListener

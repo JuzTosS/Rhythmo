@@ -1,6 +1,7 @@
 package com.juztoss.bpmplayer.models;
 
-import com.juztoss.bpmplayer.presenters.ISongsDataSource;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
 import java.util.List;
 
@@ -34,9 +35,10 @@ public class ParentLink extends BaseExplorerElement
         return mSource.getChildren();
     }
 
+    @Nullable
     @Override
-    public ISongsDataSource getSource()
+    public Cursor getSongIds()
     {
-        return mSource.getSource();
+        return mSource.getSongIds();
     }
 }

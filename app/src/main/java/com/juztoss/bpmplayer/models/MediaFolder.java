@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
-import com.juztoss.bpmplayer.presenters.ISongsDataSource;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ public class MediaFolder extends BaseExplorerElement
     private boolean mFirstHasSongs;
     private boolean mLastHasSongs;
     private BPMPlayerApp mApp;
-    private ISongsDataSource mSource;
 
     public MediaFolder(long mediaFolderId, String folderName, boolean hasSongs, @Nullable BaseExplorerElement parent, BPMPlayerApp app)
     {
@@ -42,11 +40,6 @@ public class MediaFolder extends BaseExplorerElement
 
         if (isCompacting)
             checkCompacting();
-
-        if(mLastHasSongs)
-            mSource = new MediaFolderSource(mediaFolderId, mApp);
-        else
-            mSource = new EmptySongsSource();
     }
 
     private void checkCompacting()
@@ -171,7 +164,7 @@ public class MediaFolder extends BaseExplorerElement
                     songPathBuilder.append(folderName);
                     songPathBuilder.append("/");
                     songPathBuilder.append(songName);
-                    songs.add(new SongFile(new File(songPathBuilder.toString())));
+                    songs.add(new SongFile(new File(songPathBuilder.toString()), false, mApp));
                 }
             }
             finally
@@ -203,9 +196,10 @@ public class MediaFolder extends BaseExplorerElement
         return path;
     }
 
+    @Nullable
     @Override
-    public ISongsDataSource getSource()
+    public Cursor getSongIds()
     {
-        return mSource;
+        return mApp.getMusicLibraryHelper().getSongIdsCursor(resolvePath(), false);
     }
 }

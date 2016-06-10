@@ -122,7 +122,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.btnApplyFolderToPlaylist:
 
-                getCurrentViewedPlaylist().add(mApp.getBrowserPresenter().getFileList());
+                getCurrentViewedPlaylist().add(mApp.getBrowserPresenter().getSongIds());
                 changeBrowserState();
                 break;
         }

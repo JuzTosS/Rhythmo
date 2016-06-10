@@ -1,6 +1,7 @@
 package com.juztoss.bpmplayer.presenters;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -31,10 +32,13 @@ public class BPMPlayerApp extends Application
 
     private List<OnBPMChangedListener> mOnBPMChangedListeners;
 
+    private MusicLibraryHelper mMusicLibraryHelper;
+
     @Override
     public void onCreate()
     {
         super.onCreate();
+        mMusicLibraryHelper = new MusicLibraryHelper(this);
         mDatabaseHelper = new DatabaseHelper(this);
         mBrowserPresenter = new BrowserPresenter(this);
         mPlaylists = loadPlaylists();
@@ -197,6 +201,11 @@ public class BPMPlayerApp extends Application
             Playlist.remove(playlist, this);
             mPlaylists.remove(playlistIndex);
         }
+    }
+
+    public MusicLibraryHelper getMusicLibraryHelper()
+    {
+        return mMusicLibraryHelper;
     }
 
     public interface OnBPMChangedListener

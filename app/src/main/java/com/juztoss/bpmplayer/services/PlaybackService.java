@@ -35,7 +35,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private AdvancedMediaPlayer mPlayer;
     private BPMPlayerApp mApp;
-    private int mCurrentPlaylistId = 0;
+    private int mCurrentPlaylistIndex = 0;
     private int mCurrentSongIndex = 0;
     private Queue<BaseAction> mQueue = new LinkedList<>();
 
@@ -57,7 +57,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private Cursor getSongsList()
     {
-        return mApp.getPlaylists().get(mCurrentPlaylistId).getList();
+        return mApp.getPlaylists().get(mCurrentPlaylistIndex).getList();
     }
 
     public void gotoNext()
@@ -155,8 +155,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         super.onDestroy();
     }
 
-    public void setSource(int index)
+    public void setSource(int playlistIndex, int index)
     {
+        mCurrentPlaylistIndex = playlistIndex;
         getSongsList().moveToPosition(index);
         putAction(new ActionPrepare(mApp.getComposition(getSongsList().getLong(0)).getAbsolutePath()));
     }

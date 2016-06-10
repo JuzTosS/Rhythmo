@@ -1,6 +1,9 @@
 package com.juztoss.bpmplayer.models;
 
-import com.juztoss.bpmplayer.presenters.ISongsDataSource;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
+
+import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,20 +16,20 @@ import java.util.List;
 public class FileSystemFolder extends BaseExplorerElement
 {
     private File mFile;
-    private ISongsDataSource mSource;
     private String mCustomName;
     private BaseExplorerElement mParent;
+    private BPMPlayerApp mApp;
 
-    public FileSystemFolder(File source, BaseExplorerElement parent)
+    public FileSystemFolder(File source, BaseExplorerElement parent, BPMPlayerApp app)
     {
         mFile = source;
         mParent = parent;
-        mSource = new FolderDataSource(source.getAbsolutePath());
+        mApp = app;
     }
 
-    public FileSystemFolder(File source, String customName, BaseExplorerElement parent)
+    public FileSystemFolder(File source, String customName, BaseExplorerElement parent, BPMPlayerApp app)
     {
-        this(source, parent);
+        this(source, parent, app);
         mCustomName = customName;
     }
 
@@ -62,12 +65,12 @@ public class FileSystemFolder extends BaseExplorerElement
         {
             if (file.isDirectory())
             {
-                dirs.add(new FileSystemFolder(file, this));
+                dirs.add(new FileSystemFolder(file, this, mApp));
             }
             else
             {
                 if (SongFile.isSong(file))
-                    files.add(new SongFile(file));
+                    files.add(new SongFile(file, true, mApp));
             }
         }
 
@@ -79,9 +82,10 @@ public class FileSystemFolder extends BaseExplorerElement
         return dirs;
     }
 
+    @Nullable
     @Override
-    public ISongsDataSource getSource()
+    public Cursor getSongIds()
     {
-        return mSource;
+        return mApp.getMusicLibraryHelper().getSongIdsCursor(mFile.getAbsolutePath(), true);
     }
 }

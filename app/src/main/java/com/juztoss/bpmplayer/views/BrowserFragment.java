@@ -53,7 +53,7 @@ public class BrowserFragment extends ListFragment implements BrowserPresenter.On
     public void onDataChanged()
     {
         mBrowserAdapter.clear();
-        mBrowserAdapter.addAll(mApp.getBrowserPresenter().getFileList());
+        mBrowserAdapter.addAll(mApp.getBrowserPresenter().getList());
         mBrowserAdapter.notifyDataSetChanged();
     }
 

@@ -33,34 +33,42 @@ public class Playlist
 
     public void add(Cursor songIds)
     {
-        songIds.moveToFirst();
-        mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
-        do
+        try
         {
-            long songId = songIds.getLong(0);
-            ContentValues values = new ContentValues();
-            values.put(DatabaseHelper.SONGS_PLAYLIST_ID, mId);
-            values.put(DatabaseHelper.SONGS_SONG_ID, songId);
-            mApp.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_SONGS, null, values);
+            songIds.moveToFirst();
+            mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
+            do
+            {
+                long songId = songIds.getLong(0);
+                ContentValues values = new ContentValues();
+                values.put(DatabaseHelper.SONGS_PLAYLIST_ID, mId);
+                values.put(DatabaseHelper.SONGS_SONG_ID, songId);
+                mApp.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_SONGS, null, values);
 
-        }while (songIds.moveToNext());
-
-        mApp.getDatabaseHelper().getWritableDatabase().setTransactionSuccessful();
-        mApp.getDatabaseHelper().getWritableDatabase().endTransaction();
+            } while (songIds.moveToNext());
+        }
+        finally
+        {
+            mApp.getDatabaseHelper().getWritableDatabase().setTransactionSuccessful();
+            mApp.getDatabaseHelper().getWritableDatabase().endTransaction();
+            songIds.close();
+        }
 
         mNeedRebuild = true;
     }
 
     protected void rebuild()
     {
-        if(mList != null)
+        if (mList != null)
             mList.close();
 
-        mList =  mApp.getDatabaseHelper().getWritableDatabase().rawQuery(
-                "select " + DatabaseHelper.SONGS_SONG_ID + " as " + DatabaseHelper._ID + " from "  + DatabaseHelper.TABLE_SONGS +
-                " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_SONGS + "." + DatabaseHelper.SONGS_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
-                " where "  + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." +  DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" + " AND " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?",
-                new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10)}
+        mList = mApp.getDatabaseHelper().getWritableDatabase().rawQuery(
+                "select " + DatabaseHelper.SONGS_SONG_ID + " as " + DatabaseHelper._ID + " from " + DatabaseHelper.TABLE_SONGS +
+                        " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_SONGS + "." + DatabaseHelper.SONGS_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
+                        " where " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" +
+                        " AND " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?" +
+                        " AND " + DatabaseHelper.TABLE_SONGS + "." + DatabaseHelper.SONGS_PLAYLIST_ID + " = ?;",
+                new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10), Long.toString(mId)}
         );
 
         mNeedRebuild = false;
@@ -68,7 +76,7 @@ public class Playlist
 
     public Cursor getList()
     {
-        if(mNeedRebuild)
+        if (mNeedRebuild)
             rebuild();
 
         return mList;
@@ -81,8 +89,8 @@ public class Playlist
 
     public void setBPMFilter(float minBPM, float maxBPM)
     {
-        mMinBPMX10 = (int)(minBPM * 10);
-        mMaxBPMX10 = (int)(maxBPM * 10);
+        mMinBPMX10 = (int) (minBPM * 10);
+        mMaxBPMX10 = (int) (maxBPM * 10);
         mNeedRebuild = true;
     }
 
@@ -96,8 +104,10 @@ public class Playlist
 
     public static void remove(Playlist playlist, BPMPlayerApp app)
     {
-        if(playlist.getId() >= 0)
+        if (playlist.getId() >= 0)
             app.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_PLAYLISTS, DatabaseHelper._ID + " = ?", new String[]{Long.toString(playlist.getId())});
+
+        //TODO: Remove all songs
     }
 
     public long getId()
