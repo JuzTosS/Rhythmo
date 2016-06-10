@@ -1,5 +1,7 @@
 package com.juztoss.bpmplayer.models;
 
+import com.juztoss.bpmplayer.presenters.ISongsDataSource;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,14 +12,16 @@ import java.util.List;
  */
 public class FileSystemFolder extends BaseExplorerElement
 {
-    private File mSource;
+    private File mFile;
+    private ISongsDataSource mSource;
     private String mCustomName;
     private BaseExplorerElement mParent;
 
     public FileSystemFolder(File source, BaseExplorerElement parent)
     {
-        mSource = source;
+        mFile = source;
         mParent = parent;
+        mSource = new FolderDataSource(source.getAbsolutePath());
     }
 
     public FileSystemFolder(File source, String customName, BaseExplorerElement parent)
@@ -31,7 +35,7 @@ public class FileSystemFolder extends BaseExplorerElement
         if(mCustomName != null)
             return mCustomName;
         else
-            return mSource.getName();
+            return mFile.getName();
     }
 
     @Override
@@ -43,7 +47,7 @@ public class FileSystemFolder extends BaseExplorerElement
     @Override
     public List<BaseExplorerElement> getChildren()
     {
-        File[] allFiles = mSource.listFiles();
+        File[] allFiles = mFile.listFiles();
 
         List<BaseExplorerElement> dirs = new ArrayList<>();
         List<BaseExplorerElement> files = new ArrayList<>();
@@ -76,8 +80,8 @@ public class FileSystemFolder extends BaseExplorerElement
     }
 
     @Override
-    public List<Composition> getCompositions()
+    public ISongsDataSource getSource()
     {
-        return null;//TODO: return compositions list
+        return mSource;
     }
 }

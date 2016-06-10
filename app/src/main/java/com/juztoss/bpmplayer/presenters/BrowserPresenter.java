@@ -87,9 +87,12 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
         mListener = listener;
     }
 
-    public List<Composition> getCurrentElementCompositions()
+    public ISongsDataSource getCurrentSource()
     {
-        return mCurrent.getCompositions();
+        if(mCurrent != null)
+            return mCurrent.getSource();
+        else
+            return null;
     }
 
     public interface OnDataChangedListener

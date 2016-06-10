@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.presenters.ISongsDataSource;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class MediaFolder extends BaseExplorerElement
     private boolean mFirstHasSongs;
     private boolean mLastHasSongs;
     private BPMPlayerApp mApp;
+    private ISongsDataSource mSource;
 
     public MediaFolder(long mediaFolderId, String folderName, boolean hasSongs, @Nullable BaseExplorerElement parent, BPMPlayerApp app)
     {
@@ -40,6 +42,11 @@ public class MediaFolder extends BaseExplorerElement
 
         if (isCompacting)
             checkCompacting();
+
+        if(mLastHasSongs)
+            mSource = new MediaFolderSource(mediaFolderId, mApp);
+        else
+            mSource = new EmptySongsSource();
     }
 
     private void checkCompacting()
@@ -197,41 +204,8 @@ public class MediaFolder extends BaseExplorerElement
     }
 
     @Override
-    public List<Composition> getCompositions()
+    public ISongsDataSource getSource()
     {
-        if (mLastHasSongs)
-        {
-            List<Composition> songList = new ArrayList<>();
-            Cursor songsCursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                    new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10},
-                    DatabaseHelper.MUSIC_LIBRARY_PATH + "= ?",
-                    new String[]{resolvePath()},
-                    null, null, null);
-
-            int idIndex = songsCursor.getColumnIndex(DatabaseHelper._ID);
-            int pathIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH);
-            int songNameIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME);
-            int bpmx10Index = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10);
-            try
-            {
-                while (songsCursor.moveToNext())
-                {
-                    long songId = songsCursor.getLong(idIndex);
-                    String folderName = songsCursor.getString(pathIndex);
-                    String songName = songsCursor.getString(songNameIndex);
-                    float bpm = songsCursor.getInt(bpmx10Index) / 10;
-
-                    songList.add(new Composition(songId, folderName, songName, bpm));
-                }
-            }
-            finally
-            {
-                songsCursor.close();
-            }
-
-            return songList;
-        }
-
-        return null;
+        return mSource;
     }
 }

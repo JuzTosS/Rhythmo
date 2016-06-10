@@ -1,5 +1,7 @@
 package com.juztoss.bpmplayer.models;
 
+import com.juztoss.bpmplayer.presenters.ISongsDataSource;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +13,7 @@ public class CustomExplorerElement extends BaseExplorerElement
     private String mName;
     private ExplorerPriority mPriority;
     private List<BaseExplorerElement> mChildren;
-    private List<Composition> mCompositions = new ArrayList<>();
+    private ISongsDataSource mSource = new EmptySongsSource();
 
     public CustomExplorerElement(String name, List<BaseExplorerElement> children, ExplorerPriority priority)
     {
@@ -44,8 +46,8 @@ public class CustomExplorerElement extends BaseExplorerElement
     }
 
     @Override
-    public List<Composition> getCompositions()
+    public ISongsDataSource getSource()
     {
-        return mCompositions;
+        return mSource;
     }
 }

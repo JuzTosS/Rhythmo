@@ -1,5 +1,7 @@
 package com.juztoss.bpmplayer.models;
 
+import com.juztoss.bpmplayer.presenters.ISongsDataSource;
+
 import java.util.List;
 
 /**
@@ -33,8 +35,8 @@ public class ParentLink extends BaseExplorerElement
     }
 
     @Override
-    public List<Composition> getCompositions()
+    public ISongsDataSource getSource()
     {
-        return mSource.getCompositions();
+        return mSource.getSource();
     }
 }

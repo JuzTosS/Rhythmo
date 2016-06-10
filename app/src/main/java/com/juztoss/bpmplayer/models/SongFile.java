@@ -1,5 +1,7 @@
 package com.juztoss.bpmplayer.models;
 
+import com.juztoss.bpmplayer.presenters.ISongsDataSource;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,21 +15,18 @@ public class SongFile extends BaseExplorerElement
 {
     private static final Set<String> SUPPORTED_FORMATS = new HashSet<>(Arrays.asList("wav", "mp3", "m4a", "aiff"));
 
-    private File mSource;
+    private File mFile;
+    private ISongsDataSource mSongsDataSource;
 
     public SongFile(File source)
     {
-        mSource = source;
-    }
-
-    public File source()
-    {
-        return mSource;
+        mFile = source;
+        mSongsDataSource = new SingleSongSource(source.getAbsolutePath());
     }
 
     public String name()
     {
-        return mSource.getName();
+        return mFile.getName();
     }
 
     @Override
@@ -53,8 +52,8 @@ public class SongFile extends BaseExplorerElement
     }
 
     @Override
-    public List<Composition> getCompositions()
+    public ISongsDataSource getSource()
     {
-        return null;//TODO: Return a Composition object of this file
+        return mSongsDataSource;
     }
 }

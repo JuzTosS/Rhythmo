@@ -1,5 +1,7 @@
 package com.juztoss.bpmplayer.models;
 
+import com.juztoss.bpmplayer.presenters.ISongsDataSource;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,8 @@ public abstract class BaseExplorerElement implements Comparable<BaseExplorerElem
     abstract ExplorerPriority priority();
 
     public abstract List<BaseExplorerElement> getChildren();
-    public abstract List<Composition> getCompositions();
+    public abstract ISongsDataSource getSource();
+
     @Override
     public int compareTo(BaseExplorerElement another)
     {
@@ -21,4 +24,5 @@ public abstract class BaseExplorerElement implements Comparable<BaseExplorerElem
         else
             return name().compareTo(another.name());
     }
+
 }
