@@ -142,6 +142,11 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 String songId = songsCursor.getString(idIndex);
                 String fullPath = path + "/" + name;
                 double bpm = BpmDetector.detect(fullPath);
+                if(bpm >= 150.0)
+                {
+                    bpm = bpm / 2;
+                }
+
                 int bpmX10 = (int) (bpm * 10);
                 ContentValues values = new ContentValues();
                 values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, bpmX10);

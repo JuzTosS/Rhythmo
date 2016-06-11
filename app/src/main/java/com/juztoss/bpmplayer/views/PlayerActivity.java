@@ -31,6 +31,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.juztoss.bpmplayer.R;
+import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.PlaybackService;
@@ -51,6 +52,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private Boolean isMenuOpen = false;
     private FloatingActionButton fab, fab1;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
+    ActionBar mActionBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -208,14 +211,11 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         mHamburger = new DrawerArrowDrawable(this);
         getSupportActionBar().setHomeAsUpIndicator(mHamburger);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        mActionBar = getSupportActionBar();
+        mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         View actionBarLayout = getLayoutInflater().inflate(R.layout.action_bar, null);
-        TextView actionBarTitleview = (TextView) actionBarLayout.findViewById(R.id.actionbar_titleview);
-        actionBarTitleview.setText("My Custom ActionBar Title");
-        actionBar.setCustomView(actionBarLayout);
-//        actionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setCustomView(actionBarLayout);
     }
 
     @Override
@@ -288,7 +288,13 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         PlaybackService service = mApp.getPlaybackService();
 
+        Composition composition = mApp.getComposition(service.currentSongId());
+        ((TextView)mActionBar.getCustomView().findViewById(R.id.actionbar_firstline)).setText(composition.name());
+        ((TextView)mActionBar.getCustomView().findViewById(R.id.actionbar_secondline)).setText(String.format("%.1f", composition.bpm()));
+
         mPlayButton.setSelected(!service.isPlaying());
+
+        ((TabsAdapter)mPlaylistsPager.getAdapter()).updatePlaylist();
 
         mSeekbar.setMax(service.getDuration());
         mHandler.post(mSeekbarUpdateRunnable);

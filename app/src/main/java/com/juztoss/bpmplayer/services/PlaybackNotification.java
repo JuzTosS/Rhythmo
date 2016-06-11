@@ -7,6 +7,8 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.juztoss.bpmplayer.R;
+import com.juztoss.bpmplayer.models.Composition;
+import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 /**
  * Created by JuzTosS on 5/7/2016.
@@ -30,6 +32,11 @@ public class PlaybackNotification
             notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_pause_large);
         else
             notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_play_large);
+
+        Composition composition = ((BPMPlayerApp)service.getApplication()).getComposition(service.currentSongId());
+
+        notificationView.setTextViewText(R.id.notification_firstline, composition.name());
+        notificationView.setTextViewText(R.id.notification_secondline, String.format("%.1f", composition.bpm()));
 
         Intent switchPlaybackIntent = new Intent(PlaybackService.SWITCH_PLAYBACK_ACTION);
         PendingIntent switchPlaybackPendingIntent = PendingIntent.getBroadcast(service, 0, switchPlaybackIntent, 0);

@@ -42,6 +42,14 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private BaseAction mActionInProgress;
     private boolean mIsPlaying = false;
 
+    public long currentSongId()
+    {
+        if(getSongsList().getCount() <= 0) return -1;
+
+        getSongsList().moveToPosition(mCurrentSongIndex);
+        return getSongsList().getLong(0);
+    }
+
     @Override
     public void onEnd()
     {
@@ -67,6 +75,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         if (mCurrentSongIndex >= getSongsList().getCount())
             mCurrentSongIndex = getSongsList().getCount() - 1;
 
+        setSource(mCurrentPlaylistIndex, mCurrentSongIndex);
         putAction(new ActionPlay());
     }
 
@@ -77,6 +86,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         if (mCurrentSongIndex < 0)
             mCurrentSongIndex = 0;
 
+        setSource(mCurrentPlaylistIndex, mCurrentSongIndex);
         putAction(new ActionPlay());
     }
 
@@ -90,14 +100,11 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         notificationManager.notify(NOTIFICATION_ID, PlaybackNotification.create(this));
     }
 
-    private void putAction(BaseAction action)
+    private synchronized void putAction(BaseAction action)
     {
         mQueue.add(action);
-        synchronized (this)
-        {
-            if (mActionInProgress == null)
-                action.doNext();
-        }
+        if (mActionInProgress == null)
+            action.doNext();
     }
 
     private void clearQueue()
@@ -158,6 +165,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public void setSource(int playlistIndex, int index)
     {
         mCurrentPlaylistIndex = playlistIndex;
+        mCurrentSongIndex = index;
         getSongsList().moveToPosition(index);
         putAction(new ActionPrepare(mApp.getComposition(getSongsList().getLong(0)).getAbsolutePath()));
     }
@@ -266,7 +274,14 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         {
             setIsPlaying(true);
             mPlayer.setOnPreparedListener(mOnPrepared);
-            mPlayer.setSource(mPath);
+            new Thread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    mPlayer.setSource(mPath);
+                }
+            }).start();
         }
     }
 

@@ -73,6 +73,7 @@ public class BPMPlayerApp extends Application
         return result;
     }
 
+    @Nullable
     public Composition getComposition(long id)
     {
         Cursor cursor = getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
@@ -81,17 +82,20 @@ public class BPMPlayerApp extends Application
                 new String[]{Long.toString(id)},
                 null, null, null);
 
-        Composition composition;
+
+        Composition composition = null;
         try
         {
-            cursor.moveToFirst();
+            if(cursor.getCount() > 0)
+            {
+                cursor.moveToFirst();
 
-            composition = new Composition(
-                    id,
-                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH)),
-                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME)),
-                    (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10)) / (float) 10);
-
+                composition = new Composition(
+                        id,
+                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH)),
+                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME)),
+                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10)) / (float) 10);
+            }
         }
         finally
         {
