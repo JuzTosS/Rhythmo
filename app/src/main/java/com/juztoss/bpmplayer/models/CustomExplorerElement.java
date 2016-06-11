@@ -50,4 +50,10 @@ public class CustomExplorerElement extends BaseExplorerElement
     {
         return null;
     }
+
+    @Override
+    public boolean hasChildren()
+    {
+        return true;
+    }
 }

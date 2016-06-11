@@ -62,4 +62,10 @@ public class SongFile extends BaseExplorerElement
     {
         return mApp.getMusicLibraryHelper().getSongIdsCursor(mFile.getAbsolutePath(), mDoCheckFileSystem);
     }
+
+    @Override
+    public boolean hasChildren()
+    {
+        return false;
+    }
 }

@@ -68,8 +68,11 @@ public class BrowserFragment extends ListFragment implements BrowserPresenter.On
     {
         super.onListItemClick(listView, view, position, id);
         BaseExplorerElement element = mBrowserAdapter.getItem(position);
-        mApp.getBrowserPresenter().listItemClicked(element);
-        getLoaderManager().restartLoader(0, null, mApp.getBrowserPresenter());
+        if(element.hasChildren())
+        {
+            mApp.getBrowserPresenter().listItemClicked(element);
+            getLoaderManager().restartLoader(0, null, mApp.getBrowserPresenter());
+        }
     }
 
 }

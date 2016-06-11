@@ -202,4 +202,10 @@ public class MediaFolder extends BaseExplorerElement
     {
         return mApp.getMusicLibraryHelper().getSongIdsCursor(resolvePath(), false);
     }
+
+    @Override
+    public boolean hasChildren()
+    {
+        return true;
+    }
 }

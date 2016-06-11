@@ -28,4 +28,5 @@ public abstract class BaseExplorerElement implements Comparable<BaseExplorerElem
             return name().compareTo(another.name());
     }
 
+    public abstract boolean hasChildren();
 }

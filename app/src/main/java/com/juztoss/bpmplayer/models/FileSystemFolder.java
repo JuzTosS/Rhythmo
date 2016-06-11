@@ -88,4 +88,10 @@ public class FileSystemFolder extends BaseExplorerElement
     {
         return mApp.getMusicLibraryHelper().getSongIdsCursor(mFile.getAbsolutePath(), true);
     }
+
+    @Override
+    public boolean hasChildren()
+    {
+        return true;
+    }
 }

@@ -41,4 +41,10 @@ public class ParentLink extends BaseExplorerElement
     {
         return mSource.getSongIds();
     }
+
+    @Override
+    public boolean hasChildren()
+    {
+        return mSource.hasChildren();
+    }
 }
