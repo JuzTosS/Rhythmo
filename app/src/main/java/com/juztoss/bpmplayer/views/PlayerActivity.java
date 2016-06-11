@@ -124,6 +124,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
                 getCurrentViewedPlaylist().add(mApp.getBrowserPresenter().getSongIds());
                 changeBrowserState();
+                ((TabsAdapter)mPlaylistsPager.getAdapter()).updatePlaylist();
                 break;
         }
     }
@@ -160,8 +161,11 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             tabLayout.addTab(tabLayout.newTab().setText(playlist.getName()));
         }
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        ((TabsAdapter) viewPager.getAdapter()).setNumOfLists(playlists.size());
+
+        TabsAdapter adapter = ((TabsAdapter) mPlaylistsPager.getAdapter());
+        adapter.setNumOfLists(playlists.size());
+        mPlaylistsPager.setAdapter(null);
+        mPlaylistsPager.setAdapter(adapter);
     }
 
     private void setupPager()

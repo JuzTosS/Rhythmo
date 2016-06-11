@@ -71,5 +71,8 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.
         return mNumOfLists;
     }
 
-
+    public void updatePlaylist()
+    {
+        ((PlaylistFragment)instantiateItem(mContainer, mCurrentPosition)).updatePlaylist();
+    }
 }

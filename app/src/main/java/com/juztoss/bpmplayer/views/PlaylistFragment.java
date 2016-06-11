@@ -89,6 +89,7 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     public void onResumeFragment()
     {
         mApp.addOnRangeChangedListener(this);
+        updatePlaylist();
     }
 
     public void onPauseFragment()
@@ -98,6 +99,11 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onBPMChanged(float minBPM, float maxBPM)
+    {
+        mPlaylistAdapter.updatePlaylist();
+    }
+
+    public void updatePlaylist()
     {
         mPlaylistAdapter.updatePlaylist();
     }

@@ -1,7 +1,6 @@
 package com.juztoss.bpmplayer.presenters;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -10,6 +9,7 @@ import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.models.StaticAllPlaylist;
+import com.juztoss.bpmplayer.models.StaticFolderPlaylist;
 import com.juztoss.bpmplayer.services.PlaybackService;
 
 import java.util.ArrayList;
@@ -53,6 +53,7 @@ public class BPMPlayerApp extends Application
                 null, null, null, null, null);
 
         result.add(new StaticAllPlaylist(this));
+        result.add(new StaticFolderPlaylist(this));
         int idIndex = playlists.getColumnIndex(DatabaseHelper._ID);
         int nameIndex = playlists.getColumnIndex(DatabaseHelper.PLAYLISTS_NAME);
 
@@ -198,7 +199,7 @@ public class BPMPlayerApp extends Application
         Playlist playlist = mPlaylists.get(playlistIndex);
         if(playlist != null)
         {
-            Playlist.remove(playlist, this);
+            playlist.delete();
             mPlaylists.remove(playlistIndex);
         }
     }

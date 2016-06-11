@@ -67,7 +67,8 @@ public class Playlist
                         " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_SONGS + "." + DatabaseHelper.SONGS_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
                         " where " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" +
                         " AND " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?" +
-                        " AND " + DatabaseHelper.TABLE_SONGS + "." + DatabaseHelper.SONGS_PLAYLIST_ID + " = ?;",
+                        " AND " + DatabaseHelper.TABLE_SONGS + "." + DatabaseHelper.SONGS_PLAYLIST_ID + " = ? " +
+                        " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPMX10,
                 new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10), Long.toString(mId)}
         );
 
@@ -102,22 +103,22 @@ public class Playlist
         return new Playlist(id, name, app);
     }
 
-    public static void remove(Playlist playlist, BPMPlayerApp app)
+    public void delete()
     {
-        if (playlist.getId() >= 0)
-            app.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_PLAYLISTS, DatabaseHelper._ID + " = ?", new String[]{Long.toString(playlist.getId())});
+        clear();
+        if (getId() >= 0)
+            mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_PLAYLISTS, DatabaseHelper._ID + " = ?", new String[]{Long.toString(getId())});
+    }
 
-        //TODO: Remove all songs
+    protected void clear()
+    {
+        mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_SONGS, DatabaseHelper.SONGS_PLAYLIST_ID + " = ?", new String[]{Long.toString(getId())});
+
     }
 
     public long getId()
     {
         return mId;
-    }
-
-    public void add(String path)
-    {
-
     }
 }
 
