@@ -3,6 +3,7 @@ package com.juztoss.bpmplayer.views;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -17,9 +18,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -244,8 +248,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         }
         else if (id == R.id.new_playlist_menu)
         {
-            mApp.createNewPlaylist("Playlist X");//TODO: A naming algorithm
+            mApp.createNewPlaylist();
             updateTabs();
+        }
+        else if( id == R.id.rename_playlist_menu)
+        {
+            launchRenameDialog();
         }
         else if (id == R.id.remove_playlist_menu)
         {
@@ -253,6 +261,43 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             updateTabs();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchRenameDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Title");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newName = input.getText().toString();
+                Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
+                playlist.rename(newName);
+                updateTabs();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
+        menu.findItem(R.id.rename_playlist_menu).setEnabled(playlist.allowModify());
+        menu.findItem(R.id.remove_playlist_menu).setEnabled(playlist.allowModify());
+        return true;
     }
 
     @Override

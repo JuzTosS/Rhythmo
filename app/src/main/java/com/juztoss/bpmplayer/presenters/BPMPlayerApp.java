@@ -51,7 +51,7 @@ public class BPMPlayerApp extends Application
                 null, null, null, null, null);
 
         result.add(new StaticAllPlaylist(this));
-        result.add(new StaticFolderPlaylist(this));
+//        result.add(new StaticFolderPlaylist(this));
         int idIndex = playlists.getColumnIndex(DatabaseHelper._ID);
         int nameIndex = playlists.getColumnIndex(DatabaseHelper.PLAYLISTS_NAME);
 
@@ -162,9 +162,9 @@ public class BPMPlayerApp extends Application
 
     }
 
-    public void createNewPlaylist(String name)
+    public void createNewPlaylist()
     {
-        mPlaylists.add(Playlist.create(name, this));
+        mPlaylists.add(Playlist.create("Another playlist", this));
     }
 
     public DatabaseHelper getDatabaseHelper()

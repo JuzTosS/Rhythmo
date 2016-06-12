@@ -5,4 +5,5 @@
     <string name="settings_title">Settings</string>
     <string name="new_playlist">New playlist</string>
     <string name="remove_playlist">Remove playlist</string>
+    <string name="rename_playlist">Rename playlist</string>
 </resources>

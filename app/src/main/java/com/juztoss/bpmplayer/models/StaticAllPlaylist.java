@@ -33,4 +33,10 @@ public class StaticAllPlaylist extends Playlist
     {
         //Do nothing
     }
+
+    @Override
+    public boolean allowModify()
+    {
+        return false;
+    }
 }

@@ -156,6 +156,22 @@ public class Playlist
             mUpdateListeners.remove(listener);
     }
 
+    public boolean allowModify()
+    {
+        return true;
+    }
+
+    public void rename(String name)
+    {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.PLAYLISTS_NAME, name);
+        long result = mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_PLAYLISTS, values, DatabaseHelper._ID + " = ?", new String[]{Long.toString(mId)});
+        if(result > 0)
+        {
+            mName = name;
+        }
+    }
+
     public interface IUpdateListener
     {
         void onPlaylistUpdated();

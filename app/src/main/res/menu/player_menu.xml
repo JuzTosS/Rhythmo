@@ -9,6 +9,10 @@
         android:title="@string/new_playlist">
     </item>
     <item
+        android:id="@+id/rename_playlist_menu"
+        android:title="@string/rename_playlist">
+    </item>
+    <item
         android:id="@+id/remove_playlist_menu"
         android:title="@string/remove_playlist">
     </item>

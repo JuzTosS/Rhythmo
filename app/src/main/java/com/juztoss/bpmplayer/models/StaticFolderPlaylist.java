@@ -21,4 +21,10 @@ public class StaticFolderPlaylist extends Playlist
         clear();
         super.add(songIds);
     }
+
+    @Override
+    public boolean allowModify()
+    {
+        return false;
+    }
 }
