@@ -32,43 +32,16 @@
         android:layout_marginStart="10dp"
         android:textAppearance="@style/NotificationText"/>
 
-    <ImageButton
-        android:id="@+id/notification_previous"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/notification_pause"
-        android:layout_toStartOf="@+id/notification_pause"
-        android:background="@null"
-        android:padding="10dp"
-        android:src="@drawable/icon_previous"/>
-
 
     <ImageButton
         android:id="@+id/notification_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/notification_next"
-        android:layout_toStartOf="@+id/notification_next"
         android:background="@null"
         android:padding="10dp"
-        android:src="@drawable/icon_play_large"/>
-
-    <ImageButton
-        android:id="@+id/notification_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentEnd="true"
+        android:src="@drawable/icon_play_large"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@null"
-        android:padding="10dp"
-        android:src="@drawable/icon_next"/>
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

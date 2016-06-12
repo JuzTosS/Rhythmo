@@ -92,7 +92,8 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
 
     public void onPauseFragment()
     {
-        mPlaylistAdapter.unbind();
+        if(mPlaylistAdapter != null)
+            mPlaylistAdapter.unbind();
     }
 
 }

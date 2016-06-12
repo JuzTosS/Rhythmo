@@ -23,7 +23,7 @@ import java.util.Queue;
 /**
  * Created by JuzTosS on 5/3/2016.
  */
-public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener
+public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener
 {
 
     public static final int NOTIFICATION_ID = 42;
@@ -44,7 +44,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     public long currentSongId()
     {
-        if(getSongsList().getCount() <= 0) return -1;
+        if (getSongsList().getCount() <= 0) return -1;
 
         getSongsList().moveToPosition(mCurrentSongIndex);
         return getSongsList().getLong(0);
@@ -170,11 +170,33 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         putAction(new ActionPrepare(mApp.getComposition(getSongsList().getLong(0)).getAbsolutePath()));
     }
 
+    @Override
+    public void onAudioFocusChange(int focusChange)
+    {
+        if(focusChange == AudioManager.AUDIOFOCUS_LOSS || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT)
+        {
+            pausePlayback();
+        }
+        else if(focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK)
+        {
+            //TODO: duck music
+        }
+    }
+
     private void setIsPlaying(boolean value)
     {
+        if (!mIsPlaying && value)
+            requestAudioFocus();
+
         mIsPlaying = value;
         if (mIsPlaying)
             startForeground(NOTIFICATION_ID, PlaybackNotification.create(this));
+    }
+
+    private void requestAudioFocus()
+    {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     }
 
     public boolean isPlaying()

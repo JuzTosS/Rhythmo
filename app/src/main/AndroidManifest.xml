@@ -41,6 +41,11 @@
                 <action android:name="com.juztoss.bpmplayer.action.SWITCH_PLAYBACK" />
             </intent-filter>
         </receiver>
+        <receiver android:name="com.juztoss.bpmplayer.NoisyIntentReceiver">
+            <intent-filter>
+                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

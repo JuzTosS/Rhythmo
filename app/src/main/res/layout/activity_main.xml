@@ -34,7 +34,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
                 android:background="?attr/colorPrimary"
-                android:elevation="6dp"
                 android:minHeight="10dp"
                 app:tabMode="scrollable"/>
 
@@ -59,7 +58,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="?android:colorBackground"/>
+                    android:background="@color/colorEdgeEffect"/>
 
                 <SeekBar
                     android:id="@+id/seekbar"
@@ -117,7 +116,6 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:paddingLeft="20dp"
-                    android:text="Small Text"
                     android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
@@ -130,7 +128,6 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:paddingRight="20dp"
-                    android:text="Small Text"
                     android:textAppearance="?android:attr/textAppearanceSmall"/>
             </RelativeLayout>
         </LinearLayout>
@@ -173,7 +170,6 @@
             android:layout_marginEnd="@dimen/fab_margin"
             android:src="@drawable/ic_playlist_add_black_36dp"
             android:visibility="invisible"
-            app:elevation="6dp"
             app:pressedTranslationZ="12dp"/>
 
         <android.support.design.widget.FloatingActionButton
@@ -184,7 +180,6 @@
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_add_black_36dp"
             app:backgroundTint="@color/accent"
-            app:elevation="6dp"
             app:pressedTranslationZ="12dp"/>
     </android.support.design.widget.CoordinatorLayout>
 
