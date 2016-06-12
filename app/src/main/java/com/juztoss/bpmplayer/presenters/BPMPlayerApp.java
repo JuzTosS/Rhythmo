@@ -30,8 +30,6 @@ public class BPMPlayerApp extends Application
     private float mMaxBPM;
     private DatabaseHelper mDatabaseHelper;
 
-    private List<OnBPMChangedListener> mOnBPMChangedListeners;
-
     private MusicLibraryHelper mMusicLibraryHelper;
 
     @Override
@@ -162,30 +160,6 @@ public class BPMPlayerApp extends Application
             playlist.setBPMFilter(mMinBPM, mMaxBPM);
         }
 
-        callBPMListeners();
-    }
-
-    private void callBPMListeners()
-    {
-        if (mOnBPMChangedListeners == null) return;
-        for (OnBPMChangedListener listener : mOnBPMChangedListeners)
-        {
-            listener.onBPMChanged(mMinBPM, mMaxBPM);
-        }
-    }
-
-    public void addOnRangeChangedListener(OnBPMChangedListener listener)
-    {
-        if (mOnBPMChangedListeners == null)
-            mOnBPMChangedListeners = new ArrayList<>();
-
-        if (!mOnBPMChangedListeners.contains(listener))
-            mOnBPMChangedListeners.add(listener);
-    }
-
-    public void removeOnRangeChangedListener(OnBPMChangedListener listener)
-    {
-        mOnBPMChangedListeners.remove(listener);
     }
 
     public void createNewPlaylist(String name)
@@ -213,8 +187,4 @@ public class BPMPlayerApp extends Application
         return mMusicLibraryHelper;
     }
 
-    public interface OnBPMChangedListener
-    {
-        void onBPMChanged(float minBPM, float maxBPM);
-    }
 }

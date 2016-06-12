@@ -5,6 +5,10 @@ import android.database.Cursor;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.views.PlaylistAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by JuzTosS on 5/8/2016.
@@ -18,6 +22,7 @@ public class Playlist
     private long mId;
     protected Cursor mList;
     protected boolean mNeedRebuild = true;
+    private List<IUpdateListener> mUpdateListeners;
 
     Playlist(String name, BPMPlayerApp app)
     {
@@ -54,7 +59,7 @@ public class Playlist
             songIds.close();
         }
 
-        mNeedRebuild = true;
+        setNeedRebuild();
     }
 
     protected void rebuild()
@@ -75,6 +80,12 @@ public class Playlist
         mNeedRebuild = false;
     }
 
+    protected void setNeedRebuild()
+    {
+        mNeedRebuild = true;
+        notifyUpdateListners();
+    }
+
     public Cursor getList()
     {
         if (mNeedRebuild)
@@ -92,7 +103,7 @@ public class Playlist
     {
         mMinBPMX10 = (int) (minBPM * 10);
         mMaxBPMX10 = (int) (maxBPM * 10);
-        mNeedRebuild = true;
+        setNeedRebuild();
     }
 
     public static Playlist create(String name, BPMPlayerApp app)
@@ -105,6 +116,7 @@ public class Playlist
 
     public void delete()
     {
+        mUpdateListeners.clear();
         clear();
         if (getId() >= 0)
             mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_PLAYLISTS, DatabaseHelper._ID + " = ?", new String[]{Long.toString(getId())});
@@ -113,12 +125,40 @@ public class Playlist
     protected void clear()
     {
         mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_SONGS, DatabaseHelper.SONGS_PLAYLIST_ID + " = ?", new String[]{Long.toString(getId())});
-
     }
 
     public long getId()
     {
         return mId;
+    }
+
+    protected void notifyUpdateListners()
+    {
+        if(mUpdateListeners == null) return;
+        for(IUpdateListener listener : mUpdateListeners)
+        {
+            listener.onPlaylistUpdated();
+        }
+    }
+
+    public void addUpdateListener(IUpdateListener listener)
+    {
+        if(mUpdateListeners == null)
+            mUpdateListeners = new ArrayList<>();
+
+        if(!mUpdateListeners.contains(listener))
+            mUpdateListeners.add(listener);
+    }
+
+    public void removeUpdateListener(IUpdateListener listener)
+    {
+        if(mUpdateListeners != null && mUpdateListeners.contains(listener))
+            mUpdateListeners.remove(listener);
+    }
+
+    public interface IUpdateListener
+    {
+        void onPlaylistUpdated();
     }
 }
 

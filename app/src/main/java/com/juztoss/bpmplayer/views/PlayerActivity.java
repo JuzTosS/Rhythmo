@@ -124,10 +124,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                 changeBrowserState();
                 break;
             case R.id.btnApplyFolderToPlaylist:
-
                 getCurrentViewedPlaylist().add(mApp.getBrowserPresenter().getSongIds());
                 changeBrowserState();
-                ((TabsAdapter)mPlaylistsPager.getAdapter()).updatePlaylist();
                 break;
         }
     }
@@ -293,8 +291,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         ((TextView)mActionBar.getCustomView().findViewById(R.id.actionbar_secondline)).setText(String.format("%.1f", composition.bpm()));
 
         mPlayButton.setSelected(!service.isPlaying());
-
-        ((TabsAdapter)mPlaylistsPager.getAdapter()).updatePlaylist();
 
         mSeekbar.setMax(service.getDuration());
         mHandler.post(mSeekbarUpdateRunnable);

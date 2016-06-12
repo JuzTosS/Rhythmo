@@ -17,7 +17,7 @@ import com.juztoss.bpmplayer.services.PlaybackService;
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class PlaylistAdapter extends CursorAdapter
+public class PlaylistAdapter extends CursorAdapter implements Playlist.IUpdateListener
 {
     private BPMPlayerApp mApp;
     private Context mContext;
@@ -67,7 +67,18 @@ public class PlaylistAdapter extends CursorAdapter
         }
     }
 
-    public void updatePlaylist()
+    public void bind()
+    {
+        mPlaylist.addUpdateListener(this);
+    }
+
+    public void unbind()
+    {
+        mPlaylist.removeUpdateListener(this);
+    }
+
+    @Override
+    public void onPlaylistUpdated()
     {
         swapCursor(mPlaylist.getList());
         notifyDataSetChanged();
