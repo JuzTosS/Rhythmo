@@ -36,7 +36,6 @@ public class BuildMusicLibraryService extends Service implements AsyncBuildLibra
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        //Create a persistent notification that keeps this service running and displays the scan progress.
         mBuilder = new NotificationCompat.Builder(mContext);
         mBuilder.setSmallIcon(R.drawable.ic_play_arrow_black_36dp);
         mBuilder.setContentTitle(getResources().getString(R.string.building_music_library));
@@ -51,7 +50,7 @@ public class BuildMusicLibraryService extends Service implements AsyncBuildLibra
 
         AsyncBuildLibraryTask task = new AsyncBuildLibraryTask(mContext);
         task.setOnBuildLibraryProgressUpdate(this);
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        task.execute();
 
         return START_STICKY;
     }

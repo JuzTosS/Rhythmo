@@ -187,4 +187,8 @@ public class BPMPlayerApp extends Application
         return mMusicLibraryHelper;
     }
 
+    public boolean isBuildingLibrary()
+    {
+        return mIsBuildingLibrary;
+    }
 }

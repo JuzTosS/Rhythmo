@@ -1,7 +1,11 @@
 package com.juztoss.bpmplayer.views;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +27,21 @@ public class PlaylistAdapter extends CursorAdapter implements Playlist.IUpdateLi
     private Context mContext;
 
     private Playlist mPlaylist;
+
+    BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            updateList();
+        }
+    };
+
+    private void updateList()
+    {
+        swapCursor(mPlaylist.getList());
+        notifyDataSetChanged();
+    }
 
     public PlaylistAdapter(Context context, Playlist playlist)
     {
@@ -70,17 +89,18 @@ public class PlaylistAdapter extends CursorAdapter implements Playlist.IUpdateLi
     public void bind()
     {
         mPlaylist.addUpdateListener(this);
+        LocalBroadcastManager.getInstance(mApp).registerReceiver(mUpdateUIReceiver, new IntentFilter(PlaybackService.UPDATE_UI_ACTION));
     }
 
     public void unbind()
     {
         mPlaylist.removeUpdateListener(this);
+        LocalBroadcastManager.getInstance(mApp).unregisterReceiver(mUpdateUIReceiver);
     }
 
     @Override
     public void onPlaylistUpdated()
     {
-        swapCursor(mPlaylist.getList());
-        notifyDataSetChanged();
+        updateList();
     }
 }

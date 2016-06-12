@@ -85,7 +85,6 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 if (mBuildLibraryProgressUpdate.get(i) != null)
                     mBuildLibraryProgressUpdate.get(i).onStartBuildingLibrary();
 
-        // Acquire a wakelock to prevent the CPU from sleeping while the process is running.
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 getClass().getName());
@@ -134,6 +133,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
             int nameIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME);
             final int subProgress = (MAX_PROGRESS_VALUE - mOverallProgress) / songsCursor.getCount();
 
+            long lastUpdated = System.currentTimeMillis();
             for (int i = 0; i < songsCursor.getCount(); i++)
             {
                 songsCursor.moveToPosition(i);
@@ -154,7 +154,12 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
                 Log.e("DEBUG affected=", rowsAffected + ", " + fullPath + " : " + bpmX10);
                 mOverallProgress += subProgress;
-                publishProgress();
+                long now = System.currentTimeMillis();
+                if(now - lastUpdated > 1000)
+                {
+                    lastUpdated = now;
+                    publishProgress();
+                }
             }
         }finally
         {
@@ -255,15 +260,20 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
             Node folderIds = new Node(-1);
 
-            //Prefetch each column's index.
             final int filePathColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             final int idColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media._ID);
 
+            long lastUpdated = System.currentTimeMillis();
             for (int i = 0; i < mediaStoreCursor.getCount(); i++)
             {
                 mediaStoreCursor.moveToPosition(i);
                 mOverallProgress += subProgress;
-                publishProgress();
+                long now = System.currentTimeMillis();
+                if(now - lastUpdated > 1000)
+                {
+                    lastUpdated = now;
+                    publishProgress();
+                }
 
                 String songFileFullPath = mediaStoreCursor.getString(filePathColIndex);
                 String songId = mediaStoreCursor.getString(idColIndex);

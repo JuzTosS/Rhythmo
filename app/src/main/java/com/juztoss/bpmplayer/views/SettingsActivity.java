@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import com.juztoss.bpmplayer.R;
+import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.BuildMusicLibraryService;
 
 /**
@@ -35,7 +36,10 @@ public class SettingsActivity extends AppCompatActivity
 
     public void onRescanClicked(View view)
     {
-        Intent intent = new Intent(this, BuildMusicLibraryService.class);
-        startService(intent);
+        if(!((BPMPlayerApp)getApplicationContext()).isBuildingLibrary())
+        {
+            Intent intent = new Intent(this, BuildMusicLibraryService.class);
+            startService(intent);
+        }
     }
 }
