@@ -332,8 +332,11 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         PlaybackService service = mApp.getPlaybackService();
 
         Composition composition = mApp.getComposition(service.currentSongId());
-        ((TextView)mActionBar.getCustomView().findViewById(R.id.actionbar_firstline)).setText(composition.name());
-        ((TextView)mActionBar.getCustomView().findViewById(R.id.actionbar_secondline)).setText(String.format("%.1f", composition.bpm()));
+        if(composition != null)
+        {
+            ((TextView) mActionBar.getCustomView().findViewById(R.id.actionbar_firstline)).setText(composition.name());
+            ((TextView) mActionBar.getCustomView().findViewById(R.id.actionbar_secondline)).setText(String.format("%.1f", composition.bpm()));
+        }
 
         mPlayButton.setSelected(!service.isPlaying());
 
