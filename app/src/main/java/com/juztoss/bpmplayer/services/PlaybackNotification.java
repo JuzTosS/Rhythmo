@@ -35,8 +35,11 @@ public class PlaybackNotification
 
         Composition composition = ((BPMPlayerApp)service.getApplication()).getComposition(service.currentSongId());
 
-        notificationView.setTextViewText(R.id.notification_firstline, composition.name());
-        notificationView.setTextViewText(R.id.notification_secondline, String.format("%.1f", composition.bpm()));
+        if(composition != null)
+        {
+            notificationView.setTextViewText(R.id.notification_firstline, composition.name());
+            notificationView.setTextViewText(R.id.notification_secondline, String.format("%.1f", composition.bpm()));
+        }
 
         Intent switchPlaybackIntent = new Intent(PlaybackService.SWITCH_PLAYBACK_ACTION);
         PendingIntent switchPlaybackPendingIntent = PendingIntent.getBroadcast(service, 0, switchPlaybackIntent, 0);

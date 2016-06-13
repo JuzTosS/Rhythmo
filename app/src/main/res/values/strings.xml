@@ -7,4 +7,7 @@
     <string name="remove_playlist">Remove playlist</string>
     <string name="rename_playlist">Rename playlist</string>
     <string name="song_detail_title">Song detail</string>
+    <string name="rebuild_library">Rebuild music library</string>
+    <string name="rebuild_library_desc">Scan for all music on the device and detect bpm</string>
+    <string name="building_lib_already_started">Already started!</string>
 </resources>
