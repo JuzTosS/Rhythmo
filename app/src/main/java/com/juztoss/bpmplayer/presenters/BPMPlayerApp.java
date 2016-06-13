@@ -76,7 +76,7 @@ public class BPMPlayerApp extends Application
     public Composition getComposition(long id)
     {
         Cursor cursor = getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10},
+                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10},
                 DatabaseHelper._ID + "= ?",
                 new String[]{Long.toString(id)},
                 null, null, null);
@@ -93,7 +93,8 @@ public class BPMPlayerApp extends Application
                         id,
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH)),
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME)),
-                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10)) / (float) 10);
+                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10)) / (float) 10,
+                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10)) / (float) 10);
             }
         }
         finally
@@ -197,6 +198,7 @@ public class BPMPlayerApp extends Application
     {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, (int)(composition.bpm() * 10));
+        values.put(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, (int)(composition.bpmShifted() * 10));
         getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + " = ?", new String[]{Long.toString(composition.id())});
     }
 }

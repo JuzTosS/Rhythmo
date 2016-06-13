@@ -1,11 +1,11 @@
 package com.juztoss.bpmplayer.views;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
@@ -62,6 +62,7 @@ public class PlaylistAdapter extends CursorAdapter implements Playlist.IUpdateLi
         return v;
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void bindView(View view, Context context, Cursor cursor)
     {
@@ -72,7 +73,7 @@ public class PlaylistAdapter extends CursorAdapter implements Playlist.IUpdateLi
         firstLine.setText(composition.name());
 
         TextView secondLine = (TextView) view.findViewById(R.id.second_line);
-        secondLine.setText(String.format("%.1f", composition.bpm()));
+        secondLine.setText(String.format("%.1f (%.1f)", composition.bpmShifted(), composition.bpm()));
 
 
         ImageView infoButton = (ImageView) view.findViewById(R.id.info_button);
@@ -81,8 +82,8 @@ public class PlaylistAdapter extends CursorAdapter implements Playlist.IUpdateLi
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(mContext, SongActivity.class);
-                intent.putExtra(SongActivity.SONG_ID, songId);
+                Intent intent = new Intent(mContext, SingleSongActivity.class);
+                intent.putExtra(SingleSongActivity.SONG_ID, songId);
                 mContext.startActivity(intent);
             }
         });

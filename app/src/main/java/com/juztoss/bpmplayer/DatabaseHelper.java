@@ -11,7 +11,7 @@ import android.provider.BaseColumns;
 public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 {
     private static final String DATABASE_NAME = "main.db";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
 
 
     //TABLE SETTINGS
@@ -31,6 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
     public static final String MUSIC_LIBRARY_NAME = "name";
     public static final String MUSIC_LIBRARY_FULL_PATH = "full_path";
     public static final String MUSIC_LIBRARY_BPMX10 = "bpmX10";
+    public static final String MUSIC_LIBRARY_BPM_SHIFTEDX10 = "bpmShiftedX10";
     public static final String MUSIC_LIBRARY_DELETED = "deleted";
 
     //TABLE FOLDERS
@@ -70,6 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
                 + MUSIC_LIBRARY_NAME + " text key, "
                 + MUSIC_LIBRARY_FULL_PATH + " text key, "
                 + MUSIC_LIBRARY_BPMX10 + " integer key not null default 0, "
+                + MUSIC_LIBRARY_BPM_SHIFTEDX10 + " integer key not null default 0, "
                 + MUSIC_LIBRARY_DELETED + " boolean key, "
                 + "unique(" + MUSIC_LIBRARY_FULL_PATH + ")); ");
 

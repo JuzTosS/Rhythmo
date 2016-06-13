@@ -11,13 +11,15 @@ public class Composition
     private String mSongName;
     private String mAbsolutePath;
     private float mBPM;
+    private float mShiftedBPM;
 
-    public Composition(long songId, String folderName, String songName, float bpm)
+    public Composition(long songId, String folderName, String songName, float bpm, float bpmShifted)
     {
         mId = songId;
         mFolderName = folderName;
         mSongName = songName;
         mAbsolutePath = folderName + "/" + songName;
+        mShiftedBPM = bpmShifted;
         mBPM = bpm;
     }
 
@@ -44,5 +46,15 @@ public class Composition
     public void setBPM(float BPM)
     {
         mBPM = BPM;
+    }
+
+    public float bpmShifted()
+    {
+        return mShiftedBPM;
+    }
+
+    public void setShiftedBPM(float shiftedBPM)
+    {
+        mShiftedBPM = shiftedBPM;
     }
 }

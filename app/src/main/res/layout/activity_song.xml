@@ -14,50 +14,83 @@
         app:theme="@style/AppTheme"
         tools:context=".views.SettingsActivity"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Song name"
-        android:id="@+id/song_name"
-        android:layout_gravity="center_horizontal"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1 / 2"
-            android:id="@+id/button_half_bpm"/>
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:ems="10"
-            android:layout_weight="1"
-            android:id="@+id/bpm_text"
-            android:layout_gravity="center_horizontal"/>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Song name"
+            android:id="@+id/song_name"
+            android:layout_gravity="center_horizontal"
+            android:layout_above="@+id/linearLayout"
+            android:layout_centerHorizontal="true"/>
 
         <Button
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="X 2"
-            android:id="@+id/button_double_bpm"/>
+            android:text="TAP"
+            android:id="@+id/button_tab_bpm"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/linearLayout"
+            android:layout_centerHorizontal="true"/>
 
-    </LinearLayout>
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="32dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TAP"
-        android:id="@+id/button_tab_bpm"
-        android:layout_gravity="center_horizontal"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/linearLayout">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 / 2"
+                android:id="@+id/button_half_bpm"/>
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:ems="10"
+                android:layout_weight="1"
+                android:id="@+id/bpm_text"
+                android:layout_gravity="center_horizontal"/>
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="X 2"
+                android:id="@+id/button_double_bpm"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text=""
+            android:id="@+id/shiftedBpmValue"
+            android:layout_above="@+id/seekBar"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
 
 </LinearLayout>

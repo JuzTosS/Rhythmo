@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.audio.AdvancedMediaPlayer;
+import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.LinkedList;
@@ -167,7 +168,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         mCurrentPlaylistIndex = playlistIndex;
         mCurrentSongIndex = index;
         getSongsList().moveToPosition(index);
-        putAction(new ActionPrepare(mApp.getComposition(getSongsList().getLong(0)).getAbsolutePath()));
+        putAction(new ActionPrepare(mApp.getComposition(getSongsList().getLong(0))));
     }
 
     @Override
@@ -280,15 +281,17 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             @Override
             public void onPrepared()
             {
+                mPlayer.setBPM(mComposition.bpm());
+                mPlayer.setNewBPM(mComposition.bpmShifted());
                 doNext();
             }
         };
 
-        private String mPath;
+        private Composition mComposition;
 
-        public ActionPrepare(String path)
+        public ActionPrepare(Composition composition)
         {
-            mPath = path;
+            mComposition = composition;
         }
 
         @Override
@@ -301,7 +304,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
                 @Override
                 public void run()
                 {
-                    mPlayer.setSource(mPath);
+                    mPlayer.setSource(mComposition.getAbsolutePath());
                 }
             }).start();
         }

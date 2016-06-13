@@ -117,7 +117,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     {
         Cursor songsCursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                 new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME},
-                DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?",
+                DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?",
                 new String[]{"0"}, null, null, null);
 
         if(songsCursor.getCount() <= 0)
@@ -150,6 +150,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 int bpmX10 = (int) (bpm * 10);
                 ContentValues values = new ContentValues();
                 values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, bpmX10);
+                values.put(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, bpmX10);
                 int rowsAffected = mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + "= ?", new String[]{songId});
 
                 Log.e("DEBUG affected=", rowsAffected + ", " + fullPath + " : " + bpmX10);

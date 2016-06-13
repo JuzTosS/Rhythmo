@@ -20,10 +20,10 @@ public class StaticAllPlaylist extends Playlist
 
         mList = mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                 new String[]{DatabaseHelper._ID},
-                DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" + " AND " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?"
+                DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " >= ?" + " AND " + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?"
                 , new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10)},
                 null, null,
-                DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " ASC");
+                DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " ASC");
 
         mNeedRebuild = false;
     }

@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.juztoss.bpmplayer.R;
@@ -19,11 +20,12 @@ import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 /**
  * Created by JuzTosS on 6/13/2016.
  */
-public class SongActivity extends AppCompatActivity
+public class SingleSongActivity extends AppCompatActivity
 {
     private long mLastTapTime = 0;
     private long mTapsCount = 0;
 
+    SeekBar mSeekBar;
     Composition mComposition;
     public static final String SONG_ID = "SongId";
 
@@ -56,11 +58,11 @@ public class SongActivity extends AppCompatActivity
             final long MAX_INTERVAL = 2000;
             final long interval = now - mLastTapTime;
             mLastTapTime = now;
-            if(interval > MAX_INTERVAL)
+            float shift = mComposition.bpmShifted() - mComposition.bpm();
+            if (interval > MAX_INTERVAL)
             {
                 mTapsCount = 0;
                 mComposition.setBPM(0);
-                updateBpm();
             }
             else
             {
@@ -68,8 +70,32 @@ public class SongActivity extends AppCompatActivity
                 float lastBpm = mComposition.bpm();
                 mComposition.setBPM((lastBpm * mTapsCount + currentBpm) / (mTapsCount + 1));
                 mTapsCount++;
-                updateBpm();
             }
+            mComposition.setShiftedBPM(mComposition.bpm() + shift);
+            updateBpm();
+        }
+    };
+    private SeekBar.OnSeekBarChangeListener mOnSeekBarChanged = new SeekBar.OnSeekBarChangeListener()
+    {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+        {
+            if (fromUser)
+            {
+                mComposition.setShiftedBPM(mComposition.bpm() + progress - 25);
+                updateSeekBar();
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar)
+        {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar)
+        {
 
         }
     };
@@ -96,21 +122,37 @@ public class SongActivity extends AppCompatActivity
         TextView nameField = (TextView) findViewById(R.id.song_name);
         nameField.setText(mComposition.getAbsolutePath());
 
-        updateBpm();
-
-
         Button buttonHalf = (Button) findViewById(R.id.button_half_bpm);
         buttonHalf.setOnClickListener(mOnHalfClick);
         Button buttonDouble = (Button) findViewById(R.id.button_double_bpm);
         buttonDouble.setOnClickListener(mOnDoubleClick);
         Button buttonTap = (Button) findViewById(R.id.button_tab_bpm);
         buttonTap.setOnClickListener(mOnTapClick);
+
+        mSeekBar = (SeekBar) findViewById(R.id.seekBar);
+        mSeekBar.setMax(50);
+        mSeekBar.setOnSeekBarChangeListener(mOnSeekBarChanged);
+
+
+        updateBpm();
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @SuppressLint("DefaultLocale")
+    private void updateSeekBar()
+    {
+        int bpmShift = (int) (mComposition.bpmShifted() - mComposition.bpm());
+        mSeekBar.setProgress(25 + bpmShift);
+
+        TextView bpmDesc = (TextView) findViewById(R.id.shiftedBpmValue);
+        bpmDesc.setText(String.format("%.1f (%d)", mComposition.bpmShifted(), bpmShift));
     }
 
     private void updateBpm()
     {
         TextView bpmField = (TextView) findViewById(R.id.bpm_text);
         bpmField.setText(String.format("%.1f", mComposition.bpm()));
+        updateSeekBar();
     }
 
     @Override
@@ -131,7 +173,7 @@ public class SongActivity extends AppCompatActivity
 
     private void saveChanges()
     {
-        if(mComposition == null) return;
+        if (mComposition == null) return;
         BPMPlayerApp app = (BPMPlayerApp) getApplication();
         app.updateBpm(mComposition);
     }

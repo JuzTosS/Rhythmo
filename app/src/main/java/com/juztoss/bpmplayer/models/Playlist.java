@@ -70,10 +70,10 @@ public class Playlist
         mList = mApp.getDatabaseHelper().getWritableDatabase().rawQuery(
                 "select " + DatabaseHelper.SONGS_SONG_ID + " as " + DatabaseHelper._ID + " from " + DatabaseHelper.TABLE_SONGS +
                         " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_SONGS + "." + DatabaseHelper.SONGS_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
-                        " where " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ?" +
-                        " AND " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?" +
+                        " where " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " >= ?" +
+                        " AND " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?" +
                         " AND " + DatabaseHelper.TABLE_SONGS + "." + DatabaseHelper.SONGS_PLAYLIST_ID + " = ? " +
-                        " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPMX10,
+                        " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10,
                 new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10), Long.toString(mId)}
         );
 
