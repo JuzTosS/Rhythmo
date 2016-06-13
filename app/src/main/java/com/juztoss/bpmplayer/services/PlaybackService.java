@@ -44,7 +44,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     public long currentSongId()
     {
-        if (getSongsList().getCount() <= 0) return -1;
+        if (mCurrentSongIndex >= getSongsList().getCount()) return -1;
 
         getSongsList().moveToPosition(mCurrentSongIndex);
         return getSongsList().getLong(0);

@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juztoss.bpmplayer.R;
@@ -63,7 +65,7 @@ public class PlaylistAdapter extends CursorAdapter implements Playlist.IUpdateLi
     @Override
     public void bindView(View view, Context context, Cursor cursor)
     {
-        long songId = cursor.getLong(0);
+        final long songId = cursor.getLong(0);
         Composition composition = mApp.getComposition(songId);
 
         TextView firstLine = (TextView) view.findViewById(R.id.first_line);
@@ -71,6 +73,19 @@ public class PlaylistAdapter extends CursorAdapter implements Playlist.IUpdateLi
 
         TextView secondLine = (TextView) view.findViewById(R.id.second_line);
         secondLine.setText(String.format("%.1f", composition.bpm()));
+
+
+        ImageView infoButton = (ImageView) view.findViewById(R.id.info_button);
+        infoButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(mContext, SongActivity.class);
+                intent.putExtra(SongActivity.SONG_ID, songId);
+                mContext.startActivity(intent);
+            }
+        });
 
         View playingState = view.findViewById(R.id.playing_state);
         playingState.setVisibility(View.INVISIBLE);

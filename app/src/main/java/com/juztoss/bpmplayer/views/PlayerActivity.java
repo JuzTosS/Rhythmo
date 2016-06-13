@@ -44,7 +44,6 @@ import java.util.List;
 
 public class PlayerActivity extends AppCompatActivity implements View.OnClickListener
 {
-    private DrawerArrowDrawable mHamburger;
     private BPMPlayerApp mApp;
     private View mPlayButton;
     private TextView mTimePassed;
@@ -210,9 +209,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mHamburger = new DrawerArrowDrawable(this);
-        getSupportActionBar().setHomeAsUpIndicator(mHamburger);
-
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
@@ -236,12 +232,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     public boolean onOptionsItemSelected(MenuItem item)
     {
         int id = item.getItemId();
-        if (id == android.R.id.home)
-        {
-
-            return true;
-        }
-        else if (id == R.id.settings_menu)
+        if (id == R.id.settings_menu)
         {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);

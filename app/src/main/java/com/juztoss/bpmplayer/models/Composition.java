@@ -35,4 +35,14 @@ public class Composition
     {
         return mBPM;
     }
+
+    public long id()
+    {
+        return mId;
+    }
+
+    public void setBPM(float BPM)
+    {
+        mBPM = BPM;
+    }
 }

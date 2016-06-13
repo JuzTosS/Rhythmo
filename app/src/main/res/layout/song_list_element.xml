@@ -16,9 +16,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/drag_handle"
-            android:layout_toRightOf="@+id/drag_handle"
-            android:text="Text"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:maxLines="1"/>
 
@@ -27,31 +24,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/first_line"
-            android:layout_toEndOf="@+id/drag_handle"
-            android:layout_toRightOf="@+id/drag_handle"
-            android:text="Text"
             android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-        <ImageView
-            android:id="@+id/drag_handle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:contentDescription="drag handle"
-            android:src="@drawable/icon_drag"/>
 
         <ImageView
             android:id="@+id/playing_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:src="@drawable/play_button_normal"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/info_button"
+            android:layout_toStartOf="@+id/info_button"/>
+
+        <ImageView
+            android:id="@+id/info_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_info_outline_black_24dp"
+            android:layout_alignTop="@+id/playing_state"
             android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/drag_handle"
-            android:contentDescription="drag handle"
-            android:src="@drawable/play_button_normal"/>
+            android:layout_alignParentEnd="true"/>
+
     </RelativeLayout>
     <!-- Surface View End -->
 </LinearLayout>

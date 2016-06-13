@@ -31,7 +31,7 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
     {
         super(app);
         CustomExplorerElement root = new CustomExplorerElement("", new ArrayList<BaseExplorerElement>(), ExplorerPriority.HIGHEST);
-        root.add(new FileSystemFolder(new File("/"), "File system", root, app));
+//        root.add(new FileSystemFolder(new File("/"), "File system", root, app));
         root.add(new MediaFolder(-1, "Media", false, root, false, app));
 
         mCurrent = root;

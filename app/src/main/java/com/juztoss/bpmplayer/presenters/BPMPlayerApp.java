@@ -1,6 +1,7 @@
 package com.juztoss.bpmplayer.presenters;
 
 import android.app.Application;
+import android.content.ContentValues;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -190,5 +191,12 @@ public class BPMPlayerApp extends Application
     public boolean isBuildingLibrary()
     {
         return mIsBuildingLibrary;
+    }
+
+    public void updateBpm(Composition composition)
+    {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, (int)(composition.bpm() * 10));
+        getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + " = ?", new String[]{Long.toString(composition.id())});
     }
 }

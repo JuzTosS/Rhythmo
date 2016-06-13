@@ -22,16 +22,6 @@ public class BrowserFragment extends ListFragment implements BrowserPresenter.On
 {
     private BrowserAdapter mBrowserAdapter;
     private BPMPlayerApp mApp;
-    private Switch mTypeSwitcher;
-
-    private CompoundButton.OnCheckedChangeListener mSwitcherListener = new CompoundButton.OnCheckedChangeListener()
-    {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-        {
-            mApp.getBrowserPresenter().switchMode();
-        }
-    };
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
@@ -43,8 +33,6 @@ public class BrowserFragment extends ListFragment implements BrowserPresenter.On
         setListAdapter(mBrowserAdapter);
         getLoaderManager().initLoader(0, null, mApp.getBrowserPresenter());
 
-        mTypeSwitcher = (Switch) getView().findViewById(R.id.browser_type_switcher);
-        mTypeSwitcher.setOnCheckedChangeListener(mSwitcherListener);
         mApp.getBrowserPresenter().setOnDataChangedListener(this);
 
     }

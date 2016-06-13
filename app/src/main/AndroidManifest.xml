@@ -24,6 +24,9 @@
         <activity android:name=".views.SettingsActivity">
 
         </activity>
+        <activity android:name=".views.SongActivity">
+
+        </activity>
         <service
             android:name=".services.PlaybackService"
             android:enabled="true" />
