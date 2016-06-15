@@ -66,11 +66,14 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_below="@+id/previous_button"
+                    android:layout_above="@+id/time_left"
+                    android:progressDrawable="@drawable/seekbar_progress"
+                    android:thumb="@drawable/seekbar_thumb"
+                    android:progress="50"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/previous_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -83,7 +86,7 @@
                     android:padding="10dp"
                     android:src="@drawable/icon_previous"/>
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/next_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -96,7 +99,7 @@
                     android:padding="10dp"
                     android:src="@drawable/icon_next"/>
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/play_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -114,9 +117,9 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
                     android:paddingLeft="20dp"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_marginLeft="10dp"/>
 
                 <TextView
                     android:id="@+id/time_left"
@@ -126,30 +129,30 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
                     android:paddingRight="20dp"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_marginRight="10dp"/>
             </RelativeLayout>
         </LinearLayout>
 
         <!-- The navigation drawer -->
-        <LinearLayout
-            android:id="@+id/nav_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:background="?android:windowBackground"
-            android:orientation="vertical">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/nav_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="start"-->
+            <!--android:background="?android:windowBackground"-->
+            <!--android:orientation="vertical">-->
 
-            <fragment
-                android:id="@+id/file_tree"
-                android:name="com.juztoss.bpmplayer.views.BrowserFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                android:orientation="horizontal"
-                tools:layout="@layout/listfragment_main"/>
-        </LinearLayout>
+            <!--<fragment-->
+                <!--android:id="@+id/file_tree"-->
+                <!--android:name="com.juztoss.bpmplayer.views.BrowserFragment"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:fitsSystemWindows="true"-->
+                <!--android:orientation="horizontal"-->
+                <!--tools:layout="@layout/listfragment_main"/>-->
+        <!--</LinearLayout>-->
 
 
     </android.support.v4.widget.DrawerLayout>
