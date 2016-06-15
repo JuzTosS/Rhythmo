@@ -135,24 +135,24 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <!-- The navigation drawer -->
-        <!--<LinearLayout-->
-            <!--android:id="@+id/nav_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_gravity="start"-->
-            <!--android:background="?android:windowBackground"-->
-            <!--android:orientation="vertical">-->
+         The navigation drawer
+        <LinearLayout
+            android:id="@+id/nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="?android:windowBackground"
+            android:orientation="vertical">
 
-            <!--<fragment-->
-                <!--android:id="@+id/file_tree"-->
-                <!--android:name="com.juztoss.bpmplayer.views.BrowserFragment"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:fitsSystemWindows="true"-->
-                <!--android:orientation="horizontal"-->
-                <!--tools:layout="@layout/listfragment_main"/>-->
-        <!--</LinearLayout>-->
+            <fragment
+                android:id="@+id/file_tree"
+                android:name="com.juztoss.bpmplayer.views.BrowserFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:orientation="horizontal"
+                tools:layout="@layout/listfragment_main"/>
+        </LinearLayout>
 
 
     </android.support.v4.widget.DrawerLayout>
