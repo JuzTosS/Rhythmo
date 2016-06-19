@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -20,7 +22,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.format.DateUtils;
@@ -51,10 +52,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private SeekBar mSeekbar;
     private RangeSeekBar<Integer> mRangeSeekbar;
     ViewPager mPlaylistsPager;
-    DrawerLayout mDrawer;
-    private Boolean isMenuOpen = false;
-    private FloatingActionButton fab, fab1;
-    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
+    private FloatingActionButton fab;
     ActionBar mActionBar;
 
 
@@ -72,10 +70,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             startService(playbackServiceIntent);
         }
 
+        createFabs();
         setupActionBar();
         setupPager();
         setupAllOtherUI();
-        createFabs();
         LocalBroadcastManager.getInstance(mApp).registerReceiver(mUpdateUIReceiver, new IntentFilter(PlaybackService.UPDATE_UI_ACTION));
     }
 
@@ -87,34 +85,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private void createFabs()
     {
         fab = (FloatingActionButton) findViewById(R.id.btnAddToPlaylist);
-        fab1 = (FloatingActionButton) findViewById(R.id.btnApplyFolderToPlaylist);
-        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
         fab.setOnClickListener(this);
-        fab1.setOnClickListener(this);
-    }
-
-    public void changeBrowserState()
-    {
-        if (isMenuOpen)
-        {
-            mDrawer.closeDrawer(GravityCompat.START);
-            fab.startAnimation(rotate_backward);
-            fab1.startAnimation(fab_close);
-            fab1.setClickable(false);
-            isMenuOpen = false;
-        }
-        else
-        {
-            mDrawer.openDrawer(GravityCompat.START);
-            fab.startAnimation(rotate_forward);
-            fab1.startAnimation(fab_open);
-            fab1.setClickable(true);
-            isMenuOpen = true;
-
-        }
     }
 
     @Override
@@ -124,19 +95,13 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         switch (id)
         {
             case R.id.btnAddToPlaylist:
-                changeBrowserState();
-                break;
-            case R.id.btnApplyFolderToPlaylist:
-                getCurrentViewedPlaylist().add(mApp.getBrowserPresenter().getSongIds());
-                changeBrowserState();
+
                 break;
         }
     }
 
     private void setupAllOtherUI()
     {
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTimePassed = (TextView) findViewById(R.id.time_passed);
         mTimeLeft = (TextView) findViewById(R.id.time_left);
         mSeekbar = (SeekBar) findViewById(R.id.seekbar);
@@ -188,6 +153,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             public void onTabSelected(TabLayout.Tab tab)
             {
                 mPlaylistsPager.setCurrentItem(tab.getPosition());
+                updateFab();
             }
 
             @Override
@@ -198,10 +164,24 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onTabReselected(TabLayout.Tab tab)
             {
+
             }
         });
 
         updateTabs();
+    }
+
+    private void updateFab()
+    {
+        if(getCurrentViewedPlaylist().allowModify())
+        {
+            fab.setVisibility(View.VISIBLE);
+            ((CoordinatorLayout) findViewById(R.id.coordinatorLayout)).dispatchDependentViewsChanged(findViewById(R.id.appbar));
+        }
+        else
+            fab.hide();
+
+
     }
 
     private void setupActionBar()
@@ -242,7 +222,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             mApp.createNewPlaylist();
             updateTabs();
         }
-        else if( id == R.id.rename_playlist_menu)
+        else if (id == R.id.rename_playlist_menu)
         {
             launchRenameDialog();
         }
@@ -263,18 +243,22 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+        {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which)
+            {
                 String newName = input.getText().toString();
                 Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
                 playlist.rename(newName);
                 updateTabs();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which)
+            {
                 dialog.cancel();
             }
         });
@@ -323,7 +307,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         PlaybackService service = mApp.getPlaybackService();
 
         Composition composition = mApp.getComposition(service.currentSongId());
-        if(composition != null)
+        if (composition != null)
         {
             ((TextView) mActionBar.getCustomView().findViewById(R.id.actionbar_firstline)).setText(composition.name());
             ((TextView) mActionBar.getCustomView().findViewById(R.id.actionbar_secondline)).setText(String.format("%.1f", composition.bpm()));

@@ -14,6 +14,7 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.
     private int mNumOfLists;
     private int mCurrentPosition = 0;
     private ViewGroup mContainer;
+    private Object mCurrentFragment;
 
     @Override
     public void startUpdate(ViewGroup container)
@@ -50,10 +51,10 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.
     public void onPageSelected(int newPosition)
     {
 
-        PlaylistFragment fragmentToShow = (PlaylistFragment)instantiateItem(mContainer, newPosition);
+        PlaylistFragment fragmentToShow = (PlaylistFragment) instantiateItem(mContainer, newPosition);
         fragmentToShow.onResumeFragment();
 
-        PlaylistFragment fragmentToHide = (PlaylistFragment)instantiateItem(mContainer, mCurrentPosition);
+        PlaylistFragment fragmentToHide = (PlaylistFragment) instantiateItem(mContainer, mCurrentPosition);
         fragmentToHide.onPauseFragment();
 
         mCurrentPosition = newPosition;
@@ -69,5 +70,10 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.
     public int getCount()
     {
         return mNumOfLists;
+    }
+
+    public PlaylistFragment getCurrentFragment()
+    {
+        return (PlaylistFragment) instantiateItem(mContainer, mCurrentPosition);
     }
 }

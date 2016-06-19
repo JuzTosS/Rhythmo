@@ -57,4 +57,13 @@ public class Composition
     {
         mShiftedBPM = shiftedBPM;
     }
+
+    public String getFolder()
+    {
+        int lastIndexOfSeparator = mFolderName.lastIndexOf("/");
+        if(lastIndexOfSeparator >= 0)
+            return mFolderName.substring(lastIndexOfSeparator + 1);
+        else
+            return mFolderName;
+    }
 }

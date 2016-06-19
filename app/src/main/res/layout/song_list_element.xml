@@ -1,49 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- Surface View Start -->
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#ffffff"
-        android:padding="10dp">
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
-        <TextView
-            android:id="@+id/first_line"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/bpm_touch_label"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/bpm_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="124.5"
+                    android:textSize="15dp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="BPM"
+                    android:textColor="@color/colorEdgeEffect"
+                    android:textSize="7dp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@color/colorEdgeEffectLight"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                >
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/first_line"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Song name long long"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/textBlack"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:id="@+id/second_line"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Song name long long"
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/playing_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/icon_play_normal"
+                    android:tint="@color/accent"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:maxLines="1"/>
+            android:layout_height="1dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/colorEdgeEffectLight"/>
 
-        <TextView
-            android:id="@+id/second_line"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/first_line"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+    </LinearLayout>
 
-        <ImageView
-            android:id="@+id/playing_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/play_button_normal"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/info_button"
-            android:layout_toStartOf="@+id/info_button"/>
-
-        <ImageView
-            android:id="@+id/info_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_info_outline_black_24dp"
-            android:layout_alignTop="@+id/playing_state"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
-
-    </RelativeLayout>
-    <!-- Surface View End -->
-</LinearLayout>
+</FrameLayout>

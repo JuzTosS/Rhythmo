@@ -4,20 +4,26 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.juztoss.bpmplayer.R;
+import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class PlaylistFragment extends Fragment implements AdapterView.OnItemClickListener
+public class PlaylistFragment extends Fragment implements IOnItemClickListener
 {
     public static String PLAYLIST_INDEX = "PlaylistID";
     private int mPlaylistIndex;
@@ -50,12 +56,21 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
 
         mPlaylistIndex = playlistIndex;
         mPlaylistAdapter = new PlaylistAdapter(getActivity(), mApp.getPlaylists().get(playlistIndex));
-        ListView list = (ListView) getView().findViewById(R.id.listView);
-        list.setOnItemClickListener(this);
+        RecyclerView list = (RecyclerView) getView().findViewById(R.id.listView);
+        mPlaylistAdapter.setOnItemClickListener(this);
         list.setAdapter(mPlaylistAdapter);
+        list.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-
+    @Override
+    public void onItemClick(Composition composition, int position)
+    {
+        if (mApp.isPlaybackServiceRunning())
+        {
+            mApp.getPlaybackService().setSource(mPlaylistIndex, position);
+            mApp.getPlaybackService().startPlayback();
+        }
+    }
 
     @Override
     public void onStart()
@@ -69,16 +84,6 @@ public class PlaylistFragment extends Fragment implements AdapterView.OnItemClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.songs_list, container, false);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        if (mApp.isPlaybackServiceRunning())
-        {
-            mApp.getPlaybackService().setSource(mPlaylistIndex, position);
-            mApp.getPlaybackService().startPlayback();
-        }
     }
 
     @Override

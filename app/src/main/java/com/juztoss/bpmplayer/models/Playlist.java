@@ -88,7 +88,7 @@ public class Playlist
 
     public Cursor getList()
     {
-        if (mNeedRebuild)
+        if (mNeedRebuild || mList.isClosed())
             rebuild();
 
         return mList;

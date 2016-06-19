@@ -4,6 +4,8 @@
     <color name="primary_dark">#303F9F</color>
     <color name="accent">#188df2</color>
     <color name="colorEdgeEffect">#CCCCCC</color>
+    <color name="colorEdgeEffectLight">#DDDDDD</color>
     <color name="buttonsPrimary">#6b6b6b</color>
     <color name="buttonsSecondary">#d6d6d6</color>
+    <color name="textBlack">#555555</color>
 </resources>
