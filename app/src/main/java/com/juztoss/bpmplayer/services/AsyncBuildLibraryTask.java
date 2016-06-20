@@ -142,9 +142,17 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 String songId = songsCursor.getString(idIndex);
                 String fullPath = path + "/" + name;
                 double bpm = BpmDetector.detect(fullPath);
-                if(bpm >= 150.0)
+                if(bpm >= BPMPlayerApp.MAX_BPM)
                 {
                     bpm = bpm / 2;
+                    if(bpm >= BPMPlayerApp.MAX_BPM)
+                    {
+                        bpm = bpm / 2;
+                        if(bpm >= BPMPlayerApp.MAX_BPM)
+                        {
+                            bpm = 0;//Too big value for real BPM, unset BPM for the song.
+                        }
+                    }
                 }
 
                 int bpmX10 = (int) (bpm * 10);

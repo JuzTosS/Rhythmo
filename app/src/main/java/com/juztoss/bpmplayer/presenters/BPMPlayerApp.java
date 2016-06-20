@@ -22,6 +22,8 @@ import java.util.List;
 public class BPMPlayerApp extends Application
 {
 
+    public static float MIN_BPM = 50;
+    public static float MAX_BPM = 150;
     private BrowserPresenter mBrowserPresenter;
     private PlaybackService mPlaybackService;
     private boolean mIsBuildingLibrary;

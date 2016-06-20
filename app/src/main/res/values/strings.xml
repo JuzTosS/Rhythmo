@@ -10,4 +10,5 @@
     <string name="rebuild_library">Rebuild music library</string>
     <string name="rebuild_library_desc">Scan for all music on the device and detect bpm</string>
     <string name="building_lib_already_started">Already started!</string>
+    <string name="drag_handles_welcome">Drag handles to enable BPM filter</string>
 </resources>

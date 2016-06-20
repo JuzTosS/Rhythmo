@@ -36,11 +36,29 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.juztoss.bpmplayer.views.RangeSeekBar
-                    android:id="@+id/bpm_ranger"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="5dp"/>
+                    android:layout_margin="5dp">
+
+                    <com.juztoss.bpmplayer.views.RangeSeekBar
+                        android:id="@+id/bpm_ranger"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+
+                    <TextView
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/drag_handles_welcome"
+                        android:id="@+id/drag_handles_welcome"
+                        android:layout_gravity="center_horizontal|top"/>
+
+
+                </FrameLayout>
+
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tab_layout"
@@ -65,7 +83,7 @@
             android:layout_gravity="bottom|end"
             android:src="@drawable/ic_add_black_36dp"
             app:backgroundTint="@color/accent"
-            app:layout_behavior="com.juztoss.bpmplayer.views.ScrollingFABBehavior"
+
             />
 
     </android.support.design.widget.CoordinatorLayout>

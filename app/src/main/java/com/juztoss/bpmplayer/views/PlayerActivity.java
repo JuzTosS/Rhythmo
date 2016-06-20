@@ -10,16 +10,13 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,9 +29,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -58,6 +52,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     ViewPager mPlaylistsPager;
     private FloatingActionButton fab;
     ActionBar mActionBar;
+    private View mWelcomeFilterText;
 
 
     @Override
@@ -106,6 +101,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void setupAllOtherUI()
     {
+        mWelcomeFilterText = findViewById(R.id.drag_handles_welcome);
         mTimePassed = (TextView) findViewById(R.id.time_passed);
         mTimeLeft = (TextView) findViewById(R.id.time_left);
         mSeekbar = (SeekBar) findViewById(R.id.seekbar);
@@ -113,7 +109,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         mRangeSeekbar = (RangeSeekBar<Integer>) findViewById(R.id.bpm_ranger);
         mRangeSeekbar.setOnRangeSeekBarChangeListener(mOnBpmRangeChanged);
-        mRangeSeekbar.setRangeValues(50, 150);
+        mRangeSeekbar.setRangeValues((int)BPMPlayerApp.MIN_BPM, (int)BPMPlayerApp.MAX_BPM);
 
         mPlayButton = findViewById(R.id.play_button);
         mPlayButton.setOnClickListener(mPlayButtonListenter);
@@ -370,7 +366,16 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue)
         {
-            mApp.setBPMRange(minValue, maxValue);
+            if(minValue <= BPMPlayerApp.MIN_BPM && maxValue >= BPMPlayerApp.MAX_BPM)
+            {
+                mApp.setBPMRange(0,0);
+                mWelcomeFilterText.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                mApp.setBPMRange(minValue, maxValue);
+                mWelcomeFilterText.setVisibility(View.INVISIBLE);
+            }
         }
     };
 
