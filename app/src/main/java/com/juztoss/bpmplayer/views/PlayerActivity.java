@@ -90,13 +90,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v)
     {
-        int id = v.getId();
-        switch (id)
-        {
-            case R.id.btnAddToPlaylist:
-
-                break;
-        }
+        //On fab clicked
+        Intent intent = new Intent(this, SelectSongsActivity.class);
+        startActivity(intent);
     }
 
     private void setupAllOtherUI()

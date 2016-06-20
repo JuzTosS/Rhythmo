@@ -83,7 +83,7 @@
             android:layout_gravity="bottom|end"
             android:src="@drawable/ic_add_black_36dp"
             app:backgroundTint="@color/accent"
-
+            app:layout_behavior="com.juztoss.bpmplayer.views.ScrollingFABBehavior"
             />
 
     </android.support.design.widget.CoordinatorLayout>

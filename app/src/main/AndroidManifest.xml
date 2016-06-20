@@ -27,6 +27,9 @@
         <activity android:name=".views.SingleSongActivity">
 
         </activity>
+        <activity android:name=".views.SelectSongsActivity">
+
+        </activity>
         <service
             android:name=".services.PlaybackService"
             android:enabled="true" />

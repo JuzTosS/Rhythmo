@@ -46,7 +46,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
             public void onClick(View v)
             {
                 if(mListener != null)
-                    mListener.onItemClick(mComposition, mPosition);
+                    mListener.onItemClick(mPosition);
             }
         });
         itemView.findViewById(R.id.bpm_touch_label).setOnClickListener(this);

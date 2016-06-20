@@ -39,12 +39,22 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     };
     private IOnItemClickListener mOnItemClickListener;
 
+    public PlaylistAdapter(Context context, Playlist playlist)
+    {
+        super();
+        mCurentCursor = playlist.getList();
+        mPlaylist = playlist;
+        mContext = context;
+        mApp = (BPMPlayerApp) context.getApplicationContext();
+    }
+
+
     @Override
-    public void onItemClick(Composition composition, int position)
+    public void onItemClick(int position)
     {
         if(mOnItemClickListener != null)
         {
-            mOnItemClickListener.onItemClick(composition, position);
+            mOnItemClickListener.onItemClick(position);
         }
     }
 
@@ -90,15 +100,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     {
         mCurentCursor = mPlaylist.getList();
         notifyDataSetChanged();
-    }
-
-    public PlaylistAdapter(Context context, Playlist playlist)
-    {
-        super();
-        mCurentCursor = playlist.getList();
-        mPlaylist = playlist;
-        mContext = context;
-        mApp = (BPMPlayerApp) context.getApplicationContext();
     }
 
     public void bind()

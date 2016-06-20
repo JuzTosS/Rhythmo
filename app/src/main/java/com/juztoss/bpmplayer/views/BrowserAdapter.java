@@ -1,62 +1,78 @@
 package com.juztoss.bpmplayer.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.BaseExplorerElement;
+import com.juztoss.bpmplayer.models.Composition;
+import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class BrowserAdapter extends ArrayAdapter<BaseExplorerElement>
+public class BrowserAdapter extends RecyclerView.Adapter<BrowserElementHolder> implements IOnItemClickListener
 {
     private Context mContext;
-    private int mResource;
+    private IOnItemClickListener mOnItemClickListener;
+    private List<BaseExplorerElement> mData = new ArrayList<>();
 
-    public BrowserAdapter(Context c, int res)
+    public BrowserAdapter(Context context)
     {
-        super(c, res);
-        mContext = c;
-        mResource = res;
+        super();
+        mContext = context;
     }
 
-    /**
-     * Allows me to pull out specific views from the row xml file for the ListView.   I can then
-     * make any modifications I want to the ImageView and TextViews inside it.
-     *
-     * @param position    - The position of an item in the List received from my model.
-     * @param convertView - list_row.xml as a View object.
-     * @param parent      - The parent ViewGroup that holds the rows.  In this case, the ListView.
-     ***/
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    public void onItemClick(int position)
     {
-        View v = convertView;
-
-        if (v == null)
+        if (mOnItemClickListener != null)
         {
-            LayoutInflater inflater = (LayoutInflater.from(mContext));
-
-            v = inflater.inflate(mResource, null);
+            mOnItemClickListener.onItemClick(position);
         }
+    }
 
-        /* We pull out the ImageView and TextViews so we can set their properties.*/
-        ImageView iv = (ImageView) v.findViewById(R.id.playing_state);
+    @Override
+    public BrowserElementHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
+        LayoutInflater inflater = (LayoutInflater.from(mContext));
+        View v = inflater.inflate(R.layout.browser_row, null);
+        return new BrowserElementHolder(v, this);
+    }
 
-        TextView nameView = (TextView) v.findViewById(R.id.name_text_view);
+    @SuppressLint("DefaultLocale")
+    @Override
+    public void onBindViewHolder(BrowserElementHolder holder, int position)
+    {
+        holder.update(mData.get(position), position);
+    }
 
-        BaseExplorerElement element = getItem(position);
+    @Override
+    public int getItemCount()
+    {
+        return mData.size();
+    }
 
-        //Finally, set the name of the element or directory.
-        nameView.setText(element.name());
+    public void setOnItemClickListener(IOnItemClickListener onItemClickListener)
+    {
+        mOnItemClickListener = onItemClickListener;
+    }
 
-        //Send the view back so the ListView can show it as a row, the way we modified it.
-        return v;
+    public void update(List<BaseExplorerElement> data)
+    {
+        mData = data;
+        notifyDataSetChanged();
+    }
+
+    public BaseExplorerElement getItem(int position)
+    {
+        return mData.get(position);
     }
 }

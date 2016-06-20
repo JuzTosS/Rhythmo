@@ -1,20 +1,12 @@
 package com.juztoss.bpmplayer.views;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
@@ -63,7 +55,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     }
 
     @Override
-    public void onItemClick(Composition composition, int position)
+    public void onItemClick(int position)
     {
         if (mApp.isPlaybackServiceRunning())
         {
@@ -83,7 +75,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.songs_list, container, false);
+        return inflater.inflate(R.layout.songs_fragment, container, false);
     }
 
     @Override
