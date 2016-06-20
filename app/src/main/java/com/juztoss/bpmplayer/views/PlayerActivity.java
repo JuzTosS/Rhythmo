@@ -1,6 +1,7 @@
 package com.juztoss.bpmplayer.views;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,11 +25,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.text.SpannableString;
 import android.text.format.DateUtils;
+import android.text.style.AbsoluteSizeSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
@@ -191,9 +195,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-
+        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
+                ActionBar.LayoutParams.MATCH_PARENT);
         View actionBarLayout = getLayoutInflater().inflate(R.layout.action_bar, null);
-        mActionBar.setCustomView(actionBarLayout);
+        mActionBar.setCustomView(actionBarLayout, layoutParams);
+        Toolbar parent = (Toolbar) actionBarLayout.getParent();
+        parent.setContentInsetsAbsolute(0, 0);
     }
 
     @Override
@@ -300,6 +307,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     };
 
 
+    @SuppressLint("DefaultLocale")
     protected void updateAll()
     {
         if (!mApp.isPlaybackServiceRunning()) return;
@@ -309,8 +317,13 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         Composition composition = mApp.getComposition(service.currentSongId());
         if (composition != null)
         {
-            ((TextView) mActionBar.getCustomView().findViewById(R.id.actionbar_firstline)).setText(composition.name());
-            ((TextView) mActionBar.getCustomView().findViewById(R.id.actionbar_secondline)).setText(String.format("%.1f", composition.bpm()));
+            TextView bpmLabel = ((TextView) mActionBar.getCustomView().findViewById(R.id.bpm_label));
+            SpannableString spannableString = new SpannableString(String.format("%.1f", composition.bpmShifted()));
+            int firstPartLength = Integer.toString((int)composition.bpmShifted()).length();
+            spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
+            bpmLabel.setText(spannableString);
+            ((TextView) mActionBar.getCustomView().findViewById(R.id.first_line)).setText(composition.name());
+            ((TextView) mActionBar.getCustomView().findViewById(R.id.second_line)).setText(composition.getFolder());
         }
 
         mPlayButton.setSelected(!service.isPlaying());

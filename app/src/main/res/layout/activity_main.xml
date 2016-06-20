@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -41,10 +42,13 @@
                     android:layout_height="24dp"
                     android:background="?attr/colorPrimary"
                     android:minHeight="10dp"
+                    app:tabIndicatorColor="@color/accent"
+                    app:tabIndicatorHeight="4dp"
                     app:tabMode="scrollable"/>
 
                 <com.juztoss.bpmplayer.views.RangeSeekBar
                     android:id="@+id/bpm_ranger"
+                    android:layout_margin="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
             </LinearLayout>

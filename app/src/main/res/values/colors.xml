@@ -8,4 +8,5 @@
     <color name="buttonsPrimary">#6b6b6b</color>
     <color name="buttonsSecondary">#d6d6d6</color>
     <color name="textBlack">#555555</color>
+    <color name="headerBackground">#1f1e20</color>
 </resources>

@@ -20,6 +20,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.*;
 import android.graphics.Paint.Style;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -54,13 +57,26 @@ public class RangeSeekBar<T extends Number> extends ImageView {
     public static final int HEIGHT_IN_DP = 30;
     public static final int TEXT_LATERAL_PADDING_IN_DP = 3;
     private static final int INITIAL_PADDING_IN_DP = 8;
-    private final int LINE_HEIGHT_IN_DP = 1;
+    private final int LINE_HEIGHT_IN_DP = 5;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Bitmap thumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.seek_thumb_normal);
-    private final Bitmap thumbPressedImage = BitmapFactory.decodeResource(getResources(),
-            R.drawable.seek_thumb_pressed);
-    private final Bitmap thumbDisabledImage = BitmapFactory.decodeResource(getResources(),
-            R.drawable.seek_thumb_disabled);
+
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable)drawable).getBitmap();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
+    private final Bitmap thumbImage = drawableToBitmap(getResources().getDrawable(R.drawable.seekbar_thumb));
+    private final Bitmap thumbPressedImage = drawableToBitmap(getResources().getDrawable(R.drawable.seekbar_thumb));
+    private final Bitmap thumbDisabledImage = drawableToBitmap(getResources().getDrawable(R.drawable.seekbar_thumb));
     private final float thumbWidth = thumbImage.getWidth();
     private final float thumbHalfWidth = 0.5f * thumbWidth;
     private final float thumbHalfHeight = 0.5f * thumbImage.getHeight();
@@ -77,7 +93,7 @@ public class RangeSeekBar<T extends Number> extends ImageView {
     /**
      * Default color of a {@link RangeSeekBar}, #FF33B5E5. This is also known as "Ice Cream Sandwich" blue.
      */
-    public static final int DEFAULT_COLOR = Color.argb(0xFF, 0x33, 0xB5, 0xE5);
+    public final int DEFAULT_COLOR = getResources().getColor(R.color.accent);
     /**
      * An invalid pointer id.
      */
@@ -456,14 +472,7 @@ public class RangeSeekBar<T extends Number> extends ImageView {
         paint.setColor(Color.GRAY);
         paint.setAntiAlias(true);
 
-        // draw min and max labels
-        String minLabel = "50";
-        String maxLabel = "150";
-        float minMaxLabelSize = Math.max(paint.measureText(minLabel), paint.measureText(maxLabel));
-        float minMaxHeight = mTextOffset + thumbHalfHeight + mTextSize / 3;
-        canvas.drawText(minLabel, 0, minMaxHeight, paint);
-        canvas.drawText(maxLabel, getWidth() - minMaxLabelSize, minMaxHeight, paint);
-        padding = INITIAL_PADDING + minMaxLabelSize + thumbHalfWidth;
+        padding = INITIAL_PADDING + thumbHalfWidth;
 
         // draw seek bar background line
         mRect.left = padding;
