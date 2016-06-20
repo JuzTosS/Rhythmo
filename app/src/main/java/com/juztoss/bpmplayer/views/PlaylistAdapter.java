@@ -86,7 +86,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
         return mCurentCursor.getCount() + 1;
     }
 
-    private void updateList()
+    public void updateList()
     {
         mCurentCursor = mPlaylist.getList();
         notifyDataSetChanged();
