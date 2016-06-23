@@ -1,5 +1,7 @@
 package com.juztoss.bpmplayer.views;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,12 +11,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.juztoss.bpmplayer.R;
+import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 /**
  * Created by JuzTosS on 6/13/2016.
  */
 public class SelectSongsActivity extends AppCompatActivity
 {
+    public static final String FOLDER_PATH = "FolderPath";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -22,7 +27,7 @@ public class SelectSongsActivity extends AppCompatActivity
         setContentView(R.layout.activity_select_song);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle(R.string.song_detail_title);
+        getSupportActionBar().setTitle(R.string.select_folder);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new BrowserFragment()).commit();
@@ -36,9 +41,13 @@ public class SelectSongsActivity extends AppCompatActivity
         {
             onBackPressed();
         }
-        else if (id == R.id.song_apply)
+        else if (id == R.id.apply)
         {
-            onBackPressed();
+            Intent resultIntent = new Intent();
+            BPMPlayerApp app = (BPMPlayerApp) getApplicationContext();
+            resultIntent.putExtra(FOLDER_PATH, app.getBrowserPresenter().getCurrent().getFileSystemPath());
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

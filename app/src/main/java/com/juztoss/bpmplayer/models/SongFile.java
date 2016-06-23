@@ -68,4 +68,10 @@ public class SongFile extends BaseExplorerElement
     {
         return false;
     }
+
+    @Override
+    public String getFileSystemPath()
+    {
+        return mFile.getAbsolutePath();
+    }
 }

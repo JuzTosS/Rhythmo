@@ -3,7 +3,7 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:icon="@drawable/ic_done_black_48dp"
-        android:id="@+id/song_apply"
+        android:id="@+id/apply"
         app:showAsAction="always"
         android:title="@string/settings_title">
     </item>

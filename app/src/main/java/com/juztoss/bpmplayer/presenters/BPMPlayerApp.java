@@ -7,10 +7,10 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
+import com.juztoss.bpmplayer.models.AllSongsSource;
 import com.juztoss.bpmplayer.models.Composition;
+import com.juztoss.bpmplayer.models.LocalPlaylistSongsSource;
 import com.juztoss.bpmplayer.models.Playlist;
-import com.juztoss.bpmplayer.models.StaticAllPlaylist;
-import com.juztoss.bpmplayer.models.StaticFolderPlaylist;
 import com.juztoss.bpmplayer.services.PlaybackService;
 
 import java.util.ArrayList;
@@ -53,8 +53,7 @@ public class BPMPlayerApp extends Application
                 new String[]{DatabaseHelper._ID, DatabaseHelper.PLAYLISTS_NAME},
                 null, null, null, null, null);
 
-        result.add(new StaticAllPlaylist(this));
-//        result.add(new StaticFolderPlaylist(this));
+        result.add(new Playlist(this, new AllSongsSource(this)));
         int idIndex = playlists.getColumnIndex(DatabaseHelper._ID);
         int nameIndex = playlists.getColumnIndex(DatabaseHelper.PLAYLISTS_NAME);
 
@@ -62,9 +61,8 @@ public class BPMPlayerApp extends Application
         {
             while (playlists.moveToNext())
             {
-                result.add(new Playlist(playlists.getInt(idIndex), playlists.getString(nameIndex), this));
+                result.add(new Playlist(this, new LocalPlaylistSongsSource(playlists.getLong(idIndex), this, playlists.getString(nameIndex))));
             }
-
         }
         finally
         {
@@ -168,7 +166,7 @@ public class BPMPlayerApp extends Application
 
     public void createNewPlaylist()
     {
-        mPlaylists.add(Playlist.create("Another playlist", this));
+        mPlaylists.add(new Playlist(this, LocalPlaylistSongsSource.create("Another playlist", this)));
     }
 
     public DatabaseHelper getDatabaseHelper()
@@ -181,7 +179,7 @@ public class BPMPlayerApp extends Application
         Playlist playlist = mPlaylists.get(playlistIndex);
         if(playlist != null)
         {
-            playlist.delete();
+            playlist.getSource().delete();
             mPlaylists.remove(playlistIndex);
         }
     }

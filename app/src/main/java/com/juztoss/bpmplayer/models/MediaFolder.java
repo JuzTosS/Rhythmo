@@ -208,4 +208,10 @@ public class MediaFolder extends BaseExplorerElement
     {
         return true;
     }
+
+    @Override
+    public String getFileSystemPath()
+    {
+        return resolvePath();
+    }
 }

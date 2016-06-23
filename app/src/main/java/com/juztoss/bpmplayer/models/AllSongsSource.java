@@ -5,19 +5,25 @@ import android.database.Cursor;
 import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
-public class StaticAllPlaylist extends Playlist
+/**
+ * Created by JuzTosS on 6/22/2016.
+ */
+public class AllSongsSource implements ISongsSource
 {
-    public StaticAllPlaylist(BPMPlayerApp app)
+
+    private BPMPlayerApp mApp;
+
+    public AllSongsSource(BPMPlayerApp app)
     {
-        super("All songs", app);
+        mApp = app;
     }
 
     @Override
-    protected void rebuild()
+    public Cursor getIds(float minBPM, float maxBPM)
     {
-        if (mList != null)
-            mList.close();
-
+        int mMinBPMX10 = (int)(minBPM * 10);
+        int mMaxBPMX10 = (int)(maxBPM * 10);
+        Cursor mList;
         if (mMinBPMX10 > 0 && mMaxBPMX10 > 0)//BPM Filter is enabled
         {
             mList = mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
@@ -35,19 +41,42 @@ public class StaticAllPlaylist extends Playlist
                     null, null,
                     DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " ASC");
         }
-
-        mNeedRebuild = false;
+        return mList;
     }
 
     @Override
-    public void add(Cursor songIds)
+    public String getName()
     {
-        //Do nothing
+        return "All songs";
     }
 
     @Override
-    public boolean allowModify()
+    public void rename(String newName)
+    {
+
+    }
+
+    @Override
+    public boolean isRenameAvailable()
     {
         return false;
+    }
+
+    @Override
+    public boolean isDeleteAvailable()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isModifyAvailable()
+    {
+        return false;
+    }
+
+    @Override
+    public void delete()
+    {
+
     }
 }

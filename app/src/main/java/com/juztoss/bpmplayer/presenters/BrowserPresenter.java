@@ -78,11 +78,6 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
         return mCurrent.getSongIds();
     }
 
-    public void switchMode()
-    {
-
-    }
-
     public void setOnDataChangedListener(OnDataChangedListener listener)
     {
         mListener = listener;
@@ -91,6 +86,11 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
     public List<BaseExplorerElement> getList()
     {
         return mData;
+    }
+
+    public BaseExplorerElement getCurrent()
+    {
+        return mCurrent;
     }
 
     public interface OnDataChangedListener

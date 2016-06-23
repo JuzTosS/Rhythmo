@@ -47,4 +47,10 @@ public class ParentLink extends BaseExplorerElement
     {
         return mSource.hasChildren();
     }
+
+    @Override
+    public String getFileSystemPath()
+    {
+        return mSource.getFileSystemPath();
+    }
 }

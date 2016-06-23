@@ -1,5 +1,7 @@
 package com.juztoss.bpmplayer.models;
 
+import com.juztoss.bpmplayer.utils.SystemHelper;
+
 /**
  * Created by JuzTosS on 5/30/2016.
  */
@@ -60,10 +62,6 @@ public class Composition
 
     public String getFolder()
     {
-        int lastIndexOfSeparator = mFolderName.lastIndexOf("/");
-        if(lastIndexOfSeparator >= 0)
-            return mFolderName.substring(lastIndexOfSeparator + 1);
-        else
-            return mFolderName;
+        return SystemHelper.getLastSegmentOfPath(mAbsolutePath);
     }
 }

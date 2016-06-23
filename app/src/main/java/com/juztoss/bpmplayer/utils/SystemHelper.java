@@ -61,4 +61,13 @@ public class SystemHelper
             return 1;
         }
     }
+
+    public static String getLastSegmentOfPath(String path)
+    {
+        int lastIndexOfSeparator = path.lastIndexOf("/");
+        if(lastIndexOfSeparator >= 0)
+            return path.substring(lastIndexOfSeparator + 1);
+        else
+            return path;
+    }
 }

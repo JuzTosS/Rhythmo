@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
+import com.juztoss.bpmplayer.models.FolderSongsSource;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.PlaybackService;
@@ -92,7 +93,17 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     {
         //On fab clicked
         Intent intent = new Intent(this, SelectSongsActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (resultCode == RESULT_OK) {
+            String folderPath = data.getStringExtra(SelectSongsActivity.FOLDER_PATH);
+            Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
+            playlist.setSource(new FolderSongsSource(mApp, folderPath));
+        }
     }
 
     private void setupAllOtherUI()
@@ -169,7 +180,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void updateFab()
     {
-        if(getCurrentViewedPlaylist().allowModify())
+        if(getCurrentViewedPlaylist().getSource().isModifyAvailable())
         {
             fab.setVisibility(View.VISIBLE);
             ((CoordinatorLayout) findViewById(R.id.coordinatorLayout)).dispatchDependentViewsChanged(findViewById(R.id.appbar));
@@ -249,7 +260,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             {
                 String newName = input.getText().toString();
                 Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
-                playlist.rename(newName);
+                playlist.getSource().rename(newName);
                 updateTabs();
             }
         });
@@ -269,8 +280,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
-        menu.findItem(R.id.rename_playlist_menu).setEnabled(playlist.allowModify());
-        menu.findItem(R.id.remove_playlist_menu).setEnabled(playlist.allowModify());
+        menu.findItem(R.id.rename_playlist_menu).setEnabled(playlist.getSource().isRenameAvailable());
+        menu.findItem(R.id.remove_playlist_menu).setEnabled(playlist.getSource().isDeleteAvailable());
         return true;
     }
 

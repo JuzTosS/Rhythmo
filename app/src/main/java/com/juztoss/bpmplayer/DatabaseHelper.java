@@ -11,7 +11,7 @@ import android.provider.BaseColumns;
 public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 {
     private static final String DATABASE_NAME = "main.db";
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 13;
 
 
     //TABLE SETTINGS
@@ -43,6 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 
     //TABLE PLAYLISTS
     public static final String TABLE_PLAYLISTS = "playlists";
+    public static final String PLAYLISTS_OPTIONS = "options";
     public static final String PLAYLISTS_NAME = "name";
 
     //TABLE SONGS
@@ -83,6 +84,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 
         db.execSQL("create table "
                 + TABLE_PLAYLISTS + " (" +  BaseColumns._ID + " integer primary key autoincrement, "
+                + PLAYLISTS_OPTIONS + " text, "
                 + PLAYLISTS_NAME + " text); ");
 
         db.execSQL("create table "

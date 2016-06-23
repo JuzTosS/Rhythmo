@@ -94,4 +94,10 @@ public class FileSystemFolder extends BaseExplorerElement
     {
         return true;
     }
+
+    @Override
+    public String getFileSystemPath()
+    {
+        return mFile.getAbsolutePath();
+    }
 }

@@ -29,4 +29,9 @@ public abstract class BaseExplorerElement implements Comparable<BaseExplorerElem
     }
 
     public abstract boolean hasChildren();
+
+    public String getFileSystemPath()
+    {
+        return null;
+    }
 }

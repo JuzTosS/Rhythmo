@@ -163,7 +163,7 @@ public class SingleSongActivity extends AppCompatActivity
         {
             onBackPressed();
         }
-        else if (id == R.id.song_apply)
+        else if (id == R.id.apply)
         {
             saveChanges();
             onBackPressed();

@@ -26,4 +26,17 @@ public class MusicLibraryHelper
 
         return cursor;
     }
+
+    public Cursor getSongIdsCursor(String absolutePath, float minBPM, float maxBPM, boolean doCheckFileSystem)
+    {
+        //TODO: Implement doCheckFileSystem logic
+        //TODO: Implement bpm filter logic
+        Cursor cursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                new String[]{DatabaseHelper._ID},
+                DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " LIKE '" + absolutePath + "%'",
+                null,
+                null, null, null);
+
+        return cursor;
+    }
 }
