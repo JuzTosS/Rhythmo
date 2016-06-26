@@ -11,7 +11,7 @@ import android.provider.BaseColumns;
 public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 {
     private static final String DATABASE_NAME = "main.db";
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
 
 
     //TABLE SETTINGS
@@ -19,9 +19,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 
     public static final String SETTING_NAME = "name";
     public static final String SETTING_VALUE = "value";
-
-    public static final String SETTINGS_SONG_FOLDER = "song_folder";
-
 
     //TABLE MUSIC_LIBRARY_TABLE
     public static final String TABLE_MUSIC_LIBRARY = "music_library";
@@ -42,15 +39,16 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
     public static final String FOLDERS_HAS_SONGS = "has_songs";
 
     //TABLE PLAYLISTS
-    public static final String TABLE_PLAYLISTS = "playlists";
-    public static final String PLAYLISTS_OPTIONS = "options";
-    public static final String PLAYLISTS_NAME = "name";
+    public static final String TABLE_SOURCES = "sources";
+    public static final String SOURCE_OPTIONS = "options";
+    public static final String SOURCE_TYPE = "type";
+    public static final String SOURCE_NAME = "name";
 
     //TABLE SONGS
-    public static final String TABLE_SONGS = "songs";
-    public static final String SONGS_SONG_ID = "song_id";
-    public static final String SONGS_PLAYLIST_ID = "playlist_id";
-    public static final String SONGS_POSITION = "position";
+    public static final String TABLE_PLAYLISTS = "playlists";
+    public static final String PLAYLIST_SONG_ID = "song_id";
+    public static final String PLAYLIST_SOURCE_ID = "source_id";
+    public static final String PLAYLIST_POSITION = "position";
 
     public DatabaseHelper(Context context)
     {
@@ -83,15 +81,16 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
                 + FOLDERS_HAS_SONGS + " boolean); ");
 
         db.execSQL("create table "
-                + TABLE_PLAYLISTS + " (" +  BaseColumns._ID + " integer primary key autoincrement, "
-                + PLAYLISTS_OPTIONS + " text, "
-                + PLAYLISTS_NAME + " text); ");
+                + TABLE_SOURCES + " (" +  BaseColumns._ID + " integer primary key autoincrement, "
+                + SOURCE_TYPE + " integer, "
+                + SOURCE_OPTIONS + " text, "
+                + SOURCE_NAME + " text); ");
 
         db.execSQL("create table "
-                + TABLE_SONGS + " (" +  BaseColumns._ID + " integer primary key autoincrement, "
-                + SONGS_PLAYLIST_ID + " integer key, "
-                + SONGS_POSITION + " integer, "
-                + SONGS_SONG_ID + " integer); ");
+                + TABLE_PLAYLISTS + " (" +  BaseColumns._ID + " integer primary key autoincrement, "
+                + PLAYLIST_SOURCE_ID + " integer key, "
+                + PLAYLIST_POSITION + " integer, "
+                + PLAYLIST_SONG_ID + " integer); ");
     }
 
     @Override
@@ -100,8 +99,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_SETTINGS + "';");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_MUSIC_LIBRARY + "';");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_FOLDERS + "';");
+        db.execSQL("DROP TABLE IF EXISTS '" + TABLE_SOURCES + "';");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_PLAYLISTS + "';");
-        db.execSQL("DROP TABLE IF EXISTS '" + TABLE_SONGS + "';");
 
         onCreate(db);
     }

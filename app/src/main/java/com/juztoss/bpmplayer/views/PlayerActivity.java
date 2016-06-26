@@ -35,8 +35,9 @@ import android.widget.TextView;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
-import com.juztoss.bpmplayer.models.FolderSongsSource;
+import com.juztoss.bpmplayer.models.songsources.FolderSongsSource;
 import com.juztoss.bpmplayer.models.Playlist;
+import com.juztoss.bpmplayer.models.songsources.SourcesFactory;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.PlaybackService;
 
@@ -102,7 +103,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         if (resultCode == RESULT_OK) {
             String folderPath = data.getStringExtra(SelectSongsActivity.FOLDER_PATH);
             Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
-            playlist.setSource(new FolderSongsSource(mApp, folderPath));
+            playlist.getSource().delete();
+            playlist.setSource(SourcesFactory.createFolderSongSource(folderPath, mApp));
         }
     }
 

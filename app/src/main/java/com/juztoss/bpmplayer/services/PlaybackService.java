@@ -15,6 +15,7 @@ import android.util.Log;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.audio.AdvancedMediaPlayer;
 import com.juztoss.bpmplayer.models.Composition;
+import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.LinkedList;
@@ -24,7 +25,7 @@ import java.util.Queue;
 /**
  * Created by JuzTosS on 5/3/2016.
  */
-public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener
+public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener, Playlist.IUpdateListener
 {
 
     public static final int NOTIFICATION_ID = 42;
@@ -45,6 +46,11 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     public long currentSongId()
     {
+        if(getSongsList() == null)
+        {
+            mCurrentPlaylistIndex = 0;
+            return -1;
+        }
         if (mCurrentSongIndex < 0 || mCurrentSongIndex >= getSongsList().getCount()) return -1;
 
         getSongsList().moveToPosition(mCurrentSongIndex);
@@ -74,7 +80,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         clearQueue();
         mCurrentSongIndex++;
         if (mCurrentSongIndex >= getSongsList().getCount())
-            mCurrentSongIndex = getSongsList().getCount() - 1;
+            mCurrentSongIndex = 0;
 
         setSource(mCurrentPlaylistIndex, mCurrentSongIndex);
         putAction(new ActionPlay());
@@ -163,6 +169,12 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         super.onDestroy();
     }
 
+    @Override
+    public void onPlaylistUpdated()
+    {
+        mCurrentSongIndex = -1;
+    }
+
     public void setSource(int playlistIndex, int index)
     {
         mCurrentPlaylistIndex = playlistIndex;
@@ -170,6 +182,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
         if(index < 0 || index >= getSongsList().getCount())
             return;
+
+        mApp.getPlaylists().get(mCurrentPlaylistIndex).addUpdateListener(this);
 
         getSongsList().moveToPosition(index);
         putAction(new ActionPrepare(mApp.getComposition(getSongsList().getLong(0))));

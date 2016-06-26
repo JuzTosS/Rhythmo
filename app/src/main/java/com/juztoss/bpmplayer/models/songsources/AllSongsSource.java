@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer.models;
+package com.juztoss.bpmplayer.models.songsources;
 
 import android.database.Cursor;
 
@@ -13,7 +13,7 @@ public class AllSongsSource implements ISongsSource
 
     private BPMPlayerApp mApp;
 
-    public AllSongsSource(BPMPlayerApp app)
+    AllSongsSource(BPMPlayerApp app)
     {
         mApp = app;
     }

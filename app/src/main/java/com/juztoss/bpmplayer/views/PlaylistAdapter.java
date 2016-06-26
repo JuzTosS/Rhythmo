@@ -93,7 +93,10 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     @Override
     public int getItemCount()
     {
-        return mCurentCursor.getCount() + 1;
+        if(mCurentCursor != null)
+            return mCurentCursor.getCount() + 1;
+        else
+            return 0;
     }
 
     public void updateList()

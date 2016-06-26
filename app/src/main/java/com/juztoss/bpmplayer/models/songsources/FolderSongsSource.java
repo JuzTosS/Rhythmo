@@ -1,7 +1,9 @@
-package com.juztoss.bpmplayer.models;
+package com.juztoss.bpmplayer.models.songsources;
 
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 
+import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.utils.SystemHelper;
 
@@ -11,25 +13,31 @@ import com.juztoss.bpmplayer.utils.SystemHelper;
 public class FolderSongsSource implements ISongsSource
 {
 
+    private long mId;
     private BPMPlayerApp mApp;
     private String mFolderFullPath;
 
-    public FolderSongsSource(BPMPlayerApp app, String folderFullPath)
+    FolderSongsSource(long id, BPMPlayerApp app, String folderFullPath)
     {
+        mId = id;
         mApp = app;
         mFolderFullPath = folderFullPath;
     }
 
+    @Nullable
     @Override
     public Cursor getIds(float minBPM, float maxBPM)
     {
+        if(mFolderFullPath == null || mFolderFullPath.length() <= 0)
+            return null;
+
         return mApp.getMusicLibraryHelper().getSongIdsCursor(mFolderFullPath, minBPM, maxBPM, true);
     }
 
     @Override
     public void delete()
     {
-        //Do nothing
+        mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_SOURCES, DatabaseHelper._ID + " = ?", new String[]{Long.toString(mId)});
     }
 
     @Override
@@ -47,18 +55,18 @@ public class FolderSongsSource implements ISongsSource
     @Override
     public boolean isRenameAvailable()
     {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isDeleteAvailable()
     {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isModifyAvailable()
     {
-        return false;
+        return true;
     }
 }

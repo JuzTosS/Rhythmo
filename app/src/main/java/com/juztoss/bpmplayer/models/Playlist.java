@@ -1,7 +1,9 @@
 package com.juztoss.bpmplayer.models;
 
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 
+import com.juztoss.bpmplayer.models.songsources.ISongsSource;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.ArrayList;
@@ -53,9 +55,10 @@ public class Playlist
         notifyUpdateListeners();
     }
 
+    @Nullable
     public Cursor getList()
     {
-        if (mNeedRebuild || mList.isClosed())
+        if (mNeedRebuild || mList == null || mList.isClosed())
             rebuild();
 
         return mList;

@@ -7,10 +7,10 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
-import com.juztoss.bpmplayer.models.AllSongsSource;
 import com.juztoss.bpmplayer.models.Composition;
-import com.juztoss.bpmplayer.models.LocalPlaylistSongsSource;
 import com.juztoss.bpmplayer.models.Playlist;
+import com.juztoss.bpmplayer.models.songsources.LocalPlaylistSongsSource;
+import com.juztoss.bpmplayer.models.songsources.SourcesFactory;
 import com.juztoss.bpmplayer.services.PlaybackService;
 
 import java.util.ArrayList;
@@ -49,19 +49,18 @@ public class BPMPlayerApp extends Application
     {
         List<Playlist> result = new ArrayList<>();
 
-        Cursor playlists = getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_PLAYLISTS,
-                new String[]{DatabaseHelper._ID, DatabaseHelper.PLAYLISTS_NAME},
+        Cursor playlists = getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_SOURCES,
+                new String[]{DatabaseHelper._ID},
                 null, null, null, null, null);
 
-        result.add(new Playlist(this, new AllSongsSource(this)));
+        result.add(new Playlist(this, SourcesFactory.createAllSongsSource(this)));
         int idIndex = playlists.getColumnIndex(DatabaseHelper._ID);
-        int nameIndex = playlists.getColumnIndex(DatabaseHelper.PLAYLISTS_NAME);
 
         try
         {
             while (playlists.moveToNext())
             {
-                result.add(new Playlist(this, new LocalPlaylistSongsSource(playlists.getLong(idIndex), this, playlists.getString(nameIndex))));
+                result.add(new Playlist(this, SourcesFactory.loadExist(this, playlists.getLong(idIndex))));
             }
         }
         finally
@@ -85,7 +84,7 @@ public class BPMPlayerApp extends Application
         Composition composition = null;
         try
         {
-            if(cursor.getCount() > 0)
+            if (cursor.getCount() > 0)
             {
                 cursor.moveToFirst();
 
@@ -166,7 +165,7 @@ public class BPMPlayerApp extends Application
 
     public void createNewPlaylist()
     {
-        mPlaylists.add(new Playlist(this, LocalPlaylistSongsSource.create("Another playlist", this)));
+        mPlaylists.add(new Playlist(this, SourcesFactory.createFolderSongSource("", this)));
     }
 
     public DatabaseHelper getDatabaseHelper()
@@ -177,7 +176,7 @@ public class BPMPlayerApp extends Application
     public void removePlaylist(int playlistIndex)
     {
         Playlist playlist = mPlaylists.get(playlistIndex);
-        if(playlist != null)
+        if (playlist != null)
         {
             playlist.getSource().delete();
             mPlaylists.remove(playlistIndex);
@@ -197,8 +196,8 @@ public class BPMPlayerApp extends Application
     public void updateBpm(Composition composition)
     {
         ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, (int)(composition.bpm() * 10));
-        values.put(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, (int)(composition.bpmShifted() * 10));
+        values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, (int) (composition.bpm() * 10));
+        values.put(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, (int) (composition.bpmShifted() * 10));
         getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + " = ?", new String[]{Long.toString(composition.id())});
     }
 }
