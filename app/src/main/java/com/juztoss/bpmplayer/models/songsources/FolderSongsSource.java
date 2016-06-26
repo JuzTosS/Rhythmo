@@ -43,7 +43,10 @@ public class FolderSongsSource implements ISongsSource
     @Override
     public String getName()
     {
-        return SystemHelper.getLastSegmentOfPath(mFolderFullPath);
+        if(mFolderFullPath == null || mFolderFullPath.isEmpty())
+            return "Empty";
+        else
+            return SystemHelper.getLastSegmentOfPath(mFolderFullPath);
     }
 
     @Override

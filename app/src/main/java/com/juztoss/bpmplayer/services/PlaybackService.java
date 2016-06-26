@@ -70,14 +70,24 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         Log.e(getResources().getString(R.string.app_name), "Player error: " + message);
     }
 
+    @Nullable
     private Cursor getSongsList()
     {
-        return mApp.getPlaylists().get(mCurrentPlaylistIndex).getList();
+        if(mCurrentPlaylistIndex < 0 || mCurrentPlaylistIndex >= mApp.getPlaylists().size())
+            return null;
+        else
+            return mApp.getPlaylists().get(mCurrentPlaylistIndex).getList();
     }
 
     public void gotoNext()
     {
         clearQueue();
+        if(getSongsList() == null)
+        {
+            putAction(new ActionStop());
+            return;
+        }
+
         mCurrentSongIndex++;
         if (mCurrentSongIndex >= getSongsList().getCount())
             mCurrentSongIndex = 0;
@@ -177,13 +187,16 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     public void setSource(int playlistIndex, int index)
     {
+        if(mCurrentPlaylistIndex != playlistIndex)
+            mApp.getPlaylists().get(mCurrentPlaylistIndex).removeUpdateListener(this);
+
+        mApp.getPlaylists().get(playlistIndex).addUpdateListener(this);
+
         mCurrentPlaylistIndex = playlistIndex;
         mCurrentSongIndex = index;
 
-        if(index < 0 || index >= getSongsList().getCount())
+        if(index < 0 || getSongsList() == null || index >= getSongsList().getCount())
             return;
-
-        mApp.getPlaylists().get(mCurrentPlaylistIndex).addUpdateListener(this);
 
         getSongsList().moveToPosition(index);
         putAction(new ActionPrepare(mApp.getComposition(getSongsList().getLong(0))));
