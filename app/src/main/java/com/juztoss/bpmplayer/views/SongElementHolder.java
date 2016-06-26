@@ -77,8 +77,8 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
         BPMPlayerApp app = ((BPMPlayerApp)itemView.getContext().getApplicationContext());
         if (app.isPlaybackServiceRunning())
         {
-            boolean visible = app.getPlaybackService().getCurrentSongIndex() == position;
-            mPlayingState.setVisibility(visible  ? View.VISIBLE : View.GONE);
+            boolean visible = app.getPlaybackService().currentSongId() == composition.id();
+            mPlayingState.setVisibility(visible ? View.VISIBLE : View.GONE);
         }
     }
 
