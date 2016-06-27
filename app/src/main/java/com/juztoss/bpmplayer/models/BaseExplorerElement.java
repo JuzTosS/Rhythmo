@@ -34,4 +34,8 @@ public abstract class BaseExplorerElement implements Comparable<BaseExplorerElem
     {
         return null;
     }
+
+    public abstract String description();
+
+    public abstract int getIconResource();
 }

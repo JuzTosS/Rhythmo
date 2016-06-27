@@ -56,4 +56,16 @@ public class CustomExplorerElement extends BaseExplorerElement
     {
         return true;
     }
+
+    @Override
+    public String description()
+    {
+        return "";
+    }
+
+    @Override
+    public int getIconResource()
+    {
+        return 0;
+    }
 }

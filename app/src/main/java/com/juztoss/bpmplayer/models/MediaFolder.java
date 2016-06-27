@@ -1,9 +1,11 @@
 package com.juztoss.bpmplayer.models;
 
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.support.annotation.Nullable;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
+import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.io.File;
@@ -105,6 +107,12 @@ public class MediaFolder extends BaseExplorerElement
     public ExplorerPriority priority()
     {
         return ExplorerPriority.FOLDER;
+    }
+
+    @Override
+    public int getIconResource()
+    {
+        return R.drawable.ic_folder_black_24dp;
     }
 
     @Override
@@ -213,5 +221,21 @@ public class MediaFolder extends BaseExplorerElement
     public String getFileSystemPath()
     {
         return resolvePath();
+    }
+
+    @Override
+    public String description()
+    {
+        int count = (int)DatabaseUtils.queryNumEntries(mApp.getDatabaseHelper().getReadableDatabase(),
+                DatabaseHelper.TABLE_FOLDERS,
+                DatabaseHelper.FOLDERS_PARENT_ID + "= ?",
+                new String[]{Long.toString(mLastId)})
+                +
+                (int)DatabaseUtils.queryNumEntries(mApp.getDatabaseHelper().getReadableDatabase(),
+                        DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                        DatabaseHelper.MUSIC_LIBRARY_PATH + "= ?",
+                        new String[]{resolvePath()})
+                ;
+        return mApp.getResources().getString(R.string.folder_desc, count);
     }
 }

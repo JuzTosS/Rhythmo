@@ -3,6 +3,7 @@ package com.juztoss.bpmplayer.models;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
+import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.io.File;
@@ -45,6 +46,12 @@ public class FileSystemFolder extends BaseExplorerElement
     public ExplorerPriority priority()
     {
         return ExplorerPriority.FOLDER;
+    }
+
+    @Override
+    public int getIconResource()
+    {
+        return R.drawable.ic_folder_black_24dp;
     }
 
     @Override
@@ -99,5 +106,11 @@ public class FileSystemFolder extends BaseExplorerElement
     public String getFileSystemPath()
     {
         return mFile.getAbsolutePath();
+    }
+
+    @Override
+    public String description()
+    {
+        return mApp.getResources().getString(R.string.folder_desc, mFile.list().length);
     }
 }

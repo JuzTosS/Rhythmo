@@ -14,4 +14,5 @@
     <string name="select_folder">Select folder</string>
     <string name="detect_bpm_by_name">Detecting bpm from names</string>
     <string name="detect_bpm_by_data">Detecting bpm from audio data</string>
+    <string name="folder_desc">"Files: %d"</string>
 </resources>

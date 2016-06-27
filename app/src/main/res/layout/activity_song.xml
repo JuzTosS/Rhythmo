@@ -35,7 +35,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text="Location"
+                    android:text=""
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold"/>
 
@@ -44,7 +44,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="The/path/to/the/song.mp3"
+                    android:layout_marginRight="10dp"
+                    android:text=""
                     android:textAppearance="?android:attr/textAppearanceSmall"/>
             </LinearLayout>
 
@@ -95,7 +96,7 @@
                         android:inputType="numberDecimal"
                         android:nextFocusLeft="@id/bpm_text"
                         android:nextFocusUp="@id/bpm_text"
-                        android:text="128"
+                        android:text=""
                         android:textSize="70dp"/>
 
                     <Button

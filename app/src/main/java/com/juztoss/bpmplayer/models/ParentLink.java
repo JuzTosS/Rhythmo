@@ -3,6 +3,8 @@ package com.juztoss.bpmplayer.models;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
+import com.juztoss.bpmplayer.R;
+
 import java.util.List;
 
 /**
@@ -35,6 +37,12 @@ public class ParentLink extends BaseExplorerElement
         return mSource.getChildren();
     }
 
+    @Override
+    public int getIconResource()
+    {
+        return R.drawable.ic_navigate_before_black_24dp;
+    }
+
     @Nullable
     @Override
     public Cursor getSongIds()
@@ -52,5 +60,11 @@ public class ParentLink extends BaseExplorerElement
     public String getFileSystemPath()
     {
         return mSource.getFileSystemPath();
+    }
+
+    @Override
+    public String description()
+    {
+        return "";
     }
 }

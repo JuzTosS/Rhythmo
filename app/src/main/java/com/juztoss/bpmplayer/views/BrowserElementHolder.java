@@ -1,25 +1,23 @@
 package com.juztoss.bpmplayer.views;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
-import android.text.style.AbsoluteSizeSpan;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.BaseExplorerElement;
-import com.juztoss.bpmplayer.models.Composition;
-import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 /**
  * Created by JuzTosS on 6/18/2016.
  */
 public class BrowserElementHolder extends RecyclerView.ViewHolder
 {
+    private final TextView mName;
+    private final TextView mDesc;
+    private final ImageView mIcon;
+
     private int mPosition;
     private IOnItemClickListener mListener;
 
@@ -36,12 +34,25 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
             }
         });
         mListener = listener;
+
+        mName = ((TextView) itemView.findViewById(R.id.name_text_view));
+        mDesc = ((TextView) itemView.findViewById(R.id.desc_text_view));
+        mIcon = (ImageView) itemView.findViewById(R.id.element_icon);
     }
 
     @SuppressLint("DefaultLocale")
     public void update(BaseExplorerElement element, int position)
     {
         mPosition = position;
-        ((TextView)itemView.findViewById(R.id.name_text_view)).setText(element.name());
+        mName.setText(element.name());
+        mDesc.setText(element.description());
+
+        if (element.getIconResource() > 0)
+        {
+            mIcon.setImageResource(element.getIconResource());
+            mIcon.setVisibility(View.VISIBLE);
+        }
+        else
+            mIcon.setVisibility(View.GONE);
     }
 }

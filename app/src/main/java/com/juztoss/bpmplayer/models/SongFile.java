@@ -1,8 +1,12 @@
 package com.juztoss.bpmplayer.models;
 
 import android.database.Cursor;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.text.format.DateUtils;
 
+import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.io.File;
@@ -32,6 +36,12 @@ public class SongFile extends BaseExplorerElement
     public String name()
     {
         return mFile.getName();
+    }
+
+    @Override
+    public int getIconResource()
+    {
+        return R.drawable.ic_music_note_black_24dp;
     }
 
     @Override
@@ -73,5 +83,15 @@ public class SongFile extends BaseExplorerElement
     public String getFileSystemPath()
     {
         return mFile.getAbsolutePath();
+    }
+
+    @Override
+    public String description()
+    {
+        //TODO: Refactor that when getting properties from media become easier.
+        MediaPlayer mp = MediaPlayer.create(mApp, Uri.parse(mFile.getAbsolutePath()));
+        int duration = mp.getDuration();
+        mp.release();
+        return DateUtils.formatElapsedTime(duration / 1000);
     }
 }
