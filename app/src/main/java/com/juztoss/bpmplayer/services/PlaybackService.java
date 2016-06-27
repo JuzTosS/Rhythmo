@@ -279,6 +279,12 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         mPlayer.setPosition(position);
     }
 
+    public void setNewPlayingBPM(float bpm, float shiftedBpm)
+    {
+        mPlayer.setBPM(bpm);
+        mPlayer.setNewBPM(shiftedBpm);
+    }
+
     private class BaseAction
     {
         public void doAction()

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.services.PlaybackService;
 
 /**
  * Created by JuzTosS on 6/13/2016.
@@ -99,6 +100,13 @@ public class SingleSongActivity extends AppCompatActivity
             {
                 mComposition.setShiftedBPM(mComposition.bpm() + progress - 25);
                 updateSeekBar();
+                BPMPlayerApp app = (BPMPlayerApp) getApplicationContext();
+                if(app.isPlaybackServiceRunning())
+                {
+                    PlaybackService service = app.getPlaybackService();
+                    if(service.isPlaying() && service.currentSongId() == mComposition.id())
+                        service.setNewPlayingBPM(mComposition.bpm(), mComposition.bpmShifted());
+                }
             }
         }
 

@@ -35,7 +35,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text=""
+                    android:text="Location"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold"/>
 
