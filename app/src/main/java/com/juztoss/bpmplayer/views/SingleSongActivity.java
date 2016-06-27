@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,15 +29,30 @@ public class SingleSongActivity extends AppCompatActivity
 
     SeekBar mSeekBar;
     Composition mComposition;
+    Button mButtonHalf;
+    Button mButtonDouble;
+    TextView mBpmField;
+    private static final int DETECT_WINDOW_SIZE = 10;
     public static final String SONG_ID = "SongId";
+
+    private void setCompositionBPM(float bpm)
+    {
+        float shift = mComposition.bpmShifted() - mComposition.bpm();
+        mComposition.setBPM(bpm);
+        mComposition.setShiftedBPM(mComposition.bpm() + shift);
+    }
+
+    private void updateBpmField(float bpm)
+    {
+        mBpmField.setText(String.format("%.1f", bpm));
+    }
 
     private View.OnClickListener mOnHalfClick = new View.OnClickListener()
     {
         @Override
         public void onClick(View v)
         {
-            mComposition.setBPM(mComposition.bpm() / 2);
-            updateBpm();
+            updateBpmField(mComposition.bpm() / 2);
         }
     };
 
@@ -44,8 +61,7 @@ public class SingleSongActivity extends AppCompatActivity
         @Override
         public void onClick(View v)
         {
-            mComposition.setBPM(mComposition.bpm() * 2);
-            updateBpm();
+            updateBpmField(mComposition.bpm() * 2);
         }
     };
 
@@ -58,21 +74,20 @@ public class SingleSongActivity extends AppCompatActivity
             final long MAX_INTERVAL = 2000;
             final long interval = now - mLastTapTime;
             mLastTapTime = now;
-            float shift = mComposition.bpmShifted() - mComposition.bpm();
+
             if (interval > MAX_INTERVAL)
             {
                 mTapsCount = 0;
-                mComposition.setBPM(0);
+                updateBpmField(0);
             }
             else
             {
                 float currentBpm = 60 * 1000 / interval;
                 float lastBpm = mComposition.bpm();
-                mComposition.setBPM((lastBpm * mTapsCount + currentBpm) / (mTapsCount + 1));
-                mTapsCount++;
+                updateBpmField((lastBpm * mTapsCount + currentBpm) / (mTapsCount + 1));
+                if(mTapsCount < DETECT_WINDOW_SIZE)
+                    mTapsCount++;
             }
-            mComposition.setShiftedBPM(mComposition.bpm() + shift);
-            updateBpm();
         }
     };
     private SeekBar.OnSeekBarChangeListener mOnSeekBarChanged = new SeekBar.OnSeekBarChangeListener()
@@ -122,19 +137,44 @@ public class SingleSongActivity extends AppCompatActivity
         TextView nameField = (TextView) findViewById(R.id.song_name);
         nameField.setText(mComposition.getAbsolutePath());
 
-        Button buttonHalf = (Button) findViewById(R.id.button_half_bpm);
-        buttonHalf.setOnClickListener(mOnHalfClick);
-        Button buttonDouble = (Button) findViewById(R.id.button_double_bpm);
-        buttonDouble.setOnClickListener(mOnDoubleClick);
+        mButtonHalf = (Button) findViewById(R.id.button_half_bpm);
+        mButtonHalf.setOnClickListener(mOnHalfClick);
+        mButtonDouble = (Button) findViewById(R.id.button_double_bpm);
+        mButtonDouble.setOnClickListener(mOnDoubleClick);
         Button buttonTap = (Button) findViewById(R.id.button_tab_bpm);
         buttonTap.setOnClickListener(mOnTapClick);
 
+
+        mBpmField = (TextView) findViewById(R.id.bpm_text);
+        mBpmField.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                if(s.toString().isEmpty())
+                    setCompositionBPM(0);
+                else
+                    setCompositionBPM(Float.valueOf(s.toString()));
+
+                updateEnv();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+
+            }
+        });
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
         mSeekBar.setMax(50);
         mSeekBar.setOnSeekBarChangeListener(mOnSeekBarChanged);
-
-
-        updateBpm();
+        updateBpmField(mComposition.bpm());
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -148,10 +188,11 @@ public class SingleSongActivity extends AppCompatActivity
         bpmDesc.setText(String.format("%.1f (%d)", mComposition.bpmShifted(), bpmShift));
     }
 
-    private void updateBpm()
+    private void updateEnv()
     {
-        TextView bpmField = (TextView) findViewById(R.id.bpm_text);
-        bpmField.setText(String.format("%.1f", mComposition.bpm()));
+        mButtonDouble.setEnabled(mComposition.bpm() * 2 <= BPMPlayerApp.MAX_BPM);
+        mButtonHalf.setEnabled(mComposition.bpm() / 2 >= BPMPlayerApp.MIN_BPM);
+
         updateSeekBar();
     }
 
