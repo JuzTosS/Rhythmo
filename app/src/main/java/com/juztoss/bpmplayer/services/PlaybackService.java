@@ -223,6 +223,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         mIsPlaying = value;
         if (mIsPlaying)
             startForeground(NOTIFICATION_ID, PlaybackNotification.create(this));
+        else
+            stopForeground(false);
     }
 
     private void requestAudioFocus()

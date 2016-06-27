@@ -18,8 +18,6 @@ public class PlaybackNotification
     static Notification create(PlaybackService service)
     {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(service);
-        notificationBuilder.setOngoing(true);
-        notificationBuilder.setAutoCancel(false);
         notificationBuilder.setSmallIcon(R.drawable.ic_play_arrow_black_24dp);
 
 
@@ -28,29 +26,34 @@ public class PlaybackNotification
         notificationBuilder.setContentIntent(launchNowPlayingPendingIntent);
 
         RemoteViews notificationView = new RemoteViews(service.getPackageName(), R.layout.notification_layout);
-        if(service.isPlaying())
+        if (service.isPlaying())
             notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_pause_large);
         else
             notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_play_large);
 
-        Composition composition = ((BPMPlayerApp)service.getApplication()).getComposition(service.currentSongId());
+        Composition composition = ((BPMPlayerApp) service.getApplication()).getComposition(service.currentSongId());
 
-        if(composition != null)
+        if (composition != null)
         {
-            notificationView.setTextViewText(R.id.notification_firstline, composition.name());
-            notificationView.setTextViewText(R.id.notification_secondline, String.format("%.1f", composition.bpm()));
+            notificationView.setTextViewText(R.id.first_line, composition.name());
+            notificationView.setTextViewText(R.id.second_line, composition.getFolder());
+            notificationView.setTextViewText(R.id.bpm_label, String.format("%.1f", composition.bpm()));
         }
 
         Intent switchPlaybackIntent = new Intent(PlaybackService.SWITCH_PLAYBACK_ACTION);
         PendingIntent switchPlaybackPendingIntent = PendingIntent.getBroadcast(service, 0, switchPlaybackIntent, 0);
         notificationView.setOnClickPendingIntent(R.id.notification_pause, switchPlaybackPendingIntent);
 
+//        notificationBuilder.setOngoing(service.isPlaying());
+//        notificationBuilder.setAutoCancel(!service.isPlaying());
+
         notificationBuilder.setContent(notificationView);
         Notification notification = notificationBuilder.build();
 
-        notification.flags = Notification.FLAG_FOREGROUND_SERVICE |
-                Notification.FLAG_NO_CLEAR |
-                Notification.FLAG_ONGOING_EVENT;
+//        notification.flags = Notification.FLAG_ONGOING_EVENT;
+
+//        if (service.isPlaying())
+//            notification.flags |= Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
 
         return notification;
     }
