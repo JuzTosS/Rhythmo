@@ -105,6 +105,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
             playlist.getSource().delete();
             playlist.setSource(SourcesFactory.createFolderSongSource(folderPath, mApp));
+            updateTabs();
         }
     }
 

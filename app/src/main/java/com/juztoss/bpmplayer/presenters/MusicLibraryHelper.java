@@ -22,7 +22,7 @@ public class MusicLibraryHelper
                 new String[]{DatabaseHelper._ID},
                 DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " LIKE '" + absolutePath + "%'",
                 null,
-                null, null, null);
+                null, null, DatabaseHelper.MUSIC_LIBRARY_FULL_PATH);
 
         return cursor;
     }
@@ -30,12 +30,25 @@ public class MusicLibraryHelper
     public Cursor getSongIdsCursor(String absolutePath, float minBPM, float maxBPM, boolean doCheckFileSystem)
     {
         //TODO: Implement doCheckFileSystem logic
-        Cursor cursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                new String[]{DatabaseHelper._ID},
-                DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " LIKE '" + absolutePath + "%' AND " +
-                DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ? AND " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?",
-                new String[]{Integer.toString((int)(minBPM * 10)), Integer.toString((int)(maxBPM * 10))},
-                null, null, null);
+
+        Cursor cursor;
+        if (minBPM > 0 && maxBPM > 0)//BPM Filter is enabled
+        {
+            cursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                    new String[]{DatabaseHelper._ID},
+                    DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " LIKE '" + absolutePath + "%' AND " +
+                            DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " >= ? AND " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + " <= ?",
+                    new String[]{Integer.toString((int) (minBPM * 10)), Integer.toString((int) (maxBPM * 10))},
+                    null, null, DatabaseHelper.MUSIC_LIBRARY_BPMX10);
+        }
+        else
+        {
+            cursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                    new String[]{DatabaseHelper._ID},
+                    DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " LIKE '" + absolutePath + "%'",
+                    null,
+                    null, null, DatabaseHelper.MUSIC_LIBRARY_BPMX10);
+        }
 
         return cursor;
     }

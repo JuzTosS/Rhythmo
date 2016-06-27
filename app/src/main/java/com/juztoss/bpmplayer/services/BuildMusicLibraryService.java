@@ -12,16 +12,14 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.juztoss.bpmplayer.R;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
+import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 /**
  * Created by JuzTosS on 5/27/2016.
  */
-public class BuildMusicLibraryService extends Service implements AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate
+public class BuildMusicLibraryService extends Service
 {
-    private Context mContext;
+    private BPMPlayerApp mApp;
     private NotificationCompat.Builder mBuilder;
     private Notification mNotification;
     private NotificationManager mNotifyManager;
@@ -30,27 +28,36 @@ public class BuildMusicLibraryService extends Service implements AsyncBuildLibra
     @Override
     public void onCreate()
     {
-        mContext = this.getApplicationContext();
+        mApp = (BPMPlayerApp) this.getApplicationContext();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        mBuilder = new NotificationCompat.Builder(mContext);
+        mBuilder = new NotificationCompat.Builder(mApp);
         mBuilder.setSmallIcon(R.drawable.ic_play_arrow_black_36dp);
         mBuilder.setContentTitle(getResources().getString(R.string.building_music_library));
         mBuilder.setTicker(getResources().getString(R.string.building_music_library));
         mBuilder.setContentText("");
         mBuilder.setProgress(0, 0, true);
 
-        mNotifyManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotifyManager = (NotificationManager) mApp.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotification = mBuilder.build();
         mNotification.flags |= Notification.FLAG_INSISTENT | Notification.FLAG_NO_CLEAR;
         mNotifyManager.notify(NOTIFICATION_ID, mNotification);
 
-        AsyncBuildLibraryTask task = new AsyncBuildLibraryTask(mContext);
-        task.setOnBuildLibraryProgressUpdate(this);
-        task.execute();
+
+        AsyncBuildLibraryTask taskBuildLib = new AsyncBuildLibraryTask(mApp);
+        taskBuildLib.setOnBuildLibraryProgressUpdate(mOnBuildLibraryUpdate);
+        taskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+
+        AsyncDetectBpmByNamesTask taskDetectBpmByNames = new AsyncDetectBpmByNamesTask(mApp);
+        taskDetectBpmByNames.setOnBuildLibraryProgressUpdate(mOnDetectBpmByNamesUpdate);
+        taskDetectBpmByNames.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+
+        AsyncDetectBpmByDataTask taskDetectBpmByData = new AsyncDetectBpmByDataTask(mApp);
+        taskDetectBpmByData.setOnBuildLibraryProgressUpdate(mOnDetectBpmByDataUpdate);
+        taskDetectBpmByData.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
         return START_STICKY;
     }
@@ -62,18 +69,79 @@ public class BuildMusicLibraryService extends Service implements AsyncBuildLibra
         return null;
     }
 
-    @Override
-    public void onStartBuildingLibrary()
+    private AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate mOnBuildLibraryUpdate = new AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate()
     {
+        @Override
+        public void onStartBuildingLibrary(AsyncBuildLibraryTask task)
+        {
 
-    }
+        }
 
-    @Override
-    public void onProgressUpdate(AsyncBuildLibraryTask task, int overallProgress, int maxProgress, boolean mediaStoreTransferDone)
+        @Override
+        public void onProgressUpdate(AsyncBuildLibraryTask task, int overallProgress, int maxProgress, boolean mediaStoreTransferDone)
+        {
+            String header = getResources().getString(R.string.building_music_library);
+            showNotification(header, overallProgress, maxProgress);
+        }
+
+        @Override
+        public void onFinishBuildingLibrary(AsyncBuildLibraryTask task)
+        {
+
+        }
+    };
+
+    private OnDetectBpmByNamesUpdate mOnDetectBpmByNamesUpdate = new OnDetectBpmByNamesUpdate()
     {
-        mBuilder = new NotificationCompat.Builder(mContext);
+        @Override
+        public void onStartBuildingLibrary(AsyncDetectBpmByNamesTask task)
+        {
+
+        }
+
+        @Override
+        public void onProgressUpdate(AsyncDetectBpmByNamesTask task, int overallProgress, int maxProgress, boolean mediaStoreTransferDone)
+        {
+            String header = getResources().getString(R.string.detect_bpm_by_name);
+            showNotification(header, overallProgress, maxProgress);
+        }
+
+        @Override
+        public void onFinishBuildingLibrary(AsyncDetectBpmByNamesTask task)
+        {
+
+        }
+    };
+
+    private OnDetectBpmByDataUpdate mOnDetectBpmByDataUpdate = new OnDetectBpmByDataUpdate()
+    {
+        @Override
+        public void onStartBuildingLibrary(AsyncDetectBpmByDataTask task)
+        {
+
+        }
+
+        @Override
+        public void onProgressUpdate(AsyncDetectBpmByDataTask task, int overallProgress, int maxProgress, boolean mediaStoreTransferDone)
+        {
+            String header = getResources().getString(R.string.detect_bpm_by_data);
+            showNotification(header, overallProgress, maxProgress);
+        }
+
+        @Override
+        public void onFinishBuildingLibrary(AsyncDetectBpmByDataTask task)
+        {
+            mNotifyManager.cancel(NOTIFICATION_ID);
+            stopSelf();
+
+            Toast.makeText(mApp, R.string.building_music_library_finished, Toast.LENGTH_LONG).show();
+        }
+    };
+
+    private void showNotification(String header, int overallProgress, int maxProgress)
+    {
+        mBuilder = new NotificationCompat.Builder(mApp);
         mBuilder.setSmallIcon(R.drawable.ic_play_arrow_black_36dp);
-        String header = getResources().getString(R.string.building_music_library);
         mBuilder.setContentTitle(header);
         mBuilder.setTicker(header);
         mBuilder.setContentText("");
@@ -82,14 +150,5 @@ public class BuildMusicLibraryService extends Service implements AsyncBuildLibra
 
         mNotification.flags |= Notification.FLAG_INSISTENT | Notification.FLAG_NO_CLEAR;
         mNotifyManager.notify(NOTIFICATION_ID, mNotification);
-    }
-
-    @Override
-    public void onFinishBuildingLibrary(AsyncBuildLibraryTask task)
-    {
-        mNotifyManager.cancel(NOTIFICATION_ID);
-        stopSelf();
-
-        Toast.makeText(mContext, R.string.building_music_library_finished, Toast.LENGTH_LONG).show();
     }
 }

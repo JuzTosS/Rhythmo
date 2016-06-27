@@ -62,6 +62,6 @@ public class Composition
 
     public String getFolder()
     {
-        return SystemHelper.getLastSegmentOfPath(mAbsolutePath);
+        return SystemHelper.getLastSegmentOfPath(mFolderName);
     }
 }

@@ -12,4 +12,6 @@
     <string name="building_lib_already_started">Already started!</string>
     <string name="drag_handles_welcome">Drag handles to enable BPM filter</string>
     <string name="select_folder">Select folder</string>
+    <string name="detect_bpm_by_name">Detecting bpm from names</string>
+    <string name="detect_bpm_by_data">Detecting bpm from audio data</string>
 </resources>
