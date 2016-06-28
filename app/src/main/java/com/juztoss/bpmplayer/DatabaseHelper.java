@@ -96,6 +96,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
+        clearAll(db);
+    }
+
+    public void clearAll(SQLiteDatabase db)
+    {
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_SETTINGS + "';");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_MUSIC_LIBRARY + "';");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_FOLDERS + "';");

@@ -10,10 +10,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import com.juztoss.bpmplayer.DatabaseHelper;
-import com.juztoss.bpmplayer.audio.BpmDetector;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.ArrayList;
@@ -28,15 +26,17 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     private final String UPDATE_COMPLETE = "UpdateComplete";
     private final int MAX_PROGRESS_VALUE = 1000000;
     private BPMPlayerApp mApp;
+    private boolean mClear;
     public ArrayList<OnBuildLibraryProgressUpdate> mBuildLibraryProgressUpdate;
 
     private int mOverallProgress = 0;
 
     private PowerManager.WakeLock wakeLock;
 
-    public AsyncBuildLibraryTask(BPMPlayerApp app)
+    public AsyncBuildLibraryTask(BPMPlayerApp app, boolean clear)
     {
         mApp = app;
+        mClear = clear;
         mBuildLibraryProgressUpdate = new ArrayList<>();
     }
 
@@ -56,9 +56,6 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     protected void onPreExecute()
     {
         super.onPreExecute();
-
-        mApp.setIsBuildingLibrary(true);
-        mApp.setIsScanFinished(false);
 
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
@@ -94,8 +91,6 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
     private Cursor getSongsFromMediaStore()
     {
-        Cursor mediaStoreCursor = null;
-        String sortOrder = null;
         String projection[] = {
                 MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.DATA};
@@ -104,14 +99,15 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
 
-        mediaStoreCursor = contentResolver.query(uri, projection, selection, null, sortOrder);
-        return mediaStoreCursor;
+        return contentResolver.query(uri, projection, selection, null, null);
     }
 
     private void saveMediaStoreDataToDB(Cursor mediaStoreCursor)
     {
         try
         {
+            if(mClear) mApp.getDatabaseHelper().clearAll(mApp.getDatabaseHelper().getWritableDatabase());
+
             mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
 
             //Set all songs as deleted, we'll update each song that exists later
@@ -265,8 +261,6 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     protected void onPostExecute(Void arg0)
     {
         wakeLock.release();
-        mApp.setIsBuildingLibrary(false);
-        mApp.setIsScanFinished(true);
 
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)

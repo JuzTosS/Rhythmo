@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.juztoss.bpmplayer">
+          package="com.juztoss.bpmplayer">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
     <application
         android:name="com.juztoss.bpmplayer.presenters.BPMPlayerApp"
         android:allowBackup="true"
@@ -32,24 +33,24 @@
         </activity>
         <service
             android:name=".services.PlaybackService"
-            android:enabled="true" />
+            android:enabled="true"/>
 
         <service
             android:name=".services.BuildMusicLibraryService"
-            android:enabled="true" />
+            android:enabled="true"/>
 
         <receiver
             android:name="com.juztoss.bpmplayer.PlaybackActionReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.juztoss.bpmplayer.action.LAUNCH_NOW_PLAYING" />
-                <action android:name="com.juztoss.bpmplayer.action.SWITCH_PLAYBACK" />
+                <action android:name="com.juztoss.bpmplayer.action.LAUNCH_NOW_PLAYING"/>
+                <action android:name="com.juztoss.bpmplayer.action.SWITCH_PLAYBACK"/>
             </intent-filter>
         </receiver>
         <receiver android:name="com.juztoss.bpmplayer.NoisyIntentReceiver">
             <intent-filter>
-                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+                <action android:name="android.media.AUDIO_BECOMING_NOISY"/>
             </intent-filter>
         </receiver>
     </application>

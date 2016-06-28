@@ -52,7 +52,7 @@ public class SettingsActivity extends AppCompatActivity
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);
 
-            Preference button = findPreference(getString(R.string.rebuild_library));
+            Preference button = findPreference(getString(R.string.build_library));
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override
@@ -61,6 +61,26 @@ public class SettingsActivity extends AppCompatActivity
                     if (!((BPMPlayerApp) getActivity().getApplicationContext()).isBuildingLibrary())
                     {
                         Intent intent = new Intent(getActivity().getApplicationContext(), BuildMusicLibraryService.class);
+                        getActivity().getApplicationContext().startService(intent);
+                    }
+                    else
+                    {
+                        Toast.makeText(getActivity(), R.string.building_lib_already_started, Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+            });
+
+            Preference buttonRebuild = findPreference(getString(R.string.rebuild_library));
+            buttonRebuild.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            {
+                @Override
+                public boolean onPreferenceClick(Preference preference)
+                {
+                    if (!((BPMPlayerApp) getActivity().getApplicationContext()).isBuildingLibrary())
+                    {
+                        Intent intent = new Intent(getActivity().getApplicationContext(), BuildMusicLibraryService.class);
+                        intent.putExtra(BuildMusicLibraryService.REBUILD, true);
                         getActivity().getApplicationContext().startService(intent);
                     }
                     else

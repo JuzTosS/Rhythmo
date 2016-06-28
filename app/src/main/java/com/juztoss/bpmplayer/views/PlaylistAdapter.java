@@ -52,7 +52,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     @Override
     public void onItemClick(int position)
     {
-        if(mOnItemClickListener != null)
+        if (mOnItemClickListener != null)
         {
             mOnItemClickListener.onItemClick(position);
         }
@@ -81,7 +81,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
         mCurentCursor.moveToPosition(position);
         final long songId = mCurentCursor.getLong(0);
         Composition composition = mApp.getComposition(songId);
-        if(composition == null)
+        if (composition == null)
         {
             holder.setVisible(false);
             return;
@@ -93,7 +93,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     @Override
     public int getItemCount()
     {
-        if(mCurentCursor != null)
+        if (mCurentCursor != null)
             return mCurentCursor.getCount() + 1;
         else
             return 0;

@@ -19,6 +19,7 @@ import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
  */
 public class BuildMusicLibraryService extends Service
 {
+    public static final String REBUILD = "Rebuild";
     private BPMPlayerApp mApp;
     private NotificationCompat.Builder mBuilder;
     private Notification mNotification;
@@ -47,7 +48,11 @@ public class BuildMusicLibraryService extends Service
         mNotifyManager.notify(NOTIFICATION_ID, mNotification);
 
 
-        AsyncBuildLibraryTask taskBuildLib = new AsyncBuildLibraryTask(mApp);
+        boolean clear = false;
+        if(intent.getExtras() != null)
+            clear = intent.getExtras().getBoolean(REBUILD);
+
+        AsyncBuildLibraryTask taskBuildLib = new AsyncBuildLibraryTask(mApp, clear);
         taskBuildLib.setOnBuildLibraryProgressUpdate(mOnBuildLibraryUpdate);
         taskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
@@ -74,7 +79,7 @@ public class BuildMusicLibraryService extends Service
         @Override
         public void onStartBuildingLibrary(AsyncBuildLibraryTask task)
         {
-
+            mApp.setIsBuildingLibrary(true);
         }
 
         @Override
@@ -87,7 +92,7 @@ public class BuildMusicLibraryService extends Service
         @Override
         public void onFinishBuildingLibrary(AsyncBuildLibraryTask task)
         {
-
+            mApp.notifyDatabaseUpdated();
         }
     };
 
@@ -109,7 +114,7 @@ public class BuildMusicLibraryService extends Service
         @Override
         public void onFinishBuildingLibrary(AsyncDetectBpmByNamesTask task)
         {
-
+            mApp.notifyDatabaseUpdated();
         }
     };
 
@@ -133,6 +138,8 @@ public class BuildMusicLibraryService extends Service
         {
             mNotifyManager.cancel(NOTIFICATION_ID);
             stopSelf();
+            mApp.setIsBuildingLibrary(false);
+            mApp.notifyDatabaseUpdated();
 
             Toast.makeText(mApp, R.string.building_music_library_finished, Toast.LENGTH_LONG).show();
         }

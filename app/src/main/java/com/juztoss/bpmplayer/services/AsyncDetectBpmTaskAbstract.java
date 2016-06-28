@@ -128,8 +128,6 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
     {
         super.onPreExecute();
 
-        mApp.setIsBuildingLibrary(true);
-        mApp.setIsScanFinished(false);
 
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
@@ -169,8 +167,6 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
     protected void onPostExecute(Void arg0)
     {
         wakeLock.release();
-        mApp.setIsBuildingLibrary(false);
-        mApp.setIsScanFinished(true);
 
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)

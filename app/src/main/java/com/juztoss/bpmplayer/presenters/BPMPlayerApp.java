@@ -2,6 +2,7 @@ package com.juztoss.bpmplayer.presenters;
 
 import android.app.Application;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -21,24 +22,26 @@ import java.util.List;
  */
 public class BPMPlayerApp extends Application
 {
+    public static final String FIRST_RUN = "FirstRun";
 
     public static float MIN_BPM = 50;
     public static float MAX_BPM = 150;
     private BrowserPresenter mBrowserPresenter;
     private PlaybackService mPlaybackService;
     private boolean mIsBuildingLibrary;
-    private boolean mIsScanFinished;
     private List<Playlist> mPlaylists;
     private float mMinBPM;
     private float mMaxBPM;
     private DatabaseHelper mDatabaseHelper;
 
     private MusicLibraryHelper mMusicLibraryHelper;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     public void onCreate()
     {
         super.onCreate();
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
         mMusicLibraryHelper = new MusicLibraryHelper(this);
         mDatabaseHelper = new DatabaseHelper(this);
         mBrowserPresenter = new BrowserPresenter(this);
@@ -141,9 +144,12 @@ public class BPMPlayerApp extends Application
         mIsBuildingLibrary = isBuildingLibrary;
     }
 
-    public void setIsScanFinished(boolean isScanFinished)
+    public void notifyDatabaseUpdated()
     {
-        mIsScanFinished = isScanFinished;
+        for(Playlist playlist : mPlaylists)
+        {
+            playlist.setNeedRebuild();
+        }
     }
 
     public List<Playlist> getPlaylists()
@@ -199,5 +205,10 @@ public class BPMPlayerApp extends Application
         values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, (int) (composition.bpm() * 10));
         values.put(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, (int) (composition.bpmShifted() * 10));
         getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + " = ?", new String[]{Long.toString(composition.id())});
+    }
+
+    public SharedPreferences getSharedPreferences()
+    {
+        return mSharedPreferences;
     }
 }

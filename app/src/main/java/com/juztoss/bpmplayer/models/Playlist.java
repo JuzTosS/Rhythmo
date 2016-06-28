@@ -49,7 +49,7 @@ public class Playlist
         mNeedRebuild = false;
     }
 
-    protected void setNeedRebuild()
+    public void setNeedRebuild()
     {
         mNeedRebuild = true;
         notifyUpdateListeners();

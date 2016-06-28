@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -35,10 +36,10 @@ import android.widget.TextView;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
-import com.juztoss.bpmplayer.models.songsources.FolderSongsSource;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.models.songsources.SourcesFactory;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.services.BuildMusicLibraryService;
 import com.juztoss.bpmplayer.services.PlaybackService;
 
 import java.util.List;
@@ -100,7 +101,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK)
+        {
             String folderPath = data.getStringExtra(SelectSongsActivity.FOLDER_PATH);
             Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
             playlist.getSource().delete();
@@ -119,7 +121,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         mRangeSeekbar = (RangeSeekBar<Integer>) findViewById(R.id.bpm_ranger);
         mRangeSeekbar.setOnRangeSeekBarChangeListener(mOnBpmRangeChanged);
-        mRangeSeekbar.setRangeValues((int)BPMPlayerApp.MIN_BPM, (int)BPMPlayerApp.MAX_BPM);
+        mRangeSeekbar.setRangeValues((int) BPMPlayerApp.MIN_BPM, (int) BPMPlayerApp.MAX_BPM);
 
         mPlayButton = findViewById(R.id.play_button);
         mPlayButton.setOnClickListener(mPlayButtonListenter);
@@ -183,7 +185,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void updateFab()
     {
-        if(getCurrentViewedPlaylist().getSource().isModifyAvailable())
+        if (getCurrentViewedPlaylist().getSource().isModifyAvailable())
         {
             fab.setVisibility(View.VISIBLE);
             ((CoordinatorLayout) findViewById(R.id.coordinatorLayout)).dispatchDependentViewsChanged(findViewById(R.id.appbar));
@@ -218,6 +220,21 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     0);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 0 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        {
+            if (mApp.getSharedPreferences().getBoolean(BPMPlayerApp.FIRST_RUN, true))
+            {
+                mApp.getSharedPreferences().edit().putBoolean(BPMPlayerApp.FIRST_RUN, false).commit();
+                Intent intent = new Intent(getApplicationContext(), BuildMusicLibraryService.class);
+                getApplicationContext().startService(intent);
+            }
         }
     }
 
@@ -325,7 +342,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         {
             TextView bpmLabel = ((TextView) mActionBar.getCustomView().findViewById(R.id.bpm_label));
             SpannableString spannableString = new SpannableString(String.format("%.1f", composition.bpmShifted()));
-            int firstPartLength = Integer.toString((int)composition.bpmShifted()).length();
+            int firstPartLength = Integer.toString((int) composition.bpmShifted()).length();
             spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
             bpmLabel.setText(spannableString);
             ((TextView) mActionBar.getCustomView().findViewById(R.id.first_line)).setText(composition.name());
@@ -376,9 +393,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue)
         {
-            if(minValue <= BPMPlayerApp.MIN_BPM && maxValue >= BPMPlayerApp.MAX_BPM)
+            if (minValue <= BPMPlayerApp.MIN_BPM && maxValue >= BPMPlayerApp.MAX_BPM)
             {
-                mApp.setBPMRange(0,0);
+                mApp.setBPMRange(0, 0);
                 mWelcomeFilterText.setVisibility(View.VISIBLE);
             }
             else
