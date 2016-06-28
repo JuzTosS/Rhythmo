@@ -221,6 +221,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     0);
         }
+        else
+        {
+            tryToDoFirstRunService();
+        }
     }
 
     @Override
@@ -229,12 +233,17 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 0 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
-            if (mApp.getSharedPreferences().getBoolean(BPMPlayerApp.FIRST_RUN, true))
-            {
-                mApp.getSharedPreferences().edit().putBoolean(BPMPlayerApp.FIRST_RUN, false).commit();
-                Intent intent = new Intent(getApplicationContext(), BuildMusicLibraryService.class);
-                getApplicationContext().startService(intent);
-            }
+            tryToDoFirstRunService();
+        }
+    }
+
+    private void tryToDoFirstRunService()
+    {
+        if (mApp.getSharedPreferences().getBoolean(BPMPlayerApp.FIRST_RUN, true))
+        {
+            mApp.getSharedPreferences().edit().putBoolean(BPMPlayerApp.FIRST_RUN, false).commit();
+            Intent intent = new Intent(getApplicationContext(), BuildMusicLibraryService.class);
+            getApplicationContext().startService(intent);
         }
     }
 
