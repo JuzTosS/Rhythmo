@@ -13,6 +13,7 @@ import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.models.songsources.LocalPlaylistSongsSource;
 import com.juztoss.bpmplayer.models.songsources.SourcesFactory;
 import com.juztoss.bpmplayer.services.PlaybackService;
+import com.vk.sdk.VKSdk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class BPMPlayerApp extends Application
     public void onCreate()
     {
         super.onCreate();
+        VKSdk.initialize(this);
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
         mMusicLibraryHelper = new MusicLibraryHelper(this);
         mDatabaseHelper = new DatabaseHelper(this);

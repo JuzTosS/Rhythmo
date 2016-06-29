@@ -17,4 +17,5 @@
     <string name="detect_bpm_by_name">Detecting bpm from names</string>
     <string name="detect_bpm_by_data">Detecting bpm from audio data</string>
     <string name="folder_desc">"Files: %d"</string>
+    <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>
