@@ -34,6 +34,7 @@ public class LocalPlaylistSongsSource implements ISongsSource
         Cursor cursor;
         int mMinBPMX10 = (int) (minBPM * 10);
         int mMaxBPMX10 = (int) (maxBPM * 10);
+        int add = mApp.getBPMFilterAdditionWindowSize();
         if (mMinBPMX10 > 0 && mMaxBPMX10 > 0)//BPM Filter is enabled
         {
             cursor = mApp.getDatabaseHelper().getWritableDatabase().rawQuery(
@@ -43,7 +44,7 @@ public class LocalPlaylistSongsSource implements ISongsSource
                             " AND " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?" +
                             " AND " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? " +
                             " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10,
-                    new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10), Long.toString(mId)}
+                    new String[]{Integer.toString(mMinBPMX10 - add * 10), Integer.toString(mMaxBPMX10 + add * 10), Long.toString(mId)}
             );
         }
         else
@@ -64,17 +65,20 @@ public class LocalPlaylistSongsSource implements ISongsSource
     {
         try
         {
-            songIds.moveToFirst();
-            mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
-            do
+            if (songIds.getCount() > 0)
             {
-                long songId = songIds.getLong(0);
-                ContentValues values = new ContentValues();
-                values.put(DatabaseHelper.PLAYLIST_SOURCE_ID, mId);
-                values.put(DatabaseHelper.PLAYLIST_SONG_ID, songId);
-                mApp.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_PLAYLISTS, null, values);
+                songIds.moveToFirst();
+                mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
+                do
+                {
+                    long songId = songIds.getLong(0);
+                    ContentValues values = new ContentValues();
+                    values.put(DatabaseHelper.PLAYLIST_SOURCE_ID, mId);
+                    values.put(DatabaseHelper.PLAYLIST_SONG_ID, songId);
+                    mApp.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_PLAYLISTS, null, values);
 
-            } while (songIds.moveToNext());
+                } while (songIds.moveToNext());
+            }
         }
         finally
         {

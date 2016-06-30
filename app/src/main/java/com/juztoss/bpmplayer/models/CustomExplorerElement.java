@@ -22,6 +22,18 @@ public class CustomExplorerElement extends BaseExplorerElement
     }
 
     @Override
+    public AddState getAddState()
+    {
+        return AddState.NOT_ADDED;
+    }
+
+    @Override
+    public void setAddState(AddState state)
+    {
+
+    }
+
+    @Override
     public String name()
     {
         return mName;
@@ -67,5 +79,11 @@ public class CustomExplorerElement extends BaseExplorerElement
     public int getIconResource()
     {
         return 0;
+    }
+
+    @Override
+    public boolean isAddable()
+    {
+        return false;
     }
 }

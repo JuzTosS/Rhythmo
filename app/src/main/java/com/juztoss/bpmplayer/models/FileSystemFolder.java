@@ -55,6 +55,24 @@ public class FileSystemFolder extends BaseExplorerElement
     }
 
     @Override
+    public boolean isAddable()
+    {
+        return false;
+    }
+
+    @Override
+    public AddState getAddState()
+    {
+        return AddState.NOT_ADDED;
+    }
+
+    @Override
+    public void setAddState(AddState state)
+    {
+
+    }
+
+    @Override
     public List<BaseExplorerElement> getChildren()
     {
         File[] allFiles = mFile.listFiles();

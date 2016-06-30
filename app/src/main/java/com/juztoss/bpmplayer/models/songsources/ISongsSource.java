@@ -22,4 +22,6 @@ public interface ISongsSource
     boolean isDeleteAvailable();
 
     boolean isModifyAvailable();
+
+    void add(Cursor songIdsCursor);
 }

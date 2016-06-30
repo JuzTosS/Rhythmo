@@ -217,7 +217,7 @@ public class BPMPlayerApp extends Application
 
     public void createNewPlaylist()
     {
-        mPlaylists.add(new Playlist(this, SourcesFactory.createFolderSongSource("", this)));
+        mPlaylists.add(new Playlist(this, SourcesFactory.createLocalPlaylistSongSource("noname", this)));
     }
 
     public DatabaseHelper getDatabaseHelper()

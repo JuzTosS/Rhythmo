@@ -15,7 +15,9 @@ import com.juztoss.bpmplayer.models.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by JuzTosS on 5/27/2016.
@@ -133,19 +135,17 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
                 public void add(Node node, String name)
                 {
-                    mChildren.add(node);
-                    mChildrenNames.add(name);
+                    mChildren.put(name, node);
                     node.mParent = this;
                 }
 
                 public Long mId;
                 Node mParent;
-                public List<Node> mChildren = new ArrayList<>();
-                public List<String> mChildrenNames = new ArrayList<>();
+                public Map<String, Node> mChildren = new HashMap<>();
 
                 public Node get(String folder)
                 {
-                    return mChildren.get(mChildrenNames.indexOf(folder));
+                    return mChildren.get(folder);
                 }
             }
 
@@ -198,7 +198,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 for (int j = 1; j < (folders.length - 1); j++)
                 {
                     String folder = folders[j];
-                    if (parentNode.mChildrenNames.contains(folder))
+                    if (parentNode.mChildren.containsKey(folder))
                     {
                         parentNode = parentNode.get(folder);
                         continue;

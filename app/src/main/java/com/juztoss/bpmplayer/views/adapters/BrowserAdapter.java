@@ -16,10 +16,10 @@ import java.util.List;
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class BrowserAdapter extends RecyclerView.Adapter<BrowserElementHolder> implements IOnItemClickListener
+public class BrowserAdapter extends RecyclerView.Adapter<BrowserElementHolder> implements BrowserElementHolder.IBrowserElementClickListener
 {
     private Context mContext;
-    private IOnItemClickListener mOnItemClickListener;
+    private BrowserElementHolder.IBrowserElementClickListener mOnItemClickListener;
     private List<BaseExplorerElement> mData = new ArrayList<>();
 
     public BrowserAdapter(Context context)
@@ -32,9 +32,14 @@ public class BrowserAdapter extends RecyclerView.Adapter<BrowserElementHolder> i
     public void onItemClick(int position)
     {
         if (mOnItemClickListener != null)
-        {
             mOnItemClickListener.onItemClick(position);
-        }
+    }
+
+    @Override
+    public void onActionClick(int position)
+    {
+        if (mOnItemClickListener != null)
+            mOnItemClickListener.onActionClick(position);
     }
 
     @Override
@@ -58,7 +63,7 @@ public class BrowserAdapter extends RecyclerView.Adapter<BrowserElementHolder> i
         return mData.size();
     }
 
-    public void setOnItemClickListener(IOnItemClickListener onItemClickListener)
+    public void setOnItemClickListener(BrowserElementHolder.IBrowserElementClickListener onItemClickListener)
     {
         mOnItemClickListener = onItemClickListener;
     }

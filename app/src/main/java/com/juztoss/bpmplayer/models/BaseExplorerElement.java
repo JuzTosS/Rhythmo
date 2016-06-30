@@ -38,4 +38,16 @@ public abstract class BaseExplorerElement implements Comparable<BaseExplorerElem
     public abstract String description();
 
     public abstract int getIconResource();
+
+    public abstract boolean isAddable();
+
+    public abstract AddState getAddState();
+    public abstract void setAddState(AddState state);
+
+    public enum AddState
+    {
+        NOT_ADDED,
+        ADDED,
+        PARTLY_ADDED
+    }
 }

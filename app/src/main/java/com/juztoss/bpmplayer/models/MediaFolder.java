@@ -115,6 +115,27 @@ public class MediaFolder extends BaseExplorerElement
     }
 
     @Override
+    public boolean isAddable()
+    {
+        return true;
+    }
+
+    @Override
+    public AddState getAddState()
+    {
+        return mApp.getBrowserPresenter().getAddState(resolvePath());
+    }
+
+    @Override
+    public void setAddState(AddState state)
+    {
+        if(state == AddState.ADDED)
+            mApp.getBrowserPresenter().add(resolvePath());
+        else if(state == AddState.NOT_ADDED)
+            mApp.getBrowserPresenter().remove(resolvePath());
+    }
+
+    @Override
     public List<BaseExplorerElement> getChildren()
     {
         List<BaseExplorerElement> result = new ArrayList<>();
@@ -225,16 +246,15 @@ public class MediaFolder extends BaseExplorerElement
     @Override
     public String description()
     {
-        int count = (int)DatabaseUtils.queryNumEntries(mApp.getDatabaseHelper().getReadableDatabase(),
+        int count = (int) DatabaseUtils.queryNumEntries(mApp.getDatabaseHelper().getReadableDatabase(),
                 DatabaseHelper.TABLE_FOLDERS,
                 DatabaseHelper.FOLDERS_PARENT_ID + "= ?",
                 new String[]{Long.toString(mLastId)})
                 +
-                (int)DatabaseUtils.queryNumEntries(mApp.getDatabaseHelper().getReadableDatabase(),
+                (int) DatabaseUtils.queryNumEntries(mApp.getDatabaseHelper().getReadableDatabase(),
                         DatabaseHelper.TABLE_MUSIC_LIBRARY,
                         DatabaseHelper.MUSIC_LIBRARY_PATH + "= ?",
-                        new String[]{resolvePath()})
-                ;
+                        new String[]{resolvePath()});
         return mApp.getResources().getString(R.string.folder_desc, count);
     }
 }

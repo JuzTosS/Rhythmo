@@ -44,6 +44,28 @@ public class SongFile extends BaseExplorerElement
         return R.drawable.ic_music_note_black_24dp;
     }
 
+
+    @Override
+    public boolean isAddable()
+    {
+        return true;
+    }
+
+    @Override
+    public AddState getAddState()
+    {
+        return mApp.getBrowserPresenter().getAddState(mFile.getAbsolutePath());
+    }
+
+    @Override
+    public void setAddState(AddState state)
+    {
+        if(state == AddState.ADDED)
+            mApp.getBrowserPresenter().add(mFile.getAbsolutePath());
+        else if(state == AddState.NOT_ADDED)
+            mApp.getBrowserPresenter().remove(mFile.getAbsolutePath());
+    }
+
     @Override
     public ExplorerPriority priority()
     {

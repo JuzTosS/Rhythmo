@@ -43,6 +43,24 @@ public class ParentLink extends BaseExplorerElement
         return R.drawable.ic_navigate_before_black_24dp;
     }
 
+    @Override
+    public boolean isAddable()
+    {
+        return false;
+    }
+
+    @Override
+    public AddState getAddState()
+    {
+        return AddState.NOT_ADDED;
+    }
+
+    @Override
+    public void setAddState(AddState state)
+    {
+
+    }
+
     @Nullable
     @Override
     public Cursor getSongIds()

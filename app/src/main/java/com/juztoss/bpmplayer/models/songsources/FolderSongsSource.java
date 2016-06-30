@@ -72,4 +72,10 @@ public class FolderSongsSource implements ISongsSource
     {
         return true;
     }
+
+    @Override
+    public void add(Cursor songIdsCursor)
+    {
+
+    }
 }

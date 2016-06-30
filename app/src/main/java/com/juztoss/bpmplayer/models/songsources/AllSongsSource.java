@@ -75,6 +75,12 @@ public class AllSongsSource implements ISongsSource
     }
 
     @Override
+    public void add(Cursor songIdsCursor)
+    {
+
+    }
+
+    @Override
     public void delete()
     {
 

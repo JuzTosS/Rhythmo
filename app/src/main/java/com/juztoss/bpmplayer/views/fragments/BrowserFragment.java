@@ -13,13 +13,14 @@ import com.juztoss.bpmplayer.models.BaseExplorerElement;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.presenters.BrowserPresenter;
 import com.juztoss.bpmplayer.views.adapters.BrowserAdapter;
+import com.juztoss.bpmplayer.views.adapters.BrowserElementHolder;
 import com.juztoss.bpmplayer.views.adapters.IOnItemClickListener;
 
 
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class BrowserFragment extends Fragment implements IOnItemClickListener, BrowserPresenter.OnDataChangedListener
+public class BrowserFragment extends Fragment implements BrowserElementHolder.IBrowserElementClickListener, BrowserPresenter.OnDataChangedListener
 {
     private BrowserAdapter mBrowserAdapter;
     private BPMPlayerApp mApp;
@@ -43,6 +44,7 @@ public class BrowserFragment extends Fragment implements IOnItemClickListener, B
     public void onStart()
     {
         super.onStart();
+        mApp.getBrowserPresenter().clearAdded();
         mApp.getBrowserPresenter().setCurrent(mApp.getBrowserPresenter().getRoot());
         getLoaderManager().initLoader(0, null, mApp.getBrowserPresenter());
     }
@@ -51,6 +53,20 @@ public class BrowserFragment extends Fragment implements IOnItemClickListener, B
     public void onDataChanged()
     {
         mBrowserAdapter.update(mApp.getBrowserPresenter().getList());
+    }
+
+    @Override
+    public void onActionClick(int position)
+    {
+        BaseExplorerElement element = mBrowserAdapter.getItem(position);
+        if(element.getAddState() == BaseExplorerElement.AddState.NOT_ADDED)
+            element.setAddState(BaseExplorerElement.AddState.ADDED);
+        else if(element.getAddState() == BaseExplorerElement.AddState.ADDED)
+            element.setAddState(BaseExplorerElement.AddState.NOT_ADDED);
+        else if(element.getAddState() == BaseExplorerElement.AddState.PARTLY_ADDED)
+            element.setAddState(BaseExplorerElement.AddState.NOT_ADDED);
+
+        onDataChanged();
     }
 
     @Override

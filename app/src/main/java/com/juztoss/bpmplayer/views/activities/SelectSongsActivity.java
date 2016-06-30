@@ -19,7 +19,7 @@ import com.juztoss.bpmplayer.views.fragments.BrowserFragment;
  */
 public class SelectSongsActivity extends AppCompatActivity
 {
-    public static final String FOLDER_PATH = "FolderPath";
+    public static final String FOLDERS_PATHS = "FoldersPaths";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -46,7 +46,7 @@ public class SelectSongsActivity extends AppCompatActivity
         {
             Intent resultIntent = new Intent();
             BPMPlayerApp app = (BPMPlayerApp) getApplicationContext();
-            resultIntent.putExtra(FOLDER_PATH, app.getBrowserPresenter().getCurrent().getFileSystemPath());
+            resultIntent.putExtra(FOLDERS_PATHS, app.getBrowserPresenter().getPaths());
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
         }

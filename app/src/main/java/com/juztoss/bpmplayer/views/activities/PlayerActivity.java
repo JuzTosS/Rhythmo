@@ -36,6 +36,8 @@ import android.widget.TextView;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
+import com.juztoss.bpmplayer.models.songsources.ISongsSource;
+import com.juztoss.bpmplayer.models.songsources.LocalPlaylistSongsSource;
 import com.juztoss.bpmplayer.models.songsources.SourcesFactory;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.BuildMusicLibraryService;
@@ -105,10 +107,22 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     {
         if (resultCode == RESULT_OK)
         {
-            String folderPath = data.getStringExtra(SelectSongsActivity.FOLDER_PATH);
+            String[] foldersPaths = data.getStringArrayExtra(SelectSongsActivity.FOLDERS_PATHS);
             Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
-            playlist.getSource().delete();
-            playlist.setSource(SourcesFactory.createFolderSongSource(folderPath, mApp));
+//            if(foldersPaths.length == 1)
+//            {
+//                playlist.setSource(SourcesFactory.createFolderSongSource(foldersPaths[0], mApp));
+//                playlist.getSource().delete();
+//            }
+//            else
+//            {
+                ISongsSource source = playlist.getSource();
+                for(String path : foldersPaths)
+                {
+                    source.add(mApp.getMusicLibraryHelper().getSongIdsCursor(path, true));
+                }
+                playlist.setNeedRebuild();
+//            }
             updateTabs();
         }
     }
