@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer.views;
+package com.juztoss.bpmplayer.views.items;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -6,6 +6,8 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.juztoss.bpmplayer.views.items.AdvancedFloatingActionButton;
 
 /**
  * Created by JuzTosS on 6/18/2016.

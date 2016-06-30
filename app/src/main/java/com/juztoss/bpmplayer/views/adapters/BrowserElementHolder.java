@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer.views;
+package com.juztoss.bpmplayer.views.adapters;
 
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;

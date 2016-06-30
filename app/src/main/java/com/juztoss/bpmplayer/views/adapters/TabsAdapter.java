@@ -1,10 +1,12 @@
-package com.juztoss.bpmplayer.views;
+package com.juztoss.bpmplayer.views.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
+
+import com.juztoss.bpmplayer.views.fragments.PlaylistFragment;
 
 /**
  * Created by JuzTosS on 6/4/2016.

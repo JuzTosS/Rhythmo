@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -41,9 +40,9 @@ import com.juztoss.bpmplayer.models.songsources.SourcesFactory;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.BuildMusicLibraryService;
 import com.juztoss.bpmplayer.services.PlaybackService;
-import com.juztoss.bpmplayer.views.AdvancedFloatingActionButton;
-import com.juztoss.bpmplayer.views.RangeSeekBar;
-import com.juztoss.bpmplayer.views.TabsAdapter;
+import com.juztoss.bpmplayer.views.items.AdvancedFloatingActionButton;
+import com.juztoss.bpmplayer.views.items.RangeSeekBar;
+import com.juztoss.bpmplayer.views.adapters.TabsAdapter;
 
 import java.util.List;
 

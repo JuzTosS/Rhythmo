@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer.views;
+package com.juztoss.bpmplayer.views.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +12,8 @@ import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.BaseExplorerElement;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.presenters.BrowserPresenter;
+import com.juztoss.bpmplayer.views.adapters.BrowserAdapter;
+import com.juztoss.bpmplayer.views.adapters.IOnItemClickListener;
 
 
 /**

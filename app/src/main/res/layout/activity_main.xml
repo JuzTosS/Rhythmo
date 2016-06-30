@@ -41,7 +41,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="5dp">
 
-                    <com.juztoss.bpmplayer.views.RangeSeekBar
+                    <com.juztoss.bpmplayer.views.items.RangeSeekBar
                         android:id="@+id/bpm_ranger"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -75,7 +75,7 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <com.juztoss.bpmplayer.views.AdvancedFloatingActionButton
+        <com.juztoss.bpmplayer.views.items.AdvancedFloatingActionButton
             android:id="@+id/btnAddToPlaylist"
             style="@style/floating_action_button"
             android:layout_width="wrap_content"

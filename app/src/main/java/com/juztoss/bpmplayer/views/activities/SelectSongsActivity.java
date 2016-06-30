@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
-import com.juztoss.bpmplayer.views.BrowserFragment;
+import com.juztoss.bpmplayer.views.fragments.BrowserFragment;
 
 /**
  * Created by JuzTosS on 6/13/2016.

@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer.views;
+package com.juztoss.bpmplayer.views.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.BaseExplorerElement;
-import com.juztoss.bpmplayer.models.Composition;
-import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.ArrayList;
 import java.util.List;

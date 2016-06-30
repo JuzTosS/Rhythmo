@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer.views;
+package com.juztoss.bpmplayer.views.items;
 
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
