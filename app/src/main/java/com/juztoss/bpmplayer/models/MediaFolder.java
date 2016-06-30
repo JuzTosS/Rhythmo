@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.support.annotation.Nullable;
 
-import com.juztoss.bpmplayer.DatabaseHelper;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 

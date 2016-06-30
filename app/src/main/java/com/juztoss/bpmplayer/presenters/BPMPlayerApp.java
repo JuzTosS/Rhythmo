@@ -7,10 +7,9 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.juztoss.bpmplayer.DatabaseHelper;
+import com.juztoss.bpmplayer.models.DatabaseHelper;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
-import com.juztoss.bpmplayer.models.songsources.LocalPlaylistSongsSource;
 import com.juztoss.bpmplayer.models.songsources.SourcesFactory;
 import com.juztoss.bpmplayer.services.PlaybackService;
 import com.vk.sdk.VKSdk;

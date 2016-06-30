@@ -48,7 +48,7 @@
             android:enabled="true"/>
 
         <receiver
-            android:name="com.juztoss.bpmplayer.PlaybackActionReceiver"
+            android:name=".receivers.PlaybackActionReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -56,7 +56,7 @@
                 <action android:name="com.juztoss.bpmplayer.action.SWITCH_PLAYBACK"/>
             </intent-filter>
         </receiver>
-        <receiver android:name="com.juztoss.bpmplayer.NoisyIntentReceiver">
+        <receiver android:name=".receivers.NoisyIntentReceiver">
             <intent-filter>
                 <action android:name="android.media.AUDIO_BECOMING_NOISY"/>
             </intent-filter>

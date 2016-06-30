@@ -2,7 +2,7 @@ package com.juztoss.bpmplayer.presenters;
 
 import android.database.Cursor;
 
-import com.juztoss.bpmplayer.DatabaseHelper;
+import com.juztoss.bpmplayer.models.DatabaseHelper;
 
 /**
  * Created by JuzTosS on 6/10/2016.

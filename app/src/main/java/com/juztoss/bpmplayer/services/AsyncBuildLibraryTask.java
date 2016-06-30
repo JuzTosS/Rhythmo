@@ -11,7 +11,7 @@ import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 
-import com.juztoss.bpmplayer.DatabaseHelper;
+import com.juztoss.bpmplayer.models.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.ArrayList;

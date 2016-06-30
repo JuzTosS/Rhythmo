@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer;
+package com.juztoss.bpmplayer.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

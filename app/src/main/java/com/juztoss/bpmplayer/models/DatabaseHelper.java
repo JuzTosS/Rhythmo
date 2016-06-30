@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer;
+package com.juztoss.bpmplayer.models;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

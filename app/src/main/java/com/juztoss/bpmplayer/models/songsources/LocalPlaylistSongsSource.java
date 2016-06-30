@@ -3,7 +3,7 @@ package com.juztoss.bpmplayer.models.songsources;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.juztoss.bpmplayer.DatabaseHelper;
+import com.juztoss.bpmplayer.models.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 /**
