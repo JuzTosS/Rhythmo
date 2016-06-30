@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference android:title="@string/build_library"
-                android:key="@string/build_library"
-                android:summary="@string/build_library_desc"/>
+    <com.juztoss.bpmplayer.views.items.BPMShiftPickerPreference
+        android:title="@string/pref_bpm_auto_shift_range"
+        android:key="@string/pref_bpm_auto_shift_range"
+        android:summary="@string/pref_bpm_auto_shift_range_desc"
+        android:defaultValue="55"
+        />
+    <PreferenceCategory
+        android:title="@string/pref_music_library"
+        android:key="@string/pref_music_library">
+    <Preference
+        android:key="@string/pref_build_library"
+        android:summary="@string/build_library_desc"
+        android:title="@string/pref_build_library"/>
 
-    <Preference android:title="@string/rebuild_library"
-                android:key="@string/rebuild_library"
-                android:summary="@string/rebuild_library_desc"/>
+    <Preference
+        android:key="@string/pref_rebuild_library"
+        android:summary="@string/rebuild_library_desc"
+        android:title="@string/pref_rebuild_library"/>
+    </PreferenceCategory>
 </PreferenceScreen>

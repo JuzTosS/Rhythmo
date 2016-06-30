@@ -52,7 +52,7 @@ public class SettingsActivity extends AppCompatActivity
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);
 
-            Preference button = findPreference(getString(R.string.build_library));
+            Preference button = findPreference(getString(R.string.pref_build_library));
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override
@@ -71,7 +71,7 @@ public class SettingsActivity extends AppCompatActivity
                 }
             });
 
-            Preference buttonRebuild = findPreference(getString(R.string.rebuild_library));
+            Preference buttonRebuild = findPreference(getString(R.string.pref_rebuild_library));
             buttonRebuild.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override

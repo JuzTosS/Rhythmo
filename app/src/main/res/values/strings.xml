@@ -7,8 +7,8 @@
     <string name="remove_playlist">Remove playlist</string>
     <string name="rename_playlist">Rename playlist</string>
     <string name="song_detail_title">Song detail</string>
-    <string name="build_library">Build music library</string>
-    <string name="rebuild_library">Rebuild music library</string>
+    <string name="pref_build_library">Build music library</string>
+    <string name="pref_rebuild_library">Rebuild music library</string>
     <string name="build_library_desc">Scan for all NEW music on the device</string>
     <string name="rebuild_library_desc">Scan for all music on the device</string>
     <string name="building_lib_already_started">Already started!</string>
@@ -17,5 +17,8 @@
     <string name="detect_bpm_by_name">Detecting bpm from names</string>
     <string name="detect_bpm_by_data">Detecting bpm from audio data</string>
     <string name="folder_desc">"Files: %d"</string>
+    <string name="pref_music_library">Music library</string>
+    <string name="pref_bpm_auto_shift_range">BPM auto shift</string>
+    <string name="pref_bpm_auto_shift_range_desc">If the filter is enabled songs may be played faster of slower to get to the range</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

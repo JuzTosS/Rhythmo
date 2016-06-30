@@ -180,7 +180,7 @@ public class SingleSongActivity extends AppCompatActivity
             }
         });
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
-        mSeekBar.setMax(50);
+        mSeekBar.setMax((int)BPMPlayerApp.MAX_BPM_SHIFT * 2);
         mSeekBar.setOnSeekBarChangeListener(mOnSeekBarChanged);
         updateBpmField(mComposition.bpm());
     }
@@ -190,7 +190,7 @@ public class SingleSongActivity extends AppCompatActivity
     private void updateSeekBar()
     {
         int bpmShift = (int) (mComposition.bpmShifted() - mComposition.bpm());
-        mSeekBar.setProgress(25 + bpmShift);
+        mSeekBar.setProgress((int)BPMPlayerApp.MAX_BPM_SHIFT + bpmShift);
 
         TextView bpmDesc = (TextView) findViewById(R.id.shiftedBpmValue);
         bpmDesc.setText(String.format("%.1f (%d)", mComposition.bpmShifted(), bpmShift));
