@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer.views;
+package com.juztoss.bpmplayer.views.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -41,6 +41,9 @@ import com.juztoss.bpmplayer.models.songsources.SourcesFactory;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.BuildMusicLibraryService;
 import com.juztoss.bpmplayer.services.PlaybackService;
+import com.juztoss.bpmplayer.views.AdvancedFloatingActionButton;
+import com.juztoss.bpmplayer.views.RangeSeekBar;
+import com.juztoss.bpmplayer.views.TabsAdapter;
 
 import java.util.List;
 
@@ -53,7 +56,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private SeekBar mSeekbar;
     private RangeSeekBar<Integer> mRangeSeekbar;
     ViewPager mPlaylistsPager;
-    private FloatingActionButton fab;
+    private AdvancedFloatingActionButton fab;
     ActionBar mActionBar;
     private View mWelcomeFilterText;
 
@@ -86,7 +89,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void createFabs()
     {
-        fab = (FloatingActionButton) findViewById(R.id.btnAddToPlaylist);
+        fab = (AdvancedFloatingActionButton) findViewById(R.id.btnAddToPlaylist);
         fab.setOnClickListener(this);
     }
 
@@ -134,6 +137,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void updateTabs()
     {
+        int currentItem = mPlaylistsPager.getCurrentItem();
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.removeAllTabs();
         List<Playlist> playlists = mApp.getPlaylists();
@@ -147,6 +151,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         adapter.setNumOfLists(playlists.size());
         mPlaylistsPager.setAdapter(null);
         mPlaylistsPager.setAdapter(adapter);
+        mPlaylistsPager.setCurrentItem(currentItem);
     }
 
     private void setupPager()
@@ -185,6 +190,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void updateFab()
     {
+        final int MIN_AVAILABLE_SONGS_TO_SHOW_ADD_ICON = 3;
+        fab.setAlwaysShown(getCurrentViewedPlaylist().getList() == null
+                || getCurrentViewedPlaylist().getList().getCount() <= MIN_AVAILABLE_SONGS_TO_SHOW_ADD_ICON);
+
         if (getCurrentViewedPlaylist().getSource().isModifyAvailable())
         {
             fab.setVisibility(View.VISIBLE);
@@ -192,8 +201,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         }
         else
             fab.hide();
-
-
     }
 
     private void setupActionBar()
@@ -260,6 +267,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         {
             mApp.createNewPlaylist();
             updateTabs();
+            mPlaylistsPager.setCurrentItem(mPlaylistsPager.getCurrentItem() + 1);
         }
         else if (id == R.id.rename_playlist_menu)
         {

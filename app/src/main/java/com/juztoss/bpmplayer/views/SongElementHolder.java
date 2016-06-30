@@ -6,13 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
-import com.juztoss.bpmplayer.services.PlaybackService;
+import com.juztoss.bpmplayer.views.activities.SingleSongActivity;
 
 /**
  * Created by JuzTosS on 6/18/2016.

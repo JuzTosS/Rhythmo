@@ -111,6 +111,10 @@ public class FileSystemFolder extends BaseExplorerElement
     @Override
     public String description()
     {
-        return mApp.getResources().getString(R.string.folder_desc, mFile.list().length);
+        String[] list = mFile.list();
+        if(list != null)
+            return mApp.getResources().getString(R.string.folder_desc, mFile.list().length);
+        else
+            return "";
     }
 }

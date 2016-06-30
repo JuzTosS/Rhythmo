@@ -1,4 +1,4 @@
-package com.juztoss.bpmplayer.views;
+package com.juztoss.bpmplayer.views.activities;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

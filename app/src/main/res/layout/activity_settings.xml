@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:theme="@style/AppTheme"
-        tools:context=".views.SettingsActivity"/>
+        tools:context=".views.activities.SettingsActivity"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"

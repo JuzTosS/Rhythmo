@@ -26,20 +26,27 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
     private OnDataChangedListener mListener;
 
     private List<BaseExplorerElement> mData;
+    private BaseExplorerElement mRoot;
 
     public BrowserPresenter(BPMPlayerApp app)
     {
         super(app);
         CustomExplorerElement root = new CustomExplorerElement("", new ArrayList<BaseExplorerElement>(), ExplorerPriority.HIGHEST);
-//        root.add(new FileSystemFolder(new File("/"), "File system", root, app));
+        root.add(new FileSystemFolder(new File("/"), "File system", root, app));
         root.add(new MediaFolder(-1, "Media", false, root, false, app));
 
+        mRoot = root;
         mCurrent = root;
 
         mData = new ArrayList<>();
     }
 
-    public void listItemClicked(BaseExplorerElement element)
+    public BaseExplorerElement getRoot()
+    {
+        return mRoot;
+    }
+
+    public void setCurrent(BaseExplorerElement element)
     {
         mCurrent = element;
     }

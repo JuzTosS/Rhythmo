@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.PlaybackService;
-import com.juztoss.bpmplayer.views.PlayerActivity;
+import com.juztoss.bpmplayer.views.activities.PlayerActivity;
 
 /**
  * Created by JuzTosS on 5/3/2016.

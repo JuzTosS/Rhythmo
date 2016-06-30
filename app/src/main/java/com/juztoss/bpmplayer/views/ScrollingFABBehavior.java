@@ -4,14 +4,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.view.View;
 
 /**
  * Created by JuzTosS on 6/18/2016.
  */
-public class ScrollingFABBehavior extends CoordinatorLayout.Behavior<FloatingActionButton>
+public class ScrollingFABBehavior extends CoordinatorLayout.Behavior<AdvancedFloatingActionButton>
 {
     private int mToolbarHeight;
 
@@ -25,20 +24,26 @@ public class ScrollingFABBehavior extends CoordinatorLayout.Behavior<FloatingAct
     }
 
     @Override
-    public boolean layoutDependsOn(CoordinatorLayout parent, FloatingActionButton fab, View dependency)
+    public boolean layoutDependsOn(CoordinatorLayout parent, AdvancedFloatingActionButton fab, View dependency)
     {
         return dependency instanceof AppBarLayout;
     }
 
     @Override
-    public boolean onDependentViewChanged(CoordinatorLayout parent, FloatingActionButton fab, View dependency)
+    public boolean onDependentViewChanged(CoordinatorLayout parent, AdvancedFloatingActionButton fab, View dependency)
     {
-        if (dependency instanceof AppBarLayout)
+        if(fab.isAlwaysShown())
         {
-            float ratio = - dependency.getY() / (float) mToolbarHeight;
-            if(ratio >= 1)
+            fab.setAlpha(1f);
+            fab.setScaleX(1f);
+            fab.setScaleY(1f);
+        }
+        else if (dependency instanceof AppBarLayout)
+        {
+            float ratio = -dependency.getY() / (float) mToolbarHeight;
+            if (ratio >= 1)
                 ratio = 1;
-            if(ratio <= 0)
+            if (ratio <= 0)
                 ratio = 0;
             fab.setAlpha(ratio);
             fab.setScaleX(ratio);
@@ -46,7 +51,6 @@ public class ScrollingFABBehavior extends CoordinatorLayout.Behavior<FloatingAct
         }
         return true;
     }
-
 
 
 }

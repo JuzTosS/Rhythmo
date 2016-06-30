@@ -34,9 +34,15 @@ public class BrowserFragment extends Fragment implements IOnItemClickListener, B
         list.setAdapter(mBrowserAdapter);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        getLoaderManager().initLoader(0, null, mApp.getBrowserPresenter());
-
         mApp.getBrowserPresenter().setOnDataChangedListener(this);
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        mApp.getBrowserPresenter().setCurrent(mApp.getBrowserPresenter().getRoot());
+        getLoaderManager().initLoader(0, null, mApp.getBrowserPresenter());
     }
 
     @Override
@@ -51,7 +57,7 @@ public class BrowserFragment extends Fragment implements IOnItemClickListener, B
         BaseExplorerElement element = mBrowserAdapter.getItem(position);
         if(element.hasChildren())
         {
-            mApp.getBrowserPresenter().listItemClicked(element);
+            mApp.getBrowserPresenter().setCurrent(element);
             getLoaderManager().restartLoader(0, null, mApp.getBrowserPresenter());
         }
     }
