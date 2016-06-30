@@ -92,7 +92,7 @@ public class BuildMusicLibraryService extends Service
         @Override
         public void onFinishBuildingLibrary(AsyncBuildLibraryTask task)
         {
-            mApp.notifyDatabaseUpdated();
+            mApp.notifyPlaylistsRepresentationUpdated();
         }
     };
 
@@ -114,7 +114,7 @@ public class BuildMusicLibraryService extends Service
         @Override
         public void onFinishBuildingLibrary(AsyncDetectBpmByNamesTask task)
         {
-            mApp.notifyDatabaseUpdated();
+            mApp.notifyPlaylistsRepresentationUpdated();
         }
     };
 
@@ -139,7 +139,7 @@ public class BuildMusicLibraryService extends Service
             mNotifyManager.cancel(NOTIFICATION_ID);
             stopSelf();
             mApp.setIsBuildingLibrary(false);
-            mApp.notifyDatabaseUpdated();
+            mApp.notifyPlaylistsRepresentationUpdated();
 
             Toast.makeText(mApp, R.string.building_music_library_finished, Toast.LENGTH_LONG).show();
         }

@@ -5,10 +5,12 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
-import com.juztoss.bpmplayer.models.DatabaseHelper;
+import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
+import com.juztoss.bpmplayer.models.DatabaseHelper;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.models.songsources.SourcesFactory;
 import com.juztoss.bpmplayer.services.PlaybackService;
@@ -50,7 +52,18 @@ public class BPMPlayerApp extends Application
         mDatabaseHelper = new DatabaseHelper(this);
         mBrowserPresenter = new BrowserPresenter(this);
         mPlaylists = loadPlaylists();
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
     }
+
+    private SharedPreferences.OnSharedPreferenceChangeListener mOnSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener()
+    {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+        {
+            if(key.equals(getResources().getString(R.string.pref_bpm_auto_shift_range)))
+                notifyPlaylistsRepresentationUpdated();
+        }
+    };
 
     public List<Playlist> loadPlaylists()
     {
@@ -148,9 +161,9 @@ public class BPMPlayerApp extends Application
         mIsBuildingLibrary = isBuildingLibrary;
     }
 
-    public void notifyDatabaseUpdated()
+    public void notifyPlaylistsRepresentationUpdated()
     {
-        for(Playlist playlist : mPlaylists)
+        for (Playlist playlist : mPlaylists)
         {
             playlist.setNeedRebuild();
         }
@@ -159,6 +172,35 @@ public class BPMPlayerApp extends Application
     public List<Playlist> getPlaylists()
     {
         return mPlaylists;
+    }
+
+    public float getAvailableToPlayBPM(float bpm)
+    {
+        if (isBPMInRange(bpm))
+            return bpm;
+        else
+        {
+            if (mMinBPM - bpm >= 0 && mMinBPM - bpm <= getBPMFilterAdditionWindowSize())
+                return mMinBPM;
+            else if (bpm - mMaxBPM >= 0 && bpm - mMaxBPM <= getBPMFilterAdditionWindowSize())
+                return mMaxBPM;
+            else
+                return bpm;
+        }
+    }
+
+    public int getBPMFilterAdditionWindowSize()
+    {
+        String key = getResources().getString(R.string.pref_bpm_auto_shift_range);
+        return PreferenceManager.getDefaultSharedPreferences(this).getInt(key, 0);
+    }
+
+    public boolean isBPMInRange(float bpm)
+    {
+        if (mMinBPM > 0 && mMaxBPM > 0)
+            return bpm >= mMinBPM && bpm <= mMaxBPM;
+        else
+            return true;
     }
 
     public void setBPMRange(float minBPM, float maxBPM)

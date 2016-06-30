@@ -357,7 +357,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         if (composition != null)
         {
             TextView bpmLabel = ((TextView) mActionBar.getCustomView().findViewById(R.id.bpm_label));
-            SpannableString spannableString = new SpannableString(String.format("%.1f", composition.bpmShifted()));
+            SpannableString spannableString = new SpannableString(String.format("%.1f", service.getCurrentlyPlayingBPM()));
             int firstPartLength = Integer.toString((int) composition.bpmShifted()).length();
             spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
             bpmLabel.setText(spannableString);

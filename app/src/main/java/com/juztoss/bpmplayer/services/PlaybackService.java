@@ -43,6 +43,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private BaseAction mActionInProgress;
     private boolean mIsPlaying = false;
+    private float mCurrentlyPlayingBPM;
 
     public long currentSongId()
     {
@@ -283,8 +284,15 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     public void setNewPlayingBPM(float bpm, float shiftedBpm)
     {
+        mCurrentlyPlayingBPM = shiftedBpm;
         mPlayer.setBPM(bpm);
         mPlayer.setNewBPM(shiftedBpm);
+        updateUI();
+    }
+
+    public float getCurrentlyPlayingBPM()
+    {
+        return mCurrentlyPlayingBPM;
     }
 
     private class BaseAction
@@ -320,8 +328,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             @Override
             public void onPrepared()
             {
-                mPlayer.setBPM(mComposition.bpm());
-                mPlayer.setNewBPM(mComposition.bpmShifted());
+                setNewPlayingBPM(mComposition.bpm(), mApp.getAvailableToPlayBPM(mComposition.bpmShifted()));
                 doNext();
             }
         };

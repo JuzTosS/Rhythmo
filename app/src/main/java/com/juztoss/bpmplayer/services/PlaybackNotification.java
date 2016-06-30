@@ -1,5 +1,6 @@
 package com.juztoss.bpmplayer.services;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
  */
 public class PlaybackNotification
 {
+    @SuppressLint("DefaultLocale")
     static Notification create(PlaybackService service)
     {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(service);
@@ -37,23 +39,15 @@ public class PlaybackNotification
         {
             notificationView.setTextViewText(R.id.first_line, composition.name());
             notificationView.setTextViewText(R.id.second_line, composition.getFolder());
-            notificationView.setTextViewText(R.id.bpm_label, String.format("%.1f", composition.bpm()));
+            notificationView.setTextViewText(R.id.bpm_label, String.format("%.1f", service.getCurrentlyPlayingBPM()));
         }
 
         Intent switchPlaybackIntent = new Intent(PlaybackService.SWITCH_PLAYBACK_ACTION);
         PendingIntent switchPlaybackPendingIntent = PendingIntent.getBroadcast(service, 0, switchPlaybackIntent, 0);
         notificationView.setOnClickPendingIntent(R.id.notification_pause, switchPlaybackPendingIntent);
 
-//        notificationBuilder.setOngoing(service.isPlaying());
-//        notificationBuilder.setAutoCancel(!service.isPlaying());
-
         notificationBuilder.setContent(notificationView);
         Notification notification = notificationBuilder.build();
-
-//        notification.flags = Notification.FLAG_ONGOING_EVENT;
-
-//        if (service.isPlaying())
-//            notification.flags |= Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
 
         return notification;
     }

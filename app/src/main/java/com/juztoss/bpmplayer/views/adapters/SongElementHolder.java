@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,6 +20,7 @@ import com.juztoss.bpmplayer.views.activities.SingleSongActivity;
  */
 public class SongElementHolder extends RecyclerView.ViewHolder implements View.OnClickListener
 {
+    private BPMPlayerApp mApp;
     private Composition mComposition;
     private TextView mFirstLine;
     private TextView mSecondLine;
@@ -30,6 +33,11 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
     @Override
     public void onClick(View v)
     {
+        showSongActivity();
+    }
+
+    private void showSongActivity()
+    {
         Intent intent = new Intent(itemView.getContext(), SingleSongActivity.class);
         intent.putExtra(SingleSongActivity.SONG_ID, mComposition.id());
         itemView.getContext().startActivity(intent);
@@ -38,13 +46,20 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
     public SongElementHolder(View view, IOnItemClickListener listener)
     {
         super(view);
+        mApp = ((BPMPlayerApp)itemView.getContext().getApplicationContext());
         mListener = listener;
         itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if(mListener != null)
+                if(mApp.isPlaybackServiceRunning() &&
+                        mApp.getPlaybackService().isPlaying() &&
+                        mApp.getPlaybackService().currentSongId() == mComposition.id())
+                {
+                    showSongActivity();
+                }
+                else if(mListener != null)
                     mListener.onItemClick(mPosition);
             }
         });
@@ -62,21 +77,21 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
         mPosition = position;
         mFirstLine.setText(composition.name());
 
-        if(Math.abs(composition.bpmShifted() - composition.bpm()) >= 0.001)
-        {
-            mSecondLine.setText(String.format(composition.getFolder() + " (orig. bpm: %.1f)", composition.bpm()));
-        }
-        else
-            mSecondLine.setText(composition.getFolder());
+        mSecondLine.setText(composition.getFolder());
 
-        SpannableString spannableString = new SpannableString(String.format("%.1f", composition.bpmShifted()));
-        int firstPartLength = Integer.toString((int)composition.bpmShifted()).length();
+        if(Math.abs(composition.bpmShifted() - composition.bpm()) >= 0.001 || !mApp.isBPMInRange(composition.bpmShifted()))
+            mBpmLabel.setTextColor(mApp.getResources().getColor(R.color.accent));
+        else
+            mBpmLabel.setTextColor(mApp.getResources().getColor(R.color.buttonsPrimary));
+
+        float bpm = mApp.getAvailableToPlayBPM(composition.bpmShifted());
+        SpannableString spannableString = new SpannableString(String.format("%.1f", bpm));
+        int firstPartLength = Integer.toString((int)bpm).length();
         spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
         mBpmLabel.setText(spannableString);
-        BPMPlayerApp app = ((BPMPlayerApp)itemView.getContext().getApplicationContext());
-        if (app.isPlaybackServiceRunning())
+        if (mApp.isPlaybackServiceRunning())
         {
-            boolean visible = app.getPlaybackService().currentSongId() == composition.id();
+            boolean visible = mApp.getPlaybackService().currentSongId() == composition.id();
             mPlayingState.setVisibility(visible ? View.VISIBLE : View.GONE);
         }
     }

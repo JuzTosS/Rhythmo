@@ -98,7 +98,7 @@ public class SingleSongActivity extends AppCompatActivity
         {
             if (fromUser)
             {
-                mComposition.setShiftedBPM(mComposition.bpm() + progress - 25);
+                mComposition.setShiftedBPM(mComposition.bpm() + progress - BPMPlayerApp.MAX_BPM_SHIFT);
                 updateSeekBar();
                 BPMPlayerApp app = (BPMPlayerApp) getApplicationContext();
                 if(app.isPlaybackServiceRunning())
