@@ -20,6 +20,8 @@ import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -45,6 +47,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private BaseAction mActionInProgress;
     private boolean mIsPlaying = false;
     private float mCurrentlyPlayingBPM;
+    private Timer mStopCooldown = new Timer();
 
     /**
      * @Return The id of the currently playing song
@@ -154,12 +157,17 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     }
 
     @Override
+    public void onCreate()
+    {
+        mApp = (BPMPlayerApp) getApplicationContext();
+        mApp.setPlaybackService(this);
+        super.onCreate();
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         super.onStartCommand(intent, flags, startId);
-
-        mApp = (BPMPlayerApp) getApplicationContext();
-        mApp.setPlaybackService(this);
 
         System.loadLibrary(AdvancedMediaPlayer.LIBRARY_NAME);
 
@@ -186,6 +194,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     @Override
     public void onDestroy()
     {
+        mPlayer.release();
         mApp.setPlaybackService(null);
         super.onDestroy();
     }
@@ -236,9 +245,52 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
         mIsPlaying = value;
         if (mIsPlaying)
+        {
+            cancelHideCooldown();
             startForeground(NOTIFICATION_ID, PlaybackNotification.create(this));
+        }
         else
+        {
             stopForeground(false);
+            startHideCooldown();
+        }
+    }
+
+    private void startHideCooldown()
+    {
+        final int STOP_SERVICE_COOLDOWN_MS = 3000;
+
+        if(mStopCooldown != null)
+            cancelHideCooldown();
+
+        mStopCooldown = new Timer();
+
+        mStopCooldown.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                disableService();
+            }
+        }, STOP_SERVICE_COOLDOWN_MS);
+    }
+
+    private void disableService()
+    {
+        stopForeground(false);
+        NotificationManager notificationManager = (NotificationManager) mApp.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFICATION_ID);
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.abandonAudioFocus(this);
+    }
+
+    private void cancelHideCooldown()
+    {
+        if(mStopCooldown != null)
+        {
+            mStopCooldown.cancel();
+            mStopCooldown = null;
+        }
     }
 
     private void requestAudioFocus()

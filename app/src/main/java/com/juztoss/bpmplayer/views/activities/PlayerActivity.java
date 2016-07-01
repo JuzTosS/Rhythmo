@@ -37,8 +37,6 @@ import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.models.songsources.ISongsSource;
-import com.juztoss.bpmplayer.models.songsources.LocalPlaylistSongsSource;
-import com.juztoss.bpmplayer.models.songsources.SourcesFactory;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.BuildMusicLibraryService;
 import com.juztoss.bpmplayer.services.PlaybackService;
@@ -69,13 +67,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         mApp = (BPMPlayerApp) getApplication();
         setContentView(R.layout.activity_main);
-
-        if (!mApp.isPlaybackServiceRunning())
-        {
-            Intent playbackServiceIntent = new Intent(this, PlaybackService.class);
-            startService(playbackServiceIntent);
-        }
-
         createFabs();
         setupActionBar();
         setupPager();
@@ -235,6 +226,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     protected void onStart()
     {
         super.onStart();
+
+        if (!mApp.isPlaybackServiceRunning())
+            startService(new Intent(this, PlaybackService.class));
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(this,

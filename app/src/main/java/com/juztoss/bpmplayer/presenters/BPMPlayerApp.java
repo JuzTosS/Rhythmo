@@ -2,6 +2,7 @@ package com.juztoss.bpmplayer.presenters;
 
 import android.app.Application;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
