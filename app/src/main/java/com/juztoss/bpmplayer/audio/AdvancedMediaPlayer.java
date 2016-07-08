@@ -4,6 +4,8 @@ import android.util.Log;
 
 /**
  * Created by JuzTosS on 5/22/2016.
+ * A media player with ability to stretch audio duration.
+ * Uses SuperpoweredSDK and OpenSLES.
  */
 public class AdvancedMediaPlayer
 {
@@ -21,41 +23,80 @@ public class AdvancedMediaPlayer
         init(samplerate, buffersize);
     }
 
+    /**
+     * Is called when playback of audiofile ends
+     */
     public void setOnEndListener(OnEndListener onEndListener)
     {
         mOnEndListener = onEndListener;
     }
 
+    /**
+     * Is called audio file is ready to play
+     */
     public void setOnPreparedListener(OnPreparedListener onPreparedListener)
     {
         mOnPreparedListener = onPreparedListener;
     }
 
+    /**
+     * Is called when any error is occured
+     */
     public void setOnErrorListener(OnErrorListener onErrorListener)
     {
         mOnErrorListener = onErrorListener;
     }
-    
+
     private native void init(int samplerate, int buffersize);
 
+    /**
+     * Sets audio source for player, wait for the onPrepared event before call Play method.
+     */
     public native void setSource(String path);
 
+    /**
+     * Starts playback
+     */
     public native void play();
 
+    /**
+     * Pauses playback
+     */
     public native void pause();
 
+    /**
+     * Return duration of file in milliseconds
+     */
     public native int getDuration();
 
+    /**
+     * Return current position in milliseconds
+     */
     public native int getPosition();
 
+    /**
+     * Sets current position in milliseconds
+     */
     public native void setPosition(int offset);
 
+    /**
+     * Sets song original BPM, paired with setNewBPM(double)
+     */
     public native void setBPM(double bpm);
 
+    /**
+     * Sets song new BPM to play with. Depends on original BPM that set by setBPM(double)
+     */
     public native void setNewBPM(double bpm);
 
+    /**
+     * Free memory. Have to be called if player will never be used anymore.
+     */
     public native void release();
 
+    /**
+     * Return id of player instance
+     */
     private int getIdJNI()
     {
         return mId;
@@ -84,6 +125,11 @@ public class AdvancedMediaPlayer
         if(mOnErrorListener != null)
             mOnErrorListener.onError(message);
     }
+
+    /**
+     * Event listeners
+     */
+
     public interface OnEndListener
     {
         void onEnd();
@@ -97,11 +143,5 @@ public class AdvancedMediaPlayer
     public interface OnErrorListener
     {
         void onError(String message);
-    }
-
-    @Override
-    protected void finalize() throws Throwable
-    {
-        super.finalize();
     }
 }

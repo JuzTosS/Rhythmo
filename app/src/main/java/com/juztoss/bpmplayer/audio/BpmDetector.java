@@ -9,11 +9,18 @@ import java.util.regex.Pattern;
 
 /**
  * Created by JuzTosS on 5/25/2016.
+ * A helper for detect songs BPM
  */
 public class BpmDetector
 {
+    /**
+     * Detects song BPM from audio data (May takes a long time)
+     */
     public static native double detect(String path);
 
+    /**
+     * Detects song BPM from file name
+     */
     public static double detectFromName(String name)
     {
         Pattern p = Pattern.compile("^[0-9]+\\.?[0-9]*");
