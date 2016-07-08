@@ -24,6 +24,7 @@ import java.util.Queue;
 
 /**
  * Created by JuzTosS on 5/3/2016.
+ * The heart of the player.
  */
 public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener, Playlist.IUpdateListener
 {
@@ -45,6 +46,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private boolean mIsPlaying = false;
     private float mCurrentlyPlayingBPM;
 
+    /**
+     * @Return The id of the currently playing song
+     */
     public long currentSongId()
     {
         if(getSongsList() == null)
@@ -80,6 +84,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             return mApp.getPlaylists().get(mCurrentPlaylistIndex).getList();
     }
 
+    /**
+     * Go to next song in playlist and start playing
+     */
     public void gotoNext()
     {
         clearQueue();
@@ -97,6 +104,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         putAction(new ActionPlay());
     }
 
+    /**
+     * Go to previous song in playlist and start playing
+     */
     public void gotoPrevious()
     {
         clearQueue();
@@ -186,6 +196,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         mCurrentSongIndex = -1;
     }
 
+    /**
+     * Set index of a song that will be played
+     */
     public void setSource(int playlistIndex, int index)
     {
         if(mCurrentPlaylistIndex != playlistIndex)
@@ -234,11 +247,17 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     }
 
+    /**
+     * Returns true if current song is playing or is in preparing to play state
+     */
     public boolean isPlaying()
     {
         return mIsPlaying;
     }
 
+    /**
+     * Pause/unpause playback
+     */
     public void togglePlaybackState()
     {
         if (isPlaying())
@@ -247,41 +266,68 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             startPlayback();
     }
 
+    /**
+     * Starts playback. setSource(...) have to be called before this method.
+     */
     public void startPlayback()
     {
         putAction(new ActionPlay());
     }
 
+    /**
+     * Pauses playback.
+     */
     public void pausePlayback()
     {
         putAction(new ActionPause());
     }
 
+    /**
+     * Stops playback.
+     */
     public void stopPlayback()
     {
         putAction(new ActionStop());
     }
 
+    /**
+     * Returns the id of the current song index in the current playlist
+     */
     public int getCurrentSongIndex()
     {
         return mCurrentSongIndex;
     }
 
+    /**
+     * Returns the current position in audio file in milliseconds
+     */
     public int getCurrentPosition()
     {
         return mPlayer.getPosition();
     }
 
+    /**
+     * Returns a duration of the current audio file in milliseconds
+     */
     public int getDuration()
     {
         return mPlayer.getDuration();
     }
 
+    /**
+     * Go to a position in the current audio file
+     * @param int position position in milleseconds
+     */
     public void seekTo(int position)
     {
         mPlayer.setPosition(position);
     }
 
+    /**
+     * Shift the current song duration
+     * @param float bpm original beat rate
+     * @param float shiftedBpm a beat rate to be played with
+     */
     public void setNewPlayingBPM(float bpm, float shiftedBpm)
     {
         mCurrentlyPlayingBPM = shiftedBpm;
@@ -290,11 +336,17 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         updateUI();
     }
 
+    /**
+     * Retrun a BPM of the currently playing song
+     */
     public float getCurrentlyPlayingBPM()
     {
         return mCurrentlyPlayingBPM;
     }
 
+    /**
+     * Abstract action class for the actions queue (mQueue)
+     */
     private class BaseAction
     {
         public void doAction()
@@ -320,6 +372,10 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         }
     }
 
+    /**
+     * Prepare a song to be played
+     * Must be put once before ActionPlay.
+     */
     class ActionPrepare extends BaseAction
     {
 
@@ -356,6 +412,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         }
     }
 
+    /**
+     * Starts a playback
+     */
     class ActionPlay extends BaseAction
     {
         @Override
@@ -378,6 +437,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         }
     }
 
+    /**
+     * Pauses the current playback
+     */
     class ActionPause extends BaseAction
     {
         @Override
@@ -390,6 +452,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         }
     }
 
+    /**
+     * Stops the current playback
+     */
     class ActionStop extends BaseAction
     {
         @Override
