@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
  */
 public class SystemHelper
 {
+    /**
+     * @Return number of processors on the device
+     */
     public static int getNumberOfCores()
     {
         if (Build.VERSION.SDK_INT >= 17)
@@ -54,7 +57,7 @@ public class SystemHelper
             File[] files = dir.listFiles(new CpuFilter());
             //Return the number of cores (virtual CPU devices)
             return files.length;
-        }
+        } 
         catch (Exception e)
         {
             //Default to return 1 core
@@ -62,6 +65,10 @@ public class SystemHelper
         }
     }
 
+    /**
+     * Any path with segments separated by "/"
+     * @Return last segement of the input path
+     */
     public static String getLastSegmentOfPath(String path)
     {
         int lastIndexOfSeparator = path.lastIndexOf("/");
