@@ -2,17 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".views.activities.SettingsActivity">
 
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:theme="@style/AppTheme"
-        tools:context=".views.activities.SettingsActivity"/>
+        android:background="@color/primary"
+        app:theme="@style/AppToolBarTheme"
+        />
 
     <FrameLayout
         android:id="@+id/fragment_container"
