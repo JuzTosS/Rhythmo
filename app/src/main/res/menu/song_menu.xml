@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:icon="@drawable/icon_apply"
+        android:icon="@drawable/ic_done_black_48dp"
         android:id="@+id/apply"
         app:showAsAction="always"
         android:title="@string/settings_title">

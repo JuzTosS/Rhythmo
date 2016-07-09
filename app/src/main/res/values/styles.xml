@@ -1,25 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="CustomizedActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background" tools:ignore="NewApi">@color/primary</item>
-        <item name="background">@color/primary</item>
-    </style>
-
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="actionBarStyle">@style/CustomizedActionBar</item>
+    <style name="AppToolBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accentPrimary</item>
         <item name="colorControlNormal">@color/foregroundInverted</item>
-        <item name="android:textColorSecondary">@color/foregroundInverted</item>
+        <item name="titleTextColor">@color/foregroundInverted</item>
+        <item name="background">@color/primary</item>
     </style>
 
-    <style name="floating_action_button">
-        <item name="android:layout_margin">0dp</item>
-        <item name="android:layout_marginLeft">0dp</item>
-        <item name="android:layout_marginTop">0dp</item>
-        <item name="android:layout_marginRight">0dp</item>
-        <item name="android:layout_marginBottom">0dp</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accentPrimary</item>
     </style>
 
     <style name="NotificationText" parent="@android:style/TextAppearance.StatusBar.EventContent"/>

@@ -20,5 +20,7 @@
     <string name="pref_music_library">Music library</string>
     <string name="pref_bpm_auto_shift_range">BPM auto shift</string>
     <string name="pref_bpm_auto_shift_range_desc">If the filter is enabled songs may be played faster of slower to get to the range</string>
+    <string name="locationHeader">Location</string>
+    <string name="shift_hint">Shift the rhythm of the song</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

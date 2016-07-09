@@ -2,6 +2,8 @@ package com.juztoss.bpmplayer.views.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -58,6 +60,10 @@ public class SelectSongsActivity extends AppCompatActivity
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.song_menu, menu);
+        MenuItem item = menu.findItem(R.id.apply);
+        Drawable newIcon = item.getIcon();
+        newIcon.mutate().setColorFilter(getResources().getColor(R.color.foregroundInverted), PorterDuff.Mode.SRC_IN);
+        item.setIcon(newIcon);
         return true;
     }
 }

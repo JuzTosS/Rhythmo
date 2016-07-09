@@ -1,6 +1,8 @@
 package com.juztoss.bpmplayer.views.activities;
 
 import android.annotation.SuppressLint;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -233,6 +236,10 @@ public class SingleSongActivity extends AppCompatActivity
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.song_menu, menu);
+        MenuItem item = menu.findItem(R.id.apply);
+        Drawable newIcon = item.getIcon();
+        newIcon.mutate().setColorFilter(getResources().getColor(R.color.foregroundInverted), PorterDuff.Mode.SRC_IN);
+        item.setIcon(newIcon);
         return true;
     }
 }

@@ -1,24 +1,19 @@
 <resources>
 
-    <style name="AppToolBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="actionBarStyle">@style/CustomizedActionBar</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
-        <item name="colorAccent">@color/accentPrimary</item>
-        <item name="colorControlNormal">@color/foregroundInverted</item>
-        <item name="titleTextColor">@color/foregroundInverted</item>
-        <item name="background">@color/primary</item>
-    </style>
+    <!--<style name="AppToolBarTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/primary</item>-->
+        <!--<item name="colorPrimaryDark">@color/primaryDark</item>-->
+        <!--<item name="colorAccent">@color/accentPrimary</item>-->
+        <!--<item name="colorControlNormal">@color/foregroundInverted</item>-->
+        <!--<item name="titleTextColor">@color/foregroundInverted</item>-->
+        <!--<item name="background">@color/primary</item>-->
+    <!--</style>-->
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
-        <item name="colorAccent">@color/accentPrimary</item>
-    </style>
-
-    <style name="floating_action_button">
-        <item name="android:layout_margin">5dp</item>
-    </style>
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/primary</item>-->
+        <!--<item name="colorPrimaryDark">@color/primaryDark</item>-->
+        <!--<item name="colorAccent">@color/accentPrimary</item>-->
+    <!--</style>-->
 
     <style name="NotificationText" parent="android:TextAppearance.Material.Notification"/>
 

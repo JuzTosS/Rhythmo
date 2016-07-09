@@ -11,7 +11,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:theme="@style/AppTheme"
+        app:theme="@style/AppToolBarTheme"
+        android:background="@color/primary"
         tools:context=".views.activities.SettingsActivity"/>
 
     <ScrollView
@@ -27,15 +28,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:text="Location"
+                    android:layout_margin="10dp"
+                    android:text="@string/locationHeader"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold"/>
 
@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
                     android:text=""
                     android:textAppearance="?android:attr/textAppearanceSmall"/>
             </LinearLayout>
@@ -54,11 +54,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_margin="5dp"
-                android:background="@color/TODOCHANGE"/>
+                android:background="@color/colorEdgeEffect"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
@@ -75,8 +75,11 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/foregroundInverted"
                         android:layout_gravity="center_vertical"
-                        android:layout_margin="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@color/primary"
                         android:text="1 / 2"/>
 
                     <!--Empty layout to prevent autofocus on EditText field-->
@@ -92,11 +95,12 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
-                        android:background="@android:color/transparent"
                         android:inputType="numberDecimal"
                         android:nextFocusLeft="@id/bpm_text"
                         android:nextFocusUp="@id/bpm_text"
-                        android:text=""
+                        android:textStyle="bold"
+                        android:textColor="@color/foreground"
+                        android:background="@null"
                         android:textSize="70dp"/>
 
                     <Button
@@ -104,41 +108,49 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/foregroundInverted"
+                        android:background="@color/primary"
                         android:layout_gravity="center_vertical"
-                        android:layout_margin="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="10dp"
                         android:text="X 2"/>
 
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/button_tab_bpm"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:textSize="40dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/foregroundInverted"
+                    android:background="@drawable/tap_button"
                     android:layout_gravity="center_horizontal"
-                    android:text="TAP"/>
+                    android:text="TAP"
+                    android:layout_below="@+id/textView2"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="10dp"/>
 
                 <TextView
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="32dp"
                     android:text="Hit &quot;TAP&quot;\nin the rhythm of the music\nto find out BPM"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_below="@+id/button_tab_bpm"
+                    android:gravity="center_horizontal"
+                    android:layout_centerHorizontal="true"/>
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/linearLayout"
-                    android:layout_centerHorizontal="true"
                     android:text="BPM"
                     android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_below="@+id/linearLayout"
+                    android:layout_centerHorizontal="true"
+                    />
             </RelativeLayout>
 
 
@@ -146,14 +158,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_margin="5dp"
-                android:background="@color/TODOCHANGE"/>
+                android:background="@color/colorEdgeEffect"/>
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Shift the rhythm of the song"
+                android:text="@string/shift_hint"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
             <TextView
