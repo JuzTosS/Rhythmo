@@ -78,12 +78,13 @@ public class LocalPlaylistSongsSource implements ISongsSource
                     mApp.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_PLAYLISTS, null, values);
 
                 } while (songIds.moveToNext());
+
+                mApp.getDatabaseHelper().getWritableDatabase().setTransactionSuccessful();
+                mApp.getDatabaseHelper().getWritableDatabase().endTransaction();
             }
         }
         finally
         {
-            mApp.getDatabaseHelper().getWritableDatabase().setTransactionSuccessful();
-            mApp.getDatabaseHelper().getWritableDatabase().endTransaction();
             songIds.close();
         }
     }
