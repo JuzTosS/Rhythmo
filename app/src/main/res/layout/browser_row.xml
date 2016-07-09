@@ -25,10 +25,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:tint="@color/TODOCHANGE"/>
+                android:tint="@color/foreground"/>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:gravity="center_vertical"
@@ -41,6 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:lines="1"
+                    android:textColor="@color/foregroundDark"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Filename"/>
 
@@ -50,6 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:lines="1"
+                    android:textColor="@color/foregroundGrayedOut"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="desc"/>
             </LinearLayout>
@@ -61,7 +63,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="@null"
                 android:src="@drawable/ic_add_circle_black_36dp"
-                android:tint="@color/TODOCHANGE"/>
+                android:tint="@color/foregroundGrayedOut"/>
 
         </LinearLayout>
 
@@ -70,6 +72,6 @@
             android:layout_height="1dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:background="@color/TODOCHANGE"/>
+            android:background="@color/colorEdgeEffect"/>
     </LinearLayout>
 </FrameLayout>
