@@ -1,93 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    tools:context=".views.activities.PlayerActivity">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/coordinatorLayout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"/>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:background="@color/primary"
+        android:minHeight="10dp"
+        app:tabIndicatorColor="@color/accentPrimary"
+        app:tabIndicatorHeight="4dp"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="@color/foregroundInverted"
+        app:tabTextColor="@color/foregroundInvertedGrayedOut"/>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
-                app:theme="@style/AppTheme"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp">
-
-                    <com.juztoss.bpmplayer.views.items.RangeSeekBar
-                        android:id="@+id/bpm_ranger"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        />
-
-                    <TextView
-                        android:layout_marginTop="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/drag_handles_welcome"
-                        android:id="@+id/drag_handles_welcome"
-                        android:layout_gravity="center_horizontal|top"/>
-
-
-                </FrameLayout>
-
-
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tab_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:background="?attr/colorPrimary"
-                    android:minHeight="10dp"
-                    app:tabIndicatorColor="@color/accent"
-                    app:tabIndicatorHeight="4dp"
-                    app:tabMode="scrollable"/>
-
-
-            </LinearLayout>
-
-        </android.support.design.widget.AppBarLayout>
-
-        <com.juztoss.bpmplayer.views.items.AdvancedFloatingActionButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/btnAddToPlaylist"
             style="@style/floating_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
             android:layout_gravity="bottom|end"
             android:src="@drawable/ic_add_black_36dp"
-            app:backgroundTint="@color/accent"
-            app:layout_behavior="com.juztoss.bpmplayer.views.items.ScrollingFABBehavior"
             />
 
-    </android.support.design.widget.CoordinatorLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_gravity="top"
+            android:background="@drawable/shadow_top"/>
 
-    <include layout="@layout/control_footer"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/shadow_bottom"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="-26dp"
+        android:layout_height="wrap_content">
+        <include layout="@layout/control_footer"/>
+    </FrameLayout>
+
 </LinearLayout>
 

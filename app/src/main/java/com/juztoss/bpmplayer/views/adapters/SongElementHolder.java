@@ -78,9 +78,9 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
         mSecondLine.setText(composition.getFolder());
 
         if(Math.abs(composition.bpmShifted() - composition.bpm()) >= 0.001 || !mApp.isBPMInRange(composition.bpmShifted()))
-            mBpmLabel.setTextColor(mApp.getResources().getColor(R.color.accent));
+            mBpmLabel.setTextColor(mApp.getResources().getColor(R.color.accentPrimary));
         else
-            mBpmLabel.setTextColor(mApp.getResources().getColor(R.color.buttonsPrimary));
+            mBpmLabel.setTextColor(mApp.getResources().getColor(R.color.foreground));
 
         float bpm = mApp.getAvailableToPlayBPM(composition.bpmShifted());
         SpannableString spannableString = new SpannableString(String.format("%.1f", bpm));

@@ -29,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:textSize="15dp"
-                    android:textColor="@color/textBlack"
+                    android:textColor="@color/TODOCHANGE"
                     android:textStyle="bold"/>
 
                 <TextView
@@ -47,7 +47,7 @@
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                android:background="@color/colorEdgeEffectLight"/>
+                android:background="@color/TODOCHANGE"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,7 +70,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:textAppearance="@style/TextAppearance.Design.Tab"
-                        android:textColor="@color/textBlack"
+                        android:textColor="@color/TODOCHANGE"
                         />
 
                     <TextView
@@ -80,7 +80,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="@color/textBlack"/>
+                        android:textColor="@color/TODOCHANGE"/>
 
                 </LinearLayout>
 
@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/icon_play_large"/>
+                    android:src="@drawable/ic_play_arrow_black_48dp"/>
 
             </LinearLayout>
 

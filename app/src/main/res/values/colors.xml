@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#3F51B5</color>
-    <color name="primary_dark">#303F9F</color>
-    <color name="accent">#188df2</color>
-    <color name="colorEdgeEffect">#CCCCCC</color>
-    <color name="colorEdgeEffectLight">#DDDDDD</color>
-    <color name="buttonsPrimary">#6b6b6b</color>
-    <color name="buttonsSecondary">#d6d6d6</color>
-    <color name="textBlack">#555555</color>
-    <color name="headerBackground">#1f1e20</color>
+    <color name="primary">#f55732</color>
+    <!--primary secondary #fcc75a-->
+    <color name="primaryDark">#dd4e2d</color>
+    <color name="background">#fafafa</color>
+    <color name="accentPrimary">#0096b6</color>
+    <color name="accentSecondary">#fcc75a</color>
+    <color name="accentSecondaryAlpha">#99fcc75a</color>
+    <color name="foregroundDark">#222222</color>
+    <color name="foreground">#555555</color>
+    <color name="foregroundLight">#6b6b6b</color>
+    <color name="foregroundGrayedOut">#b5b5b5</color>
+    <color name="foregroundInverted">#fafafa</color>
+    <color name="foregroundInvertedGrayedOut">#e1e1e1</color>
+    <color name="colorEdgeEffect">#dddddd</color>
+    <color name="colorEdgeEffectAlpha">#99dddddd</color>
+    <color name="colorEdgeEffectInverted">#fafafa</color>
+    <color name="fullTransparency">#0000FF00</color>
+    <color name="TODOCHANGE">#00FF00</color>
+
 </resources>

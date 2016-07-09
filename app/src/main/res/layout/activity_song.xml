@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_margin="5dp"
-                android:background="@color/colorEdgeEffectLight"/>
+                android:background="@color/TODOCHANGE"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -146,7 +146,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_margin="5dp"
-                android:background="@color/colorEdgeEffectLight"/>
+                android:background="@color/TODOCHANGE"/>
 
             <TextView
                 android:id="@+id/textView3"

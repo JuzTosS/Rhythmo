@@ -59,7 +59,6 @@ public class RangeSeekBar<T extends Number> extends ImageView
     public static final Integer DEFAULT_MINIMUM = 0;
     public static final Integer DEFAULT_MAXIMUM = 100;
     public static final int HEIGHT_IN_DP = 30;
-    public static final int TEXT_LATERAL_PADDING_IN_DP = 3;
     private static final int INITIAL_PADDING_IN_DP = 8;
     private final int LINE_HEIGHT_IN_DP = 5;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -99,7 +98,7 @@ public class RangeSeekBar<T extends Number> extends ImageView
     /**
      * Default color of a {@link RangeSeekBar}, #FF33B5E5. This is also known as "Ice Cream Sandwich" blue.
      */
-    public final int DEFAULT_COLOR = getResources().getColor(R.color.accent);
+    public final int DEFAULT_COLOR = getResources().getColor(R.color.foreground);
     /**
      * An invalid pointer id.
      */
@@ -117,14 +116,8 @@ public class RangeSeekBar<T extends Number> extends ImageView
 
     private boolean mIsDragging;
 
-    private int mTextOffset;
-    private int mTextSize;
-    private int mDistanceToTop;
     private RectF mRect;
 
-    private static final int DEFAULT_TEXT_SIZE_IN_DP = 14;
-    private static final int DEFAULT_TEXT_DISTANCE_TO_BUTTON_IN_DP = 8;
-    private static final int DEFAULT_TEXT_DISTANCE_TO_TOP_IN_DP = 8;
     private boolean mSingleThumb;
 
     public RangeSeekBar(Context context)
@@ -184,16 +177,12 @@ public class RangeSeekBar<T extends Number> extends ImageView
 
         INITIAL_PADDING = PixelUtil.dpToPx(context, INITIAL_PADDING_IN_DP);
 
-        mTextSize = PixelUtil.dpToPx(context, DEFAULT_TEXT_SIZE_IN_DP);
-        mDistanceToTop = PixelUtil.dpToPx(context, DEFAULT_TEXT_DISTANCE_TO_TOP_IN_DP);
-        mTextOffset = this.mTextSize + PixelUtil.dpToPx(context,
-                DEFAULT_TEXT_DISTANCE_TO_BUTTON_IN_DP) + this.mDistanceToTop;
-
+        int height = thumbImage.getHeight() + PixelUtil.dpToPx(getContext(), HEIGHT_IN_DP);
         float lineHeight = PixelUtil.dpToPx(context, LINE_HEIGHT_IN_DP);
         mRect = new RectF(padding,
-                mTextOffset + thumbHalfHeight - lineHeight / 2,
+                height / 2 - lineHeight / 2,
                 getWidth() - padding,
-                mTextOffset + thumbHalfHeight + lineHeight / 2);
+                height / 2 + lineHeight / 2);
 
         // make RangeSeekBar focusable. This solves focus handling issues in case EditText widgets are being used along with the RangeSeekBar within ScollViews.
         setFocusable(true);
@@ -396,7 +385,7 @@ public class RangeSeekBar<T extends Number> extends ImageView
 
                     if (notifyWhileDragging && listener != null)
                     {
-                        listener.onRangeSeekBarValuesChanged(this, getSelectedMinValue(), getSelectedMaxValue());
+                        listener.onRangeSeekBarValuesMoved(this, getSelectedMinValue(), getSelectedMaxValue());
                     }
                 }
                 break;
@@ -533,11 +522,8 @@ public class RangeSeekBar<T extends Number> extends ImageView
     protected synchronized void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
-
-        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        paint.setTextSize(mTextSize);
         paint.setStyle(Style.FILL);
-        paint.setColor(Color.GRAY);
+        paint.setColor(getResources().getColor(R.color.foregroundGrayedOut));
         paint.setAntiAlias(true);
 
         padding = INITIAL_PADDING + thumbHalfWidth;
@@ -551,7 +537,7 @@ public class RangeSeekBar<T extends Number> extends ImageView
                 getSelectedMaxValue().equals(getAbsoluteMaxValue()));
 
         int colorToUseForButtonsAndHighlightedLine = selectedValuesAreDefault ?
-                Color.GRAY :    // default values
+                getResources().getColor(R.color.foregroundGrayedOut) :    // default values
                 DEFAULT_COLOR; //non default, filter is active
 
         // draw seek bar active range line
@@ -571,35 +557,6 @@ public class RangeSeekBar<T extends Number> extends ImageView
         // draw maximum thumb
         drawThumb(normalizedToScreen(normalizedMaxValue), Thumb.MAX.equals(pressedThumb), canvas,
                 selectedValuesAreDefault);
-
-        // draw the text if sliders have moved from default edges
-        if (!selectedValuesAreDefault)
-        {
-            paint.setTextSize(mTextSize);
-            paint.setColor(Color.DKGRAY);
-            // give text a bit more space here so it doesn't get cut off
-            int offset = PixelUtil.dpToPx(getContext(), TEXT_LATERAL_PADDING_IN_DP);
-
-            String minText = String.valueOf(getSelectedMinValue());
-            String maxText = String.valueOf(getSelectedMaxValue());
-            float minTextWidth = paint.measureText(minText) + offset;
-            float maxTextWidth = paint.measureText(maxText) + offset;
-
-            if (!mSingleThumb)
-            {
-                canvas.drawText(minText,
-                        normalizedToScreen(normalizedMinValue) - minTextWidth * 0.5f,
-                        mDistanceToTop + mTextSize,
-                        paint);
-
-            }
-
-            canvas.drawText(maxText,
-                    normalizedToScreen(normalizedMaxValue) - maxTextWidth * 0.5f,
-                    mDistanceToTop + mTextSize,
-                    paint);
-        }
-
     }
 
     /**
@@ -647,7 +604,7 @@ public class RangeSeekBar<T extends Number> extends ImageView
         }
 
         canvas.drawBitmap(buttonToDraw, screenCoord - thumbHalfWidth,
-                mTextOffset,
+                getMeasuredHeight() / 2 - thumbHalfHeight,
                 paint);
     }
 
@@ -763,7 +720,8 @@ public class RangeSeekBar<T extends Number> extends ImageView
     public interface OnRangeSeekBarChangeListener<T>
     {
 
-        public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, T minValue, T maxValue);
+        void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, T minValue, T maxValue);
+        void onRangeSeekBarValuesMoved(RangeSeekBar<?> bar, T minValue, T maxValue);
     }
 
     /**

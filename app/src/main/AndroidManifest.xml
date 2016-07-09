@@ -9,7 +9,7 @@
         android:name="com.juztoss.bpmplayer.presenters.BPMPlayerApp"
         android:allowBackup="true"
         android:enabled="true"
-        android:icon="@drawable/ic_queue_music_white_48dp"
+        android:icon="@drawable/launcher_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">

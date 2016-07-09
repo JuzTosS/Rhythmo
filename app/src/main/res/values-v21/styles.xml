@@ -1,9 +1,12 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--<item name="android:colorPrimaryDark">#303F9F</item>-->
-        <!--<item name="android:colorPrimary">@color/primary</item>-->
-        <item name="android:colorAccent">@color/accent</item>
+        <item name="actionBarStyle">@style/CustomizedActionBar</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accentPrimary</item>
+        <item name="colorControlNormal">@color/foregroundInverted</item>
+        <item name="android:textColorSecondary">@color/foregroundInverted</item>
     </style>
 
     <style name="floating_action_button">

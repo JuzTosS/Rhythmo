@@ -29,9 +29,9 @@ public class PlaybackNotification
 
         RemoteViews notificationView = new RemoteViews(service.getPackageName(), R.layout.notification_layout);
         if (service.isPlaying())
-            notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_pause_large);
+            notificationView.setImageViewResource(R.id.notification_pause, R.drawable.ic_pause_black_48dp);
         else
-            notificationView.setImageViewResource(R.id.notification_pause, R.drawable.icon_play_large);
+            notificationView.setImageViewResource(R.id.notification_pause, R.drawable.ic_play_arrow_black_48dp);
 
         Composition composition = ((BPMPlayerApp) service.getApplication()).getComposition(service.currentSongId());
 

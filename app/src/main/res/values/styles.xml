@@ -6,8 +6,12 @@
     </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:actionBarStyle" tools:ignore="NewApi">@style/CustomizedActionBar</item>
         <item name="actionBarStyle">@style/CustomizedActionBar</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accentPrimary</item>
+        <item name="colorControlNormal">@color/foregroundInverted</item>
+        <item name="android:textColorSecondary">@color/foregroundInverted</item>
     </style>
 
     <style name="floating_action_button">
@@ -21,4 +25,24 @@
     <style name="NotificationText" parent="@android:style/TextAppearance.StatusBar.EventContent"/>
 
     <style name="NotificationTitle" parent="@android:style/TextAppearance.StatusBar.EventContent.Title"/>
+
+    <style name="BPMLabelTextAppearance" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="SongNameTextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+
+    </style>
+
+    <style name="SongDescriptionTextAppearance">
+        <item name="android:textSize">13sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
 </resources>

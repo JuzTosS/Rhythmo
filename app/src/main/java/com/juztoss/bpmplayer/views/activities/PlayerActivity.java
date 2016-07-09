@@ -11,7 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -40,9 +40,10 @@ import com.juztoss.bpmplayer.models.songsources.ISongsSource;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.BuildMusicLibraryService;
 import com.juztoss.bpmplayer.services.PlaybackService;
-import com.juztoss.bpmplayer.views.items.AdvancedFloatingActionButton;
 import com.juztoss.bpmplayer.views.items.RangeSeekBar;
 import com.juztoss.bpmplayer.views.adapters.TabsAdapter;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -55,10 +56,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private SeekBar mSeekbar;
     private RangeSeekBar<Integer> mRangeSeekbar;
     ViewPager mPlaylistsPager;
-    private AdvancedFloatingActionButton fab;
+    private FloatingActionButton fab;
     ActionBar mActionBar;
-    private View mWelcomeFilterText;
-
+    private TextView mMinBPMField;
+    private TextView mMaxBPMField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -81,7 +82,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void createFabs()
     {
-        fab = (AdvancedFloatingActionButton) findViewById(R.id.btnAddToPlaylist);
+        fab = (FloatingActionButton) findViewById(R.id.btnAddToPlaylist);
         fab.setOnClickListener(this);
     }
 
@@ -120,7 +121,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void setupAllOtherUI()
     {
-        mWelcomeFilterText = findViewById(R.id.drag_handles_welcome);
         mTimePassed = (TextView) findViewById(R.id.time_passed);
         mTimeLeft = (TextView) findViewById(R.id.time_left);
         mSeekbar = (SeekBar) findViewById(R.id.seekbar);
@@ -128,7 +128,11 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         mRangeSeekbar = (RangeSeekBar<Integer>) findViewById(R.id.bpm_ranger);
         mRangeSeekbar.setOnRangeSeekBarChangeListener(mOnBpmRangeChanged);
+        mRangeSeekbar.setNotifyWhileDragging(true);
         mRangeSeekbar.setRangeValues((int) BPMPlayerApp.MIN_BPM, (int) BPMPlayerApp.MAX_BPM);
+
+        mMinBPMField = (TextView) findViewById(R.id.bpm_label_min);
+        mMaxBPMField = (TextView) findViewById(R.id.bpm_label_max);
 
         mPlayButton = findViewById(R.id.play_button);
         mPlayButton.setOnClickListener(mPlayButtonListenter);
@@ -195,13 +199,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private void updateFab()
     {
         final int MIN_AVAILABLE_SONGS_TO_SHOW_ADD_ICON = 3;
-        fab.setAlwaysShown(getCurrentViewedPlaylist().getList() == null
-                || getCurrentViewedPlaylist().getList().getCount() <= MIN_AVAILABLE_SONGS_TO_SHOW_ADD_ICON);
-
-        if (getCurrentViewedPlaylist().getSource().isModifyAvailable())
+        if (getCurrentViewedPlaylist().getSource().isModifyAvailable() || (getCurrentViewedPlaylist().getList() == null
+                || getCurrentViewedPlaylist().getList().getCount() <= MIN_AVAILABLE_SONGS_TO_SHOW_ADD_ICON))
         {
-            fab.setVisibility(View.VISIBLE);
-            ((CoordinatorLayout) findViewById(R.id.coordinatorLayout)).dispatchDependentViewsChanged(findViewById(R.id.appbar));
+            fab.show();
         }
         else
             fab.hide();
@@ -418,15 +419,29 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue)
         {
+            onRangeSeekBarValuesMoved(bar, minValue, maxValue);
             if (minValue <= BPMPlayerApp.MIN_BPM && maxValue >= BPMPlayerApp.MAX_BPM)
             {
                 mApp.setBPMRange(0, 0);
-                mWelcomeFilterText.setVisibility(View.VISIBLE);
             }
             else
             {
                 mApp.setBPMRange(minValue, maxValue);
-                mWelcomeFilterText.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        @Override
+        public void onRangeSeekBarValuesMoved(RangeSeekBar<?> bar, Integer minValue, Integer maxValue)
+        {
+            if (minValue <= BPMPlayerApp.MIN_BPM && maxValue >= BPMPlayerApp.MAX_BPM)
+            {
+                mMinBPMField.setText("Min");
+                mMaxBPMField.setText("Max");
+            }
+            else
+            {
+                mMinBPMField.setText(Integer.toString(minValue));
+                mMaxBPMField.setText(Integer.toString(maxValue));
             }
         }
     };
@@ -437,9 +452,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
         {
             int timePassed = progress;
-            int timeLeft = seekBar.getMax() - timePassed;
+            int timeLeft = seekBar.getMax() - (timePassed / 1000) * 1000;
             mTimePassed.setText(DateUtils.formatElapsedTime(timePassed / 1000));
-            mTimeLeft.setText(DateUtils.formatElapsedTime(timeLeft / 1000));
+            mTimeLeft.setText("-" + DateUtils.formatElapsedTime(timeLeft / 1000));
 
             if (mApp.isPlaybackServiceRunning())
             {
