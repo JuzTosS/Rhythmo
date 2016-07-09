@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BPMPlayer</string>
+    <string name="app_name">Rhythmo</string>
     <string name="building_music_library">Building music library</string>
     <string name="building_music_library_finished">Building music library finished</string>
     <string name="settings_title">Settings</string>
