@@ -34,6 +34,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public static final int NOTIFICATION_ID = 42;
     public static final String LAUNCH_NOW_PLAYING_ACTION = "com.juztoss.bpmplayer.action.LAUNCH_NOW_PLAYING";
     public static final String SWITCH_PLAYBACK_ACTION = "com.juztoss.bpmplayer.action.SWITCH_PLAYBACK";
+    public static final String PLAY_NEXT_ACTION = "com.juztoss.bpmplayer.action.PLAY_NEXT_ACTION";
     public static final String UPDATE_UI_ACTION = "com.juztoss.bpmplayer.action.UPDATE_UI";
     private static final String DEFAULT_SAMPLE_RATE = "44100";
     private static final String DEFAULT_BUFFER_SIZE = "512";

@@ -20,7 +20,7 @@ public class PlaybackActionReceiver extends BroadcastReceiver
         if (intent.getAction().equals(PlaybackService.LAUNCH_NOW_PLAYING_ACTION))
         {
             Intent activityIntent = new Intent(context, PlayerActivity.class);
-            activityIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+            activityIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             context.startActivity(activityIntent);
         }
         else if (intent.getAction().equals(PlaybackService.SWITCH_PLAYBACK_ACTION))
@@ -28,6 +28,12 @@ public class PlaybackActionReceiver extends BroadcastReceiver
             BPMPlayerApp app = (BPMPlayerApp) context.getApplicationContext();
             if (app.isPlaybackServiceRunning())
                 app.getPlaybackService().togglePlaybackState();
+        }
+        else if (intent.getAction().equals(PlaybackService.PLAY_NEXT_ACTION))
+        {
+            BPMPlayerApp app = (BPMPlayerApp) context.getApplicationContext();
+            if (app.isPlaybackServiceRunning())
+                app.getPlaybackService().gotoNext();
         }
     }
 }

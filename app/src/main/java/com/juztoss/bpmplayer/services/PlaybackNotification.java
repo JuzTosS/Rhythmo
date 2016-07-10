@@ -46,7 +46,12 @@ public class PlaybackNotification
         PendingIntent switchPlaybackPendingIntent = PendingIntent.getBroadcast(service, 0, switchPlaybackIntent, 0);
         notificationView.setOnClickPendingIntent(R.id.notification_pause, switchPlaybackPendingIntent);
 
+        Intent playNextActionIntent = new Intent(PlaybackService.PLAY_NEXT_ACTION);
+        PendingIntent playNextActionPendingIntent = PendingIntent.getBroadcast(service, 0, playNextActionIntent, 0);
+        notificationView.setOnClickPendingIntent(R.id.notification_next, playNextActionPendingIntent);
+
         notificationBuilder.setContent(notificationView);
+        notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
         Notification notification = notificationBuilder.build();
 
         return notification;
