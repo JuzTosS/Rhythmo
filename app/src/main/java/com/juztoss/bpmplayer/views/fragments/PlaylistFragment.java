@@ -79,7 +79,6 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     public void onStart()
     {
         super.onStart();
-        mPlaylistAdapter.notifyDataSetChanged();
         onResumeFragment();
     }
 
