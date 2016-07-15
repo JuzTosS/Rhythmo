@@ -50,11 +50,11 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
 
 
     @Override
-    public void onItemClick(int position)
+    public void onPlaylistItemClick(int position, int action, Composition composition)
     {
         if (mOnItemClickListener != null)
         {
-            mOnItemClickListener.onItemClick(position);
+            mOnItemClickListener.onPlaylistItemClick(position, action, composition);
         }
     }
 
@@ -63,7 +63,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     {
         LayoutInflater inflater = (LayoutInflater.from(mContext));
         View v = inflater.inflate(R.layout.song_list_element, null);
-        return new SongElementHolder(v, this);
+        return new SongElementHolder(v, this, mPlaylist.getSource().isModifyAvailable());
     }
 
     @SuppressLint("DefaultLocale")

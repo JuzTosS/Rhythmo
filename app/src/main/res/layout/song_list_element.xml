@@ -93,6 +93,15 @@
                     android:src="@drawable/icon_play_normal"
                     android:tint="@color/accentPrimary"/>
 
+                <ImageView
+                    android:id="@+id/menu_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_more_horiz_black_24dp"
+                    android:tint="@color/foreground"/>
+
             </LinearLayout>
 
         </LinearLayout>

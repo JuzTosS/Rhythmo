@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by JuzTosS on 5/8/2016.
  */
-public class Playlist
+public class Playlist implements ISongsSource.ISourceUpdatedListener
 {
     protected BPMPlayerApp mApp;
     protected float mMinBPM = 0;
@@ -25,12 +25,22 @@ public class Playlist
     public Playlist(BPMPlayerApp app, ISongsSource source)
     {
         mApp = app;
-        mSource = source;
+        setSource(source);
+    }
+
+    @Override
+    public void onSourceUpdated()
+    {
+        setNeedRebuild();
     }
 
     public void setSource(ISongsSource source)
     {
+        if(mSource != null)
+            mSource.setUpdateListener(null);
+
         mSource = source;
+        mSource.setUpdateListener(this);
         setNeedRebuild();
     }
 

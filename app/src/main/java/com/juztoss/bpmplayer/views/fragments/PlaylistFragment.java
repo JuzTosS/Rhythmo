@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.juztoss.bpmplayer.R;
+import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.views.adapters.IOnItemClickListener;
 import com.juztoss.bpmplayer.views.adapters.PlaylistAdapter;
+import com.juztoss.bpmplayer.views.adapters.SongElementHolder;
 
 /**
  * Created by JuzTosS on 4/20/2016.
@@ -56,12 +58,20 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     }
 
     @Override
-    public void onItemClick(int position)
+    public void onPlaylistItemClick(int position, int action, Composition composition)
     {
-        if (mApp.isPlaybackServiceRunning())
+        if(action == SongElementHolder.ACTION_PLAY)
         {
-            mApp.getPlaybackService().setSource(mPlaylistIndex, position);
-            mApp.getPlaybackService().startPlayback();
+            if (mApp.isPlaybackServiceRunning())
+            {
+                mApp.getPlaybackService().setSource(mPlaylistIndex, position);
+                mApp.getPlaybackService().startPlayback();
+            }
+        }
+        else if(action == SongElementHolder.ACTION_REMOVE)
+        {
+            mApp.getPlaylists().get(mPlaylistIndex).getSource().remove(composition.id());
+            mPlaylistAdapter.updateList();
         }
     }
 

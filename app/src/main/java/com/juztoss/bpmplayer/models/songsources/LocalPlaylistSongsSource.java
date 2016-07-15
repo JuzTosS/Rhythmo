@@ -9,7 +9,7 @@ import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 /**
  * Created by JuzTosS on 6/22/2016.
  */
-public class LocalPlaylistSongsSource implements ISongsSource
+public class LocalPlaylistSongsSource extends ISongsSource
 {
     private long mId;
     private String mName;
@@ -87,6 +87,15 @@ public class LocalPlaylistSongsSource implements ISongsSource
         {
             songIds.close();
         }
+
+        notifyUpdated();
+    }
+
+    @Override
+    public void remove(long songId)
+    {
+        mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_PLAYLISTS, DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? AND " + DatabaseHelper.PLAYLIST_SONG_ID + " = ? ", new String[]{Long.toString(mId), Long.toString(songId)});
+        notifyUpdated();
     }
 
 
@@ -99,6 +108,8 @@ public class LocalPlaylistSongsSource implements ISongsSource
         {
             mName = name;
         }
+
+        notifyUpdated();
     }
 
     @Override

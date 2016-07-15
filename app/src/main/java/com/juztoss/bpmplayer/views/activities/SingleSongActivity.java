@@ -14,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -22,6 +21,9 @@ import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.PlaybackService;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * Created by JuzTosS on 6/13/2016.
@@ -235,7 +237,7 @@ public class SingleSongActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.song_menu, menu);
+        inflater.inflate(R.menu.song_activity_menu, menu);
         MenuItem item = menu.findItem(R.id.apply);
         Drawable newIcon = item.getIcon();
         newIcon.mutate().setColorFilter(getResources().getColor(R.color.foregroundInverted), PorterDuff.Mode.SRC_IN);

@@ -8,7 +8,7 @@ import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 /**
  * Created by JuzTosS on 6/22/2016.
  */
-public class AllSongsSource implements ISongsSource
+public class AllSongsSource extends ISongsSource
 {
 
     private BPMPlayerApp mApp;
@@ -76,6 +76,12 @@ public class AllSongsSource implements ISongsSource
 
     @Override
     public void add(Cursor songIdsCursor)
+    {
+
+    }
+
+    @Override
+    public void remove(long songId)
     {
 
     }

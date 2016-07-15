@@ -59,7 +59,7 @@ public class SelectSongsActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.song_menu, menu);
+        inflater.inflate(R.menu.song_activity_menu, menu);
         MenuItem item = menu.findItem(R.id.apply);
         Drawable newIcon = item.getIcon();
         newIcon.mutate().setColorFilter(getResources().getColor(R.color.foregroundInverted), PorterDuff.Mode.SRC_IN);

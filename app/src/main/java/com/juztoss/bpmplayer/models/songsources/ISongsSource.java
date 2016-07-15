@@ -6,22 +6,42 @@ import android.support.annotation.Nullable;
 /**
  * Created by JuzTosS on 6/22/2016.
  */
-public interface ISongsSource
+public abstract class ISongsSource
 {
+    private ISourceUpdatedListener mListener;
+
     @Nullable
-    Cursor getIds(float minBPM, float maxBPM);
+    public abstract Cursor getIds(float minBPM, float maxBPM);
 
-    String getName();
+    public abstract String getName();
 
-    void delete();
+    public abstract void delete();
 
-    void rename(String newName);
+    public abstract void rename(String newName);
 
-    boolean isRenameAvailable();
+    public abstract boolean isRenameAvailable();
 
-    boolean isDeleteAvailable();
+    public abstract boolean isDeleteAvailable();
 
-    boolean isModifyAvailable();
+    public abstract boolean isModifyAvailable();
 
-    void add(Cursor songIdsCursor);
+    public abstract void add(Cursor songIdsCursor);
+
+    public abstract void remove(long songId);
+
+    public void setUpdateListener(ISourceUpdatedListener listener)
+    {
+        mListener = listener;
+    }
+
+    protected void notifyUpdated()
+    {
+        if(mListener != null)
+            mListener.onSourceUpdated();
+    }
+
+    public interface ISourceUpdatedListener
+    {
+        void onSourceUpdated();
+    }
 }

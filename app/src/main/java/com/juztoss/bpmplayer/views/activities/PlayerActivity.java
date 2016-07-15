@@ -113,7 +113,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                 {
                     source.add(mApp.getMusicLibraryHelper().getSongIdsCursor(path, true));
                 }
-                playlist.setNeedRebuild();
+//                playlist.setNeedRebuild();
 //            }
             updateTabs();
         }

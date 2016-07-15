@@ -10,7 +10,7 @@ import com.juztoss.bpmplayer.utils.SystemHelper;
 /**
  * Created by JuzTosS on 6/22/2016.
  */
-public class FolderSongsSource implements ISongsSource
+public class FolderSongsSource extends ISongsSource
 {
 
     private long mId;
@@ -75,6 +75,12 @@ public class FolderSongsSource implements ISongsSource
 
     @Override
     public void add(Cursor songIdsCursor)
+    {
+
+    }
+
+    @Override
+    public void remove(long songId)
     {
 
     }
