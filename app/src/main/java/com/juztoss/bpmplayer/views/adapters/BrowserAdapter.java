@@ -50,7 +50,6 @@ public class BrowserAdapter extends RecyclerView.Adapter<BrowserElementHolder> i
         return new BrowserElementHolder(v, this);
     }
 
-    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(BrowserElementHolder holder, int position)
     {

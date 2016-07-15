@@ -11,12 +11,13 @@ import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
+import java.util.Locale;
+
 /**
  * Created by JuzTosS on 5/7/2016.
  */
 public class PlaybackNotification
 {
-    @SuppressLint("DefaultLocale")
     static Notification create(PlaybackService service)
     {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(service);
@@ -39,7 +40,7 @@ public class PlaybackNotification
         {
             notificationView.setTextViewText(R.id.first_line, composition.name());
             notificationView.setTextViewText(R.id.second_line, composition.getFolder());
-            notificationView.setTextViewText(R.id.bpm_label, String.format("%.1f", service.getCurrentlyPlayingBPM()));
+            notificationView.setTextViewText(R.id.bpm_label, String.format(Locale.US, "%.1f", service.getCurrentlyPlayingBPM()));
         }
 
         Intent switchPlaybackIntent = new Intent(PlaybackService.SWITCH_PLAYBACK_ACTION);

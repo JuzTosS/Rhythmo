@@ -51,7 +51,6 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
         });
     }
 
-    @SuppressLint("DefaultLocale")
     public void update(BaseExplorerElement element, int position)
     {
         mPosition = position;

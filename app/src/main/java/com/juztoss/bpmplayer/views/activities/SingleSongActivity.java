@@ -50,7 +50,7 @@ public class SingleSongActivity extends AppCompatActivity
 
     private void updateBpmField(float bpm)
     {
-        mBpmField.setText(String.format("%.1f", bpm));
+        mBpmField.setText(String.format(Locale.US, "%.1f", bpm));
     }
 
     private View.OnClickListener mOnHalfClick = new View.OnClickListener()
@@ -128,7 +128,6 @@ public class SingleSongActivity extends AppCompatActivity
         }
     };
 
-    @SuppressLint("DefaultLocale")
     @SuppressWarnings("ConstantConditions")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -191,14 +190,13 @@ public class SingleSongActivity extends AppCompatActivity
     }
 
     @SuppressWarnings("ConstantConditions")
-    @SuppressLint("DefaultLocale")
     private void updateSeekBar()
     {
         int bpmShift = (int) (mComposition.bpmShifted() - mComposition.bpm());
         mSeekBar.setProgress((int)BPMPlayerApp.MAX_BPM_SHIFT + bpmShift);
 
         TextView bpmDesc = (TextView) findViewById(R.id.shiftedBpmValue);
-        bpmDesc.setText(String.format("%.1f (%d)", mComposition.bpmShifted(), bpmShift));
+        bpmDesc.setText(String.format(Locale.US, "%.1f (%d)", mComposition.bpmShifted(), bpmShift));
     }
 
     private void updateEnv()

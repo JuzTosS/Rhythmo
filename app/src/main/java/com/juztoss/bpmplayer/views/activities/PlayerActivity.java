@@ -49,6 +49,7 @@ import com.juztoss.bpmplayer.views.adapters.TabsAdapter;
 import org.w3c.dom.Text;
 
 import java.util.List;
+import java.util.Locale;
 
 public class PlayerActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -365,8 +366,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         }
     };
 
-
-    @SuppressLint("DefaultLocale")
     protected void updateAll()
     {
         if (!mApp.isPlaybackServiceRunning()) return;
@@ -377,7 +376,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         if (composition != null)
         {
             TextView bpmLabel = ((TextView) mActionBar.getCustomView().findViewById(R.id.bpm_label));
-            SpannableString spannableString = new SpannableString(String.format("%.1f", service.getCurrentlyPlayingBPM()));
+            SpannableString spannableString = new SpannableString(String.format(Locale.US, "%.1f", service.getCurrentlyPlayingBPM()));
             int firstPartLength = Integer.toString((int) composition.bpmShifted()).length();
             spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
             bpmLabel.setText(spannableString);

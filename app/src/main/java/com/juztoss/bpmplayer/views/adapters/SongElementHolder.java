@@ -15,6 +15,8 @@ import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.views.activities.SingleSongActivity;
 
+import java.util.Locale;
+
 /**
  * Created by JuzTosS on 6/18/2016.
  */
@@ -112,7 +114,6 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
 
     };
 
-    @SuppressLint("DefaultLocale")
     public void update(Composition composition, int position)
     {
         mComposition = composition;
@@ -127,7 +128,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
             mBpmLabel.setTextColor(mApp.getResources().getColor(R.color.foreground));
 
         float bpm = mApp.getAvailableToPlayBPM(composition.bpmShifted());
-        SpannableString spannableString = new SpannableString(String.format("%.1f", bpm));
+        SpannableString spannableString = new SpannableString(String.format(Locale.US, "%.1f", bpm));
         int firstPartLength = Integer.toString((int) bpm).length();
         spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
         mBpmLabel.setText(spannableString);

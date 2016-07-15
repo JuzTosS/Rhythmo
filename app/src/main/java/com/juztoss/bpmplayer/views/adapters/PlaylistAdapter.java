@@ -66,7 +66,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
         return new SongElementHolder(v, this, mPlaylist.getSource().isModifyAvailable());
     }
 
-    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(SongElementHolder holder, int position)
     {
