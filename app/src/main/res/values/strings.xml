@@ -24,5 +24,7 @@
     <string name="shift_hint">Shift the rhythm of the song</string>
     <string name="song_menu_detail">Song details</string>
     <string name="song_menu_remove">Remove</string>
+    <string name="pref_recognize_bpm_from_name">Get BPM from files names</string>
+    <string name="pref_recognize_bpm_from_name_desc">If set firstly BPM for a song is get from the file name of the song</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

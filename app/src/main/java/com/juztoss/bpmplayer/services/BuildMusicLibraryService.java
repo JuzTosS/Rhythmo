@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -49,16 +50,22 @@ public class BuildMusicLibraryService extends Service
 
 
         boolean clear = false;
-        if(intent.getExtras() != null)
+        if(intent != null && intent.getExtras() != null)
             clear = intent.getExtras().getBoolean(REBUILD);
 
         AsyncBuildLibraryTask taskBuildLib = new AsyncBuildLibraryTask(mApp, clear);
         taskBuildLib.setOnBuildLibraryProgressUpdate(mOnBuildLibraryUpdate);
         taskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
-        AsyncDetectBpmByNamesTask taskDetectBpmByNames = new AsyncDetectBpmByNamesTask(mApp);
-        taskDetectBpmByNames.setOnBuildLibraryProgressUpdate(mOnDetectBpmByNamesUpdate);
-        taskDetectBpmByNames.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        String key = getResources().getString(R.string.pref_recognize_bpm_from_name);
+        boolean needToGetBPMByNames =  PreferenceManager.getDefaultSharedPreferences(this).getBoolean(key, false);
+
+        if(needToGetBPMByNames)
+        {
+            AsyncDetectBpmByNamesTask taskDetectBpmByNames = new AsyncDetectBpmByNamesTask(mApp);
+            taskDetectBpmByNames.setOnBuildLibraryProgressUpdate(mOnDetectBpmByNamesUpdate);
+            taskDetectBpmByNames.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        }
 
         AsyncDetectBpmByDataTask taskDetectBpmByData = new AsyncDetectBpmByDataTask(mApp);
         taskDetectBpmByData.setOnBuildLibraryProgressUpdate(mOnDetectBpmByDataUpdate);
