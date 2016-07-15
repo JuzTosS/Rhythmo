@@ -15,22 +15,28 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".views.activities.PlayerActivity"
-            android:enabled="true"
-            android:exported="true">
+            android:enabled="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".views.activities.LauncherActivity">
+
+        </activity>
+
         <activity android:name=".views.activities.SettingsActivity">
 
         </activity>
+
         <activity android:name=".views.activities.SingleSongActivity">
 
         </activity>
         <activity android:name=".views.activities.SelectSongsActivity">
 
         </activity>
+
         <service
             android:name=".services.PlaybackService"
             android:enabled="true"/>
@@ -41,8 +47,7 @@
 
         <receiver
             android:name=".receivers.PlaybackActionReceiver"
-            android:enabled="true"
-            android:exported="true">
+            android:enabled="true">
             <intent-filter>
                 <action android:name="com.juztoss.bpmplayer.action.LAUNCH_NOW_PLAYING"/>
                 <action android:name="com.juztoss.bpmplayer.action.SWITCH_PLAYBACK"/>

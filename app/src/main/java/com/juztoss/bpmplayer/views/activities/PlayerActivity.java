@@ -1,14 +1,12 @@
 package com.juztoss.bpmplayer.views.activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -21,7 +19,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.SpannableString;
@@ -43,10 +40,8 @@ import com.juztoss.bpmplayer.models.songsources.ISongsSource;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.BuildMusicLibraryService;
 import com.juztoss.bpmplayer.services.PlaybackService;
-import com.juztoss.bpmplayer.views.items.RangeSeekBar;
 import com.juztoss.bpmplayer.views.adapters.TabsAdapter;
-
-import org.w3c.dom.Text;
+import com.juztoss.bpmplayer.views.items.RangeSeekBar;
 
 import java.util.List;
 import java.util.Locale;
@@ -242,15 +237,26 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         if (!mApp.isPlaybackServiceRunning())
             startService(new Intent(this, PlaybackService.class));
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+
+
+        if (mApp.getSharedPreferences().getBoolean(BPMPlayerApp.FIRST_RUN, true))
         {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    0);
+            mApp.getSharedPreferences().edit().putBoolean(BPMPlayerApp.FIRST_RUN, false).commit();
+            Intent launchStartActivity = new Intent(this, LauncherActivity.class);
+            startActivity(launchStartActivity);
         }
         else
         {
-            tryToDoFirstRunService();
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        0);
+            }
+            else
+            {
+                tryToDoFirstRunService();
+            }
         }
     }
 
@@ -266,9 +272,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void tryToDoFirstRunService()
     {
-        if (mApp.getSharedPreferences().getBoolean(BPMPlayerApp.FIRST_RUN, true))
+        if (mApp.getSharedPreferences().getBoolean(BPMPlayerApp.LIBRARY_BUILD_STARTED, true))
         {
-            mApp.getSharedPreferences().edit().putBoolean(BPMPlayerApp.FIRST_RUN, false).commit();
+            mApp.getSharedPreferences().edit().putBoolean(BPMPlayerApp.LIBRARY_BUILD_STARTED, false).commit();
             Intent intent = new Intent(getApplicationContext(), BuildMusicLibraryService.class);
             getApplicationContext().startService(intent);
         }
