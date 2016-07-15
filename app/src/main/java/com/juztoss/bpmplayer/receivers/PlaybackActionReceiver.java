@@ -33,7 +33,7 @@ public class PlaybackActionReceiver extends BroadcastReceiver
         {
             BPMPlayerApp app = (BPMPlayerApp) context.getApplicationContext();
             if (app.isPlaybackServiceRunning())
-                app.getPlaybackService().gotoNext();
+                app.getPlaybackService().gotoNext(true);
         }
     }
 }

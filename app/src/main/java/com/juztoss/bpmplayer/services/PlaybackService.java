@@ -18,8 +18,10 @@ import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,6 +32,12 @@ import java.util.TimerTask;
  */
 public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener, Playlist.IUpdateListener
 {
+
+    public enum RepeatMode {
+        DISABLED,
+        ONE,
+        ALL
+    }
 
     public static final int NOTIFICATION_ID = 42;
     public static final String LAUNCH_NOW_PLAYING_ACTION = "com.juztoss.bpmplayer.action.LAUNCH_NOW_PLAYING";
@@ -50,6 +58,42 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private float mCurrentlyPlayingBPM;
     private Timer mStopCooldown = new Timer();
 
+    private RepeatMode mRepeatMode = RepeatMode.DISABLED;
+    private boolean mIsShuffleEnabled = false;
+    private Set<Integer> mAlreadyPlayedInShuffleMode = new HashSet<>();
+
+    public void setShuffleMode(boolean enabled)
+    {
+        if(enabled && !mIsShuffleEnabled)//Reset played songs
+        {
+            mAlreadyPlayedInShuffleMode.clear();
+        }
+        mIsShuffleEnabled = enabled;
+        if(mIsShuffleEnabled)
+        {
+            mRepeatMode = RepeatMode.DISABLED;
+        }
+    }
+
+    public boolean isShuffleEnabled()
+    {
+        return mIsShuffleEnabled;
+    }
+
+    public void setRepeatMode(RepeatMode mode)
+    {
+        mRepeatMode = mode;
+        if(mRepeatMode != RepeatMode.DISABLED)
+        {
+            mIsShuffleEnabled = false;
+        }
+    }
+
+    public RepeatMode getRepeatMode()
+    {
+        return mRepeatMode;
+    }
+
     /**
      * @Return The id of the currently playing song
      */
@@ -69,7 +113,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     @Override
     public void onEnd()
     {
-        gotoNext();
+        gotoNext(false);
     }
 
     @Override
@@ -91,7 +135,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Go to next song in playlist and start playing
      */
-    public void gotoNext()
+    public void gotoNext(boolean byUser)
     {
         clearQueue();
         if(getSongsList() == null)
@@ -100,12 +144,53 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             return;
         }
 
-        mCurrentSongIndex++;
-        if (mCurrentSongIndex >= getSongsList().getCount())
-            mCurrentSongIndex = 0;
+        if(!isShuffleEnabled() || byUser)
+        {
+            if (mRepeatMode != RepeatMode.ONE)
+                mCurrentSongIndex++;
 
-        setSource(mCurrentPlaylistIndex, mCurrentSongIndex);
-        putAction(new ActionPlay());
+            if (mRepeatMode == RepeatMode.ALL)
+            {
+                if (mCurrentSongIndex >= getSongsList().getCount())
+                    mCurrentSongIndex = 0;
+            }
+            else
+            {
+                if (mCurrentSongIndex >= getSongsList().getCount())
+                {
+                    if(byUser)
+                        mCurrentSongIndex = 0;
+                    else
+                        mCurrentSongIndex = -1;
+                }
+            }
+        }
+        else//isShuffleEnabled() == true
+        {
+            int songsCount = getSongsList().getCount();
+            if(mAlreadyPlayedInShuffleMode.size() == songsCount)
+                mAlreadyPlayedInShuffleMode.clear();
+
+            if(!mAlreadyPlayedInShuffleMode.contains(mCurrentSongIndex))
+                mAlreadyPlayedInShuffleMode.add(mCurrentSongIndex);
+
+            int newSongIndex = (int)(Math.random() * songsCount);
+            int iterations = 0;
+            while (mAlreadyPlayedInShuffleMode.contains(newSongIndex) && ++iterations < songsCount)
+            {
+                newSongIndex++;
+                if (newSongIndex >= songsCount)
+                    newSongIndex = 0;
+            }
+
+            mCurrentSongIndex = newSongIndex;
+        }
+
+        if(mCurrentSongIndex >= 0)
+        {
+            setSource(mCurrentPlaylistIndex, mCurrentSongIndex);
+            putAction(new ActionPlay());
+        }
     }
 
     /**
@@ -212,7 +297,10 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public void setSource(int playlistIndex, int index)
     {
         if(mCurrentPlaylistIndex != playlistIndex)
+        {
+            mAlreadyPlayedInShuffleMode.clear();
             mApp.getPlaylists().get(mCurrentPlaylistIndex).removeUpdateListener(this);
+        }
 
         mApp.getPlaylists().get(playlistIndex).addUpdateListener(this);
 
@@ -369,7 +457,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     /**
      * Go to a position in the current audio file
-     * @param int position position in milleseconds
+     * @param position position in milleseconds
      */
     public void seekTo(int position)
     {
@@ -378,8 +466,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     /**
      * Shift the current song duration
-     * @param float bpm original beat rate
-     * @param float shiftedBpm a beat rate to be played with
+     * @param bpm original beat rate
+     * @param shiftedBpm a beat rate to be played with
      */
     public void setNewPlayingBPM(float bpm, float shiftedBpm)
     {

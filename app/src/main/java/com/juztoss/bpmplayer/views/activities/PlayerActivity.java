@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.SpannableString;
@@ -30,6 +32,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -51,6 +54,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 {
     private BPMPlayerApp mApp;
     private View mPlayButton;
+    private ImageView mRepeatButton;
+    private ImageView mShuffleButton;
     private TextView mTimePassed;
     private TextView mTimeLeft;
     private SeekBar mSeekbar;
@@ -133,6 +138,11 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         mMinBPMField = (TextView) findViewById(R.id.bpm_label_min);
         mMaxBPMField = (TextView) findViewById(R.id.bpm_label_max);
+
+        mRepeatButton = (ImageView) findViewById(R.id.repeat_button);
+        mRepeatButton.setOnClickListener(mRepeatButtonListener);
+        mShuffleButton = (ImageView) findViewById(R.id.shuffle_button);
+        mShuffleButton.setOnClickListener(mShuffleButtonListener);
 
         mPlayButton = findViewById(R.id.play_button);
         mPlayButton.setOnClickListener(mPlayButtonListenter);
@@ -379,6 +389,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         mSeekbar.setMax(service.getDuration());
         mHandler.post(mSeekbarUpdateRunnable);
+
+        updateRepeatButton();
+        updateShuffleButton();
     }
 
     private Handler mHandler = new Handler();
@@ -402,6 +415,71 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
     };
+
+    private View.OnClickListener mRepeatButtonListener = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            if (!mApp.isPlaybackServiceRunning())
+                return;
+
+            if(mApp.getPlaybackService().getRepeatMode() == PlaybackService.RepeatMode.DISABLED)
+                mApp.getPlaybackService().setRepeatMode(PlaybackService.RepeatMode.ALL);
+            else if(mApp.getPlaybackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
+                mApp.getPlaybackService().setRepeatMode(PlaybackService.RepeatMode.ONE);
+            else
+                mApp.getPlaybackService().setRepeatMode(PlaybackService.RepeatMode.DISABLED);
+
+            updateRepeatButton();
+            updateShuffleButton();
+        }
+    };
+
+    private void updateRepeatButton()
+    {
+        if (!mApp.isPlaybackServiceRunning())
+            return;
+
+        if(mApp.getPlaybackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
+        {
+            mRepeatButton.setColorFilter(getResources().getColor(R.color.accentPrimary));
+            mRepeatButton.setImageResource(R.drawable.ic_repeat);
+        }
+        else if(mApp.getPlaybackService().getRepeatMode() == PlaybackService.RepeatMode.ONE)
+        {
+            mRepeatButton.setColorFilter(getResources().getColor(R.color.accentPrimary));
+            mRepeatButton.setImageResource(R.drawable.ic_repeat_once);
+        }
+        else
+        {
+            mRepeatButton.setColorFilter(getResources().getColor(R.color.foregroundGrayedOut));
+            mRepeatButton.setImageResource(R.drawable.ic_repeat);
+        }
+    }
+
+    private View.OnClickListener mShuffleButtonListener = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            if (!mApp.isPlaybackServiceRunning())
+                return;
+
+            mApp.getPlaybackService().setShuffleMode(!mApp.getPlaybackService().isShuffleEnabled());
+            updateShuffleButton();
+            updateRepeatButton();
+        }
+    };
+
+    private void updateShuffleButton()
+    {
+        if(!mApp.isPlaybackServiceRunning() || !mApp.getPlaybackService().isShuffleEnabled())
+            mShuffleButton.setColorFilter(getResources().getColor(R.color.foregroundGrayedOut));
+        else
+            mShuffleButton.setColorFilter(getResources().getColor(R.color.accentPrimary));
+    }
+
 
     private View.OnClickListener mPlayButtonListenter = new View.OnClickListener()
     {
@@ -482,7 +560,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         public void onClick(View v)
         {
             if (mApp.isPlaybackServiceRunning())
-                mApp.getPlaybackService().gotoNext();
+                mApp.getPlaybackService().gotoNext(true);
         }
     };
 
