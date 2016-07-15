@@ -126,7 +126,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         mTimeLeft = (TextView) findViewById(R.id.time_left);
         mSeekbar = (SeekBar) findViewById(R.id.seekbar);
         mSeekbar.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
-
         mRangeSeekbar = (RangeSeekBar<Integer>) findViewById(R.id.bpm_ranger);
         mRangeSeekbar.setOnRangeSeekBarChangeListener(mOnBpmRangeChanged);
         mRangeSeekbar.setNotifyWhileDragging(true);
@@ -134,6 +133,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         mMinBPMField = (TextView) findViewById(R.id.bpm_label_min);
         mMaxBPMField = (TextView) findViewById(R.id.bpm_label_max);
+        mMinBPMField.setText("Min");
+        mMaxBPMField.setText("Max");
 
         mRepeatButton = (ImageView) findViewById(R.id.repeat_button);
         mRepeatButton.setOnClickListener(mRepeatButtonListener);

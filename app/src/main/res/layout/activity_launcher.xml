@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Please allow our app to access your wonderful music.\nWhen we start do miracles with beat rate."
+        android:text="Do miracles with beat rate."
         android:id="@+id/textView5"
         android:gravity="center_horizontal"
         android:textColor="@color/foregroundInverted"
