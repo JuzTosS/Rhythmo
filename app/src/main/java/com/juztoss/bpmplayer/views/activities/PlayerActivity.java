@@ -318,7 +318,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                 String newName = input.getText().toString();
                 Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
                 playlist.getSource().rename(newName);
-                updateTabs();
+                updateTabNames();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
@@ -573,4 +573,14 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         }
     };
 
+    public void updateTabNames()
+    {
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        List<Playlist> playlists = mApp.getPlaylists();
+        for (int index = 0; index < playlists.size(); index++)
+        {
+            TabLayout.Tab tab = tabLayout.getTabAt(index);
+            tab.setText(playlists.get(index).getName());
+        }
+    }
 }

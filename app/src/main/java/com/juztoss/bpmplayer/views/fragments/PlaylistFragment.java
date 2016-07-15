@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.views.activities.PlayerActivity;
 import com.juztoss.bpmplayer.views.adapters.IOnItemClickListener;
 import com.juztoss.bpmplayer.views.adapters.PlaylistAdapter;
 import com.juztoss.bpmplayer.views.adapters.SongElementHolder;
@@ -50,7 +51,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         if (!mApp.isPlaybackServiceRunning()) return;
 
         mPlaylistIndex = playlistIndex;
-        mPlaylistAdapter = new PlaylistAdapter(getActivity(), mApp.getPlaylists().get(playlistIndex));
+        mPlaylistAdapter = new PlaylistAdapter((PlayerActivity) getActivity(), mApp.getPlaylists().get(playlistIndex));
         RecyclerView list = (RecyclerView) getView().findViewById(R.id.listView);
         mPlaylistAdapter.setOnItemClickListener(this);
         list.setAdapter(mPlaylistAdapter);

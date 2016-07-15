@@ -57,13 +57,13 @@ public class SourcesFactory
         return new FolderSongsSource(id, app, path);
     }
 
-    public static LocalPlaylistSongsSource createLocalPlaylistSongSource(String name, BPMPlayerApp app)
+    public static LocalPlaylistSongsSource createLocalPlaylistSongSource(BPMPlayerApp app)
     {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.SOURCE_TYPE, LOCAL_PLAYLIST_SOURCE);
-        values.put(DatabaseHelper.SOURCE_NAME, name);
+        values.put(DatabaseHelper.SOURCE_NAME, "");
         long id = app.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_SOURCES, null, values);
-        return new LocalPlaylistSongsSource(id, app, name);
+        return new LocalPlaylistSongsSource(id, app, "");
     }
 
     public static AllSongsSource createAllSongsSource(BPMPlayerApp app)

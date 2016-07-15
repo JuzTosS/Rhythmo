@@ -17,6 +17,7 @@ import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.PlaybackService;
+import com.juztoss.bpmplayer.views.activities.PlayerActivity;
 
 /**
  * Created by JuzTosS on 4/20/2016.
@@ -24,7 +25,7 @@ import com.juztoss.bpmplayer.services.PlaybackService;
 public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> implements Playlist.IUpdateListener, IOnItemClickListener
 {
     private BPMPlayerApp mApp;
-    private Context mContext;
+    private PlayerActivity mContext;
 
     private Playlist mPlaylist;
     private Cursor mCurentCursor;
@@ -39,7 +40,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     };
     private IOnItemClickListener mOnItemClickListener;
 
-    public PlaylistAdapter(Context context, Playlist playlist)
+    public PlaylistAdapter(PlayerActivity context, Playlist playlist)
     {
         super();
         mCurentCursor = playlist.getList();
@@ -120,6 +121,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     public void onPlaylistUpdated()
     {
         updateList();
+        mContext.updateTabNames();
     }
 
     public void setOnItemClickListener(IOnItemClickListener onItemClickListener)

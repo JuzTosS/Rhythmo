@@ -3,6 +3,7 @@ package com.juztoss.bpmplayer.models.songsources;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
@@ -14,6 +15,7 @@ public class LocalPlaylistSongsSource extends ISongsSource
     private long mId;
     private String mName;
     private BPMPlayerApp mApp;
+    private String mGeneratedName = "No name";
 
     LocalPlaylistSongsSource(long id, BPMPlayerApp app, String name)
     {
@@ -25,7 +27,10 @@ public class LocalPlaylistSongsSource extends ISongsSource
     @Override
     public String getName()
     {
-        return mName;
+        if(mName == null || mName.isEmpty())
+            return mGeneratedName;
+        else
+            return mName;
     }
 
     @Override
@@ -98,6 +103,37 @@ public class LocalPlaylistSongsSource extends ISongsSource
         notifyUpdated();
     }
 
+    @Override
+    protected void notifyUpdated()
+    {
+        //Update generated name
+        String newGeneratedName = mGeneratedName;
+        Cursor cursor = mApp.getDatabaseHelper().getWritableDatabase().rawQuery(
+                "select " + DatabaseHelper.PLAYLIST_SONG_ID + " as " + DatabaseHelper._ID + " from " + DatabaseHelper.TABLE_PLAYLISTS +
+                        " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
+                        " where " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? " +
+                        " LIMIT 1",
+                new String[]{Long.toString(mId)}
+        );
+
+        try
+        {
+            if(cursor.getCount() >= 0)
+            {
+                cursor.moveToFirst();
+                Composition composition = mApp.getComposition(cursor.getLong(0));
+                if(composition != null)
+                    newGeneratedName = composition.getFolder();
+            }
+        }
+        finally
+        {
+            cursor.close();
+        }
+        mGeneratedName = newGeneratedName;
+
+        super.notifyUpdated();
+    }
 
     public void rename(String name)
     {
