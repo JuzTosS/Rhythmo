@@ -120,6 +120,7 @@ unsigned int AdvancedMediaPlayer::getDuration() {
 void AdvancedMediaPlayer::play() {
     if (mIsPrepared) {
         audioSystem->onForeground();
+        audioSystem->start();
         mPlayer->play(false);
     }
     else
@@ -129,6 +130,7 @@ void AdvancedMediaPlayer::play() {
 void AdvancedMediaPlayer::pause() {
     if (mIsPrepared) {
         mPlayer->pause();
+        audioSystem->stop();
         audioSystem->onBackground();
     }
     else
