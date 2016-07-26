@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.services.PlaybackService;
 
 /**
  * Created by JuzTosS on 6/12/2016.
@@ -16,9 +16,10 @@ public class NoisyIntentReceiver extends BroadcastReceiver
     {
         if (intent.getAction().equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY))
         {
-            BPMPlayerApp app = (BPMPlayerApp) context.getApplicationContext();
-            if (app.isPlaybackServiceRunning())
-                app.getPlaybackService().pausePlayback();
+            Intent i = new Intent(context, PlaybackService.class);
+            i.setAction(PlaybackService.ACTION_COMMAND);
+            i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.PAUSE_PLAYBACK_ACTION);
+            context.startService(i);
         }
     }
 }

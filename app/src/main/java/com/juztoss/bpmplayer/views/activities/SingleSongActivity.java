@@ -1,11 +1,9 @@
 package com.juztoss.bpmplayer.views.activities;
 
-import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,15 +18,13 @@ import android.widget.TextView;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
-import com.juztoss.bpmplayer.services.PlaybackService;
 
-import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
  * Created by JuzTosS on 6/13/2016.
  */
-public class SingleSongActivity extends AppCompatActivity
+public class SingleSongActivity extends BasePlayerActivity
 {
     private long mLastTapTime = 0;
     private long mTapsCount = 0;
@@ -91,7 +87,7 @@ public class SingleSongActivity extends AppCompatActivity
                 float currentBpm = 60 * 1000 / interval;
                 float lastBpm = mComposition.bpm();
                 updateBpmField((lastBpm * mTapsCount + currentBpm) / (mTapsCount + 1));
-                if(mTapsCount < DETECT_WINDOW_SIZE)
+                if (mTapsCount < DETECT_WINDOW_SIZE)
                     mTapsCount++;
             }
         }
@@ -105,12 +101,10 @@ public class SingleSongActivity extends AppCompatActivity
             {
                 mComposition.setShiftedBPM(mComposition.bpm() + progress - BPMPlayerApp.MAX_BPM_SHIFT);
                 updateSeekBar();
-                BPMPlayerApp app = (BPMPlayerApp) getApplicationContext();
-                if(app.isPlaybackServiceRunning())
+                if (playbackService() != null)
                 {
-                    PlaybackService service = app.getPlaybackService();
-                    if(service.isPlaying() && service.currentSongId() == mComposition.id())
-                        service.setNewPlayingBPM(mComposition.bpm(), mComposition.bpmShifted());
+                    if (playbackService().isPlaying() && playbackService().currentSongId() == mComposition.id())
+                        playbackService().setNewPlayingBPM(mComposition.bpm(), mComposition.bpmShifted());
                 }
             }
         }
@@ -169,7 +163,7 @@ public class SingleSongActivity extends AppCompatActivity
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
-                if(s.toString().isEmpty())
+                if (s.toString().isEmpty())
                     setCompositionBPM(0);
                 else
                     setCompositionBPM(Float.valueOf(s.toString()));
@@ -184,7 +178,7 @@ public class SingleSongActivity extends AppCompatActivity
             }
         });
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
-        mSeekBar.setMax((int)BPMPlayerApp.MAX_BPM_SHIFT * 2);
+        mSeekBar.setMax((int) BPMPlayerApp.MAX_BPM_SHIFT * 2);
         mSeekBar.setOnSeekBarChangeListener(mOnSeekBarChanged);
         updateBpmField(mComposition.bpm());
     }
@@ -193,7 +187,7 @@ public class SingleSongActivity extends AppCompatActivity
     private void updateSeekBar()
     {
         int bpmShift = (int) (mComposition.bpmShifted() - mComposition.bpm());
-        mSeekBar.setProgress((int)BPMPlayerApp.MAX_BPM_SHIFT + bpmShift);
+        mSeekBar.setProgress((int) BPMPlayerApp.MAX_BPM_SHIFT + bpmShift);
 
         TextView bpmDesc = (TextView) findViewById(R.id.shiftedBpmValue);
         bpmDesc.setText(String.format(Locale.US, "%.1f (%d)", mComposition.bpmShifted(), bpmShift));

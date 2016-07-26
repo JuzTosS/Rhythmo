@@ -19,7 +19,7 @@ import com.juztoss.bpmplayer.views.fragments.BrowserFragment;
 /**
  * Created by JuzTosS on 6/13/2016.
  */
-public class SelectSongsActivity extends AppCompatActivity
+public class SelectSongsActivity extends BasePlayerActivity
 {
     public static final String FOLDERS_PATHS = "FoldersPaths";
 

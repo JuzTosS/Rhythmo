@@ -18,7 +18,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.SpannableString;
@@ -46,7 +45,7 @@ import com.juztoss.bpmplayer.views.items.RangeSeekBar;
 import java.util.List;
 import java.util.Locale;
 
-public class PlayerActivity extends AppCompatActivity implements View.OnClickListener
+public class PlayerActivity extends BasePlayerActivity implements View.OnClickListener
 {
     private BPMPlayerApp mApp;
     private View mPlayButton;
@@ -73,7 +72,15 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         setupActionBar();
         setupPager();
         setupAllOtherUI();
+
         LocalBroadcastManager.getInstance(mApp).registerReceiver(mUpdateUIReceiver, new IntentFilter(PlaybackService.UPDATE_UI_ACTION));
+    }
+
+    @Override
+    protected void onServiceConnected()
+    {
+        super.onServiceConnected();
+        updateAll();
     }
 
     private Playlist getCurrentViewedPlaylist()
@@ -109,11 +116,11 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 //            }
 //            else
 //            {
-                ISongsSource source = playlist.getSource();
-                for(String path : foldersPaths)
-                {
-                    source.add(mApp.getMusicLibraryHelper().getSongIdsCursor(path, true));
-                }
+            ISongsSource source = playlist.getSource();
+            for (String path : foldersPaths)
+            {
+                source.add(mApp.getMusicLibraryHelper().getSongIdsCursor(path, true));
+            }
 //                playlist.setNeedRebuild();
 //            }
             updateTabs();
@@ -234,11 +241,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     protected void onStart()
     {
         super.onStart();
-
-        if (!mApp.isPlaybackServiceRunning())
-            startService(new Intent(this, PlaybackService.class));
-
-
 
         if (mApp.getSharedPreferences().getBoolean(BPMPlayerApp.FIRST_RUN, true))
         {
@@ -375,15 +377,13 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     protected void updateAll()
     {
-        if (!mApp.isPlaybackServiceRunning()) return;
+        if (playbackService() == null) return;
 
-        PlaybackService service = mApp.getPlaybackService();
-
-        Composition composition = mApp.getComposition(service.currentSongId());
+        Composition composition = mApp.getComposition(playbackService().currentSongId());
         if (composition != null)
         {
             TextView bpmLabel = ((TextView) mActionBar.getCustomView().findViewById(R.id.bpm_label));
-            SpannableString spannableString = new SpannableString(String.format(Locale.US, "%.1f", service.getCurrentlyPlayingBPM()));
+            SpannableString spannableString = new SpannableString(String.format(Locale.US, "%.1f", playbackService().getCurrentlyPlayingBPM()));
             int firstPartLength = Integer.toString((int) composition.bpmShifted()).length();
             spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
             bpmLabel.setText(spannableString);
@@ -391,9 +391,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             ((TextView) mActionBar.getCustomView().findViewById(R.id.second_line)).setText(composition.getFolder());
         }
 
-        mPlayButton.setSelected(!service.isPlaying());
+        mPlayButton.setSelected(!playbackService().isPlaying());
 
-        mSeekbar.setMax(service.getDuration());
+        mSeekbar.setMax(playbackService().getDuration());
         mHandler.post(mSeekbarUpdateRunnable);
 
         updateRepeatButton();
@@ -407,12 +407,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         {
             try
             {
-                if (!mApp.isPlaybackServiceRunning())
+                if (playbackService() == null)
                     return;
 
-                mSeekbar.setProgress(mApp.getPlaybackService().getCurrentPosition());
+                mSeekbar.setProgress(playbackService().getCurrentPosition());
 
-                if (mApp.getPlaybackService().isPlaying())
+                if (playbackService().isPlaying())
                     mHandler.postDelayed(mSeekbarUpdateRunnable, 100);
             }
             catch (Exception e)
@@ -427,15 +427,15 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onClick(View v)
         {
-            if (!mApp.isPlaybackServiceRunning())
+            if (playbackService() == null)
                 return;
 
-            if(mApp.getPlaybackService().getRepeatMode() == PlaybackService.RepeatMode.DISABLED)
-                mApp.getPlaybackService().setRepeatMode(PlaybackService.RepeatMode.ALL);
-            else if(mApp.getPlaybackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
-                mApp.getPlaybackService().setRepeatMode(PlaybackService.RepeatMode.ONE);
+            if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.DISABLED)
+                playbackService().setRepeatMode(PlaybackService.RepeatMode.ALL);
+            else if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
+                playbackService().setRepeatMode(PlaybackService.RepeatMode.ONE);
             else
-                mApp.getPlaybackService().setRepeatMode(PlaybackService.RepeatMode.DISABLED);
+                playbackService().setRepeatMode(PlaybackService.RepeatMode.DISABLED);
 
             updateRepeatButton();
             updateShuffleButton();
@@ -444,15 +444,15 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void updateRepeatButton()
     {
-        if (!mApp.isPlaybackServiceRunning())
+        if (playbackService() == null)
             return;
 
-        if(mApp.getPlaybackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
+        if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
         {
             mRepeatButton.setColorFilter(getResources().getColor(R.color.accentPrimary));
             mRepeatButton.setImageResource(R.drawable.ic_repeat);
         }
-        else if(mApp.getPlaybackService().getRepeatMode() == PlaybackService.RepeatMode.ONE)
+        else if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ONE)
         {
             mRepeatButton.setColorFilter(getResources().getColor(R.color.accentPrimary));
             mRepeatButton.setImageResource(R.drawable.ic_repeat_once);
@@ -469,10 +469,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onClick(View v)
         {
-            if (!mApp.isPlaybackServiceRunning())
+            if (playbackService() == null)
                 return;
 
-            mApp.getPlaybackService().setShuffleMode(!mApp.getPlaybackService().isShuffleEnabled());
+            playbackService().setShuffleMode(!playbackService().isShuffleEnabled());
             updateShuffleButton();
             updateRepeatButton();
         }
@@ -480,7 +480,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private void updateShuffleButton()
     {
-        if(!mApp.isPlaybackServiceRunning() || !mApp.getPlaybackService().isShuffleEnabled())
+        if (playbackService() != null || !playbackService().isShuffleEnabled())
             mShuffleButton.setColorFilter(getResources().getColor(R.color.foregroundGrayedOut));
         else
             mShuffleButton.setColorFilter(getResources().getColor(R.color.accentPrimary));
@@ -492,8 +492,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onClick(View v)
         {
-            if (mApp.isPlaybackServiceRunning())
-                mApp.getPlaybackService().togglePlaybackState();
+            Intent i = new Intent(v.getContext(), PlaybackService.class);
+            i.setAction(PlaybackService.ACTION_COMMAND);
+            i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.SWITCH_PLAYBACK_ACTION);
+            v.getContext().startService(i);
         }
     };
 
@@ -540,10 +542,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             mTimePassed.setText(DateUtils.formatElapsedTime(timePassed / 1000));
             mTimeLeft.setText("-" + DateUtils.formatElapsedTime(timeLeft / 1000));
 
-            if (mApp.isPlaybackServiceRunning())
+            if (playbackService() != null && fromUser)
             {
-                if (fromUser)
-                    mApp.getPlaybackService().seekTo(progress);
+                playbackService().seekTo(progress);
             }
         }
 
@@ -565,8 +566,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onClick(View v)
         {
-            if (mApp.isPlaybackServiceRunning())
-                mApp.getPlaybackService().gotoNext(true);
+            Intent i = new Intent(v.getContext(), PlaybackService.class);
+            i.setAction(PlaybackService.ACTION_COMMAND);
+            i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.PLAY_NEXT_ACTION);
+            v.getContext().startService(i);
         }
     };
 
@@ -575,8 +578,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onClick(View v)
         {
-            if (mApp.isPlaybackServiceRunning())
-                mApp.getPlaybackService().gotoPrevious();
+            Intent i = new Intent(v.getContext(), PlaybackService.class);
+            i.setAction(PlaybackService.ACTION_COMMAND);
+            i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.PLAY_PREVIOUS_ACTION);
+            v.getContext().startService(i);
         }
     };
 

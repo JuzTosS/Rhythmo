@@ -33,7 +33,6 @@ public class BPMPlayerApp extends Application
     public static float MAX_BPM_SHIFT = 30;
 
     private BrowserPresenter mBrowserPresenter;
-    private PlaybackService mPlaybackService;
     private boolean mIsBuildingLibrary;
     private List<Playlist> mPlaylists;
     private float mMinBPM;
@@ -139,21 +138,6 @@ public class BPMPlayerApp extends Application
     public BrowserPresenter getBrowserPresenter()
     {
         return mBrowserPresenter;
-    }
-
-    public void setPlaybackService(@Nullable PlaybackService playbackService)
-    {
-        this.mPlaybackService = playbackService;
-    }
-
-    public PlaybackService getPlaybackService()
-    {
-        return mPlaybackService;
-    }
-
-    public boolean isPlaybackServiceRunning()
-    {
-        return mPlaybackService != null;
     }
 
     public void setIsBuildingLibrary(boolean isBuildingLibrary)

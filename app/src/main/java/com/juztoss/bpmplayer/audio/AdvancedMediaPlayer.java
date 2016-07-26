@@ -92,7 +92,18 @@ public class AdvancedMediaPlayer
     /**
      * Free memory. Have to be called if player will never be used anymore.
      */
-    public native void release();
+    private native void releaseNative();
+
+    /**
+     * Free memory and clear callbacks. Have to be called if player will never be used anymore.
+     */
+    public void release()
+    {
+        releaseNative();
+        mOnEndListener = null;
+        mOnErrorListener = null;
+        mOnPreparedListener = null;
+    }
 
     /**
      * Return id of player instance

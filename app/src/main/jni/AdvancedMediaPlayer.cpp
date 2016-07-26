@@ -120,7 +120,6 @@ unsigned int AdvancedMediaPlayer::getDuration() {
 void AdvancedMediaPlayer::play() {
     if (mIsPrepared) {
         audioSystem->onForeground();
-        audioSystem->start();
         mPlayer->play(false);
     }
     else
@@ -130,7 +129,6 @@ void AdvancedMediaPlayer::play() {
 void AdvancedMediaPlayer::pause() {
     if (mIsPrepared) {
         mPlayer->pause();
-        audioSystem->stop();
         audioSystem->onBackground();
     }
     else
@@ -188,7 +186,7 @@ static AdvancedMediaPlayer *getPlayer(jobject *instance, JNIEnv *env) {
     return NULL;
 }
 
-extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_release(JNIEnv *env, jobject instance) {
+extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_releaseNative(JNIEnv *env, jobject instance) {
     jclass cls = env->GetObjectClass(instance);
     jmethodID method = env->GetMethodID(cls, "getIdJNI", "()I");
     int id = env->CallIntMethod(instance, method);
@@ -209,6 +207,12 @@ extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_i
     jmethodID method = env->GetMethodID(cls, "getIdJNI", "()I");
     int id = env->CallIntMethod(instance, method);
     sPlayersMap.insert(std::pair<int, AdvancedMediaPlayer *>(id, player));
+
+    //Musn't be called because we don't create more than one player
+    if(sPlayersMap.size() > 1)
+    {
+        env->ThrowNew(env->FindClass("java/lang/Exception"), "Created more than one player");
+    }
 }
 
 extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_setSource(JNIEnv *env,

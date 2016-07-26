@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.services.PlaybackService;
 import com.juztoss.bpmplayer.views.activities.SingleSongActivity;
 
 import java.util.Locale;
@@ -20,10 +21,11 @@ import java.util.Locale;
 /**
  * Created by JuzTosS on 6/18/2016.
  */
-public class SongElementHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+public class SongElementHolder extends RecyclerView.ViewHolder
 {
     public static final int ACTION_PLAY = 0;
     public static final int ACTION_REMOVE = 1;
+    public static final int ACTION_SHOW_DETAIL = 2;
 
     private BPMPlayerApp mApp;
     private Composition mComposition;
@@ -35,19 +37,6 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
     private IOnItemClickListener mListener;
     PopupMenu mPopupMenu;
 
-    @Override
-    public void onClick(View v)
-    {
-        showSongActivity();
-    }
-
-    private void showSongActivity()
-    {
-        Intent intent = new Intent(itemView.getContext(), SingleSongActivity.class);
-        intent.putExtra(SingleSongActivity.SONG_ID, mComposition.id());
-        itemView.getContext().startActivity(intent);
-    }
-
     public SongElementHolder(View view, IOnItemClickListener listener, boolean isModifyAvailable)
     {
         super(view);
@@ -58,13 +47,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
             @Override
             public void onClick(View v)
             {
-                if (mApp.isPlaybackServiceRunning() &&
-                        mApp.getPlaybackService().isPlaying() &&
-                        mApp.getPlaybackService().currentSongId() == mComposition.id())
-                {
-                    showSongActivity();
-                }
-                else if (mListener != null)
+                if (mListener != null)
                     mListener.onPlaylistItemClick(mPosition, ACTION_PLAY, mComposition);
             }
         });
@@ -85,7 +68,6 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
         mPopupMenu.getMenu().findItem(R.id.remove).setEnabled(isModifyAvailable);
         mPopupMenu.setOnMenuItemClickListener(mMenuClickListener);
 
-        itemView.findViewById(R.id.bpm_touch_label).setOnClickListener(this);
         mFirstLine = (TextView) itemView.findViewById(R.id.first_line);
         mSecondLine = (TextView) itemView.findViewById(R.id.second_line);
         mBpmLabel = (TextView) itemView.findViewById(R.id.bpm_label);
@@ -99,9 +81,8 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
         {
             switch (item.getItemId())
             {
-
                 case R.id.detail:
-                    showSongActivity();
+                    mListener.onPlaylistItemClick(mPosition, ACTION_SHOW_DETAIL, mComposition);
                     break;
 
                 case R.id.remove:
@@ -114,7 +95,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
 
     };
 
-    public void update(Composition composition, int position)
+    public void update(Composition composition, int position, PlaybackService service)
     {
         mComposition = composition;
         mPosition = position;
@@ -132,11 +113,8 @@ public class SongElementHolder extends RecyclerView.ViewHolder implements View.O
         int firstPartLength = Integer.toString((int) bpm).length();
         spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
         mBpmLabel.setText(spannableString);
-        if (mApp.isPlaybackServiceRunning())
-        {
-            boolean visible = mApp.getPlaybackService().currentSongId() == composition.id();
-            mPlayingState.setVisibility(visible ? View.VISIBLE : View.GONE);
-        }
+        boolean visible = service != null && service.currentSongId() == composition.id();
+        mPlayingState.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     public void setVisible(boolean visible)

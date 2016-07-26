@@ -1,6 +1,5 @@
 package com.juztoss.bpmplayer.services;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.widget.RemoteViews;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.views.activities.PlayerActivity;
 
 import java.util.Locale;
 
@@ -24,8 +24,8 @@ public class PlaybackNotification
         notificationBuilder.setSmallIcon(R.drawable.ic_play_arrow_black_24dp);
 
 
-        Intent launchNowPlayingIntent = new Intent(PlaybackService.LAUNCH_NOW_PLAYING_ACTION);
-        PendingIntent launchNowPlayingPendingIntent = PendingIntent.getBroadcast(service, 0, launchNowPlayingIntent, 0);
+        Intent launchNowPlayingIntent = new Intent(service, PlayerActivity.class);
+        PendingIntent launchNowPlayingPendingIntent = PendingIntent.getActivity(service, 0, launchNowPlayingIntent, 0);
         notificationBuilder.setContentIntent(launchNowPlayingPendingIntent);
 
         RemoteViews notificationView = new RemoteViews(service.getPackageName(), R.layout.notification_layout);
@@ -43,12 +43,16 @@ public class PlaybackNotification
             notificationView.setTextViewText(R.id.bpm_label, String.format(Locale.US, "%.1f", service.getCurrentlyPlayingBPM()));
         }
 
-        Intent switchPlaybackIntent = new Intent(PlaybackService.SWITCH_PLAYBACK_ACTION);
-        PendingIntent switchPlaybackPendingIntent = PendingIntent.getBroadcast(service, 0, switchPlaybackIntent, 0);
+        Intent switchPlaybackIntent = new Intent(service, PlaybackService.class);
+        switchPlaybackIntent.setAction(PlaybackService.ACTION_COMMAND);
+        switchPlaybackIntent.putExtra(PlaybackService.ACTION_NAME, PlaybackService.SWITCH_PLAYBACK_ACTION);
+        PendingIntent switchPlaybackPendingIntent = PendingIntent.getService(service, 0, switchPlaybackIntent, 0);
         notificationView.setOnClickPendingIntent(R.id.notification_pause, switchPlaybackPendingIntent);
 
-        Intent playNextActionIntent = new Intent(PlaybackService.PLAY_NEXT_ACTION);
-        PendingIntent playNextActionPendingIntent = PendingIntent.getBroadcast(service, 0, playNextActionIntent, 0);
+        Intent playNextActionIntent = new Intent(service, PlaybackService.class);
+        playNextActionIntent.setAction(PlaybackService.ACTION_COMMAND);
+        playNextActionIntent.putExtra(PlaybackService.ACTION_NAME, PlaybackService.PLAY_NEXT_ACTION);
+        PendingIntent playNextActionPendingIntent = PendingIntent.getService(service, 1, playNextActionIntent, 0);
         notificationView.setOnClickPendingIntent(R.id.notification_next, playNextActionPendingIntent);
 
         notificationBuilder.setContent(notificationView);

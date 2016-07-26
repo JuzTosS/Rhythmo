@@ -1,6 +1,5 @@
 package com.juztoss.bpmplayer.views.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +24,7 @@ import com.juztoss.bpmplayer.views.activities.PlayerActivity;
 public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> implements Playlist.IUpdateListener, IOnItemClickListener
 {
     private BPMPlayerApp mApp;
-    private PlayerActivity mContext;
+    private PlayerActivity mActivity;
 
     private Playlist mPlaylist;
     private Cursor mCurentCursor;
@@ -40,13 +39,13 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     };
     private IOnItemClickListener mOnItemClickListener;
 
-    public PlaylistAdapter(PlayerActivity context, Playlist playlist)
+    public PlaylistAdapter(PlayerActivity activity, Playlist playlist)
     {
         super();
         mCurentCursor = playlist.getList();
         mPlaylist = playlist;
-        mContext = context;
-        mApp = (BPMPlayerApp) context.getApplicationContext();
+        mActivity = activity;
+        mApp = (BPMPlayerApp) activity.getApplicationContext();
     }
 
 
@@ -62,7 +61,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     @Override
     public SongElementHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        LayoutInflater inflater = (LayoutInflater.from(mContext));
+        LayoutInflater inflater = (LayoutInflater.from(mActivity));
         View v = inflater.inflate(R.layout.song_list_element, null);
         return new SongElementHolder(v, this, mPlaylist.getSource().isModifyAvailable());
     }
@@ -87,7 +86,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
             return;
         }
 
-        holder.update(composition, position);
+        holder.update(composition, position, mActivity.playbackService());
     }
 
     @Override
@@ -121,7 +120,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     public void onPlaylistUpdated()
     {
         updateList();
-        mContext.updateTabNames();
+        mActivity.updateTabNames();
     }
 
     public void setOnItemClickListener(IOnItemClickListener onItemClickListener)

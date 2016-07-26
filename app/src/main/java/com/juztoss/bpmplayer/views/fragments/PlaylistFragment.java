@@ -1,5 +1,6 @@
 package com.juztoss.bpmplayer.views.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +12,9 @@ import android.view.ViewGroup;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.services.PlaybackService;
 import com.juztoss.bpmplayer.views.activities.PlayerActivity;
+import com.juztoss.bpmplayer.views.activities.SingleSongActivity;
 import com.juztoss.bpmplayer.views.adapters.IOnItemClickListener;
 import com.juztoss.bpmplayer.views.adapters.PlaylistAdapter;
 import com.juztoss.bpmplayer.views.adapters.SongElementHolder;
@@ -27,6 +30,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     private PlaylistAdapter mPlaylistAdapter;
 
     private BPMPlayerApp mApp;
+    private PlayerActivity mActivity;
 
     public static PlaylistFragment newInstance(int playlistIndex)
     {
@@ -48,8 +52,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         int playlistIndex = arguments.getInt(PLAYLIST_INDEX, -1);
         if (playlistIndex < 0) return;
 
-        if (!mApp.isPlaybackServiceRunning()) return;
-
+        mActivity = ((PlayerActivity) getActivity());
         mPlaylistIndex = playlistIndex;
         mPlaylistAdapter = new PlaylistAdapter((PlayerActivity) getActivity(), mApp.getPlaylists().get(playlistIndex));
         RecyclerView list = (RecyclerView) getView().findViewById(R.id.listView);
@@ -58,18 +61,30 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
+    private void showSongActivity(Composition composition)
+    {
+        Intent intent = new Intent(getContext(), SingleSongActivity.class);
+        intent.putExtra(SingleSongActivity.SONG_ID, composition.id());
+        getContext().startActivity(intent);
+    }
+
     @Override
     public void onPlaylistItemClick(int position, int action, Composition composition)
     {
-        if(action == SongElementHolder.ACTION_PLAY)
+        if (action == SongElementHolder.ACTION_PLAY)
         {
-            if (mApp.isPlaybackServiceRunning())
-            {
-                mApp.getPlaybackService().setSource(mPlaylistIndex, position);
-                mApp.getPlaybackService().startPlayback();
-            }
+            Intent i = new Intent(getContext(), PlaybackService.class);
+            i.setAction(PlaybackService.ACTION_COMMAND);
+            i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.PLAY_NEW_ACTION);
+            i.putExtra(PlaybackService.ACTION_PLAYLIST_INDEX, mPlaylistIndex);
+            i.putExtra(PlaybackService.ACTION_PLAYLIST_POSITION, position);
+            getContext().startService(i);
         }
-        else if(action == SongElementHolder.ACTION_REMOVE)
+        else if (action == SongElementHolder.ACTION_SHOW_DETAIL)
+        {
+            showSongActivity(composition);
+        }
+        else if (action == SongElementHolder.ACTION_REMOVE)
         {
             mApp.getPlaylists().get(mPlaylistIndex).getSource().remove(composition.id());
             mPlaylistAdapter.updateList();
@@ -98,14 +113,14 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
 
     public void onResumeFragment()
     {
-        if(mPlaylistAdapter == null) return;
+        if (mPlaylistAdapter == null) return;
         mPlaylistAdapter.updateList();
         mPlaylistAdapter.bind();
     }
 
     public void onPauseFragment()
     {
-        if(mPlaylistAdapter != null)
+        if (mPlaylistAdapter != null)
             mPlaylistAdapter.unbind();
     }
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
+import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -32,18 +33,32 @@ import java.util.TimerTask;
  */
 public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener, Playlist.IUpdateListener
 {
+    {
+        System.loadLibrary(AdvancedMediaPlayer.LIBRARY_NAME);
+    }
 
-    public enum RepeatMode {
+    public enum RepeatMode
+    {
         DISABLED,
         ONE,
         ALL
     }
 
     public static final int NOTIFICATION_ID = 42;
+
+    public static final String ACTION_COMMAND = "com.juztoss.bpmplayer.action.ACTION_COMMAND";
+    public static final String ACTION_NAME = "com.juztoss.bpmplayer.action.ACTION_NAME";
+    public static final String ACTION_PLAYLIST_INDEX = "com.juztoss.bpmplayer.action.ACTION_PLAYLIST_INDEX";
+    public static final String ACTION_PLAYLIST_POSITION = "com.juztoss.bpmplayer.action.ACTION_PLAYLIST_POSITION";
+
     public static final String LAUNCH_NOW_PLAYING_ACTION = "com.juztoss.bpmplayer.action.LAUNCH_NOW_PLAYING";
     public static final String SWITCH_PLAYBACK_ACTION = "com.juztoss.bpmplayer.action.SWITCH_PLAYBACK";
+    public static final String PAUSE_PLAYBACK_ACTION = "com.juztoss.bpmplayer.action.PAUSE_PLAYBACK";
     public static final String PLAY_NEXT_ACTION = "com.juztoss.bpmplayer.action.PLAY_NEXT_ACTION";
+    public static final String PLAY_PREVIOUS_ACTION = "com.juztoss.bpmplayer.action.PLAY_PREVIOUS_ACTION";
+    public static final String PLAY_NEW_ACTION = "com.juztoss.bpmplayer.action.PLAY_NEW_ACTION";
     public static final String UPDATE_UI_ACTION = "com.juztoss.bpmplayer.action.UPDATE_UI";
+
     private static final String DEFAULT_SAMPLE_RATE = "44100";
     private static final String DEFAULT_BUFFER_SIZE = "512";
 
@@ -64,12 +79,12 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     public void setShuffleMode(boolean enabled)
     {
-        if(enabled && !mIsShuffleEnabled)//Reset played songs
+        if (enabled && !mIsShuffleEnabled)//Reset played songs
         {
             mAlreadyPlayedInShuffleMode.clear();
         }
         mIsShuffleEnabled = enabled;
-        if(mIsShuffleEnabled)
+        if (mIsShuffleEnabled)
         {
             mRepeatMode = RepeatMode.DISABLED;
         }
@@ -83,7 +98,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public void setRepeatMode(RepeatMode mode)
     {
         mRepeatMode = mode;
-        if(mRepeatMode != RepeatMode.DISABLED)
+        if (mRepeatMode != RepeatMode.DISABLED)
         {
             mIsShuffleEnabled = false;
         }
@@ -99,7 +114,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
      */
     public long currentSongId()
     {
-        if(getSongsList() == null)
+        if (getSongsList() == null)
         {
             mCurrentPlaylistIndex = 0;
             return -1;
@@ -120,13 +135,13 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public void onError(String message)
     {
         clearQueue();
-        Log.e(getResources().getString(R.string.app_name), "Player error: " + message);
+        Log.e(getClass().toString(), "Player error: " + message);
     }
 
     @Nullable
     private Cursor getSongsList()
     {
-        if(mCurrentPlaylistIndex < 0 || mCurrentPlaylistIndex >= mApp.getPlaylists().size())
+        if (mCurrentPlaylistIndex < 0 || mCurrentPlaylistIndex >= mApp.getPlaylists().size())
             return null;
         else
             return mApp.getPlaylists().get(mCurrentPlaylistIndex).getList();
@@ -135,16 +150,16 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Go to next song in playlist and start playing
      */
-    public void gotoNext(boolean byUser)
+    private void gotoNext(boolean byUser)
     {
         clearQueue();
-        if(getSongsList() == null)
+        if (getSongsList() == null)
         {
             putAction(new ActionStop());
             return;
         }
 
-        if(!isShuffleEnabled() || byUser)
+        if (!isShuffleEnabled() || byUser)
         {
             if (mRepeatMode != RepeatMode.ONE)
                 mCurrentSongIndex++;
@@ -158,7 +173,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             {
                 if (mCurrentSongIndex >= getSongsList().getCount())
                 {
-                    if(byUser)
+                    if (byUser)
                         mCurrentSongIndex = 0;
                     else
                         mCurrentSongIndex = -1;
@@ -168,13 +183,13 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         else//isShuffleEnabled() == true
         {
             int songsCount = getSongsList().getCount();
-            if(mAlreadyPlayedInShuffleMode.size() == songsCount)
+            if (mAlreadyPlayedInShuffleMode.size() == songsCount)
                 mAlreadyPlayedInShuffleMode.clear();
 
-            if(!mAlreadyPlayedInShuffleMode.contains(mCurrentSongIndex))
+            if (!mAlreadyPlayedInShuffleMode.contains(mCurrentSongIndex))
                 mAlreadyPlayedInShuffleMode.add(mCurrentSongIndex);
 
-            int newSongIndex = (int)(Math.random() * songsCount);
+            int newSongIndex = (int) (Math.random() * songsCount);
             int iterations = 0;
             while (mAlreadyPlayedInShuffleMode.contains(newSongIndex) && ++iterations < songsCount)
             {
@@ -186,7 +201,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             mCurrentSongIndex = newSongIndex;
         }
 
-        if(mCurrentSongIndex >= 0)
+        if (mCurrentSongIndex >= 0)
         {
             setSource(mCurrentPlaylistIndex, mCurrentSongIndex);
             putAction(new ActionPlay());
@@ -196,7 +211,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Go to previous song in playlist and start playing
      */
-    public void gotoPrevious()
+    private void gotoPrevious()
     {
         clearQueue();
         mCurrentSongIndex--;
@@ -209,6 +224,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private void updateUI()
     {
+        Log.d(getClass().toString(), "updateUI()");
         Intent intent = new Intent(UPDATE_UI_ACTION);
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mApp);
         broadcastManager.sendBroadcast(intent);
@@ -219,6 +235,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private synchronized void putAction(BaseAction action)
     {
+        Log.d(getClass().toString(), "putAction() " + action.getClass().toString());
         mQueue.add(action);
         if (mActionInProgress == null)
             action.doNext();
@@ -239,49 +256,98 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     @Override
     public IBinder onBind(Intent intent)
     {
-        return null;
+        return new PlaybackServiceBinder();
+    }
+
+    public class PlaybackServiceBinder extends Binder
+    {
+        public PlaybackService getService()
+        {
+            return PlaybackService.this;
+        }
     }
 
     @Override
     public void onCreate()
     {
+        Log.d(getClass().toString(), "onCreate()");
         mApp = (BPMPlayerApp) getApplicationContext();
-        mApp.setPlaybackService(this);
+        initPlayer();
         super.onCreate();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        Log.d(getClass().toString(), "onStartCommand(...)");
         super.onStartCommand(intent, flags, startId);
 
-        System.loadLibrary(AdvancedMediaPlayer.LIBRARY_NAME);
-
-        String sampleRateString = null, bufferSizeString = null;
-        if (Build.VERSION.SDK_INT >= 17)
+        if (intent != null)
         {
-            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            sampleRateString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
-            bufferSizeString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
+            String action = intent.getAction();
+            if (ACTION_COMMAND.equals(action))
+            {
+                String command = intent.getStringExtra(ACTION_NAME);
+                Log.d(getClass().toString(), "onStartCommand command: " + command);
+                if (PAUSE_PLAYBACK_ACTION.equals(command))
+                {
+                    pausePlayback();
+                }
+                else if (PLAY_NEXT_ACTION.equals(command))
+                {
+                    gotoNext(true);
+                }
+                else if (PLAY_PREVIOUS_ACTION.equals(command))
+                {
+                    gotoPrevious();
+                }
+                else if (SWITCH_PLAYBACK_ACTION.equals(command))
+                {
+                    togglePlaybackState();
+                }
+                else if (PLAY_NEW_ACTION.equals(command))
+                {
+                    int playlistIndex = intent.getIntExtra(ACTION_PLAYLIST_INDEX, 0);
+                    int playlistPosition = intent.getIntExtra(ACTION_PLAYLIST_POSITION, 0);
+                    setSource(playlistIndex, playlistPosition);
+                    startPlayback();
+                }
+            }
         }
-        if (sampleRateString == null) sampleRateString = DEFAULT_SAMPLE_RATE;
-        if (bufferSizeString == null) bufferSizeString = DEFAULT_BUFFER_SIZE;
 
-        final int sampleRate = Integer.parseInt(sampleRateString);
-        final int bufferSize = Integer.parseInt(bufferSizeString);
+        return START_NOT_STICKY;
+    }
 
-        mPlayer = new AdvancedMediaPlayer(sampleRate, bufferSize);
-        mPlayer.setOnEndListener(this);
-        mPlayer.setOnErrorListener(this);
+    private void initPlayer()
+    {
+        if (mPlayer == null)
+        {
+            String sampleRateString = null, bufferSizeString = null;
+            if (Build.VERSION.SDK_INT >= 17)
+            {
+                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                sampleRateString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
+                bufferSizeString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
+            }
+            if (sampleRateString == null) sampleRateString = DEFAULT_SAMPLE_RATE;
+            if (bufferSizeString == null) bufferSizeString = DEFAULT_BUFFER_SIZE;
 
-        return START_STICKY;
+            final int sampleRate = Integer.parseInt(sampleRateString);
+            final int bufferSize = Integer.parseInt(bufferSizeString);
+
+            mPlayer = new AdvancedMediaPlayer(sampleRate, bufferSize);
+            mPlayer.setOnEndListener(this);
+            mPlayer.setOnErrorListener(this);
+        }
     }
 
     @Override
     public void onDestroy()
     {
+        Log.d(getClass().toString(), "onDestroy()");
+        cancelHideCooldown();
         mPlayer.release();
-        mApp.setPlaybackService(null);
+        mPlayer = null;
         super.onDestroy();
     }
 
@@ -294,9 +360,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Set index of a song that will be played
      */
-    public void setSource(int playlistIndex, int index)
+    private void setSource(int playlistIndex, int index)
     {
-        if(mCurrentPlaylistIndex != playlistIndex)
+        if (mCurrentPlaylistIndex != playlistIndex)
         {
             mAlreadyPlayedInShuffleMode.clear();
             mApp.getPlaylists().get(mCurrentPlaylistIndex).removeUpdateListener(this);
@@ -307,7 +373,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         mCurrentPlaylistIndex = playlistIndex;
         mCurrentSongIndex = index;
 
-        if(index < 0 || getSongsList() == null || index >= getSongsList().getCount())
+        if (index < 0 || getSongsList() == null || index >= getSongsList().getCount())
             return;
 
         getSongsList().moveToPosition(index);
@@ -317,11 +383,11 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     @Override
     public void onAudioFocusChange(int focusChange)
     {
-        if(focusChange == AudioManager.AUDIOFOCUS_LOSS || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT)
+        if (focusChange == AudioManager.AUDIOFOCUS_LOSS || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT)
         {
             pausePlayback();
         }
-        else if(focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK)
+        else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK)
         {
             //TODO: duck music
         }
@@ -329,6 +395,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private void setIsPlaying(boolean value)
     {
+        Log.d(getClass().toString(), "setIsPlaying: " + value);
         if (!mIsPlaying && value)
             requestAudioFocus();
 
@@ -347,9 +414,9 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private void startHideCooldown()
     {
-        final int STOP_SERVICE_COOLDOWN_MS = 3000;
+        final int STOP_SERVICE_COOLDOWN_MS = 10000;
 
-        if(mStopCooldown != null)
+        if (mStopCooldown != null)
             cancelHideCooldown();
 
         mStopCooldown = new Timer();
@@ -366,16 +433,16 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private void disableService()
     {
-        stopForeground(false);
-        NotificationManager notificationManager = (NotificationManager) mApp.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(NOTIFICATION_ID);
+        Log.d(getClass().toString(), "disableService()");
+        stopForeground(true);
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(this);
+        stopSelf();
     }
 
     private void cancelHideCooldown()
     {
-        if(mStopCooldown != null)
+        if (mStopCooldown != null)
         {
             mStopCooldown.cancel();
             mStopCooldown = null;
@@ -399,7 +466,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Pause/unpause playback
      */
-    public void togglePlaybackState()
+    private void togglePlaybackState()
     {
         if (isPlaying())
             pausePlayback();
@@ -410,7 +477,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Starts playback. setSource(...) have to be called before this method.
      */
-    public void startPlayback()
+    private void startPlayback()
     {
         putAction(new ActionPlay());
     }
@@ -418,7 +485,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Pauses playback.
      */
-    public void pausePlayback()
+    private void pausePlayback()
     {
         putAction(new ActionPause());
     }
@@ -426,7 +493,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Stops playback.
      */
-    public void stopPlayback()
+    private void stopPlayback()
     {
         putAction(new ActionStop());
     }
@@ -457,6 +524,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     /**
      * Go to a position in the current audio file
+     *
      * @param position position in milleseconds
      */
     public void seekTo(int position)
@@ -466,12 +534,20 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     /**
      * Shift the current song duration
-     * @param bpm original beat rate
+     *
+     * @param bpm        original beat rate
      * @param shiftedBpm a beat rate to be played with
      */
     public void setNewPlayingBPM(float bpm, float shiftedBpm)
     {
         mCurrentlyPlayingBPM = shiftedBpm;
+
+        if(bpm <= 10 || shiftedBpm <= 10)
+        {
+            bpm = 10;
+            shiftedBpm = 10;
+        }
+
         mPlayer.setBPM(bpm);
         mPlayer.setNewBPM(shiftedBpm);
         updateUI();
