@@ -2,8 +2,10 @@ package com.juztoss.bpmplayer.services;
 
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.os.Binder;
@@ -76,6 +78,16 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private RepeatMode mRepeatMode = RepeatMode.DISABLED;
     private boolean mIsShuffleEnabled = false;
     private Set<Integer> mAlreadyPlayedInShuffleMode = new HashSet<>();
+
+    private final BroadcastReceiver mNoisyReciever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)){
+                pausePlayback();
+            }
+        }
+    };
 
     public void setShuffleMode(boolean enabled)
     {
@@ -273,6 +285,11 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         Log.d(getClass().toString(), "onCreate()");
         mApp = (BPMPlayerApp) getApplicationContext();
         initPlayer();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+        registerReceiver(mNoisyReciever, filter);
+
         super.onCreate();
     }
 
@@ -348,6 +365,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         cancelHideCooldown();
         mPlayer.release();
         mPlayer = null;
+        unregisterReceiver(mNoisyReciever);
         super.onDestroy();
     }
 
