@@ -7,10 +7,8 @@
     <string name="remove_playlist">Remove playlist</string>
     <string name="rename_playlist">Rename playlist</string>
     <string name="song_detail_title">Song detail</string>
-    <string name="pref_build_library">Build music library</string>
-    <string name="pref_rebuild_library">Rebuild music library</string>
-    <string name="build_library_desc">Scan for all NEW music on the device</string>
-    <string name="rebuild_library_desc">Scan for all music on the device</string>
+    <string name="pref_build_library">Rescan music on the device</string>
+    <string name="build_library_desc">Scan for all new music on the device</string>
     <string name="building_lib_already_started">Already started!</string>
     <string name="drag_handles_welcome">Drag handles to enable BPM filter</string>
     <string name="select_folder">Select folder</string>

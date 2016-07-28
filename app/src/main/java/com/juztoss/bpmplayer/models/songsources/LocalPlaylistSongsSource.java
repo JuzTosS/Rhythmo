@@ -22,6 +22,7 @@ public class LocalPlaylistSongsSource extends ISongsSource
         mName = name;
         mId = id;
         mApp = app;
+        notifyUpdated();
     }
 
     @Override
@@ -118,7 +119,7 @@ public class LocalPlaylistSongsSource extends ISongsSource
 
         try
         {
-            if(cursor.getCount() >= 0)
+            if(cursor.getCount() > 0)
             {
                 cursor.moveToFirst();
                 Composition composition = mApp.getComposition(cursor.getLong(0));

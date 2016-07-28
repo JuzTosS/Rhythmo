@@ -14,15 +14,11 @@
         android:summary="@string/build_library_desc"
         android:title="@string/pref_build_library"/>
 
-    <Preference
-        android:key="@string/pref_rebuild_library"
-        android:summary="@string/rebuild_library_desc"
-        android:title="@string/pref_rebuild_library"/>
 
-    <CheckBoxPreference
-        android:key="@string/pref_recognize_bpm_from_name"
-        android:summary="@string/pref_recognize_bpm_from_name_desc"
-        android:title="@string/pref_recognize_bpm_from_name"/>
+    <!--<CheckBoxPreference-->
+        <!--android:key="@string/pref_recognize_bpm_from_name"-->
+        <!--android:summary="@string/pref_recognize_bpm_from_name_desc"-->
+        <!--android:title="@string/pref_recognize_bpm_from_name"/>-->
 
     </PreferenceCategory>
 </PreferenceScreen>

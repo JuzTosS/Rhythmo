@@ -362,10 +362,10 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public void onDestroy()
     {
         Log.d(getClass().toString(), "onDestroy()");
+        unregisterReceiver(mNoisyReciever);
         cancelHideCooldown();
         mPlayer.release();
         mPlayer = null;
-        unregisterReceiver(mNoisyReciever);
         super.onDestroy();
     }
 
