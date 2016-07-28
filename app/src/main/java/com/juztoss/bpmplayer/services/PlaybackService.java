@@ -455,6 +455,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         stopForeground(true);
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(this);
+        unregisterReceiver(mNoisyReciever);
         stopSelf();
     }
 
