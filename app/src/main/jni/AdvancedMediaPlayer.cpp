@@ -209,10 +209,10 @@ extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_i
     sPlayersMap.insert(std::pair<int, AdvancedMediaPlayer *>(id, player));
 
     //Musn't be called because we don't create more than one player
-    if(sPlayersMap.size() > 1)
-    {
-        env->ThrowNew(env->FindClass("java/lang/Exception"), "Created more than one player");
-    }
+//    if(sPlayersMap.size() > 1)
+//    {
+//        env->ThrowNew(env->FindClass("java/lang/Exception"), "Created more than one player");
+//    }
 }
 
 extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_setSource(JNIEnv *env,
