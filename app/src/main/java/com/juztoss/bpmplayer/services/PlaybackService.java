@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.audio.AdvancedMediaPlayer;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
@@ -79,7 +78,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private boolean mIsShuffleEnabled = false;
     private Set<Integer> mAlreadyPlayedInShuffleMode = new HashSet<>();
 
-    private final BroadcastReceiver mNoisyReciever = new BroadcastReceiver() {
+    private boolean mNoisyReceiverRegistered = false;
+    private final BroadcastReceiver mNoisyReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -288,7 +288,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-        registerReceiver(mNoisyReciever, filter);
+        mNoisyReceiverRegistered = true;
+        registerReceiver(mNoisyReceiver, filter);
 
         super.onCreate();
     }
@@ -362,7 +363,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public void onDestroy()
     {
         Log.d(getClass().toString(), "onDestroy()");
-        unregisterReceiver(mNoisyReciever);
+        unregisterNoisyReceiver();
         cancelHideCooldown();
         mPlayer.release();
         mPlayer = null;
@@ -449,13 +450,22 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         }, STOP_SERVICE_COOLDOWN_MS);
     }
 
+    private void unregisterNoisyReceiver()
+    {
+        if(mNoisyReceiverRegistered)
+        {
+            mNoisyReceiverRegistered = false;
+            unregisterReceiver(mNoisyReceiver);
+        }
+    }
+
     private void disableService()
     {
         Log.d(getClass().toString(), "disableService()");
         stopForeground(true);
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(this);
-        unregisterReceiver(mNoisyReciever);
+        unregisterNoisyReceiver();
         stopSelf();
     }
 
