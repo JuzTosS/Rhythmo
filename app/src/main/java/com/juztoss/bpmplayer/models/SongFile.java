@@ -1,6 +1,7 @@
 package com.juztoss.bpmplayer.models;
 
 import android.database.Cursor;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -110,10 +111,17 @@ public class SongFile extends BaseExplorerElement
     @Override
     public String description()
     {
-        //TODO: Refactor that when getting properties from media become easier.
-        MediaPlayer mp = MediaPlayer.create(mApp, Uri.parse(mFile.getAbsolutePath()));
-        int duration = mp.getDuration();
-        mp.release();
-        return DateUtils.formatElapsedTime(duration / 1000);
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        mmr.setDataSource(mFile.getAbsolutePath());
+        try
+        {
+            int duration = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+            return DateUtils.formatElapsedTime(duration / 1000);
+        }
+        catch (NumberFormatException e)
+        {
+            return "Unknown length";
+        }
+
     }
 }
