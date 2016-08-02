@@ -35,12 +35,16 @@ model {
             targetSdkVersion.apiLevel = 23
             versionCode 5
             versionName "0.2.3"
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         }
 
         buildTypes {
             release {
                 minifyEnabled false
                 proguardFiles.add(file("proguard-rules.pro"))
+            }
+            debug {
+                applicationIdSuffix ".debug"
             }
         }
 
@@ -83,8 +87,7 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:support-v4:23.4.0'
     androidTestCompile 'com.android.support:support-annotations:23.4.0'
-    androidTestCompile 'com.android.support.test:runner:0.4.1'
-    androidTestCompile 'com.android.support.test:rules:0.4.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'junit:junit:4.12'
 }

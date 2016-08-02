@@ -25,5 +25,9 @@
     <string name="pref_recognize_bpm_from_name">Get BPM from files names</string>
     <string name="pref_recognize_bpm_from_name_desc">If set firstly BPM for a song is get from the file name of the song</string>
     <string name="welcome_button_text">Let\'s get down!</string>
+    <string name="default_playlist_name">No name</string>
+    <string name="rename_dialog_title">Playlist name:</string>
+    <string name="rename_dialog_ok">OK</string>
+    <string name="rename_dialog_cancel">Cancel</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

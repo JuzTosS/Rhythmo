@@ -35,7 +35,7 @@ import java.util.TimerTask;
  */
 public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener, Playlist.IUpdateListener
 {
-    {
+    static {
         System.loadLibrary(AdvancedMediaPlayer.LIBRARY_NAME);
     }
 

@@ -313,24 +313,24 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     private void launchRenameDialog()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Title");
+        builder.setTitle(getString(R.string.rename_dialog_title));
 
         final EditText input = new EditText(this);
+        final Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
+        input.setText(playlist.getName());
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+        builder.setPositiveButton(getString(R.string.rename_dialog_ok), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
                 String newName = input.getText().toString();
-                Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
                 playlist.getSource().rename(newName);
                 updateTabNames();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        builder.setNegativeButton(getString(R.string.rename_dialog_cancel), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)

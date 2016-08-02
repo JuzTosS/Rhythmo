@@ -3,6 +3,7 @@ package com.juztoss.bpmplayer.models.songsources;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
@@ -15,10 +16,11 @@ public class LocalPlaylistSongsSource extends ISongsSource
     private long mId;
     private String mName;
     private BPMPlayerApp mApp;
-    private String mGeneratedName = "No name";
+    private String mGeneratedName;
 
     LocalPlaylistSongsSource(long id, BPMPlayerApp app, String name)
     {
+        mGeneratedName = app.getString(R.string.default_playlist_name);
         mName = name;
         mId = id;
         mApp = app;

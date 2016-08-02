@@ -7,8 +7,10 @@ import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.util.Log;
 
+import com.juztoss.bpmplayer.audio.AdvancedMediaPlayer;
 import com.juztoss.bpmplayer.models.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.views.activities.PlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
