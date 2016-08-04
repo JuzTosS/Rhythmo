@@ -10,6 +10,7 @@ import android.util.Log;
 import com.juztoss.bpmplayer.audio.AdvancedMediaPlayer;
 import com.juztoss.bpmplayer.models.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.utils.SystemHelper;
 import com.juztoss.bpmplayer.views.activities.PlayerActivity;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
                 String path = songsCursor.getString(pathIndex);
                 String name = songsCursor.getString(nameIndex);
                 String songId = songsCursor.getString(idIndex);
-                String fullPath = path + "/" + name;
+                String fullPath = path + SystemHelper.SEPARATOR + name;
                 double bpm = detectBpm(fullPath, name);
                 if (bpm >= BPMPlayerApp.MAX_BPM)
                 {

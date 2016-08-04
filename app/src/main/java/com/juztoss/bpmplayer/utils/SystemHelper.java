@@ -65,13 +65,20 @@ public class SystemHelper
         }
     }
 
+    public static final String SEPARATOR = "/";
+
     /**
      * Any path with segments separated by "/"
      * @Return last segement of the input path
      */
     public static String getLastSegmentOfPath(String path)
     {
-        int lastIndexOfSeparator = path.lastIndexOf("/");
+        int lastIndexOfSeparator = path.lastIndexOf(SEPARATOR);
+        if(lastIndexOfSeparator == path.length() - 1)
+        {
+            path = path.substring(0, path.length() - 1);
+            lastIndexOfSeparator = path.lastIndexOf(SEPARATOR);
+        }
         if(lastIndexOfSeparator >= 0)
             return path.substring(lastIndexOfSeparator + 1);
         else

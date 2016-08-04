@@ -20,7 +20,7 @@ public class Composition
         mId = songId;
         mFolderName = folderName;
         mSongName = songName;
-        mAbsolutePath = folderName + "/" + songName;
+        mAbsolutePath = folderName + SystemHelper.SEPARATOR + songName;
         mShiftedBPM = bpmShifted;
         mBPM = bpm;
     }

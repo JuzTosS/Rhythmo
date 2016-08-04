@@ -12,6 +12,7 @@ import com.juztoss.bpmplayer.models.CustomExplorerElement;
 import com.juztoss.bpmplayer.models.ExplorerPriority;
 import com.juztoss.bpmplayer.models.FileSystemFolder;
 import com.juztoss.bpmplayer.models.MediaFolder;
+import com.juztoss.bpmplayer.utils.SystemHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
     {
         super(app);
         CustomExplorerElement root = new CustomExplorerElement("", new ArrayList<BaseExplorerElement>(), ExplorerPriority.HIGHEST);
-        root.add(new FileSystemFolder(new File("/"), "File system", root, app));
+        root.add(new FileSystemFolder(new File(SystemHelper.SEPARATOR), "File system", root, app));
         root.add(new MediaFolder(-1, "Media", false, root, false, app));
 
         mRoot = root;
@@ -137,7 +138,7 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
 
     public BaseExplorerElement.AddState getAddState(String path)
     {
-        String[] folders = path.split("/");
+        String[] folders = path.split(SystemHelper.SEPARATOR);
         folders = Arrays.copyOfRange(folders, 1, folders.length);
 
         Node current = root;
@@ -156,7 +157,7 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
 
     public void add(String path)
     {
-        String[] folders = path.split("/");
+        String[] folders = path.split(SystemHelper.SEPARATOR);
         folders = Arrays.copyOfRange(folders, 1, folders.length);
 
         Node current = root;
@@ -172,7 +173,7 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
 
     public void remove(String path)
     {
-        String[] folders = path.split("/");
+        String[] folders = path.split(SystemHelper.SEPARATOR);
         folders = Arrays.copyOfRange(folders, 1, folders.length);
 
         Node current = root;
@@ -260,7 +261,7 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
             {
                 if(current.mName == null) break;
 
-                path = "/" + current.mName + path;
+                path = SystemHelper.SEPARATOR + current.mName + path;
                 current = current.mParent;
             }
 

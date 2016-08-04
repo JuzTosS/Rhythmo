@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.utils.SystemHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class MediaFolder extends BaseExplorerElement
         mLastId = mFirstId;
         while (true)
         {
-            if (mFullName.length() > 0) mFullName += "/";
+            if (mFullName.length() > 0) mFullName += SystemHelper.SEPARATOR;
 
             mFullName += currentName;
             mLastId = currentId;
@@ -190,7 +191,7 @@ public class MediaFolder extends BaseExplorerElement
 
                     StringBuilder songPathBuilder = new StringBuilder();
                     songPathBuilder.append(folderName);
-                    songPathBuilder.append("/");
+                    songPathBuilder.append(SystemHelper.SEPARATOR);
                     songPathBuilder.append(songName);
                     songs.add(new SongFile(new File(songPathBuilder.toString()), false, mApp));
                 }
@@ -217,7 +218,7 @@ public class MediaFolder extends BaseExplorerElement
         String path = "";
         while (current.getParent() != null && current.getParent() instanceof MediaFolder)
         {
-            path = "/" + current.name() + path;
+            path = SystemHelper.SEPARATOR + current.name() + path;
             current = (MediaFolder) current.getParent();
         }
 

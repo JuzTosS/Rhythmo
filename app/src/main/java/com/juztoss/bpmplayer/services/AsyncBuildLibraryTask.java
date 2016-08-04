@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 
 import com.juztoss.bpmplayer.models.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+import com.juztoss.bpmplayer.utils.SystemHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -169,11 +170,11 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 String songFileFullPath = mediaStoreCursor.getString(filePathColIndex);
                 String songId = mediaStoreCursor.getString(idColIndex);
 
-                String[] folders = songFileFullPath.split("/");
+                String[] folders = songFileFullPath.split(SystemHelper.SEPARATOR);
                 StringBuilder b = new StringBuilder(songFileFullPath);
                 String songFileName = folders[folders.length - 1];
 
-                String songNameWithSlash = "/" + songFileName;
+                String songNameWithSlash = SystemHelper.SEPARATOR + songFileName;
                 b.replace(songFileFullPath.lastIndexOf(songNameWithSlash), songFileFullPath.lastIndexOf(songNameWithSlash) + songNameWithSlash.length(), "");
                 String songFileFolder = b.toString();
 
