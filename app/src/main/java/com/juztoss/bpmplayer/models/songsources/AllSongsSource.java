@@ -2,6 +2,7 @@ package com.juztoss.bpmplayer.models.songsources;
 
 import android.database.Cursor;
 
+import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.DatabaseHelper;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 
@@ -47,7 +48,7 @@ public class AllSongsSource extends ISongsSource
     @Override
     public String getName()
     {
-        return "All songs";
+        return mApp.getString(R.string.main_playlist_name);
     }
 
     @Override

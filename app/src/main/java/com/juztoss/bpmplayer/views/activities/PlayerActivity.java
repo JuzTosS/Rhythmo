@@ -296,7 +296,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         {
             mApp.createNewPlaylist();
             updateTabs();
-            mPlaylistsPager.setCurrentItem(mPlaylistsPager.getCurrentItem() + 1);
+            mPlaylistsPager.setCurrentItem(mApp.getPlaylists().size() - 1);
         }
         else if (id == R.id.rename_playlist_menu)
         {

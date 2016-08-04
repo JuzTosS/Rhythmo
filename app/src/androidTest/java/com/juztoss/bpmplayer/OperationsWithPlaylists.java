@@ -29,6 +29,18 @@ public class OperationsWithPlaylists
     @Rule
     public ActivityTestRule<PlayerActivity> mActivityRule = new ActivityTestRule<PlayerActivity>(PlayerActivity.class);
 
+    private void addPlaylist()
+    {
+        openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());
+        onView(withText(mActivityRule.getActivity().getString(R.string.new_playlist))).perform(click());
+    }
+
+    private void removePlaylist()
+    {
+        openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());
+        onView(withText(mActivityRule.getActivity().getString(R.string.remove_playlist))).perform(click());
+    }
+
     @Test
     public void addAndRemovePlaylist() throws Exception
     {
@@ -37,13 +49,18 @@ public class OperationsWithPlaylists
         int tabsCount = tabs.getTabCount();
 
         //Open menu and click on add new playlist
-        openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());
-        onView(withText(mActivityRule.getActivity().getString(R.string.new_playlist))).perform(click());
+        addPlaylist();
         assertEquals(tabsCount + 1, tabs.getTabCount());
+        assertEquals(tabsCount, tabs.getSelectedTabPosition());
 
+        onView(withText(mActivityRule.getActivity().getString(R.string.main_playlist_name))).perform(click());
+
+        addPlaylist();
+        assertEquals(tabsCount + 2, tabs.getTabCount());
+        assertEquals(tabsCount + 1, tabs.getSelectedTabPosition());
         //Remove the just added playlist
-        openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());
-        onView(withText(mActivityRule.getActivity().getString(R.string.remove_playlist))).perform(click());
+        removePlaylist();
+        removePlaylist();
         assertEquals(tabsCount, tabs.getTabCount());
     }
 
@@ -53,8 +70,7 @@ public class OperationsWithPlaylists
         Activity activity = mActivityRule.getActivity();
         //Add new playlist
         TabLayout tabs = (TabLayout) activity.findViewById(R.id.tab_layout);
-        openActionBarOverflowOrOptionsMenu(activity);
-        onView(withText(activity.getString(R.string.new_playlist))).perform(click());
+        addPlaylist();
 
         //Check name of an empty playlist
         TabLayout.Tab tab = tabs.getTabAt(tabs.getTabCount() - 1);
@@ -96,7 +112,6 @@ public class OperationsWithPlaylists
         assertEquals(newName2, tab.getText());
 
         //Remove the just added playlist
-        openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());
-        onView(withText(mActivityRule.getActivity().getString(R.string.remove_playlist))).perform(click());
+        removePlaylist();
     }
 }
