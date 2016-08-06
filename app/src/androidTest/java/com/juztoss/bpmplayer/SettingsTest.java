@@ -101,7 +101,7 @@ public class SettingsTest
         onView(withText(activity.getString(R.string.dialog_ok))).perform(click());
 
         assertEquals(initialBPMShift, app.getBPMFilterAdditionWindowSize());
-
+        onView(withText(activity.getString(R.string.pref_bpm_auto_shift_range))).check(matches(isDisplayed()));
 
 
     }

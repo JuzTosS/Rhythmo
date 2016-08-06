@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -19,8 +21,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.format.DateUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.view.Menu;
@@ -61,16 +65,23 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     private TextView mMinBPMField;
     private TextView mMaxBPMField;
 
+    private boolean mIsSearchEnabled = false;
+    private ActionBar.LayoutParams mActionBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
+            ActionBar.LayoutParams.MATCH_PARENT);
+    private View mSearchBarLayout;
+    private View mActionBarLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
+
         mApp = (BPMPlayerApp) getApplication();
         setContentView(R.layout.activity_main);
         createFabs();
-        setupActionBar();
         setupPager();
+        setupActionBar();
         setupAllOtherUI();
 
         LocalBroadcastManager.getInstance(mApp).registerReceiver(mUpdateUIReceiver, new IntentFilter(PlaybackService.UPDATE_UI_ACTION));
@@ -224,17 +235,15 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
     private void setupActionBar()
     {
+        mActionBarLayout = getLayoutInflater().inflate(R.layout.action_bar, null);
+        mSearchBarLayout = getLayoutInflater().inflate(R.layout.search_bar, null);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
-                ActionBar.LayoutParams.MATCH_PARENT);
-        View actionBarLayout = getLayoutInflater().inflate(R.layout.action_bar, null);
-        mActionBar.setCustomView(actionBarLayout, layoutParams);
-        Toolbar parent = (Toolbar) actionBarLayout.getParent();
-        parent.setContentInsetsAbsolute(0, 0);
+        enableDefaultActionBarAndDisableSearch();
     }
 
     @Override
@@ -287,6 +296,10 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     public boolean onOptionsItemSelected(MenuItem item)
     {
         int id = item.getItemId();
+        if (id == android.R.id.home)
+        {
+            enableDefaultActionBarAndDisableSearch();
+        }
         if (id == R.id.settings_menu)
         {
             Intent intent = new Intent(this, SettingsActivity.class);
@@ -307,7 +320,66 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             mApp.removePlaylist(mPlaylistsPager.getCurrentItem());
             updateTabs();
         }
+        else if (id == R.id.search_menu)
+        {
+            enableSearch();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private TextWatcher mSearchStringChanged = new TextWatcher()
+    {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after)
+        {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count)
+        {
+            getCurrentViewedPlaylist().getSource().setWordFilter(s.toString());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s)
+        {
+
+        }
+    };
+
+    private void enableSearch()
+    {
+        mIsSearchEnabled = true;
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setDisplayShowHomeEnabled(true);
+
+        EditText editText = (EditText) mSearchBarLayout.findViewById(R.id.search_field);
+        editText.addTextChangedListener(mSearchStringChanged);
+
+        mActionBar.setCustomView(mSearchBarLayout, mActionBarLayoutParams);
+        Toolbar parent = (Toolbar) mSearchBarLayout.getParent();
+        parent.setContentInsetsAbsolute(0, 0);
+
+        invalidateOptionsMenu();
+    }
+
+    private void enableDefaultActionBarAndDisableSearch()
+    {
+        mIsSearchEnabled = false;
+        mActionBar.setDisplayHomeAsUpEnabled(false);
+        mActionBar.setDisplayShowHomeEnabled(false);
+
+        EditText editText = (EditText) mSearchBarLayout.findViewById(R.id.search_field);
+        editText.removeTextChangedListener(mSearchStringChanged);
+
+        mActionBar.setCustomView(mActionBarLayout, mActionBarLayoutParams);
+        Toolbar parent = (Toolbar) mActionBarLayout.getParent();
+        parent.setContentInsetsAbsolute(0, 0);
+
+        getCurrentViewedPlaylist().getSource().setWordFilter(null);
+
+        invalidateOptionsMenu();
     }
 
     private void launchRenameDialog()
@@ -354,8 +426,15 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        if (mIsSearchEnabled)
+            return false;
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.player_menu, menu);
+        MenuItem item = menu.findItem(R.id.search_menu);
+        Drawable icon = item.getIcon();
+        icon.setColorFilter(getResources().getColor(R.color.foregroundInverted), PorterDuff.Mode.SRC_ATOP);
+
         return true;
     }
 
@@ -382,22 +461,20 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         Composition composition = mApp.getComposition(playbackService().currentSongId());
         if (composition != null)
         {
-            TextView bpmLabel = ((TextView) mActionBar.getCustomView().findViewById(R.id.bpm_label));
+            TextView bpmLabel = ((TextView) mActionBarLayout.findViewById(R.id.bpm_label));
             SpannableString spannableString = new SpannableString(String.format(Locale.US, "%.1f", playbackService().getCurrentlyPlayingBPM()));
             int firstPartLength = Integer.toString((int) composition.bpmShifted()).length();
             spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
             bpmLabel.setText(spannableString);
-            ((TextView) mActionBar.getCustomView().findViewById(R.id.first_line)).setText(composition.name());
-            ((TextView) mActionBar.getCustomView().findViewById(R.id.second_line)).setText(composition.getFolder());
+            ((TextView) mActionBarLayout.findViewById(R.id.first_line)).setText(composition.name());
+            ((TextView) mActionBarLayout.findViewById(R.id.second_line)).setText(composition.getFolder());
         }
 
         mPlayButton.setSelected(!playbackService().isPlaying());
 
         mSeekbar.setMax(playbackService().getDuration());
         mHandler.post(mSeekbarUpdateRunnable);
-
-        updateRepeatButton();
-        updateShuffleButton();
+        updateShuffleAndRepeatButtons();
     }
 
     private Handler mHandler = new Handler();
@@ -437,13 +514,32 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             else
                 playbackService().setRepeatMode(PlaybackService.RepeatMode.DISABLED);
 
-            updateRepeatButton();
-            updateShuffleButton();
+            updateShuffleAndRepeatButtons();
+            updateShuffleAndRepeatButtons();
         }
     };
 
-    private void updateRepeatButton()
+    private View.OnClickListener mShuffleButtonListener = new View.OnClickListener()
     {
+        @Override
+        public void onClick(View v)
+        {
+            if (playbackService() == null)
+                return;
+
+            playbackService().setShuffleMode(!playbackService().isShuffleEnabled());
+            updateShuffleAndRepeatButtons();
+            updateShuffleAndRepeatButtons();
+        }
+    };
+
+    private void updateShuffleAndRepeatButtons()
+    {
+        if (playbackService() == null || !playbackService().isShuffleEnabled())
+            mShuffleButton.setColorFilter(getResources().getColor(R.color.foregroundGrayedOut));
+        else
+            mShuffleButton.setColorFilter(getResources().getColor(R.color.accentPrimary));
+
         if (playbackService() == null)
             return;
 
@@ -462,28 +558,6 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             mRepeatButton.setColorFilter(getResources().getColor(R.color.foregroundGrayedOut));
             mRepeatButton.setImageResource(R.drawable.ic_repeat);
         }
-    }
-
-    private View.OnClickListener mShuffleButtonListener = new View.OnClickListener()
-    {
-        @Override
-        public void onClick(View v)
-        {
-            if (playbackService() == null)
-                return;
-
-            playbackService().setShuffleMode(!playbackService().isShuffleEnabled());
-            updateShuffleButton();
-            updateRepeatButton();
-        }
-    };
-
-    private void updateShuffleButton()
-    {
-        if (playbackService() != null || !playbackService().isShuffleEnabled())
-            mShuffleButton.setColorFilter(getResources().getColor(R.color.foregroundGrayedOut));
-        else
-            mShuffleButton.setColorFilter(getResources().getColor(R.color.accentPrimary));
     }
 
 

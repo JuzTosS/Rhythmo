@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:paddingRight="20dp"
+    android:background="@color/primary">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inputType="text"
+        android:textColor="@color/foregroundInverted"
+        android:background="@drawable/search_text_background"
+        android:id="@+id/search_field"
+        style="@style/SongNameTextAppearance"
+        android:layout_gravity="center"/>
+</FrameLayout>

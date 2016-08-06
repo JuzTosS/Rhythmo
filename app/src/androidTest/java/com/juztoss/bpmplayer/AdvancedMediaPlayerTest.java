@@ -35,7 +35,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         };
 
         Cursor cursor = getInstrumentation().getContext().getContentResolver().query(
-                MediaStore.Audio.Media.INTERNAL_CONTENT_URI,
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selection,
                 null,

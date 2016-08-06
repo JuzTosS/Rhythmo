@@ -30,5 +30,6 @@
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="main_playlist_name">All songs</string>
+    <string name="search">search</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

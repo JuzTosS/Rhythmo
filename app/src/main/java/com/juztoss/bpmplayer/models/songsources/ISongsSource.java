@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 public abstract class ISongsSource
 {
     private ISourceUpdatedListener mListener;
+    protected String mWordFilter;
 
     @Nullable
     public abstract Cursor getIds(float minBPM, float maxBPM);
@@ -38,6 +39,12 @@ public abstract class ISongsSource
     {
         if(mListener != null)
             mListener.onSourceUpdated();
+    }
+
+    public void setWordFilter(@Nullable String wordFilter)
+    {
+        mWordFilter = wordFilter;
+        notifyUpdated();
     }
 
     public interface ISourceUpdatedListener

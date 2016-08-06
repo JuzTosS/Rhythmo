@@ -1,6 +1,8 @@
 package com.juztoss.bpmplayer.models.songsources;
 
 import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.support.annotation.Nullable;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.DatabaseHelper;
@@ -25,19 +27,22 @@ public class AllSongsSource extends ISongsSource
         int mMinBPMX10 = (int)(minBPM * 10);
         int mMaxBPMX10 = (int)(maxBPM * 10);
         Cursor mList;
+        int add = mApp.getBPMFilterAdditionWindowSize();
         if (mMinBPMX10 > 0 && mMaxBPMX10 > 0)//BPM Filter is enabled
         {
             mList = mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                     new String[]{DatabaseHelper._ID},
                     DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " >= ?" + " AND " + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?"
-                    , new String[]{Integer.toString(mMinBPMX10), Integer.toString(mMaxBPMX10)},
+                        + ((mWordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + mWordFilter + "%"))
+                    , new String[]{Integer.toString(mMinBPMX10 - add * 10), Integer.toString(mMaxBPMX10 + add * 10)},
                     null, null,
                     DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " ASC");
         }
         else
         {
             mList = mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                    new String[]{DatabaseHelper._ID}, null
+                    new String[]{DatabaseHelper._ID},
+                    (mWordFilter == null) ? null : DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + mWordFilter + "%")
                     , null,
                     null, null,
                     DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " ASC");

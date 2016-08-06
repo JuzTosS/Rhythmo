@@ -36,8 +36,8 @@ public class SourcesFactory
                 int type = sources.getInt(typeIndex);
                 if (type == LOCAL_PLAYLIST_SOURCE)
                     result = new LocalPlaylistSongsSource(sources.getLong(idIndex), app, sources.getString(nameIndex));
-                else if (type == FOLDER_SOURCE)
-                    result = new FolderSongsSource(sources.getLong(idIndex), app, sources.getString(optionsIndex));
+//                else if (type == FOLDER_SOURCE)
+//                    result = new FolderSongsSource(sources.getLong(idIndex), app, sources.getString(optionsIndex));
             }
         }
         finally
@@ -46,15 +46,6 @@ public class SourcesFactory
         }
 
         return result;
-    }
-
-    public static FolderSongsSource createFolderSongSource(String path, BPMPlayerApp app)
-    {
-        ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.SOURCE_TYPE, FOLDER_SOURCE);
-        values.put(DatabaseHelper.SOURCE_OPTIONS, path);
-        long id = app.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_SOURCES, null, values);
-        return new FolderSongsSource(id, app, path);
     }
 
     public static LocalPlaylistSongsSource createLocalPlaylistSongSource(BPMPlayerApp app)

@@ -38,7 +38,7 @@ public class MusicLibraryHelper
             int add = mApp.getBPMFilterAdditionWindowSize();
             cursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                     new String[]{DatabaseHelper._ID},
-                    DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " LIKE '" + DatabaseUtils.sqlEscapeString(absolutePath + "%") + " AND " +
+                    DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " LIKE " + DatabaseUtils.sqlEscapeString(absolutePath + "%") + " AND " +
                             DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " >= ? AND " + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?",
                     new String[]{Integer.toString((int) (minBPM * 10) - add * 10), Integer.toString((int) (maxBPM * 10) + add * 10)},
                     null, null, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10);
@@ -47,7 +47,7 @@ public class MusicLibraryHelper
         {
             cursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                     new String[]{DatabaseHelper._ID},
-                    DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " LIKE '" + DatabaseUtils.sqlEscapeString(absolutePath + "%"),
+                    DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " LIKE " + DatabaseUtils.sqlEscapeString(absolutePath + "%"),
                     null,
                     null, null, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10);
         }
