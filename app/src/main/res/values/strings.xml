@@ -27,8 +27,8 @@
     <string name="welcome_button_text">Let\'s get down!</string>
     <string name="default_playlist_name">No name</string>
     <string name="rename_dialog_title">Playlist name:</string>
-    <string name="rename_dialog_ok">OK</string>
-    <string name="rename_dialog_cancel">Cancel</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
     <string name="main_playlist_name">All songs</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

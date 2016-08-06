@@ -81,14 +81,14 @@ public class OperationsWithPlaylists
         openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());
         onView(withText(activity.getString(R.string.rename_playlist))).perform(click());
         onView(withText(activity.getString(R.string.rename_dialog_title))).check(matches(isDisplayed()));
-        onView(withText(activity.getString(R.string.rename_dialog_ok))).check(matches(isDisplayed()));
-        onView(withText(activity.getString(R.string.rename_dialog_cancel))).check(matches(isDisplayed()));
+        onView(withText(activity.getString(R.string.dialog_ok))).check(matches(isDisplayed()));
+        onView(withText(activity.getString(R.string.dialog_cancel))).check(matches(isDisplayed()));
         onView(withText(defaultPlaylistName)).check(matches(isDisplayed()));
 
         //Put other name
         String newName = "new name";
         onView(withText(defaultPlaylistName)).perform(replaceText(newName));
-        onView(withText(activity.getString(R.string.rename_dialog_cancel))).perform(click());
+        onView(withText(activity.getString(R.string.dialog_cancel))).perform(click());
 
         //Check name after renaming was cancelled
         tab = tabs.getTabAt(tabs.getTabCount() - 1);
@@ -98,14 +98,14 @@ public class OperationsWithPlaylists
         openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());
         onView(withText(activity.getString(R.string.rename_playlist))).perform(click());
         onView(withText(activity.getString(R.string.rename_dialog_title))).check(matches(isDisplayed()));
-        onView(withText(activity.getString(R.string.rename_dialog_ok))).check(matches(isDisplayed()));
-        onView(withText(activity.getString(R.string.rename_dialog_cancel))).check(matches(isDisplayed()));
+        onView(withText(activity.getString(R.string.dialog_ok))).check(matches(isDisplayed()));
+        onView(withText(activity.getString(R.string.dialog_cancel))).check(matches(isDisplayed()));
         onView(withText(defaultPlaylistName)).check(matches(isDisplayed()));
 
         //Put other name
         String newName2 = "new name2";
         onView(withText(defaultPlaylistName)).perform(replaceText(newName2));
-        onView(withText(activity.getString(R.string.rename_dialog_ok))).perform(click());
+        onView(withText(activity.getString(R.string.dialog_ok))).perform(click());
 
         //Check name after renaming was performed
         tab = tabs.getTabAt(tabs.getTabCount() - 1);

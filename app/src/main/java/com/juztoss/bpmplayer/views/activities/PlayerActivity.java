@@ -320,7 +320,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         input.setText(playlist.getName());
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
-        builder.setPositiveButton(getString(R.string.rename_dialog_ok), new DialogInterface.OnClickListener()
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
@@ -330,7 +330,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
                 updateTabNames();
             }
         });
-        builder.setNegativeButton(getString(R.string.rename_dialog_cancel), new DialogInterface.OnClickListener()
+        builder.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
