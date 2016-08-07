@@ -16,13 +16,15 @@ public class LocalPlaylistSongsSource extends ISongsSource
 {
     private long mId;
     private String mName;
+    private SortType mSortType;
     private BPMPlayerApp mApp;
     private String mGeneratedName;
 
-    LocalPlaylistSongsSource(long id, BPMPlayerApp app, String name)
+    LocalPlaylistSongsSource(long id, BPMPlayerApp app, String name, SortType sortType)
     {
         mGeneratedName = app.getString(R.string.default_playlist_name);
         mName = name;
+        mSortType = sortType;
         mId = id;
         mApp = app;
         notifyUpdated();
@@ -44,6 +46,15 @@ public class LocalPlaylistSongsSource extends ISongsSource
         int mMinBPMX10 = (int) (minBPM * 10);
         int mMaxBPMX10 = (int) (maxBPM * 10);
         int add = mApp.getBPMFilterAdditionWindowSize();
+
+        String order;
+        if(mSortType == SortType.NAME)
+            order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_NAME;
+        else if(mSortType == SortType.BPM)
+            order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10;
+        else//mSortType = SortType.DIRECTORY
+            order = "";
+
         if (mMinBPMX10 > 0 && mMaxBPMX10 > 0)//BPM Filter is enabled
         {
             cursor = mApp.getDatabaseHelper().getWritableDatabase().rawQuery(
@@ -53,7 +64,7 @@ public class LocalPlaylistSongsSource extends ISongsSource
                             " AND " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?" +
                             " AND " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? " +
                             ((mWordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + mWordFilter + "%")) +
-                            " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10,
+                            order,
                     new String[]{Integer.toString(mMinBPMX10 - add * 10), Integer.toString(mMaxBPMX10 + add * 10), Long.toString(mId)}
             );
         }
@@ -64,7 +75,7 @@ public class LocalPlaylistSongsSource extends ISongsSource
                             " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
                             " where " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? " +
                             ((mWordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + mWordFilter + "%")) +
-                            " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10,
+                           order,
                     new String[]{Long.toString(mId)}
             );
         }
@@ -139,6 +150,26 @@ public class LocalPlaylistSongsSource extends ISongsSource
         mGeneratedName = newGeneratedName;
 
         super.notifyUpdated();
+    }
+
+    @Override
+    public void setSortType(SortType sortType)
+    {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.SOURCE_SORT, sortType.ordinal());
+        long result = mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_SOURCES, values, DatabaseHelper._ID + " = ?", new String[]{Long.toString(mId)});
+        if (result > 0)
+        {
+            mSortType = sortType;
+        }
+
+        notifyUpdated();
+    }
+
+    @Override
+    public SortType getSortType()
+    {
+        return mSortType;
     }
 
     public void rename(String name)

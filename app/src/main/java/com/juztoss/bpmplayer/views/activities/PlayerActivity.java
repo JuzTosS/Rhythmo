@@ -40,6 +40,7 @@ import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
 import com.juztoss.bpmplayer.models.songsources.ISongsSource;
+import com.juztoss.bpmplayer.models.songsources.SortType;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.BuildMusicLibraryService;
 import com.juztoss.bpmplayer.services.PlaybackService;
@@ -324,6 +325,10 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         {
             enableSearch();
         }
+        else if (id == R.id.sort_menu)
+        {
+            launchSortDialog();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -414,6 +419,38 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         builder.show();
     }
 
+    private void launchSortDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.sort_dialog_title));
+        builder.setSingleChoiceItems(new String[]{
+                        getString(R.string.sort_alphabetically),
+                        getString(R.string.sort_by_bpm),
+                        getString(R.string.sort_by_folders),
+
+                },
+                getCurrentViewedPlaylist().getSource().getSortType().ordinal(),
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        getCurrentViewedPlaylist().getSource().setSortType(SortType.values()[which]);
+                        dialog.cancel();
+                    }
+                });
+        builder.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
@@ -431,8 +468,14 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.player_menu, menu);
+
+        //Coloring icons
         MenuItem item = menu.findItem(R.id.search_menu);
         Drawable icon = item.getIcon();
+        icon.setColorFilter(getResources().getColor(R.color.foregroundInverted), PorterDuff.Mode.SRC_ATOP);
+
+        item = menu.findItem(R.id.sort_menu);
+        icon = item.getIcon();
         icon.setColorFilter(getResources().getColor(R.color.foregroundInverted), PorterDuff.Mode.SRC_ATOP);
 
         return true;

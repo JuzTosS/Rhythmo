@@ -19,7 +19,7 @@ public class SourcesFactory
     public static ISongsSource loadExist(BPMPlayerApp app, long id)
     {
         Cursor sources = app.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_SOURCES,
-                new String[]{DatabaseHelper._ID, DatabaseHelper.SOURCE_NAME, DatabaseHelper.SOURCE_TYPE, DatabaseHelper.SOURCE_OPTIONS},
+                new String[]{DatabaseHelper._ID, DatabaseHelper.SOURCE_NAME, DatabaseHelper.SOURCE_TYPE, DatabaseHelper.SOURCE_OPTIONS, DatabaseHelper.SOURCE_SORT},
                 DatabaseHelper._ID + " = ?", new String[]{Long.toString(id)}, null, null, null);
 
         ISongsSource result = null;
@@ -29,13 +29,14 @@ public class SourcesFactory
             int nameIndex = sources.getColumnIndex(DatabaseHelper.SOURCE_NAME);
             int typeIndex = sources.getColumnIndex(DatabaseHelper.SOURCE_TYPE);
             int optionsIndex = sources.getColumnIndex(DatabaseHelper.SOURCE_OPTIONS);
+            int sortIndex = sources.getColumnIndex(DatabaseHelper.SOURCE_SORT);
 
 
             if (sources.moveToFirst())
             {
                 int type = sources.getInt(typeIndex);
                 if (type == LOCAL_PLAYLIST_SOURCE)
-                    result = new LocalPlaylistSongsSource(sources.getLong(idIndex), app, sources.getString(nameIndex));
+                    result = new LocalPlaylistSongsSource(sources.getLong(idIndex), app, sources.getString(nameIndex), SortType.values()[sources.getInt(sortIndex)]);
 //                else if (type == FOLDER_SOURCE)
 //                    result = new FolderSongsSource(sources.getLong(idIndex), app, sources.getString(optionsIndex));
             }
@@ -54,7 +55,7 @@ public class SourcesFactory
         values.put(DatabaseHelper.SOURCE_TYPE, LOCAL_PLAYLIST_SOURCE);
         values.put(DatabaseHelper.SOURCE_NAME, "");
         long id = app.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_SOURCES, null, values);
-        return new LocalPlaylistSongsSource(id, app, "");
+        return new LocalPlaylistSongsSource(id, app, "", SortType.DIRECTORY);
     }
 
     public static AllSongsSource createAllSongsSource(BPMPlayerApp app)

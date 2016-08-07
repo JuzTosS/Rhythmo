@@ -47,6 +47,10 @@ public abstract class ISongsSource
         notifyUpdated();
     }
 
+    abstract public void setSortType(SortType sortType);
+
+    abstract public SortType getSortType();
+
     public interface ISourceUpdatedListener
     {
         void onSourceUpdated();

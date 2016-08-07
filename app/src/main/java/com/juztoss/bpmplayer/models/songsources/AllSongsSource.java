@@ -93,6 +93,18 @@ public class AllSongsSource extends ISongsSource
     }
 
     @Override
+    public void setSortType(SortType sortType)
+    {
+
+    }
+
+    @Override
+    public SortType getSortType()
+    {
+        return SortType.BPM;
+    }
+
+    @Override
     public void delete()
     {
 
