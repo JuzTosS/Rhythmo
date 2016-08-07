@@ -23,7 +23,7 @@ public class AllSongsSource extends ISongsSource
     }
 
     @Override
-    public Cursor getIds(float minBPM, float maxBPM)
+    public Cursor getIds(float minBPM, float maxBPM, String wordFilter)
     {
         int mMinBPMX10 = (int)(minBPM * 10);
         int mMaxBPMX10 = (int)(maxBPM * 10);
@@ -43,7 +43,7 @@ public class AllSongsSource extends ISongsSource
             mList = mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                     new String[]{DatabaseHelper._ID},
                     DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " >= ?" + " AND " + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?"
-                        + ((mWordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + mWordFilter + "%"))
+                        + ((wordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + wordFilter + "%"))
                     , new String[]{Integer.toString(mMinBPMX10 - add * 10), Integer.toString(mMaxBPMX10 + add * 10)},
                     null, null,
                     order);
@@ -52,7 +52,7 @@ public class AllSongsSource extends ISongsSource
         {
             mList = mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                     new String[]{DatabaseHelper._ID},
-                    (mWordFilter == null) ? null : DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + mWordFilter + "%")
+                    (wordFilter == null) ? null : DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + wordFilter + "%")
                     , null,
                     null, null,
                     order);

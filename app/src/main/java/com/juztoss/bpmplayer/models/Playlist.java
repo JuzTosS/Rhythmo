@@ -21,6 +21,7 @@ public class Playlist implements ISongsSource.ISourceUpdatedListener
     protected boolean mNeedRebuild = true;
     private List<IUpdateListener> mUpdateListeners;
     private ISongsSource mSource;
+    protected String mWordFilter;
 
     public Playlist(BPMPlayerApp app, ISongsSource source)
     {
@@ -54,7 +55,7 @@ public class Playlist implements ISongsSource.ISourceUpdatedListener
         if (mList != null)
             mList.close();
 
-        mList = mSource.getIds(mMinBPM, mMaxBPM);
+        mList = mSource.getIds(mMinBPM, mMaxBPM, mWordFilter);
 
         mNeedRebuild = false;
     }
@@ -63,6 +64,12 @@ public class Playlist implements ISongsSource.ISourceUpdatedListener
     {
         mNeedRebuild = true;
         notifyUpdateListeners();
+    }
+
+    public void setWordFilter(@Nullable String wordFilter)
+    {
+        mWordFilter = wordFilter;
+        setNeedRebuild();
     }
 
     @Nullable

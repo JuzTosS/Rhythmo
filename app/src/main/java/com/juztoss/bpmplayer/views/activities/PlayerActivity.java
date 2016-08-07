@@ -352,7 +352,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count)
         {
-            getCurrentViewedPlaylist().getSource().setWordFilter(s.toString());
+            getCurrentViewedPlaylist().setWordFilter(s.toString());
         }
 
         @Override
@@ -394,7 +394,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         Toolbar parent = (Toolbar) mActionBarLayout.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
-        getCurrentViewedPlaylist().getSource().setWordFilter(null);
+        getCurrentViewedPlaylist().setWordFilter(null);
 
         invalidateOptionsMenu();
         View view = this.getCurrentFocus();

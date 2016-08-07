@@ -40,7 +40,7 @@ public class LocalPlaylistSongsSource extends ISongsSource
     }
 
     @Override
-    public Cursor getIds(float minBPM, float maxBPM)
+    public Cursor getIds(float minBPM, float maxBPM, String wordFilter)
     {
         Cursor cursor;
         int mMinBPMX10 = (int) (minBPM * 10);
@@ -63,7 +63,7 @@ public class LocalPlaylistSongsSource extends ISongsSource
                             " where " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " >= ?" +
                             " AND " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?" +
                             " AND " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? " +
-                            ((mWordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + mWordFilter + "%")) +
+                            ((wordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + wordFilter + "%")) +
                             order,
                     new String[]{Integer.toString(mMinBPMX10 - add * 10), Integer.toString(mMaxBPMX10 + add * 10), Long.toString(mId)}
             );
@@ -74,7 +74,7 @@ public class LocalPlaylistSongsSource extends ISongsSource
                     "select " + DatabaseHelper.PLAYLIST_SONG_ID + " as " + DatabaseHelper._ID + " from " + DatabaseHelper.TABLE_PLAYLISTS +
                             " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
                             " where " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? " +
-                            ((mWordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + mWordFilter + "%")) +
+                            ((wordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + wordFilter + "%")) +
                             order,
                     new String[]{Long.toString(mId)}
             );
