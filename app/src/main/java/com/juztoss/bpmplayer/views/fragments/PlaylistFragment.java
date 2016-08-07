@@ -31,6 +31,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
 
     private BPMPlayerApp mApp;
     private PlayerActivity mActivity;
+    private LinearLayoutManager mLayoutManager;
 
     public static PlaylistFragment newInstance(int playlistIndex)
     {
@@ -58,7 +59,8 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         RecyclerView list = (RecyclerView) getView().findViewById(R.id.listView);
         mPlaylistAdapter.setOnItemClickListener(this);
         list.setAdapter(mPlaylistAdapter);
-        list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        list.setLayoutManager(mLayoutManager);
     }
 
     private void showSongActivity(Composition composition)
@@ -97,6 +99,11 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         super.onStart();
         mPlaylistAdapter.updateList();
         onResumeFragment();
+    }
+
+    public void scrollTo(int position)
+    {
+        mLayoutManager.scrollToPositionWithOffset(position, 0);
     }
 
     @Override

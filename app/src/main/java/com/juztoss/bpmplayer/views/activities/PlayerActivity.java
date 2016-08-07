@@ -62,7 +62,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     private SeekBar mSeekbar;
     private RangeSeekBar<Integer> mRangeSeekbar;
     ViewPager mPlaylistsPager;
-    private FloatingActionButton fab;
+    private FloatingActionButton mFab;
     ActionBar mActionBar;
     private TextView mMinBPMField;
     private TextView mMaxBPMField;
@@ -78,10 +78,9 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     {
         super.onCreate(savedInstanceState);
 
-
         mApp = (BPMPlayerApp) getApplication();
         setContentView(R.layout.activity_main);
-        createFabs();
+        createFab();
         setupPager();
         setupActionBar();
         setupAllOtherUI();
@@ -101,10 +100,10 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         return mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
     }
 
-    private void createFabs()
+    private void createFab()
     {
-        fab = (FloatingActionButton) findViewById(R.id.btnAddToPlaylist);
-        fab.setOnClickListener(this);
+        mFab = (FloatingActionButton) findViewById(R.id.btnAddToPlaylist);
+        mFab.setOnClickListener(this);
     }
 
     @Override
@@ -229,16 +228,25 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         if (getCurrentViewedPlaylist().getSource().isModifyAvailable() || (getCurrentViewedPlaylist().getList() == null
                 || getCurrentViewedPlaylist().getList().getCount() <= MIN_AVAILABLE_SONGS_TO_SHOW_ADD_ICON))
         {
-            fab.show();
+            mFab.show();
         }
         else
-            fab.hide();
+            mFab.hide();
     }
 
     private void setupActionBar()
     {
         mActionBarLayout = getLayoutInflater().inflate(R.layout.action_bar, null);
         mSearchBarLayout = getLayoutInflater().inflate(R.layout.search_bar, null);
+
+        mActionBarLayout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                gotoTheCurrentlyPlayingSong();
+            }
+        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -395,6 +403,17 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             final InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
+        gotoTheCurrentlyPlayingSong();
+    }
+
+    private void gotoTheCurrentlyPlayingSong()
+    {
+        TabsAdapter adapter = (TabsAdapter) mPlaylistsPager.getAdapter();
+
+        if (playbackService() == null) return;
+
+        mPlaylistsPager.setCurrentItem(playbackService().getCurrentPlaylistIndex());
+        adapter.getCurrentFragment().scrollTo(playbackService().getCurrentSongIndex());
     }
 
     private void launchRenameDialog()

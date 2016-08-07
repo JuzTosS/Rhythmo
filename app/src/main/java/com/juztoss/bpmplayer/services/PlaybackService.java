@@ -67,6 +67,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private BPMPlayerApp mApp;
     private int mCurrentPlaylistIndex = 0;
     private int mCurrentSongIndex = 0;
+    private long mCurrentSongId = -1;
     private Queue<BaseAction> mQueue = new LinkedList<>();
 
     private BaseAction mActionInProgress;
@@ -126,15 +127,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
      */
     public long currentSongId()
     {
-        if (getSongsList() == null)
-        {
-            mCurrentPlaylistIndex = 0;
-            return -1;
-        }
-        if (mCurrentSongIndex < 0 || mCurrentSongIndex >= getSongsList().getCount()) return -1;
-
-        getSongsList().moveToPosition(mCurrentSongIndex);
-        return getSongsList().getLong(0);
+        return mCurrentSongId;
     }
 
     @Override
@@ -373,7 +366,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     @Override
     public void onPlaylistUpdated()
     {
-        mCurrentSongIndex = -1;
+        mCurrentSongIndex = -1;//TODO: find index of current song in the changed playlist
     }
 
     /**
@@ -528,11 +521,19 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     }
 
     /**
-     * Returns the id of the current song index in the current playlist
+     * Returns the index of the current song index in the current playlist
      */
     public int getCurrentSongIndex()
     {
         return mCurrentSongIndex;
+    }
+
+    /**
+     * Returns the index of the currently playing playlist
+     */
+    public int getCurrentPlaylistIndex()
+    {
+        return mCurrentPlaylistIndex;
     }
 
     /**
@@ -640,6 +641,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         public ActionPrepare(Composition composition)
         {
             mComposition = composition;
+            mCurrentSongId = composition.id();
         }
 
         @Override

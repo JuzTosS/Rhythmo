@@ -33,7 +33,7 @@ public class LocalPlaylistSongsSource extends ISongsSource
     @Override
     public String getName()
     {
-        if(mName == null || mName.isEmpty())
+        if (mName == null || mName.isEmpty())
             return mGeneratedName;
         else
             return mName;
@@ -48,9 +48,9 @@ public class LocalPlaylistSongsSource extends ISongsSource
         int add = mApp.getBPMFilterAdditionWindowSize();
 
         String order;
-        if(mSortType == SortType.NAME)
+        if (mSortType == SortType.NAME)
             order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_NAME;
-        else if(mSortType == SortType.BPM)
+        else if (mSortType == SortType.BPM)
             order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10;
         else//mSortType = SortType.DIRECTORY
             order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_PATH;
@@ -75,7 +75,7 @@ public class LocalPlaylistSongsSource extends ISongsSource
                             " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
                             " where " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? " +
                             ((mWordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + mWordFilter + "%")) +
-                           order,
+                            order,
                     new String[]{Long.toString(mId)}
             );
         }
@@ -135,11 +135,11 @@ public class LocalPlaylistSongsSource extends ISongsSource
 
         try
         {
-            if(cursor.getCount() > 0)
+            if (cursor.getCount() > 0)
             {
                 cursor.moveToFirst();
                 Composition composition = mApp.getComposition(cursor.getLong(0));
-                if(composition != null)
+                if (composition != null)
                     newGeneratedName = composition.getFolder();
             }
         }
