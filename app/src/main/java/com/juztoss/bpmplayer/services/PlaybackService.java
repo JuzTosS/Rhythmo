@@ -144,12 +144,22 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     }
 
     @Nullable
-    private Cursor getSongsList()
+    private Playlist getCurrentPlaylist()
     {
         if (mCurrentPlaylistIndex < 0 || mCurrentPlaylistIndex >= mApp.getPlaylists().size())
             return null;
         else
-            return mApp.getPlaylists().get(mCurrentPlaylistIndex).getList();
+            return mApp.getPlaylists().get(mCurrentPlaylistIndex);
+    }
+
+    @Nullable
+    private Cursor getSongsList()
+    {
+        Playlist playlist = getCurrentPlaylist();
+        if(playlist != null)
+            return getCurrentPlaylist().getList();
+        else
+            return null;
     }
 
     /**
@@ -366,7 +376,10 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     @Override
     public void onPlaylistUpdated()
     {
-        mCurrentSongIndex = -1;//TODO: find index of current song in the changed playlist
+        if(mCurrentSongId >= 0 && getCurrentPlaylist() != null)
+            mCurrentSongIndex = getCurrentPlaylist().findPositionById(mCurrentSongId);
+        else
+            mCurrentSongIndex = -1;
     }
 
     /**
