@@ -35,5 +35,6 @@
     <string name="sort_by_bpm">BPM</string>
     <string name="sort_by_folders">Directories</string>
     <string name="sort_dialog_title">Sort by</string>
+    <string name="sort">Sorting</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

@@ -11,7 +11,7 @@
         android:icon="@drawable/ic_sort_black_24dp"
         android:id="@+id/sort_menu"
         app:showAsAction="ifRoom"
-        android:title="@string/search">
+        android:title="@string/sort">
     </item>
     <item
         android:id="@+id/settings_menu"

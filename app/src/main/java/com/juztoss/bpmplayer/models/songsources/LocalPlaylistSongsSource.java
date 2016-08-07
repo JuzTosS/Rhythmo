@@ -53,7 +53,7 @@ public class LocalPlaylistSongsSource extends ISongsSource
         else if(mSortType == SortType.BPM)
             order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10;
         else//mSortType = SortType.DIRECTORY
-            order = "";
+            order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_PATH;
 
         if (mMinBPMX10 > 0 && mMaxBPMX10 > 0)//BPM Filter is enabled
         {

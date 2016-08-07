@@ -13,12 +13,13 @@ import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
  */
 public class AllSongsSource extends ISongsSource
 {
-
+    private SortType mSortType;
     private BPMPlayerApp mApp;
 
     AllSongsSource(BPMPlayerApp app)
     {
         mApp = app;
+        mSortType = SortType.values()[mApp.getSharedPreferences().getInt(BPMPlayerApp.ALL_SONGS_SORT, 0)];
     }
 
     @Override
@@ -27,6 +28,15 @@ public class AllSongsSource extends ISongsSource
         int mMinBPMX10 = (int)(minBPM * 10);
         int mMaxBPMX10 = (int)(maxBPM * 10);
         Cursor mList;
+
+        String order;
+        if(mSortType == SortType.NAME)
+            order = DatabaseHelper.MUSIC_LIBRARY_NAME;
+        else if(mSortType == SortType.BPM)
+            order = DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10;
+        else//mSortType = SortType.DIRECTORY
+            order = DatabaseHelper.MUSIC_LIBRARY_PATH;
+
         int add = mApp.getBPMFilterAdditionWindowSize();
         if (mMinBPMX10 > 0 && mMaxBPMX10 > 0)//BPM Filter is enabled
         {
@@ -36,7 +46,7 @@ public class AllSongsSource extends ISongsSource
                         + ((mWordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + mWordFilter + "%"))
                     , new String[]{Integer.toString(mMinBPMX10 - add * 10), Integer.toString(mMaxBPMX10 + add * 10)},
                     null, null,
-                    DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " ASC");
+                    order);
         }
         else
         {
@@ -45,7 +55,7 @@ public class AllSongsSource extends ISongsSource
                     (mWordFilter == null) ? null : DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + mWordFilter + "%")
                     , null,
                     null, null,
-                    DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " ASC");
+                    order);
         }
         return mList;
     }
@@ -95,13 +105,15 @@ public class AllSongsSource extends ISongsSource
     @Override
     public void setSortType(SortType sortType)
     {
-
+        mSortType = sortType;
+        mApp.getSharedPreferences().edit().putInt(BPMPlayerApp.ALL_SONGS_SORT, sortType.ordinal()).apply();
+        notifyUpdated();
     }
 
     @Override
     public SortType getSortType()
     {
-        return SortType.BPM;
+        return mSortType;
     }
 
     @Override

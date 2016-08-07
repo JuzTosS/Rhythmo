@@ -1,20 +1,21 @@
 package com.juztoss.bpmplayer.views.adapters;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.PlaybackService;
-import com.juztoss.bpmplayer.views.activities.SingleSongActivity;
+
+import org.w3c.dom.Text;
 
 import java.util.Locale;
 
@@ -34,12 +35,16 @@ public class SongElementHolder extends RecyclerView.ViewHolder
     private TextView mBpmLabel;
     private View mPlayingState;
     private int mPosition;
+    private View mHeader;
+    private TextView mHeaderLabel;
+    private LinearLayout mRoot;
     private IOnItemClickListener mListener;
     PopupMenu mPopupMenu;
 
-    public SongElementHolder(View view, IOnItemClickListener listener, boolean isModifyAvailable)
+    public SongElementHolder(View row, View header, IOnItemClickListener listener, boolean isModifyAvailable)
     {
-        super(view);
+        super(row);
+        mHeader = header;
         mApp = ((BPMPlayerApp) itemView.getContext().getApplicationContext());
         mListener = listener;
         itemView.setOnClickListener(new View.OnClickListener()
@@ -71,6 +76,8 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         mFirstLine = (TextView) itemView.findViewById(R.id.first_line);
         mSecondLine = (TextView) itemView.findViewById(R.id.second_line);
         mBpmLabel = (TextView) itemView.findViewById(R.id.bpm_label);
+        mRoot = (LinearLayout) itemView.findViewById(R.id.song_list_root);
+        mHeaderLabel = (TextView) mHeader.findViewById(R.id.folder_header);
         mPlayingState = itemView.findViewById(R.id.playing_state);
     }
 
@@ -95,7 +102,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder
 
     };
 
-    public void update(Composition composition, int position, PlaybackService service)
+    public void update(Composition composition, int position, PlaybackService service, boolean folderMode)
     {
         mComposition = composition;
         mPosition = position;
@@ -115,6 +122,30 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         mBpmLabel.setText(spannableString);
         boolean visible = service != null && service.currentSongId() == composition.id();
         mPlayingState.setVisibility(visible ? View.VISIBLE : View.GONE);
+
+        if (folderMode)
+            addFolder(composition);
+        else
+            removeFolder();
+    }
+
+    private void removeFolder()
+    {
+        if (mRoot.getChildAt(0) == mHeader)
+        {
+            mRoot.removeViewAt(0);
+            mRoot.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, mApp.getResources().getDisplayMetrics());
+        }
+    }
+
+    private void addFolder(Composition composition)
+    {
+        if (mRoot.getChildAt(0) != mHeader)
+        {
+            mRoot.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, mApp.getResources().getDisplayMetrics());
+            mRoot.addView(mHeader, 0);
+        }
+        mHeaderLabel.setText(composition.getFolder());
     }
 
     public void setVisible(boolean visible)

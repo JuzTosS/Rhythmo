@@ -29,6 +29,10 @@ public class Composition
     {
         return mAbsolutePath;
     }
+    public String getFolderPath()
+    {
+        return mFolderName;
+    }
 
     public String name()
     {

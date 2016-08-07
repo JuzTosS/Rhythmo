@@ -26,6 +26,7 @@ public class BPMPlayerApp extends Application
 {
     public static final String FIRST_RUN = "FirstRun";
     public static final String LIBRARY_BUILD_STARTED = "LibraryBuildStarted";
+    public static final String ALL_SONGS_SORT = "AllSongsSort";
 
     public static float MIN_BPM = 50;
     public static float MAX_BPM = 150;

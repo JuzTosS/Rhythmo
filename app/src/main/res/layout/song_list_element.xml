@@ -4,12 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:style="http://schemas.android.com/apk/res-auto">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/background"
+        android:id="@+id/song_list_root"
         android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
@@ -25,15 +26,15 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:orientation="vertical"
-                android:gravity="center_horizontal">
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/bpm_label"
+                    style="@style/BPMLabelTextAppearance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/foreground"
-                    style="@style/BPMLabelTextAppearance"/>
+                    android:textColor="@color/foreground"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -68,17 +69,17 @@
 
                     <TextView
                         android:id="@+id/first_line"
+                        style="@style/SongNameTextAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/SongNameTextAppearance"
                         android:textColor="@color/foregroundDark"
                         />
 
                     <TextView
                         android:id="@+id/second_line"
+                        style="@style/SongDescriptionTextAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/SongDescriptionTextAppearance"
                         android:textColor="@color/foreground"
                         />
 

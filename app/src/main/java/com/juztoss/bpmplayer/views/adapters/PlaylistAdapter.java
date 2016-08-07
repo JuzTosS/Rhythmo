@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.juztoss.bpmplayer.R;
 import com.juztoss.bpmplayer.models.Composition;
 import com.juztoss.bpmplayer.models.Playlist;
+import com.juztoss.bpmplayer.models.songsources.SortType;
 import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
 import com.juztoss.bpmplayer.services.PlaybackService;
 import com.juztoss.bpmplayer.views.activities.PlayerActivity;
@@ -62,8 +63,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     public SongElementHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         LayoutInflater inflater = (LayoutInflater.from(mActivity));
-        View v = inflater.inflate(R.layout.song_list_element, null);
-        return new SongElementHolder(v, this, mPlaylist.getSource().isModifyAvailable());
+        View row = inflater.inflate(R.layout.song_list_element, null);
+        View header = inflater.inflate(R.layout.song_list_folder_header, null);
+        return new SongElementHolder(row, header, this, mPlaylist.getSource().isModifyAvailable());
     }
 
     @Override
@@ -80,13 +82,33 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
         mCurentCursor.moveToPosition(position);
         final long songId = mCurentCursor.getLong(0);
         Composition composition = mApp.getComposition(songId);
+
         if (composition == null)
         {
             holder.setVisible(false);
             return;
         }
 
-        holder.update(composition, position, mActivity.playbackService());
+        boolean folderMode = false;
+
+        if (mPlaylist.getSource().getSortType() == SortType.DIRECTORY)
+        {
+            int prevPosition = position - 1;
+            if (prevPosition < 0)
+            {
+                folderMode = true;
+            }
+            else
+            {
+                mCurentCursor.moveToPosition(prevPosition);
+                long prevSongId = mCurentCursor.getLong(0);
+                Composition prevComposition = mApp.getComposition(prevSongId);
+
+                if (prevComposition != null)
+                    folderMode = !prevComposition.getFolderPath().equals(composition.getFolderPath());
+            }
+        }
+        holder.update(composition, position, mActivity.playbackService(), folderMode);
     }
 
     @Override

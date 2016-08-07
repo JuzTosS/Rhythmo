@@ -439,6 +439,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
                         dialog.cancel();
                     }
                 });
+
         builder.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener()
         {
             @Override
