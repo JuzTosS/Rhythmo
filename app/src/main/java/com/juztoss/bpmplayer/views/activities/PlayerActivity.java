@@ -31,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -367,6 +368,9 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         parent.setContentInsetsAbsolute(0, 0);
 
         invalidateOptionsMenu();
+        editText.requestFocus();
+        final InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
     }
 
     private void enableDefaultActionBarAndDisableSearch()
@@ -385,6 +389,12 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         getCurrentViewedPlaylist().getSource().setWordFilter(null);
 
         invalidateOptionsMenu();
+        View view = this.getCurrentFocus();
+        if (view != null)
+        {
+            final InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
     }
 
     private void launchRenameDialog()
