@@ -27,6 +27,7 @@ import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.format.DateUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -736,8 +737,14 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         List<Playlist> playlists = mApp.getPlaylists();
+        int tabsCount = tabLayout.getTabCount();
         for (int index = 0; index < playlists.size(); index++)
         {
+            if(index >= tabsCount)
+            {
+                Log.e(this.getClass().toString(), "Trying to update tab that doesn't exist");
+                return;
+            }
             TabLayout.Tab tab = tabLayout.getTabAt(index);
             tab.setText(playlists.get(index).getName());
         }

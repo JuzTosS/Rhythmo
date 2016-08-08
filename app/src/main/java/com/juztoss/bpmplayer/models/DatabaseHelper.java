@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
+import com.juztoss.bpmplayer.presenters.BPMPlayerApp;
+
 /**
  * Created by JuzTosS on 5/8/2016.
  */
@@ -51,9 +53,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
     public static final String PLAYLIST_SOURCE_ID = "source_id";
     public static final String PLAYLIST_POSITION = "position";
 
+    private Context mContext;
+
     public DatabaseHelper(Context context)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        mContext = context;
     }
 
     @Override
@@ -110,5 +115,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_PLAYLISTS + "';");
 
         onCreate(db);
+
+        //TODO: Remove it after beta release
+        {
+            ((BPMPlayerApp) mContext).getSharedPreferences().edit().putBoolean(BPMPlayerApp.FIRST_RUN, true).commit();
+            ((BPMPlayerApp) mContext).getSharedPreferences().edit().putBoolean(BPMPlayerApp.LIBRARY_BUILD_STARTED, true).commit();
+        }
     }
 }
