@@ -1,7 +1,8 @@
-# BPMPlayer
-This is app on that i'm learning android development. 
+# Rhythmo Player
+This is the application on that i'm learning android development. 
 
 ##Overview
+The idea is to create an audio player that can provide songs to the user by BPM
 
 [VK group](https://new.vk.com/rhythmoplayer)
 
