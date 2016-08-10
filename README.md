@@ -21,12 +21,6 @@ The idea is to create an audio player that can provide songs to the user by BPM
 ## Participate in alpha testing
 If you want to participate in alpa testing, please follow the [link](https://play.google.com/apps/testing/com.juztoss.bpmplayer.dev)
 
-## Participate in development
-
-
-### Build
-
-### Run tests
 
 ## License
 [MIT](https://github.com/JuzTosS/BPMPlayer/blob/master/LICENSE.md) (C) Kirill Akhmetov
