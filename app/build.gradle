@@ -2,7 +2,7 @@ apply plugin: 'com.android.model.application'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def superpowered_sdk_path = properties.getProperty('superpowered.dir')
+def superpowered_sdk_path = "/libs/Superpowered"
 
 model {
     repositories {

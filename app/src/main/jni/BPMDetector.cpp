@@ -56,26 +56,14 @@ extern "C" JNIEXPORT jdouble Java_com_juztoss_rhythmo_audio_BpmDetector_detect(J
     };
 
     // Get the result.
-    unsigned char *averageWaveform = NULL, *lowWaveform = NULL, *midWaveform = NULL, *highWaveform = NULL, *peakWaveform = NULL, *notes = NULL;
-    int waveformSize, keyIndex;
-    char *overviewWaveform = NULL;
-    float loudpartsAverageDecibel, peakDecibel, bpm, averageDecibel, beatgridStartMs = 0;
-    analyzer->getresults(&averageWaveform, &peakWaveform, &lowWaveform, &midWaveform, &highWaveform, &notes, &waveformSize, &overviewWaveform, &averageDecibel, &loudpartsAverageDecibel, &peakDecibel, &bpm, &beatgridStartMs, &keyIndex);
+    float bpm;
+    analyzer->getresults(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &bpm,  NULL, NULL);
 
     // Cleanup.
     delete decoder;
     delete analyzer;
     free(intBuffer);
     free(floatBuffer);
-
-    // Done with the result, free memory.
-    if (averageWaveform) free(averageWaveform);
-    if (lowWaveform) free(lowWaveform);
-    if (midWaveform) free(midWaveform);
-    if (highWaveform) free(highWaveform);
-    if (peakWaveform) free(peakWaveform);
-    if (notes) free(notes);
-    if (overviewWaveform) free(overviewWaveform);
 
     return bpm;
 }
