@@ -186,7 +186,7 @@ static AdvancedMediaPlayer *getPlayer(jobject *instance, JNIEnv *env) {
     return NULL;
 }
 
-extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_releaseNative(JNIEnv *env, jobject instance) {
+extern "C" JNIEXPORT void Java_com_juztoss_rhythmo_audio_AdvancedMediaPlayer_releaseNative(JNIEnv *env, jobject instance) {
     jclass cls = env->GetObjectClass(instance);
     jmethodID method = env->GetMethodID(cls, "getIdJNI", "()I");
     int id = env->CallIntMethod(instance, method);
@@ -196,7 +196,7 @@ extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_r
     delete player;
 }
 
-extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_init(JNIEnv *env,
+extern "C" JNIEXPORT void Java_com_juztoss_rhythmo_audio_AdvancedMediaPlayer_init(JNIEnv *env,
                                                                                     jobject instance,
                                                                                     jint samplerate,
                                                                                     jint buffersize) {
@@ -215,7 +215,7 @@ extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_i
 //    }
 }
 
-extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_setSource(JNIEnv *env,
+extern "C" JNIEXPORT void Java_com_juztoss_rhythmo_audio_AdvancedMediaPlayer_setSource(JNIEnv *env,
                                                                                          jobject instance,
                                                                                          jstring source) {
     if (source == NULL) {
@@ -232,38 +232,38 @@ extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_s
 
 }
 
-extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_play(JNIEnv *env,
+extern "C" JNIEXPORT void Java_com_juztoss_rhythmo_audio_AdvancedMediaPlayer_play(JNIEnv *env,
                                                                                     jobject instance) {
     AdvancedMediaPlayer *player = getPlayer(&instance, env);
     player->play();
 }
 
-extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_pause(JNIEnv *env,
+extern "C" JNIEXPORT void Java_com_juztoss_rhythmo_audio_AdvancedMediaPlayer_pause(JNIEnv *env,
                                                                                      jobject instance) {
     AdvancedMediaPlayer *player = getPlayer(&instance, env);
     player->pause();
 }
 
-extern "C" JNIEXPORT jint Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_getDuration(JNIEnv *env,
+extern "C" JNIEXPORT jint Java_com_juztoss_rhythmo_audio_AdvancedMediaPlayer_getDuration(JNIEnv *env,
                                                                                            jobject instance) {
     AdvancedMediaPlayer *player = getPlayer(&instance, env);
     return (jint) player->getDuration();
 }
 
-extern "C" JNIEXPORT jint Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_getPosition(JNIEnv *env,
+extern "C" JNIEXPORT jint Java_com_juztoss_rhythmo_audio_AdvancedMediaPlayer_getPosition(JNIEnv *env,
                                                                                            jobject instance) {
     AdvancedMediaPlayer *player = getPlayer(&instance, env);
     return (jint) player->getPosition();
 }
 
-extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_setPosition(JNIEnv *env,
+extern "C" JNIEXPORT void Java_com_juztoss_rhythmo_audio_AdvancedMediaPlayer_setPosition(JNIEnv *env,
                                                                                            jobject instance,
                                                                                            jint offset) {
     AdvancedMediaPlayer *player = getPlayer(&instance, env);
     player->setPosition((unsigned int) offset);
 }
 
-extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_setBPM(JNIEnv *env,
+extern "C" JNIEXPORT void Java_com_juztoss_rhythmo_audio_AdvancedMediaPlayer_setBPM(JNIEnv *env,
                                                                                       jobject instance,
                                                                                       jdouble bpm) {
     AdvancedMediaPlayer *player = getPlayer(&instance, env);
@@ -271,7 +271,7 @@ extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_s
 
 }
 
-extern "C" JNIEXPORT void Java_com_juztoss_bpmplayer_audio_AdvancedMediaPlayer_setNewBPM(JNIEnv *env,
+extern "C" JNIEXPORT void Java_com_juztoss_rhythmo_audio_AdvancedMediaPlayer_setNewBPM(JNIEnv *env,
                                                                                          jobject instance,
                                                                                          jdouble bpm) {
     AdvancedMediaPlayer *player = getPlayer(&instance, env);

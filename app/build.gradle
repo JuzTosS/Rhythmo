@@ -30,7 +30,6 @@ model {
         buildToolsVersion = "23.0.3"
 
         defaultConfig {
-            applicationId "com.juztoss.bpmplayer"
             minSdkVersion.apiLevel = 16
             targetSdkVersion.apiLevel = 23
             versionCode 7
@@ -50,10 +49,10 @@ model {
 
         productFlavors {
             create("dev") {
-                applicationId "com.juztoss.bpmplayer.dev"
+                applicationId "com.juztoss.rhythmo.dev"
             }
             create("prod") {
-                applicationId "com.juztoss.bpmplayer"
+                applicationId "com.juztoss.rhythmo"
             }
         }
     }

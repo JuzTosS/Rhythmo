@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.juztoss.bpmplayer.views.items.BPMShiftPickerPreference
+    <com.juztoss.rhythmo.views.items.BPMShiftPickerPreference
         android:title="@string/pref_bpm_auto_shift_range"
         android:key="@string/pref_bpm_auto_shift_range"
         android:summary="@string/pref_bpm_auto_shift_range_desc"

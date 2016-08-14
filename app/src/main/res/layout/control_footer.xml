@@ -169,7 +169,7 @@
                         android:textStyle="bold"/>
                 </LinearLayout>
 
-                <com.juztoss.bpmplayer.views.items.RangeSeekBar
+                <com.juztoss.rhythmo.views.items.RangeSeekBar
                     android:id="@+id/bpm_ranger"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
