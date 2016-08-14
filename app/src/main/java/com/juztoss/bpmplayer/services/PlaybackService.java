@@ -288,12 +288,6 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         Log.d(getClass().toString(), "onCreate()");
         mApp = (BPMPlayerApp) getApplicationContext();
         initPlayer();
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-        mNoisyReceiverRegistered = true;
-        registerReceiver(mNoisyReceiver, filter);
-
         super.onCreate();
     }
 
@@ -336,7 +330,20 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             }
         }
 
+        registerNoisyReceiver();
+
         return START_NOT_STICKY;
+    }
+
+    private void registerNoisyReceiver()
+    {
+        if(!mNoisyReceiverRegistered)
+        {
+            mNoisyReceiverRegistered = true;
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+            registerReceiver(mNoisyReceiver, filter);
+        }
     }
 
     private void initPlayer()
