@@ -4,17 +4,17 @@ This is the application on that i'm learning android development.
 ##Overview
 The idea is to create an audio player that can provide songs to the user by BPM
 
-[VK group](https://new.vk.com/rhythmoplayer)
+[VK group(Russian!)](https://new.vk.com/rhythmoplayer)
 
-##Feauters
+##Features
  - Auto detecting songs BPM
  - Filter songs by BPM
  - Time stretching
  - Custom playlists
  - Textual search
- - Auto time stretching songs to be fit in filter paramters
+ - Auto time stretching songs to be fit in filter parameters
 
-##Feauters to be done
+##Features to be done
  - Playing music from vk.com
 
 
