@@ -1,13 +1,22 @@
 package com.juztoss.rhythmo.models;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.juztoss.rhythmo.models.songsources.ISongsSource;
+import com.juztoss.rhythmo.models.songsources.SortType;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
+import com.juztoss.rhythmo.utils.CursorList;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by JuzTosS on 5/8/2016.
@@ -72,17 +81,41 @@ public class Playlist implements ISongsSource.ISourceUpdatedListener
         setNeedRebuild();
     }
 
-    public int findPositionById(long id) //TODO: Implement smarter and faster search
+    public int findPositionById(long id)
     {
         Cursor cursor = getList();
         if(cursor == null) return -1;
         while (cursor.moveToNext())
         {
             if(cursor.getLong(0) == id)
+            {
                 return cursor.getPosition();
+            }
         }
+
         return -1;
     }
+
+    //This binary search works slower than simple iterating because we need make requests to the DB
+//    public int findPositionById(long id)
+//    {
+//        Cursor cursor = getList();
+//        if(cursor == null || cursor.getCount() <= 0) return -1;
+//        CursorList cursorList = new CursorList(cursor, mApp);
+//        return Collections.binarySearch(cursorList, mApp.getComposition(id), new Comparator<Composition>()
+//        {
+//            @Override
+//            public int compare(Composition lhs, Composition rhs)
+//            {
+//                if(getSource().getSortType() == SortType.NAME)
+//                    return lhs.name().compareTo(rhs.name());
+//                else if(getSource().getSortType() == SortType.BPM)
+//                    return Float.compare(lhs.bpm(), rhs.bpm());
+//                else
+//                    return lhs.getAbsolutePath().compareTo(rhs.getAbsolutePath());
+//            }
+//        });
+//    }
 
     @Nullable
     public Cursor getList()
