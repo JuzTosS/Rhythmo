@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.juztoss.rhythmo.R;
+import com.juztoss.rhythmo.audio.AdvancedMediaPlayer;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.models.DatabaseHelper;
 import com.juztoss.rhythmo.models.Playlist;
@@ -22,6 +23,10 @@ import java.util.List;
  */
 public class RhythmoApp extends Application
 {
+    static {
+        System.loadLibrary(AdvancedMediaPlayer.LIBRARY_NAME);
+    }
+
     public static final String FIRST_RUN = "FirstRun";
     public static final String LIBRARY_BUILD_STARTED = "LibraryBuildStarted";
     public static final String ALL_SONGS_SORT = "AllSongsSort";
