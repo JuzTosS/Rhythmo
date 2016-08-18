@@ -320,6 +320,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
                 {
                     int playlistIndex = intent.getIntExtra(ACTION_PLAYLIST_INDEX, 0);
                     int playlistPosition = intent.getIntExtra(ACTION_PLAYLIST_POSITION, 0);
+                    clearQueue();
                     setSource(playlistIndex, playlistPosition);
                     startPlayback();
                 }
