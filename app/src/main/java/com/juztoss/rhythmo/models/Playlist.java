@@ -1,27 +1,18 @@
 package com.juztoss.rhythmo.models;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.juztoss.rhythmo.models.songsources.ISongsSource;
-import com.juztoss.rhythmo.models.songsources.SortType;
+import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
-import com.juztoss.rhythmo.utils.CursorList;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by JuzTosS on 5/8/2016.
  */
-public class Playlist implements ISongsSource.ISourceUpdatedListener
+public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListener
 {
     protected RhythmoApp mApp;
     protected float mMinBPM = 0;
@@ -29,10 +20,10 @@ public class Playlist implements ISongsSource.ISourceUpdatedListener
     protected Cursor mList;
     protected boolean mNeedRebuild = true;
     private List<IUpdateListener> mUpdateListeners;
-    private ISongsSource mSource;
+    private AbstractSongsSource mSource;
     protected String mWordFilter;
 
-    public Playlist(RhythmoApp app, ISongsSource source)
+    public Playlist(RhythmoApp app, AbstractSongsSource source)
     {
         mApp = app;
         setSource(source);
@@ -44,7 +35,7 @@ public class Playlist implements ISongsSource.ISourceUpdatedListener
         setNeedRebuild();
     }
 
-    public void setSource(ISongsSource source)
+    public void setSource(AbstractSongsSource source)
     {
         if(mSource != null)
             mSource.setUpdateListener(null);
@@ -54,7 +45,7 @@ public class Playlist implements ISongsSource.ISourceUpdatedListener
         setNeedRebuild();
     }
 
-    public ISongsSource getSource()
+    public AbstractSongsSource getSource()
     {
         return mSource;
     }

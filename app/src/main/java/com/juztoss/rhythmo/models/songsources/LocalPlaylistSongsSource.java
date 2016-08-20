@@ -12,7 +12,7 @@ import com.juztoss.rhythmo.presenters.RhythmoApp;
 /**
  * Created by JuzTosS on 6/22/2016.
  */
-public class LocalPlaylistSongsSource extends ISongsSource
+public class LocalPlaylistSongsSource extends AbstractSongsSource
 {
     private long mId;
     private String mName;

@@ -16,13 +16,13 @@ public class SourcesFactory
     private static int FOLDER_SOURCE = 2;
 
     @Nullable
-    public static ISongsSource loadExist(RhythmoApp app, long id)
+    public static AbstractSongsSource loadExist(RhythmoApp app, long id)
     {
         Cursor sources = app.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_SOURCES,
                 new String[]{DatabaseHelper._ID, DatabaseHelper.SOURCE_NAME, DatabaseHelper.SOURCE_TYPE, DatabaseHelper.SOURCE_OPTIONS, DatabaseHelper.SOURCE_SORT},
                 DatabaseHelper._ID + " = ?", new String[]{Long.toString(id)}, null, null, null);
 
-        ISongsSource result = null;
+        AbstractSongsSource result = null;
         try
         {
             int idIndex = sources.getColumnIndex(DatabaseHelper._ID);

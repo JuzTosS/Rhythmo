@@ -41,7 +41,7 @@ import android.widget.TextView;
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.models.Playlist;
-import com.juztoss.rhythmo.models.songsources.ISongsSource;
+import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
 import com.juztoss.rhythmo.models.songsources.SortType;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.BuildMusicLibraryService;
@@ -129,7 +129,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 //            }
 //            else
 //            {
-            ISongsSource source = playlist.getSource();
+            AbstractSongsSource source = playlist.getSource();
             for (String path : foldersPaths)
             {
                 source.add(mApp.getMusicLibraryHelper().getSongIdsCursor(path, true));
