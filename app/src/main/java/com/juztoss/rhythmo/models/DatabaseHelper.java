@@ -104,6 +104,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         clearAll(db);
+
+        //TODO: Remove it after beta release
+        {
+            ((RhythmoApp) mContext).getSharedPreferences().edit().putBoolean(RhythmoApp.FIRST_RUN, true).commit();
+            ((RhythmoApp) mContext).getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_STARTED, false).commit();
+        }
     }
 
     public void clearAll(SQLiteDatabase db)
@@ -115,11 +121,5 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_PLAYLISTS + "';");
 
         onCreate(db);
-
-        //TODO: Remove it after beta release
-        {
-            ((RhythmoApp) mContext).getSharedPreferences().edit().putBoolean(RhythmoApp.FIRST_RUN, true).commit();
-            ((RhythmoApp) mContext).getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_STARTED, true).commit();
-        }
     }
 }

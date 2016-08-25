@@ -295,9 +295,9 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
     private void tryToDoFirstRunService()
     {
-        if (mApp.getSharedPreferences().getBoolean(RhythmoApp.LIBRARY_BUILD_STARTED, true))
+        if (!mApp.getSharedPreferences().getBoolean(RhythmoApp.LIBRARY_BUILD_STARTED, false))
         {
-            mApp.getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_STARTED, false).commit();
+            mApp.getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_STARTED, true).commit();
             Intent intent = new Intent(getApplicationContext(), BuildMusicLibraryService.class);
             getApplicationContext().startService(intent);
         }

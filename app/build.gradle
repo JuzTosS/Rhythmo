@@ -57,7 +57,7 @@ model {
         }
     }
 
-    android.ndk { // your application's native layer parameters
+    android.ndk {
         moduleName = "AdvancedMediaPlayer"
         toolchain "clang"
         platformVersion = 16

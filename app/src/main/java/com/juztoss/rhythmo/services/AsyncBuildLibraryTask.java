@@ -4,12 +4,14 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 
 import com.juztoss.rhythmo.models.DatabaseHelper;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
@@ -29,17 +31,25 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     private final int MAX_PROGRESS_VALUE = 1000000;
     private RhythmoApp mApp;
     private boolean mClear;
+    @Nullable
+    private String mFolder;
     public ArrayList<OnBuildLibraryProgressUpdate> mBuildLibraryProgressUpdate;
 
     private int mOverallProgress = 0;
 
     private PowerManager.WakeLock wakeLock;
 
-    public AsyncBuildLibraryTask(RhythmoApp app, boolean clear)
+    public AsyncBuildLibraryTask(RhythmoApp app, boolean clear, @Nullable String folder)
     {
         mApp = app;
         mClear = clear;
+        mFolder = folder;
         mBuildLibraryProgressUpdate = new ArrayList<>();
+    }
+
+    public AsyncBuildLibraryTask(RhythmoApp app, boolean clear)
+    {
+        this(app, clear, null);
     }
 
     public interface OnBuildLibraryProgressUpdate
@@ -100,6 +110,9 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         ContentResolver contentResolver = mApp.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
+        if(mFolder != null)
+            selection += " AND " + MediaStore.Audio.Media.DATA + " LIKE " + DatabaseUtils.sqlEscapeString(mFolder + "%");
+
 
         return contentResolver.query(uri, projection, selection, null, null);
     }

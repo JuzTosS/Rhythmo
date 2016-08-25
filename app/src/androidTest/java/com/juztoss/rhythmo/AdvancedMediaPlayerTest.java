@@ -1,7 +1,6 @@
 package com.juztoss.rhythmo;
 
-import android.database.Cursor;
-import android.provider.MediaStore;
+import android.os.Environment;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 
@@ -27,29 +26,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         mPlayer2 = new AdvancedMediaPlayer(48000, 500);
         assertNotNull("Setup first player failed", mPlayer);
         assertNotNull("Setup second player failed", mPlayer2);
-
-        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
-
-        String[] projection = {
-                MediaStore.Audio.Media.DATA,
-        };
-
-        Cursor cursor = getInstrumentation().getContext().getContentResolver().query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                null,
-                null);
-
-        while(cursor.moveToNext()) {
-            String audioPath = cursor.getString(0);
-            if(audioPath.toLowerCase().endsWith(".mp3"))
-            {
-                mPath = cursor.getString(0);
-                break;
-            }
-        }
-        cursor.close();
+        mPath = Environment.getExternalStorageDirectory() + "/" + TestSuite.MUSIC_FOLDER + "/audio220.mp3";
     }
 
     @Override
@@ -184,7 +161,8 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
     public void testPlayback() throws Exception
     {
         final CountDownLatch signal = new CountDownLatch(2);
-        Runnable run1 = new Runnable(){
+        Runnable run1 = new Runnable()
+        {
             @Override
             public void run()
             {
@@ -195,11 +173,12 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                    assertTrue("Exception during playback",false);
+                    assertTrue("Exception during playback", false);
                 }
             }
         };
-        Runnable run2 = new Runnable(){
+        Runnable run2 = new Runnable()
+        {
             @Override
             public void run()
             {
@@ -210,7 +189,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                    assertTrue("Exception during playback",false);
+                    assertTrue("Exception during playback", false);
                 }
             }
         };
