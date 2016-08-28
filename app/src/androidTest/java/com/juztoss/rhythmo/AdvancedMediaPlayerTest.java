@@ -26,7 +26,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         mPlayer2 = new AdvancedMediaPlayer(48000, 500);
         assertNotNull("Setup first player failed", mPlayer);
         assertNotNull("Setup second player failed", mPlayer2);
-        mPath = Environment.getExternalStorageDirectory() + "/" + TestSuite.MUSIC_FOLDER + "/audio220.mp3";
+        mPath = Environment.getExternalStorageDirectory() + "/" + TestSuite.MUSIC_FOLDER + "/audio440.mp3";
     }
 
     @Override
@@ -114,7 +114,6 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
     public void doPlayback(AdvancedMediaPlayer player, CountDownLatch playbackFinished) throws Exception
     {
         final CountDownLatch signal = new CountDownLatch(1);
-        final AdvancedMediaPlayer playerClosure = player;
         player.setOnErrorListener(new AdvancedMediaPlayer.OnErrorListener()
         {
             @Override
@@ -198,6 +197,85 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         new Thread(run2).start();
         signal.await(5, TimeUnit.SECONDS);
         assertTrue("Non zero signal count!", signal.getCount() == 0);
+    }
+
+    public void testPlaybackPauseThenTheSamePlayback() throws Exception
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            playbackPauseThenTheSamePlaybackStep(i);
+        }
+    }
+
+    public void playbackPauseThenTheSamePlaybackStep(int iteration) throws Exception
+    {
+        final CountDownLatch signal = new CountDownLatch(1);
+        Runnable run = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    final CountDownLatch signalPlayer1 = new CountDownLatch(1);
+                    final CountDownLatch signalPlayer2 = new CountDownLatch(2);
+                    mPlayer.setOnErrorListener(new AdvancedMediaPlayer.OnErrorListener()
+                    {
+                        @Override
+                        public void onError(String message)
+                        {
+                            Log.d("DEBUG", "Error message is: " + message);
+                            assertTrue("OnError must haven't been called for source: ", false);
+                            signal.countDown();
+                        }
+                    });
+                    mPlayer.setOnPreparedListener(new AdvancedMediaPlayer.OnPreparedListener()
+                    {
+                        @Override
+                        public void onPrepared()
+                        {
+                            mPlayer.setBPM(100);
+                            mPlayer.setNewBPM(100);
+                            signalPlayer1.countDown();
+                            signalPlayer2.countDown();
+                        }
+                    });
+                    mPlayer.setOnEndListener(new AdvancedMediaPlayer.OnEndListener()
+                    {
+                        @Override
+                        public void onEnd()
+                        {
+                            assertTrue("OnPrepared must haven't been called", false);
+                            signal.countDown();
+                        }
+                    });
+                    mPlayer.setSource(mPath);
+                    signalPlayer1.await(5, TimeUnit.SECONDS);
+                    mPlayer.play();
+                    Thread.sleep(1000);
+                    mPlayer.pause();
+                    Thread.sleep(1000);
+                    mPlayer.setPosition(0);
+                    mPlayer.setPosition(10);
+                    mPlayer.setPosition(10);
+                    mPlayer.setSource(mPath);
+                    signalPlayer2.await(5, TimeUnit.SECONDS);
+
+                    assertTrue("Non zero signal1 count!", signalPlayer1.getCount() == 0);
+                    assertTrue("Non zero signal2 count!", signalPlayer2.getCount() == 0);
+                    signal.countDown();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    assertTrue("Exception during playback", false);
+                }
+            }
+        };
+        new Thread(run).start();
+
+        signal.await(5, TimeUnit.SECONDS);
+        assertTrue("Non zero signal count! for iteration: " + iteration, signal.getCount() == 0);
     }
 
     public void testBPM() throws Exception
