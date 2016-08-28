@@ -4,7 +4,7 @@
         android:title="@string/pref_bpm_auto_shift_range"
         android:key="@string/pref_bpm_auto_shift_range"
         android:summary="@string/pref_bpm_auto_shift_range_desc"
-        android:defaultValue="55"
+        android:defaultValue="0"
         android:negativeButtonText="@string/dialog_cancel"
         android:positiveButtonText="@string/dialog_ok"
         />
