@@ -225,9 +225,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
     private void updateFab()
     {
-        final int MIN_AVAILABLE_SONGS_TO_SHOW_ADD_ICON = 3;
-        if (getCurrentViewedPlaylist().getSource().isModifyAvailable() || (getCurrentViewedPlaylist().getList() == null
-                || getCurrentViewedPlaylist().getList().getCount() <= MIN_AVAILABLE_SONGS_TO_SHOW_ADD_ICON))
+        if (getCurrentViewedPlaylist().getSource().isModifyAvailable())
         {
             mFab.show();
         }
