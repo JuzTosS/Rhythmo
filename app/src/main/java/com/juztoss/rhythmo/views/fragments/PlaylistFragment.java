@@ -30,8 +30,8 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     private PlaylistAdapter mPlaylistAdapter;
 
     private RhythmoApp mApp;
-    private PlayerActivity mActivity;
     private LinearLayoutManager mLayoutManager;
+    private int mScrollOnCreateToPosition = -1;
 
     public static PlaylistFragment newInstance(int playlistIndex)
     {
@@ -53,7 +53,6 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         int playlistIndex = arguments.getInt(PLAYLIST_INDEX, -1);
         if (playlistIndex < 0) return;
 
-        mActivity = ((PlayerActivity) getActivity());
         mPlaylistIndex = playlistIndex;
         mPlaylistAdapter = new PlaylistAdapter((PlayerActivity) getActivity(), mApp.getPlaylists().get(playlistIndex));
         RecyclerView list = (RecyclerView) getView().findViewById(R.id.listView);
@@ -61,6 +60,11 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         list.setAdapter(mPlaylistAdapter);
         mLayoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(mLayoutManager);
+        if(mScrollOnCreateToPosition >= 0)
+        {
+            scrollTo(mScrollOnCreateToPosition);
+            mScrollOnCreateToPosition = -1;
+        }
     }
 
     private void showSongActivity(Composition composition)
@@ -103,7 +107,10 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
 
     public void scrollTo(int position)
     {
-        mLayoutManager.scrollToPositionWithOffset(position, 0);
+        if(mLayoutManager != null)
+            mLayoutManager.scrollToPositionWithOffset(position, 0);
+        else
+            mScrollOnCreateToPosition = position;
     }
 
     @Override

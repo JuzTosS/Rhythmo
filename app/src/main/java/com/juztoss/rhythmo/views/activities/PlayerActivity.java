@@ -73,6 +73,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             ActionBar.LayoutParams.MATCH_PARENT);
     private View mSearchBarLayout;
     private View mActionBarLayout;
+    private boolean mNeedToGoToTheCurrentSong = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -94,6 +95,12 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     {
         super.onServiceConnected();
         updateAll();
+
+        if(mNeedToGoToTheCurrentSong)
+        {
+            mNeedToGoToTheCurrentSong = false;
+            gotoTheCurrentlyPlayingSong();
+        }
     }
 
     private Playlist getCurrentViewedPlaylist()
@@ -279,6 +286,8 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
                 tryToDoFirstRunService();
             }
         }
+
+        mNeedToGoToTheCurrentSong = !gotoTheCurrentlyPlayingSong();
     }
 
     @Override
@@ -405,14 +414,19 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         gotoTheCurrentlyPlayingSong();
     }
 
-    private void gotoTheCurrentlyPlayingSong()
+    /**
+     *
+     * @return true if successfully positioned on the currently playing song
+     */
+    private boolean gotoTheCurrentlyPlayingSong()
     {
         TabsAdapter adapter = (TabsAdapter) mPlaylistsPager.getAdapter();
 
-        if (playbackService() == null) return;
+        if (playbackService() == null) return false;
 
         mPlaylistsPager.setCurrentItem(playbackService().getCurrentPlaylistIndex());
         adapter.getCurrentFragment().scrollTo(playbackService().getCurrentSongIndex());
+        return true;
     }
 
     private void launchRenameDialog()
