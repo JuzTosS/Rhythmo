@@ -57,7 +57,7 @@ extern "C" JNIEXPORT jdouble Java_com_juztoss_rhythmo_audio_BpmDetector_detect(J
 
     // Get the result.
     float bpm;
-    analyzer->getresults(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &bpm,  NULL, NULL);
+    analyzer->getresults(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &bpm,  NULL, NULL);
 
     // Cleanup.
     delete decoder;

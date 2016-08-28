@@ -61,7 +61,9 @@ void AdvancedMediaPlayer::playerEvent(void *__unused clientData,
             __android_log_print(ANDROID_LOG_DEBUG, "playerEvent", "durationChanged: %s",
                                 (char *) value);
             break;
-        default:;
+        default:
+            __android_log_print(ANDROID_LOG_DEBUG, "playerEvent", "unknown event: %s",
+                                (char *) value);
     };
 }
 
