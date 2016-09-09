@@ -76,11 +76,14 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private Set<Integer> mAlreadyPlayedInShuffleMode = new HashSet<>();
 
     private boolean mNoisyReceiverRegistered = false;
-    private final BroadcastReceiver mNoisyReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mNoisyReceiver = new BroadcastReceiver()
+    {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, Intent intent)
+        {
             String action = intent.getAction();
-            if(action.equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)){
+            if (action.equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+            {
                 pausePlayback();
             }
         }
@@ -152,7 +155,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private Cursor getSongsList()
     {
         Playlist playlist = getCurrentPlaylist();
-        if(playlist != null)
+        if (playlist != null)
             return getCurrentPlaylist().getList();
         else
             return null;
@@ -334,7 +337,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private void registerNoisyReceiver()
     {
-        if(!mNoisyReceiverRegistered)
+        if (!mNoisyReceiverRegistered)
         {
             mNoisyReceiverRegistered = true;
             IntentFilter filter = new IntentFilter();
@@ -380,7 +383,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     @Override
     public void onPlaylistUpdated()
     {
-        if(mCurrentSongId >= 0 && getCurrentPlaylist() != null)
+        if (mCurrentSongId >= 0 && getCurrentPlaylist() != null)
             mCurrentSongIndex = getCurrentPlaylist().findPositionById(mCurrentSongId);
         else
             mCurrentSongIndex = -1;
@@ -462,7 +465,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private void unregisterNoisyReceiver()
     {
-        if(mNoisyReceiverRegistered)
+        if (mNoisyReceiverRegistered)
         {
             mNoisyReceiverRegistered = false;
             unregisterReceiver(mNoisyReceiver);
@@ -589,7 +592,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     {
         mCurrentlyPlayingBPM = shiftedBpm;
 
-        if(bpm <= 10 || shiftedBpm <= 10)
+        if (bpm <= 10 || shiftedBpm <= 10)
         {
             bpm = 10;
             shiftedBpm = 10;
@@ -666,14 +669,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         {
             setIsPlaying(true);
             mPlayer.setOnPreparedListener(mOnPrepared);
-            new Thread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    mPlayer.setSource(mComposition.getAbsolutePath());
-                }
-            }).start();
+            mPlayer.setSource(mComposition.getAbsolutePath());
         }
     }
 

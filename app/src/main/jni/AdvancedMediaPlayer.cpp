@@ -4,7 +4,6 @@
 #include <AndroidIO/SuperpoweredAndroidAudioIO.h>
 #include "AdvancedMediaPlayer.h"
 #include <SuperpoweredSimple.h>
-#include <android/log.h>
 #include <map>
 
 static std::map<int, AdvancedMediaPlayer *> sPlayersMap;
@@ -20,25 +19,17 @@ void AdvancedMediaPlayer::playerEvent(void *__unused clientData,
     switch (event) {
         case SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess: {
             mIsPrepared = true;
-
-            JNIEnv *env;
-            mJavaVM->AttachCurrentThread(&env, NULL);
-            jmethodID method = env->GetMethodID(mListenerClass, "onPrepared", "()V");
-            env->CallVoidMethod(mListener, method);
-            mJavaVM->DetachCurrentThread();
+            pthread_t t;
+            pthread_create(&t, NULL, &AdvancedMediaPlayer::callOnPrepared, this);
         }
             break;
         case SuperpoweredAdvancedAudioPlayerEvent_LoadError:
             __android_log_print(ANDROID_LOG_DEBUG, "playerEvent", "Open error: %s",
                                 (char *) value);
-            {
-                JNIEnv *env;
-                mJavaVM->AttachCurrentThread(&env, NULL);
-                jmethodID method = env->GetMethodID(mListenerClass, "onError",
-                                                    "(Ljava/lang/String;)V");
-                env->CallVoidMethod(mListener, method, env->NewStringUTF((char *) value));
-                mJavaVM->DetachCurrentThread();
-            }
+
+            mLastError = *((char *)value);
+            pthread_t t;
+            pthread_create(&t, NULL, &AdvancedMediaPlayer::callOnError, this);
             break;
         case SuperpoweredAdvancedAudioPlayerEvent_NetworkError:
             __android_log_print(ANDROID_LOG_DEBUG, "playerEvent", "Network error: %s",
@@ -46,11 +37,8 @@ void AdvancedMediaPlayer::playerEvent(void *__unused clientData,
             break;
         case SuperpoweredAdvancedAudioPlayerEvent_EOF: {
             audioSystem->onBackground();
-            JNIEnv *env;
-            mJavaVM->AttachCurrentThread(&env, NULL);
-            jmethodID method = env->GetMethodID(mListenerClass, "onEnd", "()V");
-            env->CallVoidMethod(mListener, method);
-            mJavaVM->DetachCurrentThread();
+            pthread_t t;
+            pthread_create(&t, NULL, &AdvancedMediaPlayer::callEndOfFile, this);
         }
             break;
         case SuperpoweredAdvancedAudioPlayerEvent_JogParameter:
@@ -112,6 +100,7 @@ bool AdvancedMediaPlayer::process(short int *output, unsigned int numberOfSample
 
 void AdvancedMediaPlayer::setSource(const char *path) {
     mIsPrepared = false;
+    audioSystem->onForeground();
     mPlayer->open(path);
 }
 
