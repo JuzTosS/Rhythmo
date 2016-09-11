@@ -1,3 +1,5 @@
+![alt tag](https://github.com/JuzTosS/Rhythmo/blob/master/refs/LogoDesign.png)
+
 # Rhythmo Player
 This is the application on that i'm learning android development. 
 
