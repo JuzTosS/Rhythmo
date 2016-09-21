@@ -230,6 +230,13 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         updateTabs();
     }
 
+    @Override
+    protected void onDestroy()
+    {
+        LocalBroadcastManager.getInstance(mApp).unregisterReceiver(mUpdateUIReceiver);
+        super.onDestroy();
+    }
+
     private void updateFab()
     {
         if (getCurrentViewedPlaylist().getSource().isModifyAvailable())

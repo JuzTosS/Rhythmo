@@ -35,6 +35,7 @@ public class BasePlayerActivity extends AppCompatActivity
     {
         Log.d(getClass().toString(), "onDestroy()");
         unbindService(mServiceConnection);
+        mPlaybackService = null;
         super.onDestroy();
     }
 
