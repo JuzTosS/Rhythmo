@@ -37,6 +37,8 @@ public class BuildMusicLibraryService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        Toast.makeText(this, getString(R.string.build_library_started), Toast.LENGTH_LONG).show();
+
         mBuilder = new NotificationCompat.Builder(mApp);
         mBuilder.setSmallIcon(R.drawable.ic_play_arrow_black_36dp);
         mBuilder.setContentTitle(getResources().getString(R.string.building_music_library));
@@ -149,7 +151,7 @@ public class BuildMusicLibraryService extends Service
             mApp.setIsBuildingLibrary(false);
             mApp.notifyPlaylistsRepresentationUpdated();
 
-            Toast.makeText(mApp, R.string.building_music_library_finished, Toast.LENGTH_LONG).show();
+            Toast.makeText(mApp, R.string.build_library_finished, Toast.LENGTH_LONG).show();
         }
     };
 

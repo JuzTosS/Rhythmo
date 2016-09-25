@@ -9,47 +9,34 @@
     tools:context=".views.activities.LauncherActivity">
 
     <Button
+        android:id="@+id/welcome_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/welcome_button_text"
-        android:id="@+id/welcome_button"
-        android:layout_marginBottom="59dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:paddingTop="20dp"
+        android:layout_marginBottom="59dp"
         android:paddingBottom="20dp"
         android:paddingLeft="40dp"
-        android:paddingRight="40dp"/>
+        android:paddingRight="40dp"
+        android:paddingTop="20dp"
+        android:text="@string/welcome_button_text"/>
 
-    <TextView
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Welcome to Rhythmo Player!"
-        android:id="@+id/textView4"
-        android:textColor="@color/foregroundInverted"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"/>
+        android:layout_centerVertical="true"
+        android:layout_above="@+id/welcome_button">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Do miracles with beat rate."
-        android:id="@+id/textView5"
-        android:gravity="center_horizontal"
-        android:textColor="@color/foregroundInverted"
-        android:layout_above="@+id/welcome_button"
-        android:layout_centerHorizontal="true"/>
+        <ImageView
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo_tile"/>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:src="@drawable/splash_icon"
-        android:layout_below="@+id/textView4"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/textView5"/>
+    </FrameLayout>
+
 </RelativeLayout>
 

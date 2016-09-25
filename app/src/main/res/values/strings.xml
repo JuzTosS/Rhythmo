@@ -1,6 +1,5 @@
 <resources>
     <string name="building_music_library">Building music library</string>
-    <string name="building_music_library_finished">Building music library finished</string>
     <string name="settings_title">Settings</string>
     <string name="new_playlist">New playlist</string>
     <string name="remove_playlist">Remove playlist</string>
@@ -23,7 +22,7 @@
     <string name="song_menu_remove">Remove</string>
     <string name="pref_recognize_bpm_from_name">Get BPM from files names</string>
     <string name="pref_recognize_bpm_from_name_desc">If set firstly BPM for a song is get from the file name of the song</string>
-    <string name="welcome_button_text">Let\'s get down!</string>
+    <string name="welcome_button_text">Let\'s start!</string>
     <string name="default_playlist_name">No name</string>
     <string name="rename_dialog_title">Playlist name:</string>
     <string name="dialog_ok">OK</string>
@@ -35,5 +34,7 @@
     <string name="sort_by_folders">Directories</string>
     <string name="sort_dialog_title">Sort by</string>
     <string name="sort">Sorting</string>
+    <string name="build_library_started">BPM scanning started</string>
+    <string name="build_library_finished">BPM scanning finished</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

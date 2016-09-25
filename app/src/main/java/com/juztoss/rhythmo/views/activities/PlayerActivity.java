@@ -274,14 +274,14 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     {
         super.onStart();
 
-        if (mApp.getSharedPreferences().getBoolean(RhythmoApp.FIRST_RUN, true))
-        {
-            mApp.getSharedPreferences().edit().putBoolean(RhythmoApp.FIRST_RUN, false).commit();
-            Intent launchStartActivity = new Intent(this, LauncherActivity.class);
-            startActivity(launchStartActivity);
-        }
-        else
-        {
+//        if (mApp.getSharedPreferences().getBoolean(RhythmoApp.FIRST_RUN, true))
+//        {
+//            mApp.getSharedPreferences().edit().putBoolean(RhythmoApp.FIRST_RUN, false).commit();
+//            Intent launchStartActivity = new Intent(this, LauncherActivity.class);
+//            startActivity(launchStartActivity);
+//        }
+//        else
+//        {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             {
                 ActivityCompat.requestPermissions(this,
@@ -292,7 +292,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             {
                 tryToDoFirstRunService();
             }
-        }
+//        }
 
         mNeedToGoToTheCurrentSong = !gotoTheCurrentlyPlayingSong();
     }
