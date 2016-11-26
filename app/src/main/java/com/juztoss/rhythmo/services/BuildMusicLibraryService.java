@@ -2,6 +2,7 @@ package com.juztoss.rhythmo.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -11,16 +12,23 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
+import com.juztoss.rhythmo.views.activities.PlayerActivity;
+import com.juztoss.rhythmo.views.activities.SettingsActivity;
 
 /**
  * Created by JuzTosS on 5/27/2016.
  */
 public class BuildMusicLibraryService extends Service
 {
+    public static final String UPDATE_PROGRESS_ACTION = "com.juztoss.rhythmo.action.UPDATE_PROGRESS";
+    public static final String PROGRESS_ACTION_OVERALL_PROGRESS = "OverallProgress";
+    public static final String PROGRESS_ACTION_MAX_PROGRESS = "MaxProgress";
+    public static final String PROGRESS_ACTION_HEADER = "Header";
     public static final String REBUILD = "Rebuild";
     private RhythmoApp mApp;
     private NotificationCompat.Builder mBuilder;
@@ -151,6 +159,13 @@ public class BuildMusicLibraryService extends Service
             mApp.setIsBuildingLibrary(false);
             mApp.notifyPlaylistsRepresentationUpdated();
 
+            Intent intent = new Intent(UPDATE_PROGRESS_ACTION);
+            intent.putExtra(PROGRESS_ACTION_HEADER, "debug header");
+            intent.putExtra(PROGRESS_ACTION_OVERALL_PROGRESS, 0);
+            intent.putExtra(PROGRESS_ACTION_MAX_PROGRESS, 0);
+            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mApp);
+            broadcastManager.sendBroadcast(intent);
+
             Toast.makeText(mApp, R.string.build_library_finished, Toast.LENGTH_LONG).show();
         }
     };
@@ -163,9 +178,24 @@ public class BuildMusicLibraryService extends Service
         mBuilder.setTicker(header);
         mBuilder.setContentText("");
         mBuilder.setProgress(maxProgress, overallProgress, false);
+
+        Intent launchNowPlayingIntent = new Intent(this, SettingsActivity.class);
+        launchNowPlayingIntent.putExtra(PROGRESS_ACTION_HEADER, header);
+        launchNowPlayingIntent.putExtra(PROGRESS_ACTION_OVERALL_PROGRESS, overallProgress);
+        launchNowPlayingIntent.putExtra(PROGRESS_ACTION_MAX_PROGRESS, maxProgress);
+        PendingIntent launchNowPlayingPendingIntent = PendingIntent.getActivity(this, 0, launchNowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(launchNowPlayingPendingIntent);
+
         mNotification = mBuilder.build();
 
         mNotification.flags |= Notification.FLAG_INSISTENT | Notification.FLAG_NO_CLEAR;
         mNotifyManager.notify(NOTIFICATION_ID, mNotification);
+
+        Intent intent = new Intent(UPDATE_PROGRESS_ACTION);
+        intent.putExtra(PROGRESS_ACTION_HEADER, header);
+        intent.putExtra(PROGRESS_ACTION_OVERALL_PROGRESS, overallProgress);
+        intent.putExtra(PROGRESS_ACTION_MAX_PROGRESS, maxProgress);
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mApp);
+        broadcastManager.sendBroadcast(intent);
     }
 }

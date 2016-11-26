@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.juztoss.rhythmo.views.items.BPMShiftPickerPreference
-        android:title="@string/pref_bpm_auto_shift_range"
-        android:key="@string/pref_bpm_auto_shift_range"
-        android:summary="@string/pref_bpm_auto_shift_range_desc"
-        android:defaultValue="0"
-        android:negativeButtonText="@string/dialog_cancel"
-        android:positiveButtonText="@string/dialog_ok"
-        />
+
     <PreferenceCategory
-        android:title="@string/pref_music_library"
-        android:key="@string/pref_music_library">
-    <Preference
-        android:key="@string/pref_build_library"
-        android:summary="@string/build_library_desc"
-        android:title="@string/pref_build_library"/>
+        android:key="@string/pref_music_library"
+        android:title="@string/pref_music_library">
+        <com.juztoss.rhythmo.views.items.MusicLibraryPreference
+            android:key="@string/pref_build_library"
+            android:summary="@string/build_library_desc"
+            android:title="@string/pref_build_library"
+            android:widgetLayout="@layout/library_preference"/>
 
 
-    <!--<CheckBoxPreference-->
-        <!--android:key="@string/pref_recognize_bpm_from_name"-->
-        <!--android:summary="@string/pref_recognize_bpm_from_name_desc"-->
-        <!--android:title="@string/pref_recognize_bpm_from_name"/>-->
-
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="@string/pref_experimental_features"
+        android:title="@string/pref_experimental_features">
+        <com.juztoss.rhythmo.views.items.BPMShiftPickerPreference
+            android:defaultValue="0"
+            android:key="@string/pref_bpm_auto_shift_range"
+            android:negativeButtonText="@string/dialog_cancel"
+            android:positiveButtonText="@string/dialog_ok"
+            android:summary="@string/pref_bpm_auto_shift_range_desc"
+            android:title="@string/pref_bpm_auto_shift_range"
+            />
+        <CheckBoxPreference
+            android:key="@string/pref_recognize_bpm_from_name"
+            android:summary="@string/pref_recognize_bpm_from_name_desc"
+            android:title="@string/pref_recognize_bpm_from_name"/>
     </PreferenceCategory>
 </PreferenceScreen>
