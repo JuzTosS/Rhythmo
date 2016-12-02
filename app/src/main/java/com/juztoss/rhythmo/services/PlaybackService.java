@@ -188,10 +188,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             {
                 if (mCurrentSongIndex >= getSongsList().getCount())
                 {
-                    if (byUser)
-                        mCurrentSongIndex = 0;
-                    else
-                        mCurrentSongIndex = -1;
+                    mCurrentSongIndex = 0;
                 }
             }
         }
