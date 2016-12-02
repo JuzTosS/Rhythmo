@@ -130,11 +130,11 @@ public class AdvancedMediaPlayer
             mOnEndListener.onEnd();
     }
 
-    private void onError(String message)
+    private void onError()
     {
         Log.d(AdvancedMediaPlayer.class.toString(), "onErrorCalled");
         if(mOnErrorListener != null)
-            mOnErrorListener.onError(message);
+            mOnErrorListener.onError();
     }
 
     /**
@@ -153,6 +153,6 @@ public class AdvancedMediaPlayer
 
     public interface OnErrorListener
     {
-        void onError(String message);
+        void onError();
     }
 }

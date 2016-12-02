@@ -73,11 +73,12 @@ public:
 
     static void *callOnError(void *context) {
         AdvancedMediaPlayer *player = (AdvancedMediaPlayer *) context;
+        __android_log_print(ANDROID_LOG_DEBUG, "playerEvent", "Internal player error: %s",
+                            &player->mLastError);
         JNIEnv *env;
         player->mJavaVM->AttachCurrentThread(&env, NULL);
-        jmethodID method = env->GetMethodID(player->mListenerClass, "onError",
-                                            "(Ljava/lang/String;)V");
-        env->CallVoidMethod(player->mListener, method, env->NewStringUTF(&player->mLastError));
+        jmethodID method = env->GetMethodID(player->mListenerClass, "onError", "()V");
+        env->CallVoidMethod(player->mListener, method);
         player->mJavaVM->DetachCurrentThread();
         pthread_exit(NULL);
     }

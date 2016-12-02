@@ -136,10 +136,11 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     }
 
     @Override
-    public void onError(String message)
+    public void onError()
     {
+        Log.e(getClass().toString(), "Internal player error");
         clearQueue();
-        Log.e(getClass().toString(), "Player error: " + message);
+        gotoNext(false);
     }
 
     @Nullable
