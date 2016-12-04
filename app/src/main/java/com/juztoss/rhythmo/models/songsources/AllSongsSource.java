@@ -33,6 +33,8 @@ public class AllSongsSource extends AbstractSongsSource
             order = DatabaseHelper.MUSIC_LIBRARY_NAME;
         else if(mSortType == SortType.BPM)
             order = DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10;
+        else if(mSortType == SortType.LAST)
+            order = DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED + " DESC";
         else//mSortType = SortType.DIRECTORY
             order = DatabaseHelper.MUSIC_LIBRARY_PATH;
 

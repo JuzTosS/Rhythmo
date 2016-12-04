@@ -108,7 +108,8 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     {
         String projection[] = {
                 MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.DATA};
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.DATE_ADDED};
 
         ContentResolver contentResolver = mApp.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -172,6 +173,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
             final int filePathColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             final int idColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media._ID);
+            final int dateAddedColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED);
 
             long lastUpdated = System.currentTimeMillis();
             int songsUpdated = 0;
@@ -189,6 +191,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
                 String songFileFullPath = mediaStoreCursor.getString(filePathColIndex);
                 String songId = mediaStoreCursor.getString(idColIndex);
+                int dateAdded = mediaStoreCursor.getInt(dateAddedColIndex);
 
                 String[] folders = songFileFullPath.split(SystemHelper.SEPARATOR);
                 StringBuilder b = new StringBuilder(songFileFullPath);
@@ -203,6 +206,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 values.put(DatabaseHelper.MUSIC_LIBRARY_NAME, songFileName);
                 values.put(DatabaseHelper.MUSIC_LIBRARY_FULL_PATH, songFileFullPath);
                 values.put(DatabaseHelper.MUSIC_LIBRARY_MEDIA_ID, songId);
+                values.put(DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED, dateAdded);
                 values.put(DatabaseHelper.MUSIC_LIBRARY_DELETED, false);
 
                 //Add all the entries to the database to build the songs library.

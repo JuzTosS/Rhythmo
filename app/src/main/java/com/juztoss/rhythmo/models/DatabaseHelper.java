@@ -13,7 +13,7 @@ import com.juztoss.rhythmo.presenters.RhythmoApp;
 public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 {
     private static final String DATABASE_NAME = "main.db";
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
 
 
     //TABLE SETTINGS
@@ -32,6 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
     public static final String MUSIC_LIBRARY_BPMX10 = "bpmX10";
     public static final String MUSIC_LIBRARY_BPM_SHIFTEDX10 = "bpmShiftedX10";
     public static final String MUSIC_LIBRARY_DELETED = "deleted";
+    public static final String MUSIC_LIBRARY_DATE_ADDED = "date_added";
 
     //TABLE FOLDERS
     public static final String TABLE_FOLDERS = "folders";
@@ -77,7 +78,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
                 + MUSIC_LIBRARY_FULL_PATH + " text key unique, "
                 + MUSIC_LIBRARY_BPMX10 + " integer key not null default 0, "
                 + MUSIC_LIBRARY_BPM_SHIFTEDX10 + " integer key not null default 0, "
-                + MUSIC_LIBRARY_DELETED + " boolean key);");
+                + MUSIC_LIBRARY_DELETED + " boolean key,"
+                + MUSIC_LIBRARY_DATE_ADDED + " int key);");
 
         db.execSQL("create table "
                 + TABLE_FOLDERS + " (" +  BaseColumns._ID + " integer primary key autoincrement, "

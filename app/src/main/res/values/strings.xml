@@ -32,6 +32,7 @@
     <string name="sort_alphabetically">Name</string>
     <string name="sort_by_bpm">BPM</string>
     <string name="sort_by_folders">Directories</string>
+    <string name="sort_by_date">Date</string>
     <string name="sort_dialog_title">Sort by</string>
     <string name="sort">Sorting</string>
     <string name="build_library_started">BPM scanning started</string>

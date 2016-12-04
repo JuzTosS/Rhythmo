@@ -476,7 +476,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
                         getString(R.string.sort_alphabetically),
                         getString(R.string.sort_by_bpm),
                         getString(R.string.sort_by_folders),
-
+                        getString(R.string.sort_by_date)
                 },
                 getCurrentViewedPlaylist().getSource().getSortType().ordinal(),
                 new DialogInterface.OnClickListener()

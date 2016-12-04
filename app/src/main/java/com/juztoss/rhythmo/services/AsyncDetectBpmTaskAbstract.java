@@ -107,8 +107,8 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
                 }
 
                 int bpmX10 = (int) (bpm * 10);
-                if(bpmX10 == hadDetectedBpm)
-                    continue;
+//                if(bpmX10 == hadDetectedBpm)
+//                    continue;
 
                 ContentValues values = new ContentValues();
                 values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, bpmX10);

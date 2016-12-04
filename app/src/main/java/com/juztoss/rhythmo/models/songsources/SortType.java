@@ -7,5 +7,6 @@ public enum SortType
 {
     NAME,
     BPM,
-    DIRECTORY
+    DIRECTORY,
+    LAST,
 }
