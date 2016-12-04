@@ -97,14 +97,6 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         }
     }
 
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        mPlaylistAdapter.updateList();
-        onResumeFragment();
-    }
-
     public void scrollTo(int position)
     {
         if(mLayoutManager != null)
@@ -120,22 +112,22 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     }
 
     @Override
-    public void onDestroy()
+    public void onPause()
     {
-        onPauseFragment();
-        super.onDestroy();
+        super.onPause();
+        mPlaylistAdapter.unbind();
     }
 
     public void onResumeFragment()
     {
         if (mPlaylistAdapter == null) return;
-            mPlaylistAdapter.bind();
+
+        mPlaylistAdapter.bind();
     }
 
     public void onPauseFragment()
     {
-        if (mPlaylistAdapter != null)
-            mPlaylistAdapter.unbind();
+
     }
 
 }

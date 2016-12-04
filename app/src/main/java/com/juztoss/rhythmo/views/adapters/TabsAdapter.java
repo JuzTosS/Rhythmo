@@ -16,7 +16,6 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.
     private int mNumOfLists;
     private int mCurrentPosition = 0;
     private ViewGroup mContainer;
-    private Object mCurrentFragment;
 
     @Override
     public void startUpdate(ViewGroup container)
