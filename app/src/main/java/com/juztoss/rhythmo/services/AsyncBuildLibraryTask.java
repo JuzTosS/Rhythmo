@@ -12,6 +12,8 @@ import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.juztoss.rhythmo.models.DatabaseHelper;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
@@ -28,6 +30,7 @@ import java.util.Map;
 public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 {
     private final String UPDATE_COMPLETE = "UpdateComplete";
+    private final String ERROR_OCCURRED = "ErrorOccurred";
     private final int MAX_PROGRESS_VALUE = 1000000;
     private RhythmoApp mApp;
     private boolean mClear;
@@ -110,7 +113,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         ContentResolver contentResolver = mApp.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
-        if(mFolder != null)
+        if (mFolder != null)
             selection += " AND " + MediaStore.Audio.Media.DATA + " LIKE " + DatabaseUtils.sqlEscapeString(mFolder + "%");
 
 
@@ -121,14 +124,17 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     {
         try
         {
-            if(mClear) mApp.getDatabaseHelper().clearAll(mApp.getDatabaseHelper().getWritableDatabase());
+            Log.d(AsyncBuildLibraryTask.class.toString(), "Start updating the library, clear = " + mClear + ", songs in mediaStore: " + mediaStoreCursor.getCount());
+
+            if (mClear) mApp.getDatabaseHelper().clearAll(mApp.getDatabaseHelper().getWritableDatabase());
 
             mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
 
             //Set all songs as deleted, we'll update each song that exists later
             ContentValues cv = new ContentValues();
-            cv.put(DatabaseHelper.MUSIC_LIBRARY_DELETED, true);
-            mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, cv, DatabaseHelper.MUSIC_LIBRARY_MEDIA_ID + " >= 0", null);
+            cv.put(DatabaseHelper.MUSIC_LIBRARY_DELETED, 1);
+            int songsMarkedAsNotUpdated = mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, cv, DatabaseHelper.MUSIC_LIBRARY_MEDIA_ID + " >= 0", null);
+            Log.d(AsyncBuildLibraryTask.class.toString(), "Songs marked as not updated: " + songsMarkedAsNotUpdated);
 
             mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_FOLDERS, null, null);
 
@@ -168,6 +174,8 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
             final int idColIndex = mediaStoreCursor.getColumnIndex(MediaStore.Audio.Media._ID);
 
             long lastUpdated = System.currentTimeMillis();
+            int songsUpdated = 0;
+            int songsAdded = 0;
             for (int i = 0; i < mediaStoreCursor.getCount(); i++)
             {
                 mediaStoreCursor.moveToPosition(i);
@@ -198,13 +206,22 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 values.put(DatabaseHelper.MUSIC_LIBRARY_DELETED, false);
 
                 //Add all the entries to the database to build the songs library.
-                long rowId = mApp.getDatabaseHelper().getWritableDatabase().insertWithOnConflict(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                        null,
-                        values, SQLiteDatabase.CONFLICT_IGNORE);
-
-                if (rowId != -1)
+                long songExist = DatabaseUtils.queryNumEntries(mApp.getDatabaseHelper().getWritableDatabase(), DatabaseHelper.TABLE_MUSIC_LIBRARY, DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " = ?", new String[]{songFileFullPath});
+                if (songExist > 0)
                 {
-                    mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + " = ?", new String[]{Long.toString(rowId)});
+                    long rowId = mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " = ?", new String[]{songFileFullPath});
+                    if(rowId <= 0)
+                        publishProgress(ERROR_OCCURRED);
+                    else
+                        songsUpdated++;
+                }
+                else
+                {
+                    long rowId = mApp.getDatabaseHelper().getWritableDatabase().insertWithOnConflict(DatabaseHelper.TABLE_MUSIC_LIBRARY, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                    if(rowId < 0)
+                        publishProgress(ERROR_OCCURRED);
+                    else
+                        songsAdded++;
                 }
 
                 Node parentNode = folderIds;
@@ -232,11 +249,18 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
 
             }
+            Log.d(AsyncBuildLibraryTask.class.toString(), "Songs was added/updated: " + songsAdded + "/" + songsUpdated);
 
+            int songsWasRemoved = mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_MUSIC_LIBRARY, DatabaseHelper.MUSIC_LIBRARY_DELETED + " = ?", new String[]{"1"});
+            Log.d(AsyncBuildLibraryTask.class.toString(), "Songs was removed: " + songsWasRemoved);
+
+            long finalSongsCount = DatabaseUtils.queryNumEntries(mApp.getDatabaseHelper().getWritableDatabase(), DatabaseHelper.TABLE_MUSIC_LIBRARY);
+            Log.d(AsyncBuildLibraryTask.class.toString(), "Final songs count: " + finalSongsCount);
         }
         catch (SQLException e)
         {
             e.printStackTrace();
+            publishProgress(ERROR_OCCURRED);
         }
         finally
         {
@@ -245,7 +269,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
             mApp.getDatabaseHelper().getWritableDatabase().endTransaction();
         }
 
-        mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_MUSIC_LIBRARY, DatabaseHelper.MUSIC_LIBRARY_DELETED + " = ?", new String[]{"true"});
+
     }
 
     @Override
@@ -261,6 +285,11 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                             MAX_PROGRESS_VALUE, true);
 
             return;
+        }
+
+        if (progressParams.length > 0 && progressParams[0].equals(ERROR_OCCURRED))
+        {
+            Toast.makeText(mApp, "Error occurred while updating the database!", Toast.LENGTH_LONG).show();
         }
 
         if (mBuildLibraryProgressUpdate != null)

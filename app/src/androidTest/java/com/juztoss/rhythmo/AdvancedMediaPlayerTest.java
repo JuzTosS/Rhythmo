@@ -46,9 +46,9 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         mPlayer.setOnErrorListener(new AdvancedMediaPlayer.OnErrorListener()
         {
             @Override
-            public void onError(String message)
+            public void onError()
             {
-                Log.d("DEBUG", "Error message is: " + message);
+                Log.d("DEBUG", "Error occurred");
                 onErrorIsCalled.set(true);
                 signal.countDown();
             }
@@ -86,9 +86,9 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         mPlayer.setOnErrorListener(new AdvancedMediaPlayer.OnErrorListener()
         {
             @Override
-            public void onError(String message)
+            public void onError()
             {
-                Log.d("DEBUG", "Error message is: " + message);
+                Log.d("DEBUG", "Error occurred");
                 onErrorIsCalled.set(true);
                 signal.countDown();
             }
@@ -117,9 +117,9 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         player.setOnErrorListener(new AdvancedMediaPlayer.OnErrorListener()
         {
             @Override
-            public void onError(String message)
+            public void onError()
             {
-                Log.d("DEBUG", "Error message is: " + message);
+                Log.d("DEBUG", "Error occurred");
                 assertTrue("OnError must haven't been called for source: ", false);
                 signal.countDown();
             }
@@ -222,9 +222,9 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
                     mPlayer.setOnErrorListener(new AdvancedMediaPlayer.OnErrorListener()
                     {
                         @Override
-                        public void onError(String message)
+                        public void onError()
                         {
-                            Log.d("DEBUG", "Error message is: " + message);
+                            Log.d("DEBUG", "Error occurred");
                             assertTrue("OnError must haven't been called for source: ", false);
                             signal.countDown();
                         }
@@ -285,9 +285,9 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         mPlayer.setOnErrorListener(new AdvancedMediaPlayer.OnErrorListener()
         {
             @Override
-            public void onError(String message)
+            public void onError()
             {
-                Log.d("DEBUG", "Error message is: " + message);
+                Log.d("DEBUG", "Error occurred");
                 assertTrue("OnError must haven't been called for source: ", false);
                 signal.countDown();
             }

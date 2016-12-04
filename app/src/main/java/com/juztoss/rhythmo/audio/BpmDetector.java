@@ -44,7 +44,6 @@ public class BpmDetector
         if(bpm < RhythmoApp.MIN_BPM || bpm > RhythmoApp.MAX_BPM)
             bpm = 0;
 
-        Log.e(BpmDetector.class.toString(), "Detected bpm: " + bpm + "; From name: " + name + ";");
         return bpm;
     }
 }

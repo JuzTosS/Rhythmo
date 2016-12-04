@@ -31,8 +31,8 @@ public class RhythmoApp extends Application
     public static final String LIBRARY_BUILD_STARTED = "LibraryBuildStarted";
     public static final String ALL_SONGS_SORT = "AllSongsSort";
 
-    public static float MIN_BPM = 50;
-    public static float MAX_BPM = 150;
+    public static float MIN_BPM = 25;
+    public static float MAX_BPM = 250;
 
     public static float MAX_BPM_SHIFT = 30;
 

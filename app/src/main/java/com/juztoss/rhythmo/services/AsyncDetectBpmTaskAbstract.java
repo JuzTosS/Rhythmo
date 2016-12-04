@@ -58,14 +58,13 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
         return null;
     }
 
-    abstract double detectBpm(String fullPath, String name);
+    abstract double detectBpm(double oldBpm, String fullPath, String name);
 
     private void detectSongsBpm()
     {
         Cursor songsCursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME},
-                DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?",
-                new String[]{"0"}, null, null, null);
+                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10},
+                null, null, null, null, null);
 
         if (songsCursor.getCount() <= 0)
         {
@@ -73,11 +72,14 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
             return;
         }
 
+
+        int affectedCount = 0;
         try
         {
             int idIndex = songsCursor.getColumnIndex(DatabaseHelper._ID);
             int nameIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME);
             int pathIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH);
+            int bpmIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10);
             final int subProgress = (MAX_PROGRESS_VALUE - mOverallProgress) / songsCursor.getCount();
 
             long lastUpdated = System.currentTimeMillis();
@@ -88,7 +90,9 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
                 String name = songsCursor.getString(nameIndex);
                 String songId = songsCursor.getString(idIndex);
                 String fullPath = path + SystemHelper.SEPARATOR + name;
-                double bpm = detectBpm(fullPath, name);
+                int hadDetectedBpm = songsCursor.getInt(bpmIndex);
+
+                double bpm = detectBpm(hadDetectedBpm / 10.0, fullPath, name);
                 if (bpm >= RhythmoApp.MAX_BPM)
                 {
                     bpm = bpm / 2;
@@ -103,12 +107,16 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
                 }
 
                 int bpmX10 = (int) (bpm * 10);
+                if(bpmX10 == hadDetectedBpm)
+                    continue;
+
                 ContentValues values = new ContentValues();
                 values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, bpmX10);
                 values.put(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, bpmX10);
                 int rowsAffected = mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + "= ?", new String[]{songId});
+                if(rowsAffected > 0)
+                    affectedCount++;
 
-                Log.e("DEBUG affected=", rowsAffected + ", " + fullPath + " : " + bpmX10);
                 mOverallProgress += subProgress;
                 long now = System.currentTimeMillis();
                 if (now - lastUpdated > 1000)
@@ -122,6 +130,8 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
         {
             songsCursor.close();
         }
+
+        Log.d(AsyncDetectBpmTaskAbstract.class.toString(), "affectedCount=" + affectedCount);
     }
 
     @Override

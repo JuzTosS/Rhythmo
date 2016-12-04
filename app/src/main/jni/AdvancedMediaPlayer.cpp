@@ -211,9 +211,8 @@ extern "C" JNIEXPORT void Java_com_juztoss_rhythmo_audio_AdvancedMediaPlayer_set
                                                                                          jstring source) {
     if (source == NULL) {
         jclass cls = env->GetObjectClass(instance);
-        jmethodID method = env->GetMethodID(cls, "onError",
-                                            "(Ljava/lang/String;)V");
-        env->CallVoidMethod(instance, method, env->NewStringUTF((char *) "Trying to set null source"));
+        jmethodID method = env->GetMethodID(cls, "onError", "()V");
+        env->CallVoidMethod(instance, method);
         return;
     }
     const char *path = env->GetStringUTFChars(source, JNI_FALSE);
