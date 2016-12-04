@@ -1,5 +1,8 @@
 package com.juztoss.rhythmo.models;
 
+import android.database.Cursor;
+
+import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
 import com.juztoss.rhythmo.utils.SystemHelper;
 
 /**
@@ -15,6 +18,28 @@ public class Composition
     private float mBPM;
     private float mShiftedBPM;
 
+    public static Composition fromCursor(Cursor cursor)
+    {
+        long id = cursor.getLong(AbstractSongsSource.I_ID);
+        if(id >= 0)
+        {
+            return new Composition(cursor);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private Composition(Cursor cursor)
+    {
+        mId = cursor.getLong(AbstractSongsSource.I_ID);
+        mFolderName = cursor.getString(AbstractSongsSource.I_FOLDER);
+        mSongName = cursor.getString(AbstractSongsSource.I_NAME);
+        mAbsolutePath = mFolderName + SystemHelper.SEPARATOR + mSongName;
+        mBPM = cursor.getInt(AbstractSongsSource.I_BPM) / 10f;
+        mShiftedBPM = cursor.getInt(AbstractSongsSource.I_BPM_SHIFT) / 10f;
+    }
     public Composition(long songId, String folderName, String songName, float bpm, float bpmShifted)
     {
         mId = songId;

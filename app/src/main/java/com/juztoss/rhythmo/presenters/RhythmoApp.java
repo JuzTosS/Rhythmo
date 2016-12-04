@@ -95,6 +95,7 @@ public class RhythmoApp extends Application
     }
 
     @Nullable
+    @Deprecated
     public Composition getComposition(long id)
     {
         Cursor cursor = getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,

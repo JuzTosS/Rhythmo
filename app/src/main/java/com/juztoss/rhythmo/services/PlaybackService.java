@@ -407,7 +407,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             return;
 
         getSongsList().moveToPosition(index);
-        putAction(new ActionPrepare(mApp.getComposition(getSongsList().getLong(0))));
+        putAction(new ActionPrepare(Composition.fromCursor(getSongsList())));
     }
 
     @Override

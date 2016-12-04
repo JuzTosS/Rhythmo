@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.models.Playlist;
+import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
 import com.juztoss.rhythmo.models.songsources.SortType;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.PlaybackService;
@@ -80,9 +81,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
         holder.setVisible(true);
 
         mCurentCursor.moveToPosition(position);
-        final long songId = mCurentCursor.getLong(0);
-        Composition composition = mApp.getComposition(songId);
-
+        Composition composition = Composition.fromCursor(mCurentCursor);
         if (composition == null)
         {
             holder.setVisible(false);
@@ -101,8 +100,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
             else
             {
                 mCurentCursor.moveToPosition(prevPosition);
-                long prevSongId = mCurentCursor.getLong(0);
-                Composition prevComposition = mApp.getComposition(prevSongId);
+                Composition prevComposition = Composition.fromCursor(mCurentCursor);
 
                 if (prevComposition != null)
                     folderMode = !prevComposition.getFolderPath().equals(composition.getFolderPath());

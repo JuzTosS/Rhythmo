@@ -9,6 +9,15 @@ import android.support.annotation.Nullable;
  */
 public abstract class AbstractSongsSource
 {
+    /**
+     * Indexes of fields of a cursor that return the AbstractSongSource descendants
+     */
+    public static final int I_ID = 0;
+    public static final int I_FOLDER = 1;
+    public static final int I_NAME = 2;
+    public static final int I_BPM = 3;
+    public static final int I_BPM_SHIFT = 4;
+
     private AbstractSourceUpdatedListener mListener;
 
     /**
