@@ -11,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -52,7 +53,7 @@ import com.juztoss.rhythmo.views.items.RangeSeekBar;
 import java.util.List;
 import java.util.Locale;
 
-public class PlayerActivity extends BasePlayerActivity implements View.OnClickListener
+public class PlayerActivity extends BasePlayerActivity implements View.OnClickListener, ViewPager.OnPageChangeListener
 {
     private RhythmoApp mApp;
     private View mPlayButton;
@@ -74,6 +75,8 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     private View mSearchBarLayout;
     private View mActionBarLayout;
     private boolean mNeedToGoToTheCurrentSong = false;
+
+    private int mLastViewedPlaylistIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -99,7 +102,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         if(mNeedToGoToTheCurrentSong)
         {
             mNeedToGoToTheCurrentSong = false;
-            gotoTheCurrentlyPlayingSong();
+            gotoTheCurrentlyPlayingSong(false);
         }
     }
 
@@ -196,6 +199,24 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mPlaylistsPager.setCurrentItem(currentItem);
     }
 
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+    {
+
+    }
+
+    @Override
+    public void onPageSelected(int position)
+    {
+        mLastViewedPlaylistIndex = position;
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state)
+    {
+
+    }
+
     private void setupPager()
     {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
@@ -206,6 +227,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mPlaylistsPager.setAdapter(adapter);
         mPlaylistsPager.addOnPageChangeListener(adapter);
         mPlaylistsPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        mPlaylistsPager.addOnPageChangeListener(this);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
         {
             @Override
@@ -257,7 +279,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             @Override
             public void onClick(View v)
             {
-                gotoTheCurrentlyPlayingSong();
+                gotoTheCurrentlyPlayingSong(true);
             }
         });
 
@@ -294,7 +316,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             }
 //        }
 
-        mNeedToGoToTheCurrentSong = !gotoTheCurrentlyPlayingSong();
+        mNeedToGoToTheCurrentSong = !gotoTheCurrentlyPlayingSong(false);
     }
 
     @Override
@@ -418,15 +440,35 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             final InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
-        gotoTheCurrentlyPlayingSong();
+        gotoTheCurrentlyPlayingSong(false);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putInt("mLastViewedPlaylistIndex", mLastViewedPlaylistIndex);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+        mLastViewedPlaylistIndex = savedInstanceState.getInt("mLastViewedPlaylistIndex");
     }
 
     /**
      *
      * @return true if successfully positioned on the currently playing song
      */
-    private boolean gotoTheCurrentlyPlayingSong()
+    private boolean gotoTheCurrentlyPlayingSong(boolean force)
     {
+        if(!force && mLastViewedPlaylistIndex >= 0)
+        {
+            mPlaylistsPager.setCurrentItem(mLastViewedPlaylistIndex);
+            return false;
+        }
+
         TabsAdapter adapter = (TabsAdapter) mPlaylistsPager.getAdapter();
 
         if (playbackService() == null) return false;

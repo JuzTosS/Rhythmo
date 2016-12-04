@@ -96,6 +96,11 @@ public class RhythmoApp extends Application
 
     @Nullable
     @Deprecated
+    /**
+     * TODO:
+     * Is used before the cursors start to get all the data from the DB not only ID.
+     * All the code must be rewritten to get all the data from existing cursor.
+     */
     public Composition getComposition(long id)
     {
         Cursor cursor = getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
