@@ -93,7 +93,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         else if (action == SongElementHolder.ACTION_REMOVE)
         {
             mApp.getPlaylists().get(mPlaylistIndex).getSource().remove(composition.id());
-            mPlaylistAdapter.updateList();
+            mPlaylistAdapter.notifyDataSetChanged();
         }
     }
 

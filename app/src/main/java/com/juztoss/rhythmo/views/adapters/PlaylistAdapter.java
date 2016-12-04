@@ -27,16 +27,14 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
 {
     private RhythmoApp mApp;
     private PlayerActivity mActivity;
-
     private Playlist mPlaylist;
-    private Cursor mCurentCursor;
 
     BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
     {
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            updateList();
+            notifyDataSetChanged();
         }
     };
     private IOnItemClickListener mOnItemClickListener;
@@ -44,7 +42,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     public PlaylistAdapter(PlayerActivity activity, Playlist playlist)
     {
         super();
-        mCurentCursor = playlist.getList();
         mPlaylist = playlist;
         mActivity = activity;
         mApp = (RhythmoApp) activity.getApplicationContext();
@@ -80,8 +77,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
 
         holder.setVisible(true);
 
-        mCurentCursor.moveToPosition(position);
-        Composition composition = Composition.fromCursor(mCurentCursor);
+        mPlaylist.getList().moveToPosition(position);
+        Composition composition = Composition.fromCursor(mPlaylist.getList());
         if (composition == null)
         {
             holder.setVisible(false);
@@ -99,8 +96,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
             }
             else
             {
-                mCurentCursor.moveToPosition(prevPosition);
-                Composition prevComposition = Composition.fromCursor(mCurentCursor);
+                mPlaylist.getList().moveToPosition(prevPosition);
+                Composition prevComposition = Composition.fromCursor(mPlaylist.getList());
 
                 if (prevComposition != null)
                     folderMode = !prevComposition.getFolderPath().equals(composition.getFolderPath());
@@ -112,16 +109,10 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     @Override
     public int getItemCount()
     {
-        if (mCurentCursor != null)
-            return mCurentCursor.getCount() + 1;
+        if (mPlaylist.getList() != null)
+            return mPlaylist.getList().getCount() + 1;
         else
             return 0;
-    }
-
-    public void updateList()
-    {
-        mCurentCursor = mPlaylist.getList();
-        notifyDataSetChanged();
     }
 
     public void bind()
@@ -139,7 +130,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     @Override
     public void onPlaylistUpdated()
     {
-        updateList();
+        notifyDataSetChanged();
         mActivity.updateTabNames();
     }
 

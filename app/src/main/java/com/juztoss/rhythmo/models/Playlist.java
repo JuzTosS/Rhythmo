@@ -72,6 +72,7 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
         setNeedRebuild();
     }
 
+    //TODO: Implement binary search, as we don't need anymore do requests to DB
     public int findPositionById(long id)
     {
         Cursor cursor = getList();
@@ -108,6 +109,11 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
 //        });
 //    }
 
+    /**
+     * DO NOT SAVE AN INSTANCE OF THE CURSOR!
+     * IT MAYBE CLOSED AT ANY TIME
+     * @return
+     */
     @Nullable
     public Cursor getList()
     {
