@@ -38,5 +38,7 @@
     <string name="build_library_started">BPM scanning started</string>
     <string name="build_library_finished">BPM scanning finished</string>
     <string name="pref_experimental_features">Experimental features</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

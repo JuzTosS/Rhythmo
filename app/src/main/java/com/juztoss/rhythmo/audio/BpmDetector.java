@@ -16,7 +16,13 @@ public class BpmDetector
     /**
      * Detects song BPM from audio data (May takes a long time)
      */
-    public static native double detect(String path);
+    private static native double detect(String path);
+
+    public static double detectFromData(String path)
+    {
+        double value = detect(path);
+        return value < RhythmoApp.MIN_BPM ? 0 : value;
+    }
 
     /**
      * Detects song BPM from file name

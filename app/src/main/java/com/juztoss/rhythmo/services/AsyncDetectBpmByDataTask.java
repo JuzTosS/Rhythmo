@@ -18,7 +18,7 @@ public class AsyncDetectBpmByDataTask extends AsyncDetectBpmTaskAbstract<OnDetec
     double detectBpm(double oldBpm, String fullPath, String name)
     {
         if(oldBpm <= 0)
-            return BpmDetector.detect(fullPath);
+            return BpmDetector.detectFromData(fullPath);
         else
             return oldBpm;
     }

@@ -7,12 +7,14 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.audio.AdvancedMediaPlayer;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.models.DatabaseHelper;
 import com.juztoss.rhythmo.models.Playlist;
+import com.juztoss.rhythmo.models.songsources.AllSongsSource;
 import com.juztoss.rhythmo.models.songsources.SourcesFactory;
 
 import java.util.ArrayList;
@@ -246,6 +248,63 @@ public class RhythmoApp extends Application
         values.put(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, (int) (composition.bpmShifted() * 10));
         getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, DatabaseHelper._ID + " = ?", new String[]{Long.toString(composition.id())});
     }
+
+    public int getSongsMinBpm()
+    {
+        int value = (int) RhythmoApp.MIN_BPM;
+
+        Cursor cursor = getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                new String[]{DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10},
+                DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " > 0", null,
+                null, null,
+                DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, "1");
+        try
+        {
+            cursor.moveToFirst();
+            value = cursor.getInt(0) / 10;
+        }
+        catch (Exception e)
+        {
+            Log.e(AllSongsSource.class.toString(), "Error while trying to get min bpm");
+            e.printStackTrace();
+        }
+        finally
+        {
+            if (cursor != null)
+                cursor.close();
+        }
+
+        return value;
+    }
+
+    public int getSongsMaxBpm()
+    {
+        int value = (int) RhythmoApp.MAX_BPM;
+
+        Cursor cursor = getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                new String[]{DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10},
+                DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " > 0", null,
+                null, null,
+                DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " DESC", "1");
+        try
+        {
+            cursor.moveToFirst();
+            value = (cursor.getInt(0) + 1) / 10;
+        }
+        catch (Exception e)
+        {
+            Log.e(AllSongsSource.class.toString(), "Error while trying to get max bpm");
+            e.printStackTrace();
+        }
+        finally
+        {
+            if (cursor != null)
+                cursor.close();
+        }
+
+        return value;
+    }
+
 
     public SharedPreferences getSharedPreferences()
     {

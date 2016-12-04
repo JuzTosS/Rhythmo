@@ -159,7 +159,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mRangeSeekbar = (RangeSeekBar<Integer>) findViewById(R.id.bpm_ranger);
         mRangeSeekbar.setOnRangeSeekBarChangeListener(mOnBpmRangeChanged);
         mRangeSeekbar.setNotifyWhileDragging(true);
-        mRangeSeekbar.setRangeValues((int) RhythmoApp.MIN_BPM, (int) RhythmoApp.MAX_BPM);
+        mRangeSeekbar.setRangeValues(mApp.getSongsMinBpm(), mApp.getSongsMaxBpm());
 
         mMinBPMField = (TextView) findViewById(R.id.bpm_label_min);
         mMaxBPMField = (TextView) findViewById(R.id.bpm_label_max);
@@ -715,7 +715,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue)
         {
             onRangeSeekBarValuesMoved(bar, minValue, maxValue);
-            if (minValue <= RhythmoApp.MIN_BPM && maxValue >= RhythmoApp.MAX_BPM)
+            if (minValue <= (Integer)bar.getAbsoluteMinValue() && maxValue >= (Integer)bar.getAbsoluteMaxValue())
             {
                 mApp.setBPMRange(0, 0);
             }
@@ -728,10 +728,10 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         @Override
         public void onRangeSeekBarValuesMoved(RangeSeekBar<?> bar, Integer minValue, Integer maxValue)
         {
-            if (minValue <= RhythmoApp.MIN_BPM && maxValue >= RhythmoApp.MAX_BPM)
+            if (minValue <= (Integer)bar.getAbsoluteMinValue() && maxValue >= (Integer)bar.getAbsoluteMaxValue())
             {
-                mMinBPMField.setText("Min");
-                mMaxBPMField.setText("Max");
+                mMinBPMField.setText(R.string.min);
+                mMaxBPMField.setText(R.string.max);
             }
             else
             {
