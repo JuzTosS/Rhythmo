@@ -17,8 +17,8 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
     protected RhythmoApp mApp;
     protected float mMinBPM = 0;
     protected float mMaxBPM = 0;
-    protected Cursor mList;
-    protected boolean mNeedRebuild = true;
+//    protected Cursor mList;
+//    protected boolean mNeedRebuild = true;
     private List<IUpdateListener> mUpdateListeners;
     private AbstractSongsSource mSource;
     protected String mWordFilter;
@@ -50,19 +50,19 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
         return mSource;
     }
 
-    protected void rebuild()
-    {
-        if (mList != null)
-            mList.close();
-
-        mList = mSource.getIds(mMinBPM, mMaxBPM, mWordFilter);
-
-        mNeedRebuild = false;
-    }
+//    protected void rebuild()
+//    {
+//        if (mList != null)
+//            mList.close();
+//
+//        mList = mSource.getIds(mMinBPM, mMaxBPM, mWordFilter);
+//
+//        mNeedRebuild = false;
+//    }
 
     public void setNeedRebuild()
     {
-        mNeedRebuild = true;
+//        mNeedRebuild = true;
         notifyUpdateListeners();
     }
 
@@ -73,15 +73,14 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
     }
 
     //TODO: Implement binary search, as we don't need anymore do requests to DB
-    public int findPositionById(long id)
+    public static int findPositionById(Cursor list, long id)
     {
-        Cursor cursor = getList();
-        if(cursor == null) return -1;
-        while (cursor.moveToNext())
+        if(list == null) return -1;
+        while (list.moveToNext())
         {
-            if(cursor.getLong(0) == id)
+            if(list.getLong(0) == id)
             {
-                return cursor.getPosition();
+                return list.getPosition();
             }
         }
 
@@ -91,7 +90,7 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
     //This binary search works slower than simple iterating because we need make requests to the DB
 //    public int findPositionById(long id)
 //    {
-//        Cursor cursor = getList();
+//        Cursor cursor = getCursor();
 //        if(cursor == null || cursor.getCount() <= 0) return -1;
 //        CursorList cursorList = new CursorList(cursor, mApp);
 //        return Collections.binarySearch(cursorList, mApp.getComposition(id), new Comparator<Composition>()
@@ -109,18 +108,13 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
 //        });
 //    }
 
-    /**
-     * DO NOT SAVE AN INSTANCE OF THE CURSOR!
-     * IT MAYBE CLOSED AT ANY TIME
-     * @return
-     */
     @Nullable
-    public Cursor getList()
+    public Cursor getCursor()
     {
-        if (mNeedRebuild || mList == null || mList.isClosed())
-            rebuild();
+//        if (mNeedRebuild || mList == null || mList.isClosed())
+//            rebuild();
 
-        return mList;
+        return mSource.getIds(mMinBPM, mMaxBPM, mWordFilter);
     }
 
     public String getName()

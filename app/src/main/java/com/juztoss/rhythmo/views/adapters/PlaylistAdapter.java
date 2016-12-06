@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.models.Playlist;
-import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
 import com.juztoss.rhythmo.models.songsources.SortType;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.PlaybackService;
@@ -28,6 +27,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     private RhythmoApp mApp;
     private PlayerActivity mActivity;
     private Playlist mPlaylist;
+    private Cursor mCursor;
 
     BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
     {
@@ -43,6 +43,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     {
         super();
         mPlaylist = playlist;
+        mCursor = playlist.getCursor();
         mActivity = activity;
         mApp = (RhythmoApp) activity.getApplicationContext();
     }
@@ -77,8 +78,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
 
         holder.setVisible(true);
 
-        mPlaylist.getList().moveToPosition(position);
-        Composition composition = Composition.fromCursor(mPlaylist.getList());
+        mCursor.moveToPosition(position);
+        Composition composition = Composition.fromCursor(mCursor);
         if (composition == null)
         {
             holder.setVisible(false);
@@ -96,8 +97,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
             }
             else
             {
-                mPlaylist.getList().moveToPosition(prevPosition);
-                Composition prevComposition = Composition.fromCursor(mPlaylist.getList());
+                mCursor.moveToPosition(prevPosition);
+                Composition prevComposition = Composition.fromCursor(mCursor);
 
                 if (prevComposition != null)
                     folderMode = !prevComposition.getFolderPath().equals(composition.getFolderPath());
@@ -109,8 +110,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     @Override
     public int getItemCount()
     {
-        if (mPlaylist.getList() != null)
-            return mPlaylist.getList().getCount() + 1;
+        if (mCursor != null)
+            return mCursor.getCount() + 1;
         else
             return 0;
     }
@@ -130,6 +131,10 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     @Override
     public void onPlaylistUpdated()
     {
+        if(mCursor != null)
+            mCursor.close();
+
+        mCursor = mPlaylist.getCursor();
         notifyDataSetChanged();
         mActivity.updateTabNames();
     }
