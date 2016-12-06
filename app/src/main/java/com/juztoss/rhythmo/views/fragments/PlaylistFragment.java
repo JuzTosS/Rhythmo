@@ -65,6 +65,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
             scrollTo(mScrollOnCreateToPosition);
             mScrollOnCreateToPosition = -1;
         }
+        mPlaylistAdapter.bind();
     }
 
     private void showSongActivity(Composition composition)
@@ -112,22 +113,25 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     }
 
     @Override
+    public void onStart()
+    {
+        super.onStart();
+        mPlaylistAdapter.bind();
+    }
+
+    @Override
     public void onPause()
     {
         super.onPause();
         mPlaylistAdapter.unbind();
     }
 
-    public void onResumeFragment()
+    public void onScreen()
     {
-        if (mPlaylistAdapter == null) return;
-
-        mPlaylistAdapter.bind();
     }
 
-    public void onPauseFragment()
+    public void offScreen()
     {
-
     }
 
 }

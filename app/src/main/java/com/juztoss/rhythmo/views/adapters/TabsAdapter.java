@@ -53,10 +53,10 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.
     {
 
         PlaylistFragment fragmentToShow = (PlaylistFragment) instantiateItem(mContainer, newPosition);
-        fragmentToShow.onResumeFragment();
+        fragmentToShow.onScreen();
 
         PlaylistFragment fragmentToHide = (PlaylistFragment) instantiateItem(mContainer, mCurrentPosition);
-        fragmentToHide.onPauseFragment();
+        fragmentToHide.offScreen();
 
         mCurrentPosition = newPosition;
     }

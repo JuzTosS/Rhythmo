@@ -69,7 +69,7 @@ public class BuildMusicLibraryService extends Service
         taskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
         String key = getResources().getString(R.string.pref_recognize_bpm_from_name);
-        boolean needToGetBPMByNames =  PreferenceManager.getDefaultSharedPreferences(this).getBoolean(key, false);
+        boolean needToGetBPMByNames =  PreferenceManager.getDefaultSharedPreferences(this).getBoolean(key, true);
 
         if(needToGetBPMByNames)
         {

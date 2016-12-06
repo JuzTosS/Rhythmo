@@ -34,7 +34,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            notifyDataSetChanged();
+            onPlaylistUpdated();
         }
     };
     private IOnItemClickListener mOnItemClickListener;
@@ -107,13 +107,26 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
         holder.update(composition, position, mActivity.playbackService(), folderMode);
     }
 
+    private Cursor getCursor()
+    {
+        if(mCursor == null)
+            mCursor = mPlaylist.getCursor();
+
+        return mCursor;
+    }
+
+    private void closeCursor()
+    {
+        if(mCursor != null)
+            mCursor.close();
+
+        mCursor = null;
+    }
+
     @Override
     public int getItemCount()
     {
-        if (mCursor != null)
-            return mCursor.getCount() + 1;
-        else
-            return 0;
+            return getCursor().getCount() + 1;
     }
 
     public void bind()
@@ -124,6 +137,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
 
     public void unbind()
     {
+        closeCursor();
         mPlaylist.removeUpdateListener(this);
         LocalBroadcastManager.getInstance(mApp).unregisterReceiver(mUpdateUIReceiver);
     }
@@ -131,10 +145,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     @Override
     public void onPlaylistUpdated()
     {
-        if(mCursor != null)
-            mCursor.close();
-
-        mCursor = mPlaylist.getCursor();
+        closeCursor();
         notifyDataSetChanged();
         mActivity.updateTabNames();
     }

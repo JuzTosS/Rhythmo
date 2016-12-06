@@ -26,6 +26,7 @@
         <CheckBoxPreference
             android:key="@string/pref_recognize_bpm_from_name"
             android:summary="@string/pref_recognize_bpm_from_name_desc"
-            android:title="@string/pref_recognize_bpm_from_name"/>
+            android:title="@string/pref_recognize_bpm_from_name"
+            android:defaultValue="true"/>
     </PreferenceCategory>
 </PreferenceScreen>

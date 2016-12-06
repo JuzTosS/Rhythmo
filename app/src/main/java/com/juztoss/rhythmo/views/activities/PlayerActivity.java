@@ -159,7 +159,6 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mRangeSeekbar = (RangeSeekBar<Integer>) findViewById(R.id.bpm_ranger);
         mRangeSeekbar.setOnRangeSeekBarChangeListener(mOnBpmRangeChanged);
         mRangeSeekbar.setNotifyWhileDragging(true);
-        mRangeSeekbar.setRangeValues(mApp.getSongsMinBpm(), mApp.getSongsMaxBpm());
 
         mMinBPMField = (TextView) findViewById(R.id.bpm_label_min);
         mMaxBPMField = (TextView) findViewById(R.id.bpm_label_max);
@@ -591,6 +590,8 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
     protected void updateAll()
     {
+        mRangeSeekbar.setRangeValues(mApp.getSongsMinBpm(), mApp.getSongsMaxBpm());
+
         if (playbackService() == null) return;
 
         Composition composition = mApp.getComposition(playbackService().currentSongId());
