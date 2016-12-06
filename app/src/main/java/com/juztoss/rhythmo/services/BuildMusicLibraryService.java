@@ -160,7 +160,7 @@ public class BuildMusicLibraryService extends Service
             mApp.notifyPlaylistsRepresentationUpdated();
 
             Intent intent = new Intent(UPDATE_PROGRESS_ACTION);
-            intent.putExtra(PROGRESS_ACTION_HEADER, "debug header");
+            intent.putExtra(PROGRESS_ACTION_HEADER, mApp.getString(R.string.build_library_desc));
             intent.putExtra(PROGRESS_ACTION_OVERALL_PROGRESS, 0);
             intent.putExtra(PROGRESS_ACTION_MAX_PROGRESS, 0);
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mApp);
