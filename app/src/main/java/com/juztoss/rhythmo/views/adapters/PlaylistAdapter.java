@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,11 +19,12 @@ import com.juztoss.rhythmo.models.songsources.SortType;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.PlaybackService;
 import com.juztoss.rhythmo.views.activities.PlayerActivity;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> implements Playlist.IUpdateListener, IOnItemClickListener
+public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> implements Playlist.IUpdateListener, IOnItemClickListener, FastScrollRecyclerView.SectionedAdapter
 {
     private RhythmoApp mApp;
     private PlayerActivity mActivity;
@@ -152,6 +154,30 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
 
         if(mDataSetChanged != null)
             mDataSetChanged.onDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public String getSectionName(int position)
+    {
+        Cursor cursor = getCursor();
+        if(position >= cursor.getCount()-1)
+            position--;
+
+        cursor.moveToPosition(position);
+        Composition composition = Composition.fromCursor(cursor);
+
+        if(composition == null)
+            return "";
+
+        if(getSortType() == SortType.DIRECTORY)
+            return "";
+        else if(getSortType() == SortType.LAST)
+            return "";
+        else if(getSortType() == SortType.NAME)
+            return composition.name().substring(0,1).toUpperCase();
+        else//getSortType() == SortType.BPM
+            return Integer.toString((int)composition.bpmShifted());
     }
 
     public void setOnItemClickListener(IOnItemClickListener onItemClickListener)

@@ -32,4 +32,13 @@
             android:title="@string/pref_recognize_bpm_from_name"
             android:defaultValue="true"/>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:key="@string/pref_about"
+        android:title="@string/pref_about">
+        <Preference
+            android:key="@string/pref_license_button"
+            android:summary="@string/pref_license_desc"
+            android:title="@string/pref_license_button"/>
+
+    </PreferenceCategory>
 </PreferenceScreen>

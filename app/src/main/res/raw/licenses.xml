@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<notices>
+    <notice>
+        <name>RecyclerView-FastScroll</name>
+        <url>https://github.com/timusus/RecyclerView-FastScroll</url>
+        <copyright>Copyright © 2016 Tim Malseed</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Superpowered</name>
+        <url>http://superpowered.com</url>
+        <copyright>Copyright © 2016 superpowered.</copyright>
+        <license>http://superpowered.com/license</license>
+    </notice>
+</notices>

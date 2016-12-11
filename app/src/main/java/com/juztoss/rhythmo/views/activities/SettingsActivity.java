@@ -18,6 +18,14 @@ import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.BuildMusicLibraryService;
 import com.juztoss.rhythmo.views.items.MusicLibraryPreference;
 
+import de.psdev.licensesdialog.LicenseResolver;
+import de.psdev.licensesdialog.LicensesDialog;
+import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
+import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense21;
+import de.psdev.licensesdialog.licenses.License;
+import de.psdev.licensesdialog.model.Notice;
+import de.psdev.licensesdialog.model.Notices;
+
 /**
  * Created by JuzTosS on 5/27/2016.
  */
@@ -128,7 +136,6 @@ public class SettingsActivity extends AppCompatActivity
             });
 
             Preference clearLibraryPreference = findPreference(getString(R.string.pref_clear_library));
-
             clearLibraryPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override
@@ -137,6 +144,55 @@ public class SettingsActivity extends AppCompatActivity
                     Intent intent = new Intent(getActivity().getApplicationContext(), BuildMusicLibraryService.class);
                     intent.putExtra(BuildMusicLibraryService.STOP_AND_CLEAR, true);
                     getActivity().getApplicationContext().startService(intent);
+                    return true;
+                }
+            });
+
+            Preference licensePref = findPreference(getString(R.string.pref_license_button));
+
+            licensePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            {
+                @Override
+                public boolean onPreferenceClick(Preference preference)
+                {
+                    LicenseResolver.registerLicense(new License()
+                    {
+                        @Override
+                        public String getName()
+                        {
+                            return "http://superpowered.com/license";
+                        }
+
+                        @Override
+                        public String readSummaryTextFromResources(Context context)
+                        {
+                            return "http://superpowered.com/license";
+                        }
+
+                        @Override
+                        public String readFullTextFromResources(Context context)
+                        {
+                            return "http://superpowered.com/license";
+                        }
+
+                        @Override
+                        public String getVersion()
+                        {
+                            return "1.0";
+                        }
+
+                        @Override
+                        public String getUrl()
+                        {
+                            return "http://superpowered.com/license";
+                        }
+                    });
+                    new LicensesDialog.Builder(preference.getContext())
+                            .setNotices(R.raw.licenses)
+                            .setIncludeOwnLicense(true)
+                            .build()
+                            .show();
+
                     return true;
                 }
             });

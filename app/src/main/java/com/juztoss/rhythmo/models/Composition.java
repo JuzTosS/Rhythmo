@@ -1,6 +1,7 @@
 package com.juztoss.rhythmo.models;
 
 import android.database.Cursor;
+import android.util.Log;
 
 import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
 import com.juztoss.rhythmo.utils.SystemHelper;
@@ -20,15 +21,25 @@ public class Composition
 
     public static Composition fromCursor(Cursor cursor)
     {
-        long id = cursor.getLong(AbstractSongsSource.I_ID);
-        if(id >= 0)
+        try
         {
-            return new Composition(cursor);
+            long id = cursor.getLong(AbstractSongsSource.I_ID);
+            if (id >= 0)
+            {
+                return new Composition(cursor);
+            }
+            else
+            {
+                return null;
+            }
         }
-        else
+        catch (Exception e)
         {
-            return null;
+            Log.e(Composition.class.toString(), "Error while getting composition from a cursor!");
+            e.printStackTrace();
         }
+
+        return null;
     }
 
     private Composition(Cursor cursor)
