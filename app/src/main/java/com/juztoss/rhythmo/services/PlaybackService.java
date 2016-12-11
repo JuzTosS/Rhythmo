@@ -414,6 +414,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         mCurrentPlaylistIndex = playlistIndex;
         mCurrentSongIndex = index;
 
+        onPlaylistUpdated();
+
         if (index < 0 || getSongsList() == null || index >= getSongsList().getCount())
             return;
 
