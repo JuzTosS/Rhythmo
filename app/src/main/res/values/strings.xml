@@ -1,5 +1,5 @@
 <resources>
-    <string name="building_music_library">Building music library</string>
+    <string name="building_music_library">Building music library.\nTap to stop.</string>
     <string name="settings_title">Settings</string>
     <string name="new_playlist">New playlist</string>
     <string name="remove_playlist">Remove playlist</string>
@@ -10,8 +10,8 @@
     <string name="building_lib_already_started">Already started!</string>
     <string name="drag_handles_welcome">Drag handles to enable BPM filter</string>
     <string name="select_folder">Select folder</string>
-    <string name="detect_bpm_by_name">Detecting bpm from names</string>
-    <string name="detect_bpm_by_data">Detecting bpm from audio data</string>
+    <string name="detect_bpm_by_name">Detecting bpm from names.\nTap to stop.</string>
+    <string name="detect_bpm_by_data">Detecting bpm from audio data.\n%1$d of %2$d songs.\nTap to stop.</string>
     <string name="folder_desc">"Files: %d"</string>
     <string name="pref_music_library">Music library</string>
     <string name="pref_bpm_auto_shift_range">BPM auto shift</string>
@@ -35,10 +35,13 @@
     <string name="sort_by_date">Date</string>
     <string name="sort_dialog_title">Sort by</string>
     <string name="sort">Sorting</string>
-    <string name="build_library_started">BPM scanning started</string>
+    <string name="build_library_started">BPM scanning started.</string>
     <string name="build_library_finished">BPM scanning finished</string>
+    <string name="clear_library_finished">BPM data has been cleared</string>
     <string name="pref_experimental_features">Experimental features</string>
     <string name="min">Min</string>
     <string name="max">Max</string>
+    <string name="pref_clear_library">Clear all the information about songs BPM</string>
+    <string name="clear_library_desc">Won\'t affect any files data</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

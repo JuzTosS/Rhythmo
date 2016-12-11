@@ -30,7 +30,7 @@ public class RhythmoApp extends Application
     }
 
     public static final String FIRST_RUN = "FirstRun";
-    public static final String LIBRARY_BUILD_STARTED = "LibraryBuildStarted";
+    public static final String LIBRARY_BUILD_HAD_STARTED = "LibraryBuildHadStarted";
     public static final String ALL_SONGS_SORT = "AllSongsSort";
 
     public static float MIN_BPM = 25;
@@ -261,8 +261,11 @@ public class RhythmoApp extends Application
                 DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, "1");
         try
         {
-            cursor.moveToFirst();
-            value = cursor.getInt(0) / 10;
+            if(cursor.getCount() > 0)
+            {
+                cursor.moveToFirst();
+                value = cursor.getInt(0) / 10;
+            }
         }
         catch (Exception e)
         {
@@ -289,8 +292,11 @@ public class RhythmoApp extends Application
                 DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " DESC", "1");
         try
         {
-            cursor.moveToFirst();
-            value = (cursor.getInt(0) + 1) / 10;
+            if(cursor.getCount() > 0)
+            {
+                cursor.moveToFirst();
+                value = (cursor.getInt(0) + 1) / 10;
+            }
         }
         catch (Exception e)
         {

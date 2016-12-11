@@ -40,7 +40,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
     private int mOverallProgress = 0;
 
-    private PowerManager.WakeLock wakeLock;
+    private PowerManager.WakeLock mWakeLock;
 
     public AsyncBuildLibraryTask(RhythmoApp app, boolean clear, @Nullable String folder)
     {
@@ -78,9 +78,9 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                     mBuildLibraryProgressUpdate.get(i).onStartBuildingLibrary(this);
 
         PowerManager pm = (PowerManager) mApp.getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 getClass().getName());
-        wakeLock.acquire();
+        mWakeLock.acquire();
 
     }
 
@@ -121,13 +121,26 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         return contentResolver.query(uri, projection, selection, null, null);
     }
 
+    @Override
+    protected void onCancelled(Void aVoid)
+    {
+        super.onCancelled(aVoid);
+        mWakeLock.release();
+    }
+
     private void saveMediaStoreDataToDB(Cursor mediaStoreCursor)
     {
         try
         {
             Log.d(AsyncBuildLibraryTask.class.toString(), "Start updating the library, clear = " + mClear + ", songs in mediaStore: " + mediaStoreCursor.getCount());
 
-            if (mClear) mApp.getDatabaseHelper().clearAll(mApp.getDatabaseHelper().getWritableDatabase());
+            if (mClear)
+            {
+                ContentValues values = new ContentValues();
+                values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, 0);
+                values.put(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, 0);
+                mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, null, null);
+            }
 
             mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
 
@@ -306,7 +319,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     @Override
     protected void onPostExecute(Void arg0)
     {
-        wakeLock.release();
+        mWakeLock.release();
 
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)

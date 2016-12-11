@@ -12,7 +12,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
@@ -121,8 +120,23 @@ public class SettingsActivity extends AppCompatActivity
                     }
                     else
                     {
-                        Toast.makeText(getActivity(), R.string.building_lib_already_started, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getActivity().getApplicationContext(), BuildMusicLibraryService.class);
+                        getActivity().getApplicationContext().stopService(intent);
                     }
+                    return true;
+                }
+            });
+
+            Preference clearLibraryPreference = findPreference(getString(R.string.pref_clear_library));
+
+            clearLibraryPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            {
+                @Override
+                public boolean onPreferenceClick(Preference preference)
+                {
+                    Intent intent = new Intent(getActivity().getApplicationContext(), BuildMusicLibraryService.class);
+                    intent.putExtra(BuildMusicLibraryService.STOP_AND_CLEAR, true);
+                    getActivity().getApplicationContext().startService(intent);
                     return true;
                 }
             });

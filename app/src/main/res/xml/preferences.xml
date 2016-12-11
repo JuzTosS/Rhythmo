@@ -10,7 +10,10 @@
             android:title="@string/pref_build_library"
             android:widgetLayout="@layout/library_preference"/>
 
-
+        <Preference
+            android:key="@string/pref_clear_library"
+            android:summary="@string/clear_library_desc"
+            android:title="@string/pref_clear_library"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="@string/pref_experimental_features"

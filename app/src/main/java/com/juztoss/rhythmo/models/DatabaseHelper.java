@@ -109,7 +109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
         //TODO: Remove it after beta release
         {
             ((RhythmoApp) mContext).getSharedPreferences().edit().putBoolean(RhythmoApp.FIRST_RUN, true).commit();
-            ((RhythmoApp) mContext).getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_STARTED, false).commit();
+            ((RhythmoApp) mContext).getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_HAD_STARTED, false).commit();
         }
     }
 

@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
-import com.juztoss.rhythmo.views.activities.PlayerActivity;
 import com.juztoss.rhythmo.views.activities.SettingsActivity;
 
 /**
@@ -30,11 +29,16 @@ public class BuildMusicLibraryService extends Service
     public static final String PROGRESS_ACTION_MAX_PROGRESS = "MaxProgress";
     public static final String PROGRESS_ACTION_HEADER = "Header";
     public static final String REBUILD = "Rebuild";
+    public static final String STOP_AND_CLEAR = "StopAndClear";
     private RhythmoApp mApp;
     private NotificationCompat.Builder mBuilder;
     private Notification mNotification;
     private NotificationManager mNotifyManager;
     public static final int NOTIFICATION_ID = 43;
+
+    private AsyncBuildLibraryTask mTaskBuildLib;
+    private AsyncDetectBpmByNamesTask mTaskDetectBpmByNames;
+    private AsyncDetectBpmByDataTask mTaskDetectBpmByData;
 
     @Override
     public void onCreate()
@@ -45,6 +49,21 @@ public class BuildMusicLibraryService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        boolean stopAndClear = false;
+        if(intent != null && intent.getExtras() != null)
+            stopAndClear = intent.getExtras().getBoolean(STOP_AND_CLEAR);
+
+        if(stopAndClear)
+        {
+            cancelTasks();
+
+            mTaskBuildLib = new AsyncBuildLibraryTask(mApp, true);
+            mTaskBuildLib.setOnBuildLibraryProgressUpdate(mOnClearLibraryUpdate);
+            mTaskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+
+            return START_STICKY;
+        }
+
         Toast.makeText(this, getString(R.string.build_library_started), Toast.LENGTH_LONG).show();
 
         mBuilder = new NotificationCompat.Builder(mApp);
@@ -59,30 +78,62 @@ public class BuildMusicLibraryService extends Service
         mNotification.flags |= Notification.FLAG_INSISTENT | Notification.FLAG_NO_CLEAR;
         mNotifyManager.notify(NOTIFICATION_ID, mNotification);
 
-
         boolean clear = false;
         if(intent != null && intent.getExtras() != null)
             clear = intent.getExtras().getBoolean(REBUILD);
 
-        AsyncBuildLibraryTask taskBuildLib = new AsyncBuildLibraryTask(mApp, clear);
-        taskBuildLib.setOnBuildLibraryProgressUpdate(mOnBuildLibraryUpdate);
-        taskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        mTaskBuildLib = new AsyncBuildLibraryTask(mApp, clear);
+        mTaskBuildLib.setOnBuildLibraryProgressUpdate(mOnBuildLibraryUpdate);
+        mTaskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
         String key = getResources().getString(R.string.pref_recognize_bpm_from_name);
         boolean needToGetBPMByNames =  PreferenceManager.getDefaultSharedPreferences(this).getBoolean(key, true);
 
         if(needToGetBPMByNames)
         {
-            AsyncDetectBpmByNamesTask taskDetectBpmByNames = new AsyncDetectBpmByNamesTask(mApp);
-            taskDetectBpmByNames.setOnBuildLibraryProgressUpdate(mOnDetectBpmByNamesUpdate);
-            taskDetectBpmByNames.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+            mTaskDetectBpmByNames = new AsyncDetectBpmByNamesTask(mApp);
+            mTaskDetectBpmByNames.setOnBuildLibraryProgressUpdate(mOnDetectBpmByNamesUpdate);
+            mTaskDetectBpmByNames.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
         }
 
-        AsyncDetectBpmByDataTask taskDetectBpmByData = new AsyncDetectBpmByDataTask(mApp);
-        taskDetectBpmByData.setOnBuildLibraryProgressUpdate(mOnDetectBpmByDataUpdate);
-        taskDetectBpmByData.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        mTaskDetectBpmByData = new AsyncDetectBpmByDataTask(mApp);
+        mTaskDetectBpmByData.setOnBuildLibraryProgressUpdate(mOnDetectBpmByDataUpdate);
+        mTaskDetectBpmByData.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
         return START_STICKY;
+    }
+
+    private void cancelTasks()
+    {
+        if(mTaskBuildLib != null)
+            mTaskBuildLib.cancel(true);
+
+        if(mTaskDetectBpmByNames != null)
+            mTaskDetectBpmByNames.cancel(true);
+
+        if(mTaskDetectBpmByData != null)
+            mTaskDetectBpmByData.cancel(true);
+
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        cancelTasks();
+        if(mNotifyManager != null)
+            mNotifyManager.cancel(NOTIFICATION_ID);
+
+        mApp.setIsBuildingLibrary(false);
+        mApp.notifyPlaylistsRepresentationUpdated();
+
+        Intent intent = new Intent(UPDATE_PROGRESS_ACTION);
+        intent.putExtra(PROGRESS_ACTION_HEADER, mApp.getString(R.string.build_library_desc));
+        intent.putExtra(PROGRESS_ACTION_OVERALL_PROGRESS, 0);
+        intent.putExtra(PROGRESS_ACTION_MAX_PROGRESS, 0);
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mApp);
+        broadcastManager.sendBroadcast(intent);
+
+        super.onDestroy();
     }
 
     @Nullable
@@ -91,6 +142,28 @@ public class BuildMusicLibraryService extends Service
     {
         return new Binder();
     }
+
+    private AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate mOnClearLibraryUpdate = new AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate()
+    {
+        @Override
+        public void onStartBuildingLibrary(AsyncBuildLibraryTask task)
+        {
+            mApp.setIsBuildingLibrary(true);
+        }
+
+        @Override
+        public void onProgressUpdate(AsyncBuildLibraryTask task, int overallProgress, int maxProgress, boolean mediaStoreTransferDone)
+        {
+
+        }
+
+        @Override
+        public void onFinishBuildingLibrary(AsyncBuildLibraryTask task)
+        {
+            Toast.makeText(mApp, R.string.clear_library_finished, Toast.LENGTH_LONG).show();
+            stopSelf();
+        }
+    };
 
     private AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate mOnBuildLibraryUpdate = new AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate()
     {
@@ -147,25 +220,14 @@ public class BuildMusicLibraryService extends Service
         @Override
         public void onProgressUpdate(AsyncDetectBpmByDataTask task, int overallProgress, int maxProgress, boolean mediaStoreTransferDone)
         {
-            String header = getResources().getString(R.string.detect_bpm_by_data);
+            String header = getResources().getString(R.string.detect_bpm_by_data, overallProgress, maxProgress);
             showNotification(header, overallProgress, maxProgress);
         }
 
         @Override
         public void onFinishBuildingLibrary(AsyncDetectBpmByDataTask task)
         {
-            mNotifyManager.cancel(NOTIFICATION_ID);
             stopSelf();
-            mApp.setIsBuildingLibrary(false);
-            mApp.notifyPlaylistsRepresentationUpdated();
-
-            Intent intent = new Intent(UPDATE_PROGRESS_ACTION);
-            intent.putExtra(PROGRESS_ACTION_HEADER, mApp.getString(R.string.build_library_desc));
-            intent.putExtra(PROGRESS_ACTION_OVERALL_PROGRESS, 0);
-            intent.putExtra(PROGRESS_ACTION_MAX_PROGRESS, 0);
-            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mApp);
-            broadcastManager.sendBroadcast(intent);
-
             Toast.makeText(mApp, R.string.build_library_finished, Toast.LENGTH_LONG).show();
         }
     };

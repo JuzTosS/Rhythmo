@@ -20,13 +20,13 @@ import java.util.List;
 public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbstract.OnDetectBpmUpdate> extends AsyncTask<String, String, Void>
 {
     protected final String UPDATE_COMPLETE = "UpdateComplete";
-    protected final int MAX_PROGRESS_VALUE = 1000000;
     protected RhythmoApp mApp;
-
+    int mMaxProgressValue;
+    int mOverallProgress;
     public List<T> mBuildLibraryProgressUpdate;
 
 
-    private PowerManager.WakeLock wakeLock;
+    private PowerManager.WakeLock mWakeLock;
 
     public interface OnDetectBpmUpdate<X extends AsyncDetectBpmTaskAbstract>
     {
@@ -40,13 +40,17 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
 
     }
 
-
-    protected int mOverallProgress = 0;
-
     public AsyncDetectBpmTaskAbstract(RhythmoApp context)
     {
         mApp = context;
         mBuildLibraryProgressUpdate = new ArrayList<>();
+    }
+
+    @Override
+    protected void onCancelled(Void aVoid)
+    {
+        super.onCancelled(aVoid);
+        mWakeLock.release();
     }
 
     @Override
@@ -72,6 +76,8 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
             return;
         }
 
+        mOverallProgress = 0;
+        mMaxProgressValue = songsCursor.getCount();
 
         int affectedCount = 0;
         try
@@ -80,11 +86,16 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
             int nameIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME);
             int pathIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH);
             int bpmIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10);
-            final int subProgress = (MAX_PROGRESS_VALUE - mOverallProgress) / songsCursor.getCount();
 
             long lastUpdated = System.currentTimeMillis();
             for (int i = 0; i < songsCursor.getCount(); i++)
             {
+                if(isCancelled())
+                {
+                    Log.d(AsyncDetectBpmTaskAbstract.class.toString(), " task has been cancelled");
+                    return;
+                }
+
                 songsCursor.moveToPosition(i);
                 String path = songsCursor.getString(pathIndex);
                 String name = songsCursor.getString(nameIndex);
@@ -108,8 +119,10 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
 
                 int bpmX10 = (int) (bpm * 10);
                 if(bpmX10 == hadDetectedBpm)
+                {
+                    mOverallProgress++;
                     continue;
-
+                }
                 ContentValues values = new ContentValues();
                 values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, bpmX10);
                 values.put(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, bpmX10);
@@ -117,7 +130,7 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
                 if(rowsAffected > 0)
                     affectedCount++;
 
-                mOverallProgress += subProgress;
+                mOverallProgress++;
                 long now = System.currentTimeMillis();
                 if (now - lastUpdated > 1000)
                 {
@@ -146,9 +159,9 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
                     mBuildLibraryProgressUpdate.get(i).onStartBuildingLibrary(this);
 
         PowerManager pm = (PowerManager) mApp.getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 getClass().getName());
-        wakeLock.acquire();
+        mWakeLock.acquire();
 
     }
 
@@ -156,28 +169,21 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
     protected void onProgressUpdate(String... progressParams)
     {
         super.onProgressUpdate(progressParams);
-
-        if (progressParams.length > 0 && progressParams[0].equals(UPDATE_COMPLETE))
-        {
-            for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
-                if (mBuildLibraryProgressUpdate.get(i) != null)
-                    mBuildLibraryProgressUpdate.get(i).onProgressUpdate(this, mOverallProgress,
-                            MAX_PROGRESS_VALUE, true);
-
-            return;
-        }
-
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
+            {
                 if (mBuildLibraryProgressUpdate.get(i) != null)
-                    mBuildLibraryProgressUpdate.get(i).onProgressUpdate(this, mOverallProgress, MAX_PROGRESS_VALUE, false);
-
+                {
+                    boolean done = progressParams.length > 0 && progressParams[0].equals(UPDATE_COMPLETE);
+                    mBuildLibraryProgressUpdate.get(i).onProgressUpdate(this, mOverallProgress, mMaxProgressValue, done);
+                }
+            }
     }
 
     @Override
     protected void onPostExecute(Void arg0)
     {
-        wakeLock.release();
+        mWakeLock.release();
 
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)

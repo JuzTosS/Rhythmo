@@ -41,7 +41,7 @@ public class CopyMediaToDevice
 
         RhythmoApp app = (RhythmoApp) InstrumentationRegistry.getTargetContext().getApplicationContext();
         app.getSharedPreferences().edit().putBoolean(RhythmoApp.FIRST_RUN, false).commit();
-        app.getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_STARTED, true).commit();
+        app.getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_HAD_STARTED, true).commit();
 
         copyFiles(app);
 
