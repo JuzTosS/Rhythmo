@@ -472,7 +472,8 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         if (playbackService() == null) return false;
 
         mPlaylistsPager.setCurrentItem(playbackService().getCurrentPlaylistIndex());
-        adapter.getCurrentFragment().scrollTo(playbackService().getCurrentSongIndex());
+        int songPosition = playbackService().getCurrentSongIndex() - 1;
+        adapter.getCurrentFragment().scrollTo(songPosition < 0 ? 0 : songPosition);
         return true;
     }
 

@@ -1,5 +1,6 @@
 package com.juztoss.rhythmo.views.adapters;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -38,10 +39,13 @@ public class SongElementHolder extends RecyclerView.ViewHolder
     private LinearLayout mRoot;
     private IOnItemClickListener mListener;
     PopupMenu mPopupMenu;
+    private boolean mIsFolderHeader;
+    private String mFolderName;
 
     public SongElementHolder(View row, View header, IOnItemClickListener listener, boolean isModifyAvailable)
     {
         super(row);
+        row.setTag(this);
         mHeader = header;
         mApp = ((RhythmoApp) itemView.getContext().getApplicationContext());
         mListener = listener;
@@ -75,7 +79,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         mSecondLine = (TextView) itemView.findViewById(R.id.second_line);
         mBpmLabel = (TextView) itemView.findViewById(R.id.bpm_label);
         mRoot = (LinearLayout) itemView.findViewById(R.id.song_list_root);
-        mHeaderLabel = (TextView) mHeader.findViewById(R.id.folder_header);
+        mHeaderLabel = (TextView) mHeader.findViewById(R.id.folder_header_text);
         mPlayingState = itemView.findViewById(R.id.playing_state);
     }
 
@@ -121,8 +125,11 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         boolean visible = service != null && service.currentSongId() == composition.id();
         mPlayingState.setVisibility(visible ? View.VISIBLE : View.GONE);
 
+        mFolderName = composition.getFolder();
+        mHeaderLabel.setText(mFolderName);
+
         if (folderMode)
-            addFolder(composition);
+            addFolder();
         else
             removeFolder();
     }
@@ -131,23 +138,34 @@ public class SongElementHolder extends RecyclerView.ViewHolder
     {
         if (mRoot.getChildAt(0) == mHeader)
         {
+            mIsFolderHeader = false;
             mRoot.removeViewAt(0);
             mRoot.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, mApp.getResources().getDisplayMetrics());
         }
     }
 
-    private void addFolder(Composition composition)
+    private void addFolder()
     {
         if (mRoot.getChildAt(0) != mHeader)
         {
+            mIsFolderHeader = true;
             mRoot.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, mApp.getResources().getDisplayMetrics());
             mRoot.addView(mHeader, 0);
         }
-        mHeaderLabel.setText(composition.getFolder());
     }
 
     public void setVisible(boolean visible)
     {
         itemView.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    public boolean isFolderHeader()
+    {
+        return mIsFolderHeader;
+    }
+
+    public String getFolderName()
+    {
+        return mFolderName;
     }
 }

@@ -38,6 +38,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
         }
     };
     private IOnItemClickListener mOnItemClickListener;
+    private IOnDataSetChanged mDataSetChanged;
 
     public PlaylistAdapter(PlayerActivity activity, Playlist playlist)
     {
@@ -148,10 +149,28 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
         closeCursor();
         notifyDataSetChanged();
         mActivity.updateTabNames();
+
+        if(mDataSetChanged != null)
+            mDataSetChanged.onDataSetChanged();
     }
 
     public void setOnItemClickListener(IOnItemClickListener onItemClickListener)
     {
         mOnItemClickListener = onItemClickListener;
+    }
+
+    public SortType getSortType()
+    {
+        return mPlaylist.getSource().getSortType();
+    }
+
+    public void setOnDataSetChanged(IOnDataSetChanged onDataSetChanged)
+    {
+        mDataSetChanged = onDataSetChanged;
+    }
+
+    public interface IOnDataSetChanged
+    {
+        void onDataSetChanged();
     }
 }

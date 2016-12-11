@@ -8,9 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.Composition;
+import com.juztoss.rhythmo.models.songsources.SortType;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.PlaybackService;
 import com.juztoss.rhythmo.views.activities.PlayerActivity;
@@ -32,6 +34,72 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     private RhythmoApp mApp;
     private LinearLayoutManager mLayoutManager;
     private int mScrollOnCreateToPosition = -1;
+    private View mHeader;
+    private volatile TextView mHeaderText;
+
+    private RecyclerView.OnScrollListener mOnListScrollListener = new RecyclerView.OnScrollListener()
+    {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+        {
+            updatePlaylistHeader(recyclerView);
+        }
+    };
+
+    private void updatePlaylistHeader(RecyclerView recyclerView)
+    {
+        if (mPlaylistAdapter.getSortType() != SortType.DIRECTORY)
+            return;
+
+        int firstVisibleIndex = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+        int firstFullyVisibleIndex = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+        float headerY = 0;
+        if (firstVisibleIndex >= 0)
+        {
+            View view = recyclerView.getLayoutManager().findViewByPosition(firstVisibleIndex);
+            SongElementHolder holder = (SongElementHolder) view.getTag();
+            mHeaderText.setText(holder.getFolderName());
+            if (holder.isFolderHeader())
+                headerY = view.getY() - mHeader.getHeight();
+        }
+        if (firstFullyVisibleIndex >= 0)
+        {
+            View view = recyclerView.getLayoutManager().findViewByPosition(firstFullyVisibleIndex);
+            SongElementHolder holder = (SongElementHolder) view.getTag();
+            if (holder.isFolderHeader())
+                headerY = view.getY() - mHeader.getHeight();
+        }
+
+        if (headerY <= -mHeader.getHeight() || headerY >= 0)
+            headerY = 0;
+
+        mHeader.setY(headerY);
+    }
+
+    private void updatePlaylistHeaderVisibility()
+    {
+        if (mPlaylistAdapter.getSortType() != SortType.DIRECTORY)
+            mHeader.setVisibility(View.GONE);
+        else
+            mHeader.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        RecyclerView list = (RecyclerView) getView().findViewById(R.id.listView);
+        list.removeOnScrollListener(mOnListScrollListener);
+        super.onDestroyView();
+    }
+
+    private PlaylistAdapter.IOnDataSetChanged mOnDataSetChanged = new PlaylistAdapter.IOnDataSetChanged()
+    {
+        @Override
+        public void onDataSetChanged()
+        {
+            updatePlaylistHeaderVisibility();
+        }
+    };
 
     public static PlaylistFragment newInstance(int playlistIndex)
     {
@@ -55,11 +123,20 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
 
         mPlaylistIndex = playlistIndex;
         mPlaylistAdapter = new PlaylistAdapter((PlayerActivity) getActivity(), mApp.getPlaylists().get(playlistIndex));
+        mPlaylistAdapter.setOnDataSetChanged(mOnDataSetChanged);
+
+        mHeader = getView().findViewById(R.id.static_footer_header);
+        mHeaderText = (TextView) mHeader.findViewById(R.id.static_folder_header_text);
+
         RecyclerView list = (RecyclerView) getView().findViewById(R.id.listView);
+        list.addOnScrollListener(mOnListScrollListener);
+
         mPlaylistAdapter.setOnItemClickListener(this);
         list.setAdapter(mPlaylistAdapter);
         mLayoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(mLayoutManager);
+
+        updatePlaylistHeaderVisibility();
         if(mScrollOnCreateToPosition >= 0)
         {
             scrollTo(mScrollOnCreateToPosition);
