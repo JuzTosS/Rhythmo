@@ -611,6 +611,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mSeekbar.setMax(playbackService().getDuration());
         mHandler.post(mSeekbarUpdateRunnable);
         updateShuffleAndRepeatButtons();
+        mApp.notifyPlaylistsRepresentationUpdated();
     }
 
     private Handler mHandler = new Handler();

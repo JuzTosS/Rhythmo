@@ -153,6 +153,14 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
             mUpdateListeners.remove(listener);
     }
 
+    public void clearListeners()
+    {
+        for(IUpdateListener listener : mUpdateListeners)
+        {
+            mUpdateListeners.remove(listener);
+        }
+    }
+
     public interface IUpdateListener
     {
         void onPlaylistUpdated();

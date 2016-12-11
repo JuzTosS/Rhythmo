@@ -392,7 +392,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         }
 
         if (mCurrentSongId >= 0 && getCurrentPlaylist() != null)
-            mCurrentSongIndex = Playlist.findPositionById(mCursor, mCurrentSongId);
+            mCurrentSongIndex = Playlist.findPositionById(getSongsList(), mCurrentSongId);
         else
             mCurrentSongIndex = -1;
     }
@@ -405,7 +405,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         if (mCurrentPlaylistIndex != playlistIndex)
         {
             mAlreadyPlayedInShuffleMode.clear();
-            mApp.getPlaylists().get(mCurrentPlaylistIndex).removeUpdateListener(this);
+            if(mCurrentPlaylistIndex < mApp.getPlaylists().size())
+                mApp.getPlaylists().get(mCurrentPlaylistIndex).removeUpdateListener(this);
         }
 
         mApp.getPlaylists().get(playlistIndex).addUpdateListener(this);

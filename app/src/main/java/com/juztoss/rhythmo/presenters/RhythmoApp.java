@@ -226,6 +226,7 @@ public class RhythmoApp extends Application
         Playlist playlist = mPlaylists.get(playlistIndex);
         if (playlist != null)
         {
+            playlist.clearListeners();
             playlist.getSource().delete();
             mPlaylists.remove(playlistIndex);
         }
