@@ -112,13 +112,13 @@ public class SongFile extends BaseExplorerElement
         if(mFile.exists())
         {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(mFile.getAbsolutePath());
             try
             {
+                mmr.setDataSource(mFile.getAbsolutePath());
                 int duration = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
                 return DateUtils.formatElapsedTime(duration / 1000);
             }
-            catch (NumberFormatException e)
+            catch (Exception e)
             {
                 return "Unknown length";
             }
