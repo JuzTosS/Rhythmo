@@ -11,7 +11,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
@@ -20,11 +27,7 @@ import com.juztoss.rhythmo.views.items.MusicLibraryPreference;
 
 import de.psdev.licensesdialog.LicenseResolver;
 import de.psdev.licensesdialog.LicensesDialog;
-import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
-import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense21;
 import de.psdev.licensesdialog.licenses.License;
-import de.psdev.licensesdialog.model.Notice;
-import de.psdev.licensesdialog.model.Notices;
 
 /**
  * Created by JuzTosS on 5/27/2016.
@@ -141,9 +144,7 @@ public class SettingsActivity extends AppCompatActivity
                 @Override
                 public boolean onPreferenceClick(Preference preference)
                 {
-                    Intent intent = new Intent(getActivity().getApplicationContext(), BuildMusicLibraryService.class);
-                    intent.putExtra(BuildMusicLibraryService.STOP_AND_CLEAR, true);
-                    getActivity().getApplicationContext().startService(intent);
+                    Toast.makeText(getActivity(), R.string.hold_hint, Toast.LENGTH_SHORT).show();
                     return true;
                 }
             });
@@ -196,6 +197,28 @@ public class SettingsActivity extends AppCompatActivity
                     return true;
                 }
             });
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+        {
+            View view = super.onCreateView(inflater, container, savedInstanceState);
+            ListView listView = (ListView) view.findViewById(android.R.id.list);
+            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    ListView listView = (ListView) parent;
+                    ListAdapter listAdapter = listView.getAdapter();
+                    Object obj = listAdapter.getItem(position);
+                    if (obj != null && obj instanceof View.OnLongClickListener) {
+                        View.OnLongClickListener longListener = (View.OnLongClickListener) obj;
+                        return longListener.onLongClick(view);
+                    }
+                    return false;
+                }
+            });
+
+            return view;
         }
 
         public void updateBuildMusicLibrarySetting(String header, int overallProgress, int maxProgress)

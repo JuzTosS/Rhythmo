@@ -10,7 +10,7 @@
             android:title="@string/pref_build_library"
             android:widgetLayout="@layout/library_preference"/>
 
-        <Preference
+        <com.juztoss.rhythmo.views.items.ClearLibraryPreference
             android:key="@string/pref_clear_library"
             android:summary="@string/clear_library_desc"
             android:title="@string/pref_clear_library"/>

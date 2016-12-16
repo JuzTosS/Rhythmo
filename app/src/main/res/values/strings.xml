@@ -42,9 +42,10 @@
     <string name="min">Min</string>
     <string name="max">Max</string>
     <string name="pref_clear_library">Clear all the information about songs BPM</string>
-    <string name="clear_library_desc">Won\'t affect any files data</string>
+    <string name="clear_library_desc">Tap and hold to turn into a void</string>
     <string name="pref_about">About</string>
     <string name="pref_license_button">Legal information</string>
     <string name="pref_license_desc">Used licenses</string>
+    <string name="hold_hint" type="id">Hold it!</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>
