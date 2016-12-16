@@ -95,6 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
+                        android:selectAllOnFocus="true"
                         android:inputType="numberDecimal"
                         android:nextFocusLeft="@id/bpm_text"
                         android:nextFocusUp="@id/bpm_text"

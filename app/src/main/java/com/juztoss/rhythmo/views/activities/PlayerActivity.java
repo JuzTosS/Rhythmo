@@ -32,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -90,6 +91,13 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         setupAllOtherUI();
 
         LocalBroadcastManager.getInstance(mApp).registerReceiver(mUpdateUIReceiver, new IntentFilter(PlaybackService.UPDATE_UI_ACTION));
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        getCurrentViewedPlaylist().setWordFilter(null);
     }
 
     @Override
@@ -414,6 +422,8 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         editText.requestFocus();
         final InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+
+        getCurrentViewedPlaylist().setWordFilter(editText.getText().toString());
     }
 
     private void enableDefaultActionBarAndDisableSearch()
@@ -486,6 +496,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         final Playlist playlist = mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
         input.setText(playlist.getName());
         input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.selectAll();
         builder.setView(input);
         builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener()
         {
@@ -506,7 +517,11 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             }
         });
 
-        builder.show();
+
+        input.requestFocus();
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
     }
 
     private void launchSortDialog()
