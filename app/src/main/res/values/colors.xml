@@ -15,5 +15,4 @@
     <color name="colorEdgeEffect">#dddddd</color>
     <color name="colorEdgeEffectAlpha">#99dddddd</color>
     <color name="colorEdgeEffectInverted">#fafafa</color>
-    <color name="fullTransparency">#0000FF00</color>
 </resources>
