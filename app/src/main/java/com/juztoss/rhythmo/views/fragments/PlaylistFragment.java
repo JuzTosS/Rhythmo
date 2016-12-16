@@ -81,7 +81,10 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         if (mPlaylistAdapter.getSortType() != SortType.DIRECTORY)
             mHeader.setVisibility(View.GONE);
         else
+        {
             mHeader.setVisibility(View.VISIBLE);
+            updatePlaylistHeader((RecyclerView) getView().findViewById(R.id.listView));
+        }
     }
 
     @Override
