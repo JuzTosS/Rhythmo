@@ -100,7 +100,7 @@ public class BuildMusicLibraryService extends Service
         mTaskDetectBpmByData.setOnBuildLibraryProgressUpdate(mOnDetectBpmByDataUpdate);
         mTaskDetectBpmByData.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     private void cancelTasks()
