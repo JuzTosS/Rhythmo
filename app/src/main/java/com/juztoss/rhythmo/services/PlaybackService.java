@@ -132,7 +132,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     @Override
     public void onEnd()
     {
-        gotoNext(false);
+        gotoNext();
     }
 
     @Override
@@ -140,7 +140,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     {
         Log.e(getClass().toString(), "Internal player error");
         clearQueue();
-        gotoNext(false);
+        gotoNext();
     }
 
     @Nullable
@@ -169,7 +169,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Go to next song in playlist and start playing
      */
-    private void gotoNext(boolean byUser)
+    private void gotoNext()
     {
         clearQueue();
         if (getSongsList() == null)
@@ -178,7 +178,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             return;
         }
 
-        if (!isShuffleEnabled() || byUser)
+        if (!isShuffleEnabled())
         {
             if (mRepeatMode != RepeatMode.ONE)
                 mCurrentSongIndex++;
@@ -311,7 +311,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
                 }
                 else if (PLAY_NEXT_ACTION.equals(command))
                 {
-                    gotoNext(true);
+                    gotoNext();
                 }
                 else if (PLAY_PREVIOUS_ACTION.equals(command))
                 {
