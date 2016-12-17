@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -75,6 +76,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private boolean mIsShuffleEnabled = false;
     private Set<Integer> mAlreadyPlayedInShuffleMode = new HashSet<>();
 
+    Handler handler;
+
     private boolean mNoisyReceiverRegistered = false;
     private final BroadcastReceiver mNoisyReceiver = new BroadcastReceiver()
     {
@@ -132,15 +135,29 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     @Override
     public void onEnd()
     {
-        gotoNext();
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                gotoNext();
+            }
+        });
     }
 
     @Override
     public void onError()
     {
         Log.e(getClass().toString(), "Internal player error");
-        clearQueue();
-        gotoNext();
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                clearQueue();
+                gotoNext();
+            }
+        });
     }
 
     @Nullable
@@ -287,9 +304,14 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public void onCreate()
     {
         Log.d(getClass().toString(), "onCreate()");
+        handler = new Handler();
         mApp = (RhythmoApp) getApplicationContext();
         initPlayer();
         super.onCreate();
+    }
+
+    private void runOnUiThread(Runnable runnable) {
+        handler.post(runnable);
     }
 
     @Override
@@ -662,8 +684,15 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             @Override
             public void onPrepared()
             {
-                setNewPlayingBPM(mComposition.bpm(), mApp.getAvailableToPlayBPM(mComposition.bpmShifted()));
-                doNext();
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        setNewPlayingBPM(mComposition.bpm(), mApp.getAvailableToPlayBPM(mComposition.bpmShifted()));
+                        doNext();
+                    }
+                });
             }
         };
 

@@ -143,16 +143,19 @@ public class AdvancedMediaPlayer
 
     public interface OnEndListener
     {
+        //BE CALLED FROM OTHER THREAD
         void onEnd();
     }
 
     public interface OnPreparedListener
     {
+        //BE CALLED FROM OTHER THREAD
         void onPrepared();
     }
 
     public interface OnErrorListener
     {
+        //BE CALLED FROM OTHER THREAD
         void onError();
     }
 }
