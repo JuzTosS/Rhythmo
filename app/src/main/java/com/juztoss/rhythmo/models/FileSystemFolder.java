@@ -95,7 +95,7 @@ public class FileSystemFolder extends BaseExplorerElement
             else
             {
                 if (SongFile.isSong(file))
-                    files.add(new SongFile(file, true, mApp));
+                    files.add(new SongFile(file, true, mApp, this));
             }
         }
 

@@ -20,6 +20,8 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
     private final ImageButton mAddButton;
 
     private int mPosition;
+    private int mImageRes;
+    private int mIconImageRes;
     private IBrowserElementClickListener mListener;
 
     public BrowserElementHolder(View view, IBrowserElementClickListener listener)
@@ -50,6 +52,14 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
         });
     }
 
+    private void setImageResource(int res)
+    {
+        if(mImageRes == res) return;
+
+        mImageRes = res;
+        mAddButton.setImageResource(res);
+    }
+
     public void update(BaseExplorerElement element, int position)
     {
         mPosition = position;
@@ -58,7 +68,13 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
 
         if (element.getIconResource() > 0)
         {
-            mIcon.setImageResource(element.getIconResource());
+            int iconRes = element.getIconResource();
+            if(mIconImageRes != iconRes)
+            {
+                mIconImageRes = iconRes;
+                mIcon.setImageResource(iconRes);
+            }
+
             mIcon.setVisibility(View.VISIBLE);
         }
         else
@@ -68,11 +84,11 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
         {
             mAddButton.setVisibility(View.VISIBLE);
             if (element.getAddState() == BaseExplorerElement.AddState.NOT_ADDED)
-                mAddButton.setImageResource(R.drawable.ic_add_circle_black_36dp);
+                setImageResource(R.drawable.ic_add_circle_black_36dp);
             else if (element.getAddState() == BaseExplorerElement.AddState.ADDED)
-                mAddButton.setImageResource(R.drawable.ic_remove_circle_black_36dp);
+                setImageResource(R.drawable.ic_remove_circle_black_36dp);
             else if (element.getAddState() == BaseExplorerElement.AddState.PARTLY_ADDED)
-                mAddButton.setImageResource(R.drawable.ic_remove_circle_outline_black_36dp);
+                setImageResource(R.drawable.ic_remove_circle_outline_black_36dp);
         }else
         {
             mAddButton.setVisibility(View.GONE);

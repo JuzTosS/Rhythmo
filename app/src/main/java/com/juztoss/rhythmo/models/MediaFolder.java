@@ -26,6 +26,7 @@ public class MediaFolder extends BaseExplorerElement
     private boolean mFirstHasSongs;
     private boolean mLastHasSongs;
     private RhythmoApp mApp;
+    private List<BaseExplorerElement> mCachedChildren;
 
     public MediaFolder(long mediaFolderId, String folderName, boolean hasSongs, @Nullable BaseExplorerElement parent, RhythmoApp app)
     {
@@ -124,7 +125,7 @@ public class MediaFolder extends BaseExplorerElement
     @Override
     public AddState getAddState()
     {
-        return mApp.getBrowserPresenter().getAddState(resolvePath());
+        return mApp.getBrowserPresenter().getAddState(resolvePath(), getChildren());
     }
 
     @Override
@@ -133,12 +134,15 @@ public class MediaFolder extends BaseExplorerElement
         if(state == AddState.ADDED)
             mApp.getBrowserPresenter().add(resolvePath());
         else if(state == AddState.NOT_ADDED)
-            mApp.getBrowserPresenter().remove(resolvePath());
+            mApp.getBrowserPresenter().remove(resolvePath(), getParent().getChildren());
     }
 
     @Override
     public List<BaseExplorerElement> getChildren()
     {
+        if(mCachedChildren != null)
+            return mCachedChildren;
+
         List<BaseExplorerElement> result = new ArrayList<>();
 
         if (mParent != null)
@@ -193,7 +197,7 @@ public class MediaFolder extends BaseExplorerElement
                     songPathBuilder.append(folderName);
                     songPathBuilder.append(SystemHelper.SEPARATOR);
                     songPathBuilder.append(songName);
-                    songs.add(new SongFile(new File(songPathBuilder.toString()), false, mApp));
+                    songs.add(new SongFile(new File(songPathBuilder.toString()), false, mApp, this));
                 }
             }
             finally
@@ -204,6 +208,7 @@ public class MediaFolder extends BaseExplorerElement
             result.addAll(songs);
         }
 
+        mCachedChildren = result;
         return result;
     }
 

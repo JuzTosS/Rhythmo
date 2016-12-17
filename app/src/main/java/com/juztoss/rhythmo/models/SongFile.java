@@ -24,9 +24,11 @@ public class SongFile extends BaseExplorerElement
     private File mFile;
     private boolean mDoCheckFileSystem;
     private RhythmoApp mApp;
+    private BaseExplorerElement mParent;
 
-    public SongFile(File source, boolean doCheckFileSystem, RhythmoApp app)
+    public SongFile(File source, boolean doCheckFileSystem, RhythmoApp app, BaseExplorerElement parent)
     {
+        mParent = parent;
         mFile = source;
         mDoCheckFileSystem = doCheckFileSystem;
         mApp = app;
@@ -53,7 +55,7 @@ public class SongFile extends BaseExplorerElement
     @Override
     public AddState getAddState()
     {
-        return mApp.getBrowserPresenter().getAddState(mFile.getAbsolutePath());
+        return mApp.getBrowserPresenter().getAddState(mFile.getAbsolutePath(), mParent.getChildren());
     }
 
     @Override
@@ -62,7 +64,7 @@ public class SongFile extends BaseExplorerElement
         if(state == AddState.ADDED)
             mApp.getBrowserPresenter().add(mFile.getAbsolutePath());
         else if(state == AddState.NOT_ADDED)
-            mApp.getBrowserPresenter().remove(mFile.getAbsolutePath());
+            mApp.getBrowserPresenter().remove(mFile.getAbsolutePath(), mParent.getChildren());
     }
 
     @Override
