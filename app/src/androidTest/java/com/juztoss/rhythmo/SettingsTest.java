@@ -43,7 +43,7 @@ public class SettingsTest
 
 
         int initialBPMShift = app.getBPMFilterAdditionWindowSize();
-        for (int i = 0; i <= (int) RhythmoApp.MAX_BPM_SHIFT; i += 2)
+        for (int i = 0; i <= (int) RhythmoApp.MAX_BPM_SHIFT; i += 7)
         {
             if (i >= (int) RhythmoApp.MAX_BPM_SHIFT)
                 i = (int) RhythmoApp.MAX_BPM_SHIFT;
@@ -64,7 +64,7 @@ public class SettingsTest
             assertEquals(initialBPMShift, app.getBPMFilterAdditionWindowSize());
         }
 
-        for (int i = 0; i <= (int) RhythmoApp.MAX_BPM_SHIFT; i += 2)
+        for (int i = 0; i <= (int) RhythmoApp.MAX_BPM_SHIFT; i += 7)
         {
             if (i >= (int) RhythmoApp.MAX_BPM_SHIFT)
                 i = (int) RhythmoApp.MAX_BPM_SHIFT;

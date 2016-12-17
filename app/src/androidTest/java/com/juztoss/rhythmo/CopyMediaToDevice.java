@@ -25,6 +25,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 
+import static com.juztoss.rhythmo.TestSuite.SONG1;
+import static com.juztoss.rhythmo.TestSuite.SONG2;
+import static com.juztoss.rhythmo.TestSuite.SONG3;
+
 /**
  * Created by JuzTosS on 8/21/2016.
  */
@@ -90,6 +94,10 @@ public class CopyMediaToDevice
         taskDetectBpmByNames.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
         latch.await();
+
+        while (app.getPlaylists().size() > 1)
+            app.removePlaylist(1);
+
         Assert.assertTrue(true);
     }
 
@@ -99,9 +107,9 @@ public class CopyMediaToDevice
         File dirs = new File(sdCardPath);
         dirs.mkdirs();
 
-        copyRAW(R.raw.audio220, sdCardPath + "/audio220.mp3", context);
-        copyRAW(R.raw.audio440, sdCardPath + "/audio440.mp3", context);
-        copyRAW(R.raw.audio880, sdCardPath + "/audio880.mp3", context);
+        copyRAW(R.raw.audio220, sdCardPath + "/" + SONG1, context);
+        copyRAW(R.raw.audio440, sdCardPath + "/" + SONG2, context);
+        copyRAW(R.raw.audio880, sdCardPath + "/" + SONG3, context);
 
         Assert.assertTrue(true);
     }

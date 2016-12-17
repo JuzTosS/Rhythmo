@@ -155,6 +155,7 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
 
     public void clearListeners()
     {
+        if(mUpdateListeners == null) return;
         for(IUpdateListener listener : mUpdateListeners)
         {
             mUpdateListeners.remove(listener);

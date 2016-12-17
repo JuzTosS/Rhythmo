@@ -16,7 +16,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/bpm_label"
+            android:id="@+id/bpm_header_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/BPMLabelTextAppearance"
@@ -48,7 +48,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/first_line"
+            android:id="@+id/first_header_line"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/foregroundInverted"
@@ -56,7 +56,7 @@
             />
 
         <TextView
-            android:id="@+id/second_line"
+            android:id="@+id/second_header_line"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/foregroundInverted"
