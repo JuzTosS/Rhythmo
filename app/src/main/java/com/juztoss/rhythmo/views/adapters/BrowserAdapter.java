@@ -1,6 +1,7 @@
 package com.juztoss.rhythmo.views.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.BaseExplorerElement;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class BrowserAdapter extends RecyclerView.Adapter<BrowserElementHolder> implements BrowserElementHolder.IBrowserElementClickListener
+public class BrowserAdapter extends RecyclerView.Adapter<BrowserElementHolder> implements BrowserElementHolder.IBrowserElementClickListener, FastScrollRecyclerView.SectionedAdapter
 {
     private Context mContext;
     private BrowserElementHolder.IBrowserElementClickListener mOnItemClickListener;
@@ -70,6 +72,13 @@ public class BrowserAdapter extends RecyclerView.Adapter<BrowserElementHolder> i
     {
         mData = data;
         notifyDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public String getSectionName(int position)
+    {
+        return mData.get(position).name().substring(0,1).toUpperCase();
     }
 
     public BaseExplorerElement getItem(int position)
