@@ -38,13 +38,8 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
     public BrowserPresenter(RhythmoApp app)
     {
         super(app);
-        CustomExplorerElement root = new CustomExplorerElement("", new ArrayList<BaseExplorerElement>(), ExplorerPriority.HIGHEST);
-        root.add(new FileSystemFolder(new File(SystemHelper.SEPARATOR), "File system", root, app));
-        root.add(new MediaFolder(-1, "Media", false, root, false, app));
-
-        mRoot = root;
-        mCurrent = root;
-
+        mRoot = new MediaFolder(-1, "", false, null, true, app);
+        mCurrent = mRoot;
         mData = new ArrayList<>();
     }
 

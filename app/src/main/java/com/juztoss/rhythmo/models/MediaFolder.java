@@ -216,12 +216,12 @@ public class MediaFolder extends BaseExplorerElement
     {
         MediaFolder current = this;
         String path = "";
-        while (current.getParent() != null && current.getParent() instanceof MediaFolder)
+        do
         {
             path = SystemHelper.SEPARATOR + current.name() + path;
             current = (MediaFolder) current.getParent();
         }
-
+        while (current != null && current instanceof MediaFolder);
         return path;
     }
 

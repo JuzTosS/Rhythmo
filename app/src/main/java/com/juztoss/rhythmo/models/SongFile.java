@@ -109,20 +109,20 @@ public class SongFile extends BaseExplorerElement
     @Override
     public String description()
     {
-        if(mFile.exists())
-        {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            try
-            {
-                mmr.setDataSource(mFile.getAbsolutePath());
-                int duration = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-                return DateUtils.formatElapsedTime(duration / 1000);
-            }
-            catch (Exception e)
-            {
-                return "Unknown length";
-            }
-        }
+//        if(mFile.exists())
+//        {
+//            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+//            try
+//            {
+//                mmr.setDataSource(mFile.getAbsolutePath());
+//                int duration = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+//                return DateUtils.formatElapsedTime(duration / 1000);
+//            }
+//            catch (Exception e)
+//            {
+//                return "Unknown length";
+//            }
+//        }
 
         return "";
     }
