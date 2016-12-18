@@ -32,6 +32,7 @@ public class BuildMusicLibraryService extends Service
     public static final String STOP_AND_CLEAR = "StopAndClear";
     public static final String SILENT_MODE = "SilentMode";
     public static final String DONT_DETECT_BPM = "DontDetectBPM";
+    public static final String DONT_INTERRUPT_EXIST_TASKS = "DontInterruptExistTasks";
 
     private RhythmoApp mApp;
     private NotificationCompat.Builder mBuilder;
@@ -49,6 +50,16 @@ public class BuildMusicLibraryService extends Service
     public void onCreate()
     {
         mApp = (RhythmoApp) this.getApplicationContext();
+        mBuilder = new NotificationCompat.Builder(mApp);
+        mBuilder.setSmallIcon(R.drawable.ic_play_arrow_black_36dp);
+        mBuilder.setContentTitle(getResources().getString(R.string.building_music_library));
+        mBuilder.setTicker(getResources().getString(R.string.building_music_library));
+        mBuilder.setContentText("");
+        mBuilder.setProgress(0, 0, true);
+
+        mNotifyManager = (NotificationManager) mApp.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotification = mBuilder.build();
+        mNotification.flags |= Notification.FLAG_INSISTENT | Notification.FLAG_NO_CLEAR;
     }
 
     @Override
@@ -60,21 +71,28 @@ public class BuildMusicLibraryService extends Service
             return START_NOT_STICKY;
         }
 
+
+
         boolean stopAndClear = false;
         boolean clear = false;
+        boolean dontInterruptExistTasks = false;
 
         if(intent.getExtras() != null)
         {
-            stopAndClear = intent.getExtras().getBoolean(STOP_AND_CLEAR);
-            clear = intent.getExtras().getBoolean(REBUILD);
-            mSilentMode = intent.getExtras().getBoolean(SILENT_MODE);
-            mDontDetectBPM = intent.getExtras().getBoolean(DONT_DETECT_BPM);
+            dontInterruptExistTasks = intent.getExtras().getBoolean(DONT_INTERRUPT_EXIST_TASKS, false);
+            if(dontInterruptExistTasks && isInProgress())
+                return START_NOT_STICKY;
+            else
+                cancelTasks();
+
+            stopAndClear = intent.getExtras().getBoolean(STOP_AND_CLEAR, false);
+            clear = intent.getExtras().getBoolean(REBUILD, false);
+            mSilentMode = intent.getExtras().getBoolean(SILENT_MODE, false);
+            mDontDetectBPM = intent.getExtras().getBoolean(DONT_DETECT_BPM, false);
         }
 
         if(stopAndClear)
         {
-            cancelTasks();
-
             mTaskBuildLib = new AsyncBuildLibraryTask(mApp, true);
             mTaskBuildLib.setOnBuildLibraryProgressUpdate(mOnClearLibraryUpdate);
             mTaskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
@@ -82,19 +100,11 @@ public class BuildMusicLibraryService extends Service
             return START_STICKY;
         }
 
-        Toast.makeText(this, getString(R.string.build_library_started), Toast.LENGTH_LONG).show();
-
-        mBuilder = new NotificationCompat.Builder(mApp);
-        mBuilder.setSmallIcon(R.drawable.ic_play_arrow_black_36dp);
-        mBuilder.setContentTitle(getResources().getString(R.string.building_music_library));
-        mBuilder.setTicker(getResources().getString(R.string.building_music_library));
-        mBuilder.setContentText("");
-        mBuilder.setProgress(0, 0, true);
-
-        mNotifyManager = (NotificationManager) mApp.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotification = mBuilder.build();
-        mNotification.flags |= Notification.FLAG_INSISTENT | Notification.FLAG_NO_CLEAR;
-        mNotifyManager.notify(NOTIFICATION_ID, mNotification);
+        if(!mSilentMode)
+        {
+            Toast.makeText(this, getString(R.string.build_library_started), Toast.LENGTH_LONG).show();
+            mNotifyManager.notify(NOTIFICATION_ID, mNotification);
+        }
 
         mTaskBuildLib = new AsyncBuildLibraryTask(mApp, clear);
         mTaskBuildLib.setOnBuildLibraryProgressUpdate(mOnBuildLibraryUpdate);
@@ -116,7 +126,13 @@ public class BuildMusicLibraryService extends Service
             mTaskDetectBpmByData.setOnBuildLibraryProgressUpdate(mOnDetectBpmByDataUpdate);
             mTaskDetectBpmByData.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
         }
+
         return START_REDELIVER_INTENT;
+    }
+
+    private boolean isInProgress()
+    {
+        return mTaskBuildLib != null || mTaskDetectBpmByNames != null || mTaskDetectBpmByData != null;
     }
 
     private void cancelTasks()
@@ -130,6 +146,9 @@ public class BuildMusicLibraryService extends Service
         if(mTaskDetectBpmByData != null)
             mTaskDetectBpmByData.cancel(true);
 
+        mTaskBuildLib = null;
+        mTaskDetectBpmByData = null;
+        mTaskDetectBpmByNames = null;
     }
 
     @Override

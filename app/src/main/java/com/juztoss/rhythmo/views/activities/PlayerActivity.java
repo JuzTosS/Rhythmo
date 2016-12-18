@@ -304,6 +304,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
         Intent intent = new Intent(this, BuildMusicLibraryService.class);
         intent.putExtra(BuildMusicLibraryService.SILENT_MODE, true);
+        intent.putExtra(BuildMusicLibraryService.DONT_INTERRUPT_EXIST_TASKS, true);
         intent.putExtra(BuildMusicLibraryService.DONT_DETECT_BPM, true);
         startService(intent);
 
