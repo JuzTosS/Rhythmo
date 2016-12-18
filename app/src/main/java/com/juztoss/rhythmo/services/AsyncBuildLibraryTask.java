@@ -19,6 +19,7 @@ import com.juztoss.rhythmo.models.DatabaseHelper;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.utils.SystemHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -203,6 +204,11 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 }
 
                 String songFileFullPath = mediaStoreCursor.getString(filePathColIndex);
+
+                File file = new File(songFileFullPath);
+                if(!file.exists())
+                    continue;
+
                 String songId = mediaStoreCursor.getString(idColIndex);
                 int dateAdded = mediaStoreCursor.getInt(dateAddedColIndex);
 
