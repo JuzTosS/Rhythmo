@@ -135,4 +135,10 @@ public class FileSystemFolder extends BaseExplorerElement
         else
             return "";
     }
+
+    @Override
+    public void dispose()
+    {
+        mApp = null;
+    }
 }

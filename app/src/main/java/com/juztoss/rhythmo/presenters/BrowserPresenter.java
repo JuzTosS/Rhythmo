@@ -94,6 +94,10 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
 
     public void clearAdded()
     {
+        if(mRoot != null)
+            mRoot.dispose();
+
+        mRoot = new MediaFolder(-1, "", false, null, true, getApp());
         mPathStore.clearAdded();
     }
 

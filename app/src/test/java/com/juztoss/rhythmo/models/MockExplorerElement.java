@@ -89,4 +89,10 @@ public class MockExplorerElement extends BaseExplorerElement
     {
 
     }
+
+    @Override
+    public void dispose()
+    {
+
+    }
 }

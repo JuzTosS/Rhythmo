@@ -128,4 +128,10 @@ public class SongFile extends BaseExplorerElement
 
         return "";
     }
+
+    @Override
+    public void dispose()
+    {
+        mApp = null;
+    }
 }

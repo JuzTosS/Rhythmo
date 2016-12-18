@@ -76,6 +76,11 @@ public abstract class BaseExplorerElement implements Comparable<BaseExplorerElem
      */
     public abstract void setAddState(AddState state);
 
+    /**
+     * Must clear all off links to the external objects
+     */
+    public abstract void dispose();
+
     public enum AddState
     {
         NOT_ADDED,

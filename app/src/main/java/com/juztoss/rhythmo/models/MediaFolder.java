@@ -263,4 +263,10 @@ public class MediaFolder extends BaseExplorerElement
                         new String[]{resolvePath()});
         return mApp.getResources().getString(R.string.folder_desc, count);
     }
+
+    @Override
+    public void dispose()
+    {
+        mApp = null;
+    }
 }

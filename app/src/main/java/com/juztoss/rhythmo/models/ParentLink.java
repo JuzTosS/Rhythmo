@@ -85,4 +85,10 @@ public class ParentLink extends BaseExplorerElement
     {
         return "";
     }
+
+    @Override
+    public void dispose()
+    {
+
+    }
 }

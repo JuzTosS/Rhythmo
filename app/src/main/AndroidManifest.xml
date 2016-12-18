@@ -25,9 +25,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.juztoss.rhythmo.views.activities.LauncherActivity">
-
-        </activity>
+        <!--<activity android:name="com.juztoss.rhythmo.views.activities.LauncherActivity"/>-->
 
         <activity
             android:name="com.juztoss.rhythmo.views.activities.SettingsActivity"

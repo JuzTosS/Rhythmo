@@ -86,4 +86,10 @@ public class CustomExplorerElement extends BaseExplorerElement
     {
         return false;
     }
+
+    @Override
+    public void dispose()
+    {
+
+    }
 }
