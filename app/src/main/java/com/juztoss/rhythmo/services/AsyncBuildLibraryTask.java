@@ -34,7 +34,8 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     private final String ERROR_OCCURRED = "ErrorOccurred";
     private final int MAX_PROGRESS_VALUE = 1000000;
     private RhythmoApp mApp;
-    private boolean mClear;
+    private boolean mClear = false;
+    private boolean mDropTable = false;
     @Nullable
     private String mFolder;
     public ArrayList<OnBuildLibraryProgressUpdate> mBuildLibraryProgressUpdate;
@@ -43,10 +44,10 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
     private PowerManager.WakeLock mWakeLock;
 
-    public AsyncBuildLibraryTask(RhythmoApp app, boolean clear, @Nullable String folder)
+    public AsyncBuildLibraryTask(RhythmoApp app, boolean dropTable, @Nullable String folder)
     {
         mApp = app;
-        mClear = clear;
+        mDropTable = dropTable;
         mFolder = folder;
         mBuildLibraryProgressUpdate = new ArrayList<>();
     }
@@ -135,7 +136,11 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         {
             Log.d(AsyncBuildLibraryTask.class.toString(), "Start updating the library, clear = " + mClear + ", songs in mediaStore: " + mediaStoreCursor.getCount());
 
-            if (mClear)
+            if(mDropTable)
+            {
+                mApp.getDatabaseHelper().clearAll(mApp.getDatabaseHelper().getWritableDatabase());
+            }
+            else if (mClear)
             {
                 ContentValues values = new ContentValues();
                 values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, 0);

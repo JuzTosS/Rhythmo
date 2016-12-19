@@ -302,11 +302,11 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     {
         super.onStart();
 
-        Intent intent = new Intent(this, BuildMusicLibraryService.class);
-        intent.putExtra(BuildMusicLibraryService.SILENT_MODE, true);
-        intent.putExtra(BuildMusicLibraryService.DONT_INTERRUPT_EXIST_TASKS, true);
-        intent.putExtra(BuildMusicLibraryService.DONT_DETECT_BPM, true);
-        startService(intent);
+//        Intent intent = new Intent(this, BuildMusicLibraryService.class);
+//        intent.putExtra(BuildMusicLibraryService.SILENT_MODE, true);
+//        intent.putExtra(BuildMusicLibraryService.DONT_INTERRUPT_EXIST_TASKS, true);
+//        intent.putExtra(BuildMusicLibraryService.DONT_DETECT_BPM, true);
+//        startService(intent);
 
 //        if (mApp.getSharedPreferences().getBoolean(RhythmoApp.FIRST_RUN, true))
 //        {

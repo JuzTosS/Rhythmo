@@ -83,7 +83,8 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         else
         {
             mHeader.setVisibility(View.VISIBLE);
-            updatePlaylistHeader((RecyclerView) getView().findViewById(R.id.listView));
+            if(getView() != null)
+                updatePlaylistHeader((RecyclerView) getView().findViewById(R.id.listView));
         }
     }
 

@@ -1,6 +1,7 @@
 package com.juztoss.rhythmo;
 
 import com.juztoss.rhythmo.audio.AdvancedMediaPlayer;
+import com.juztoss.rhythmo.views.activities.FileWasDeleted;
 import com.juztoss.rhythmo.views.activities.PlayerActivityTest;
 
 import org.junit.runner.RunWith;
@@ -16,6 +17,7 @@ import org.junit.runners.Suite;
         AdvancedMediaPlayerTest.class,
         SettingsTest.class,
         OperationsWithPlaylists.class,
+        FileWasDeleted.class,
         PlayerActivityTest.class,
         RemoveMediaFromDevice.class,
 })
@@ -23,7 +25,7 @@ import org.junit.runners.Suite;
 public class TestSuite
 {
     public static final String MUSIC_FOLDER = "RhythmoTestTemp";
-    public static final String SONG1 = "audio220.mp3";
-    public static final String SONG2 = "audio440.mp3";
-    public static final String SONG3 = "audio880.mp3";
+    public static final String SONG1 = "120 - audio220.mp3";
+    public static final String SONG2 = "140 - audio440.mp3";
+    public static final String SONG3 = "180 - audio880.mp3";
 }

@@ -26,7 +26,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         mPlayer2 = new AdvancedMediaPlayer(48000, 500);
         assertNotNull("Setup first player failed", mPlayer);
         assertNotNull("Setup second player failed", mPlayer2);
-        mPath = Environment.getExternalStorageDirectory() + "/" + TestSuite.MUSIC_FOLDER + "/audio440.mp3";
+        mPath = Environment.getExternalStorageDirectory() + "/" + TestSuite.MUSIC_FOLDER + "/" + TestSuite.SONG2;
     }
 
     @Override
