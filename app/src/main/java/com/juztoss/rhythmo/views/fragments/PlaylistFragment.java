@@ -179,6 +179,17 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         }
     }
 
+    public boolean isItemVisible(int position)
+    {
+        int firstVisiblePos = mLayoutManager.findFirstCompletelyVisibleItemPosition();
+        int lastVisiblePos = mLayoutManager.findLastCompletelyVisibleItemPosition();
+
+        if(firstVisiblePos == RecyclerView.NO_POSITION || lastVisiblePos == RecyclerView.NO_POSITION)
+            return false;
+
+        return position >= firstVisiblePos && position <= lastVisiblePos;
+    }
+
     public void scrollTo(int position)
     {
         if(mLayoutManager != null)

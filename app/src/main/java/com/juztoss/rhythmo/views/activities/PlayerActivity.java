@@ -104,7 +104,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     protected void onServiceConnected()
     {
         super.onServiceConnected();
-        updateAll();
+        updateAll(false);
 
         if(mNeedToGoToTheCurrentSong)
         {
@@ -471,6 +471,17 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mLastViewedPlaylistIndex = savedInstanceState.getInt("mLastViewedPlaylistIndex");
     }
 
+    private void showCurrentSongIfIsInFocusedPlaylist()
+    {
+        if (playbackService() == null) return;
+        if(mPlaylistsPager.getCurrentItem() == playbackService().getCurrentPlaylistIndex())
+        {
+            TabsAdapter adapter = (TabsAdapter) mPlaylistsPager.getAdapter();
+            if(!adapter.getCurrentFragment().isItemVisible(playbackService().getCurrentSongIndex()))
+                gotoTheCurrentlyPlayingSong(true);
+        }
+    }
+
     /**
      *
      * @return true if successfully positioned on the currently playing song
@@ -597,7 +608,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     protected void onResume()
     {
         super.onResume();
-        updateAll();
+        updateAll(false);
     }
 
     BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
@@ -605,11 +616,14 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            updateAll();
+            if(intent.getExtras() != null && intent.getBooleanExtra(PlaybackService.UPDATE_UI_ACTION_SCROLL_TO_CURRENT, false))
+                updateAll(true);
+            else
+                updateAll(false);
         }
     };
 
-    protected void updateAll()
+    protected void updateAll(boolean showCurrentSong)
     {
         mRangeSeekbar.setRangeValues(mApp.getSongsMinBpm(), mApp.getSongsMaxBpm());
 
@@ -633,6 +647,9 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mHandler.post(mSeekbarUpdateRunnable);
         updateShuffleAndRepeatButtons();
         mApp.notifyPlaylistsRepresentationUpdated();
+
+        if(showCurrentSong)
+            showCurrentSongIfIsInFocusedPlaylist();
     }
 
     private Handler mHandler = new Handler();

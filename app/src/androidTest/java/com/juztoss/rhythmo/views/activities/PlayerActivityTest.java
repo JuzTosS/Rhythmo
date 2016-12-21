@@ -1,6 +1,7 @@
 package com.juztoss.rhythmo.views.activities;
 
 
+import android.os.SystemClock;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -18,6 +19,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static com.juztoss.rhythmo.TestSuite.SONG1;
+import static com.juztoss.rhythmo.TestSuite.SONG2;
 import static org.hamcrest.Matchers.allOf;
 
 
@@ -38,6 +40,11 @@ public class PlayerActivityTest
 
         TestHelper.checkScreen(3, SONG1, "RhythmoTestTemp", "120.0", 0, false);
 
+        //Click on the next button
+        onView(withId(R.id.next_button)).perform(click());
+        SystemClock.sleep(1000);
+
+        TestHelper.checkScreen(3, SONG2, "RhythmoTestTemp", "140.0", 1, false);
     }
 
 }

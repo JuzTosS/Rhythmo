@@ -56,6 +56,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     public static final String PLAY_PREVIOUS_ACTION = "com.juztoss.rhythmo.action.PLAY_PREVIOUS_ACTION";
     public static final String PLAY_NEW_ACTION = "com.juztoss.rhythmo.action.PLAY_NEW_ACTION";
     public static final String UPDATE_UI_ACTION = "com.juztoss.rhythmo.action.UPDATE_UI";
+    public static final String UPDATE_UI_ACTION_SCROLL_TO_CURRENT = "UpdateUIScrollToCurrent";
 
     private static final String DEFAULT_SAMPLE_RATE = "44100";
     private static final String DEFAULT_BUFFER_SIZE = "512";
@@ -140,7 +141,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             @Override
             public void run()
             {
-                gotoNext();
+                gotoNext(false);
             }
         });
     }
@@ -155,7 +156,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             public void run()
             {
                 clearQueue();
-                gotoNext();
+                gotoNext(false);
             }
         });
     }
@@ -186,7 +187,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Go to next song in playlist and start playing
      */
-    private void gotoNext()
+    private void gotoNext(boolean fromUser)
     {
         clearQueue();
         if (getSongsList() == null)
@@ -237,14 +238,14 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         if (mCurrentSongIndex >= 0)
         {
             setSource(mCurrentPlaylistIndex, mCurrentSongIndex);
-            putAction(new ActionPlay());
+            putAction(new ActionPlay(fromUser));
         }
     }
 
     /**
      * Go to previous song in playlist and start playing
      */
-    private void gotoPrevious()
+    private void gotoPrevious(boolean fromUser)
     {
         clearQueue();
         mCurrentSongIndex--;
@@ -252,13 +253,14 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             mCurrentSongIndex = 0;
 
         setSource(mCurrentPlaylistIndex, mCurrentSongIndex);
-        putAction(new ActionPlay());
+        putAction(new ActionPlay(fromUser));
     }
 
-    private void updateUI()
+    private void updateUI(boolean scrollToCurrent)
     {
         Log.d(getClass().toString(), "updateUI()");
         Intent intent = new Intent(UPDATE_UI_ACTION);
+        intent.putExtra(UPDATE_UI_ACTION_SCROLL_TO_CURRENT, scrollToCurrent);
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mApp);
         broadcastManager.sendBroadcast(intent);
 
@@ -333,11 +335,11 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
                 }
                 else if (PLAY_NEXT_ACTION.equals(command))
                 {
-                    gotoNext();
+                    gotoNext(true);
                 }
                 else if (PLAY_PREVIOUS_ACTION.equals(command))
                 {
-                    gotoPrevious();
+                    gotoPrevious(true);
                 }
                 else if (SWITCH_PLAYBACK_ACTION.equals(command))
                 {
@@ -349,7 +351,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
                     int playlistPosition = intent.getIntExtra(ACTION_PLAYLIST_POSITION, 0);
                     clearQueue();
                     setSource(playlistIndex, playlistPosition);
-                    startPlayback();
+                    putAction(new ActionPlay(false));
                 }
             }
         }
@@ -554,7 +556,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
      */
     private void startPlayback()
     {
-        putAction(new ActionPlay());
+        putAction(new ActionPlay(false));
     }
 
     /**
@@ -633,7 +635,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
         mPlayer.setBPM(bpm);
         mPlayer.setNewBPM(shiftedBpm);
-        updateUI();
+        updateUI(false);
     }
 
     /**
@@ -718,6 +720,12 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
      */
     class ActionPlay extends BaseAction
     {
+        private boolean mScrollToCurrent;
+        public ActionPlay(boolean scrollToCurrent)
+        {
+            mScrollToCurrent = scrollToCurrent;
+        }
+
         @Override
         public void doAction()
         {
@@ -732,7 +740,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             }
             finally
             {
-                updateUI();
+                updateUI(mScrollToCurrent);
                 doNext();
             }
         }
@@ -748,7 +756,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         {
             setIsPlaying(false);
             mPlayer.pause();
-            updateUI();
+            updateUI(false);
             doNext();
         }
     }
@@ -764,7 +772,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             setIsPlaying(false);
             mPlayer.pause();
             mPlayer.setPosition(0);
-            updateUI();
+            updateUI(false);
             doNext();
         }
     }
