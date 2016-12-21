@@ -77,6 +77,8 @@ AdvancedMediaPlayer::AdvancedMediaPlayer(unsigned int samplerate, unsigned int b
     audioSystem = new SuperpoweredAndroidAudioIO(samplerate, buffersize, false, true,
                                                  audioProcessing, this, -1, SL_ANDROID_STREAM_MEDIA,
                                                  buffersize * 2);
+
+    audioSystem->onBackground();
 }
 
 AdvancedMediaPlayer::~AdvancedMediaPlayer() {
