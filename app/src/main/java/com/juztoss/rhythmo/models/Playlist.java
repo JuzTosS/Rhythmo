@@ -2,11 +2,16 @@ package com.juztoss.rhythmo.models;
 
 import android.database.Cursor;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
+import com.juztoss.rhythmo.models.songsources.SortType;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
+import com.juztoss.rhythmo.utils.CursorList;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -72,41 +77,47 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
         setNeedRebuild();
     }
 
-    //TODO: Implement binary search, as we don't need anymore do requests to DB
-    public static int findPositionById(Cursor list, long id)
+    public static int findPositionById(final Cursor cursor, Composition needle, final SortType sort)
     {
-        if(list == null) return -1;
-        while (list.moveToNext())
+        if(cursor == null || cursor.getCount() <= 0) return -1;
+        CursorList cursorList = new CursorList(cursor);
+        return Collections.binarySearch(cursorList, needle, new Comparator<Composition>()
         {
-            if(list.getLong(0) == id)
+            @Override
+            public int compare(Composition left, Composition right)
             {
-                return list.getPosition();
+                int result;
+                if(sort == SortType.NAME)
+                {
+                    return left.name().compareTo(right.name());
+                }
+                else if(sort == SortType.BPM)
+                {
+                    Integer leftInt = (Integer)(int)(left.bpmShifted() * 10);
+                    Integer rightInt = (Integer)(int)(right.bpmShifted() * 10);
+                    result = leftInt.compareTo(rightInt);
+                    if(result != 0)//Return only if the songs in different folder
+                        return result;
+                }
+                else if(sort == SortType.DIRECTORY)
+                {
+                    result = left.getFolderPath().compareTo(right.getFolderPath());
+                    if(result != 0)//Return only if the songs in different folder
+                        return result;
+                }
+                else// if(sort == SortType.LAST)
+                {
+                    result =  ((Integer)left.getDateAdded()).compareTo(right.getDateAdded());
+                    if(result != 0)//Return only if the songs in different folder
+                        return result;
+                }
+
+                //If both songs in the same folder compare by name;
+                result = left.getAbsolutePath().compareTo(right.getAbsolutePath());
+                return result;
             }
-        }
-
-        return -1;
+        });
     }
-
-    //This binary search works slower than simple iterating because we need make requests to the DB
-//    public int findPositionById(long id)
-//    {
-//        Cursor cursor = getCursor();
-//        if(cursor == null || cursor.getCount() <= 0) return -1;
-//        CursorList cursorList = new CursorList(cursor, mApp);
-//        return Collections.binarySearch(cursorList, mApp.getComposition(id), new Comparator<Composition>()
-//        {
-//            @Override
-//            public int compare(Composition lhs, Composition rhs)
-//            {
-//                if(getSource().getSortType() == SortType.NAME)
-//                    return lhs.name().compareTo(rhs.name());
-//                else if(getSource().getSortType() == SortType.BPM)
-//                    return Float.compare(lhs.bpm(), rhs.bpm());
-//                else
-//                    return lhs.getAbsolutePath().compareTo(rhs.getAbsolutePath());
-//            }
-//        });
-//    }
 
     @Nullable
     public Cursor getCursor()

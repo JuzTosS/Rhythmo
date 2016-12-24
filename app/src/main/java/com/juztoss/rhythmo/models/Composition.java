@@ -18,6 +18,7 @@ public class Composition
     private String mAbsolutePath;
     private float mBPM;
     private float mShiftedBPM;
+    private int mDateAdded;
 
     public static Composition fromCursor(Cursor cursor)
     {
@@ -50,6 +51,7 @@ public class Composition
         mAbsolutePath = mFolderName + SystemHelper.SEPARATOR + mSongName;
         mBPM = cursor.getInt(AbstractSongsSource.I_BPM) / 10f;
         mShiftedBPM = cursor.getInt(AbstractSongsSource.I_BPM_SHIFT) / 10f;
+        mDateAdded = cursor.getInt(AbstractSongsSource.I_DATE_ADDED);
     }
     public Composition(long songId, String folderName, String songName, float bpm, float bpmShifted)
     {
@@ -103,5 +105,10 @@ public class Composition
     public String getFolder()
     {
         return SystemHelper.getLastSegmentOfPath(mFolderName);
+    }
+
+    public int getDateAdded()
+    {
+        return mDateAdded;
     }
 }

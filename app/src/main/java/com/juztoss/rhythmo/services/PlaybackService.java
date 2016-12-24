@@ -238,7 +238,6 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
         if (mCurrentSongIndex >= 0)
         {
-            if(getSongsList() == null) return;
             getSongsList().moveToPosition(mCurrentSongIndex);
             mCurrentSongId = getSongsList().getLong(AbstractSongsSource.I_ID);
             setSource(mCurrentPlaylistIndex, mCurrentSongId);
@@ -424,7 +423,10 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         }
 
         if (mCurrentSongId >= 0 && getCurrentPlaylist() != null)
-            mCurrentSongIndex = Playlist.findPositionById(getSongsList(), mCurrentSongId);
+        {
+            Composition composition = mApp.getComposition(mCurrentSongId);
+            mCurrentSongIndex = Playlist.findPositionById(getSongsList(), composition, getCurrentPlaylist().getSource().getSortType());
+        }
         else
             mCurrentSongIndex = -1;
     }

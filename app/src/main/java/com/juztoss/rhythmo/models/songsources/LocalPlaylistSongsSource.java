@@ -61,8 +61,8 @@ public class LocalPlaylistSongsSource extends AbstractSongsSource
         if (mMinBPMX10 > 0 && mMaxBPMX10 > 0)//BPM Filter is enabled
         {
             cursor = mApp.getDatabaseHelper().getWritableDatabase().rawQuery(
-//                    DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10
-                    "select " + DatabaseHelper.PLAYLIST_SONG_ID + " as " + DatabaseHelper._ID + ", " + DatabaseHelper.MUSIC_LIBRARY_PATH + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + ", " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + ", " + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10
+                    "select " + DatabaseHelper.PLAYLIST_SONG_ID + " as " + DatabaseHelper._ID + ", " + DatabaseHelper.MUSIC_LIBRARY_PATH + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + ", "
+                            + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + ", " + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + ", " + DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED
                             + " from " + DatabaseHelper.TABLE_PLAYLISTS +
                             " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
                             " where " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " >= ?" +
@@ -76,7 +76,8 @@ public class LocalPlaylistSongsSource extends AbstractSongsSource
         else
         {
             cursor = mApp.getDatabaseHelper().getWritableDatabase().rawQuery(
-                    "select " + DatabaseHelper.PLAYLIST_SONG_ID + " as " + DatabaseHelper._ID + ", " + DatabaseHelper.MUSIC_LIBRARY_PATH + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + ", " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + ", " + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10
+                    "select " + DatabaseHelper.PLAYLIST_SONG_ID + " as " + DatabaseHelper._ID + ", " + DatabaseHelper.MUSIC_LIBRARY_PATH + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + ", "
+                            + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + ", " + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + ", " + DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED
                             + " from " + DatabaseHelper.TABLE_PLAYLISTS +
                             " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
                             " where " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? " +
