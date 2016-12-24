@@ -19,6 +19,7 @@ import android.util.Log;
 import com.juztoss.rhythmo.audio.AdvancedMediaPlayer;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.models.Playlist;
+import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 
 import java.util.HashSet;
@@ -46,8 +47,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     public static final String ACTION_COMMAND = "com.juztoss.rhythmo.action.ACTION_COMMAND";
     public static final String ACTION_NAME = "com.juztoss.rhythmo.action.ACTION_NAME";
+    public static final String ACTION_SONG_ID = "com.juztoss.rhythmo.action.ACTION_SONG_ID";
     public static final String ACTION_PLAYLIST_INDEX = "com.juztoss.rhythmo.action.ACTION_PLAYLIST_INDEX";
-    public static final String ACTION_PLAYLIST_POSITION = "com.juztoss.rhythmo.action.ACTION_PLAYLIST_POSITION";
 
     public static final String LAUNCH_NOW_PLAYING_ACTION = "com.juztoss.rhythmo.action.LAUNCH_NOW_PLAYING";
     public static final String SWITCH_PLAYBACK_ACTION = "com.juztoss.rhythmo.action.SWITCH_PLAYBACK";
@@ -237,7 +238,10 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
         if (mCurrentSongIndex >= 0)
         {
-            setSource(mCurrentPlaylistIndex, mCurrentSongIndex);
+            if(getSongsList() == null) return;
+            getSongsList().moveToPosition(mCurrentSongIndex);
+            mCurrentSongId = getSongsList().getLong(AbstractSongsSource.I_ID);
+            setSource(mCurrentPlaylistIndex, mCurrentSongId);
             putAction(new ActionPlay(fromUser));
         }
     }
@@ -252,7 +256,11 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         if (mCurrentSongIndex < 0)
             mCurrentSongIndex = 0;
 
-        setSource(mCurrentPlaylistIndex, mCurrentSongIndex);
+        if(getSongsList() == null) return;
+
+        getSongsList().moveToPosition(mCurrentSongIndex);
+        mCurrentSongId = getSongsList().getLong(AbstractSongsSource.I_ID);
+        setSource(mCurrentPlaylistIndex, mCurrentSongId);
         putAction(new ActionPlay(fromUser));
     }
 
@@ -347,10 +355,10 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
                 }
                 else if (PLAY_NEW_ACTION.equals(command))
                 {
+                    long songId = intent.getLongExtra(ACTION_SONG_ID, -1);
                     int playlistIndex = intent.getIntExtra(ACTION_PLAYLIST_INDEX, 0);
-                    int playlistPosition = intent.getIntExtra(ACTION_PLAYLIST_POSITION, 0);
                     clearQueue();
-                    setSource(playlistIndex, playlistPosition);
+                    setSource(playlistIndex, songId);
                     putAction(new ActionPlay(false));
                 }
             }
@@ -424,7 +432,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Set index of a song that will be played
      */
-    private void setSource(int playlistIndex, int index)
+    private void setSource(int playlistIndex, long songId)
     {
         if (mCurrentPlaylistIndex != playlistIndex)
         {
@@ -436,14 +444,13 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         mApp.getPlaylists().get(playlistIndex).addUpdateListener(this);
 
         mCurrentPlaylistIndex = playlistIndex;
-        mCurrentSongIndex = index;
-
+        mCurrentSongId = songId;
         onPlaylistUpdated();
 
-        if (index < 0 || getSongsList() == null || index >= getSongsList().getCount())
+        if (mCurrentSongIndex < 0 || getSongsList() == null || mCurrentSongIndex >= getSongsList().getCount())
             return;
 
-        getSongsList().moveToPosition(index);
+        getSongsList().moveToPosition(mCurrentSongIndex);
         putAction(new ActionPrepare(Composition.fromCursor(getSongsList())));
     }
 

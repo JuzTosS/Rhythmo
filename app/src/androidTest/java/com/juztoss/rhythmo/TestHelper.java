@@ -38,9 +38,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isSelected;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.juztoss.rhythmo.TestSuite.SONG1;
-import static com.juztoss.rhythmo.TestSuite.SONG2;
-import static com.juztoss.rhythmo.TestSuite.SONG3;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
@@ -51,6 +48,9 @@ import static org.hamcrest.core.IsNot.not;
 
 public class TestHelper
 {
+
+    public static final String MUSIC_FOLDER = "RhythmoTestTemp";
+
     public static Matcher<View> atPosition(final int position, @NonNull final Matcher<View> itemMatcher)
     {
         checkNotNull(itemMatcher);
@@ -110,7 +110,7 @@ public class TestHelper
     {
         final CountDownLatch latch = new CountDownLatch(2);
         RhythmoApp app = (RhythmoApp) InstrumentationRegistry.getTargetContext().getApplicationContext();
-        AsyncBuildLibraryTask taskBuildLib = new AsyncBuildLibraryTask(app, true, Environment.getExternalStorageDirectory().getPath() + "/" + TestSuite.MUSIC_FOLDER + "/");
+        AsyncBuildLibraryTask taskBuildLib = new AsyncBuildLibraryTask(app, true, Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER + "/");
         taskBuildLib.setOnBuildLibraryProgressUpdate(new AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate()
         {
             @Override
@@ -165,13 +165,13 @@ public class TestHelper
     public static void copyFiles() throws Exception
     {
         RhythmoApp context = (RhythmoApp) InstrumentationRegistry.getTargetContext().getApplicationContext();
-        String sdCardPath = Environment.getExternalStorageDirectory().getPath() + "/" + TestSuite.MUSIC_FOLDER;
+        String sdCardPath = Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER;
         File dirs = new File(sdCardPath);
         dirs.mkdirs();
 
-        copyRAW(R.raw.audio220, sdCardPath + "/" + SONG1, context);
-        copyRAW(R.raw.audio440, sdCardPath + "/" + SONG2, context);
-        copyRAW(R.raw.audio880, sdCardPath + "/" + SONG3, context);
+        copyRAW(R.raw.audio220, sdCardPath + "/" + getSongName(0), context);
+        copyRAW(R.raw.audio440, sdCardPath + "/" + getSongName(1), context);
+        copyRAW(R.raw.audio880, sdCardPath + "/" + getSongName(2), context);
     }
 
     private static void copyRAW(int fromId, String toPath, Context context) throws IOException
@@ -226,4 +226,23 @@ public class TestHelper
     }
 
 
+    /**
+     * Return song name for the given song number value
+     *
+     * @param songNumber - a song number
+     */
+    public static String getSongName(int songNumber)
+    {
+        String prefix;
+        if(songNumber == 0)
+            prefix = "120 - ";
+        else if(songNumber == 1)
+            prefix = "140 - ";
+        else if(songNumber == 2)
+            prefix = "160 - ";
+        else
+            prefix = "180 - ";
+
+        return prefix + " audio" + Integer.toString(songNumber);
+    }
 }

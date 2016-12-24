@@ -2,16 +2,12 @@ package com.juztoss.rhythmo.views.activities;
 
 
 import android.os.Environment;
-import android.support.test.espresso.Espresso;
-import android.support.test.espresso.action.ViewActions;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.TestHelper;
-import com.juztoss.rhythmo.TestSuite;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -24,12 +20,10 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.juztoss.rhythmo.TestSuite.SONG1;
-import static com.juztoss.rhythmo.TestSuite.SONG2;
-import static com.juztoss.rhythmo.TestSuite.SONG3;
+import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER;
+import static com.juztoss.rhythmo.TestHelper.getSongName;
 
 
 @LargeTest
@@ -50,9 +44,9 @@ public class FileWasDeleted
         onView(withId(R.id.btnAddToPlaylist)).perform(click());
         onView(withId(R.id.apply)).perform(click());
 
-        String fileToDelete1 = Environment.getExternalStorageDirectory().getPath() + "/" + TestSuite.MUSIC_FOLDER + "/" + SONG1;
-        String fileToDelete2 = Environment.getExternalStorageDirectory().getPath() + "/" + TestSuite.MUSIC_FOLDER + "/" + SONG2;
-        String fileToDelete3 = Environment.getExternalStorageDirectory().getPath() + "/" + TestSuite.MUSIC_FOLDER + "/" + SONG3;
+        String fileToDelete1 = Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER + "/" + getSongName(0);
+        String fileToDelete2 = Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER + "/" + getSongName(1);
+        String fileToDelete3 = Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER + "/" + getSongName(2);
         File file1 = new File(fileToDelete1);
         File file2 = new File(fileToDelete2);
         File file3 = new File(fileToDelete3);

@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import java.io.File;
 
+import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER;
+
 /**
  * Created by JuzTosS on 8/21/2016.
  */
@@ -15,7 +17,7 @@ public class RemoveMediaFromDevice
 {
     public static boolean doRemove()
     {
-        File dir = new File(Environment.getExternalStorageDirectory() + "/" + TestSuite.MUSIC_FOLDER);
+        File dir = new File(Environment.getExternalStorageDirectory() + "/" + MUSIC_FOLDER);
         String[] children = dir.list();
         if(children != null && children.length > 0)
         {

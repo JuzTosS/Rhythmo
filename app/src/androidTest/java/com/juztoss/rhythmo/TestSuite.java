@@ -24,8 +24,5 @@ import org.junit.runners.Suite;
 
 public class TestSuite
 {
-    public static final String MUSIC_FOLDER = "RhythmoTestTemp";
-    public static final String SONG1 = "120 - audio220.mp3";
-    public static final String SONG2 = "140 - audio440.mp3";
-    public static final String SONG3 = "180 - audio880.mp3";
+
 }

@@ -1,9 +1,5 @@
 package com.juztoss.rhythmo;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ServiceTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -14,16 +10,6 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.CountDownLatch;
-
-import static com.juztoss.rhythmo.TestSuite.SONG1;
-import static com.juztoss.rhythmo.TestSuite.SONG2;
-import static com.juztoss.rhythmo.TestSuite.SONG3;
 
 /**
  * Created by JuzTosS on 8/21/2016.

@@ -165,7 +165,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
             i.setAction(PlaybackService.ACTION_COMMAND);
             i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.PLAY_NEW_ACTION);
             i.putExtra(PlaybackService.ACTION_PLAYLIST_INDEX, mPlaylistIndex);
-            i.putExtra(PlaybackService.ACTION_PLAYLIST_POSITION, position);
+            i.putExtra(PlaybackService.ACTION_SONG_ID, composition.id());
             getContext().startService(i);
         }
         else if (action == SongElementHolder.ACTION_SHOW_DETAIL)

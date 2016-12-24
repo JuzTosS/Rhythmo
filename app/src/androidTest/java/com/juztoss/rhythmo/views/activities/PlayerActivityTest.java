@@ -18,8 +18,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static com.juztoss.rhythmo.TestSuite.SONG1;
-import static com.juztoss.rhythmo.TestSuite.SONG2;
+import static com.juztoss.rhythmo.TestHelper.getSongName;
 import static org.hamcrest.Matchers.allOf;
 
 
@@ -38,13 +37,13 @@ public class PlayerActivityTest
         onView(allOf(withId(R.id.listView), isDisplayed()))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
-        TestHelper.checkScreen(3, SONG1, "RhythmoTestTemp", "120.0", 0, false);
+        TestHelper.checkScreen(3, getSongName(0), "RhythmoTestTemp", "120.0", 0, false);
 
         //Click on the next button
         onView(withId(R.id.next_button)).perform(click());
         SystemClock.sleep(1000);
 
-        TestHelper.checkScreen(3, SONG2, "RhythmoTestTemp", "140.0", 1, false);
+        TestHelper.checkScreen(3, getSongName(1), "RhythmoTestTemp", "140.0", 1, false);
     }
 
 }

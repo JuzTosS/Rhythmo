@@ -10,6 +10,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER;
+import static com.juztoss.rhythmo.TestHelper.getSongName;
+
 public class AdvancedMediaPlayerTest extends InstrumentationTestCase
 {
     private static String mPath;
@@ -26,7 +29,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         mPlayer2 = new AdvancedMediaPlayer(48000, 500);
         assertNotNull("Setup first player failed", mPlayer);
         assertNotNull("Setup second player failed", mPlayer2);
-        mPath = Environment.getExternalStorageDirectory() + "/" + TestSuite.MUSIC_FOLDER + "/" + TestSuite.SONG2;
+        mPath = Environment.getExternalStorageDirectory() + "/" + MUSIC_FOLDER + "/" + getSongName(1);
     }
 
     @Override
