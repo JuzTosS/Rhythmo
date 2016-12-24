@@ -81,42 +81,54 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
     {
         if(cursor == null || cursor.getCount() <= 0) return -1;
         CursorList cursorList = new CursorList(cursor);
-        return Collections.binarySearch(cursorList, needle, new Comparator<Composition>()
+        try
         {
-            @Override
-            public int compare(Composition left, Composition right)
+            return Collections.binarySearch(cursorList, needle, new Comparator<Composition>()
             {
-                int result;
-                if(sort == SortType.NAME)
+                @Override
+                public int compare(Composition left, Composition right)
                 {
-                    return left.name().compareTo(right.name());
-                }
-                else if(sort == SortType.BPM)
-                {
-                    Integer leftInt = (Integer)(int)(left.bpmShifted() * 10);
-                    Integer rightInt = (Integer)(int)(right.bpmShifted() * 10);
-                    result = leftInt.compareTo(rightInt);
-                    if(result != 0)//Return only if the songs in different folder
-                        return result;
-                }
-                else if(sort == SortType.DIRECTORY)
-                {
-                    result = left.getFolderPath().compareTo(right.getFolderPath());
-                    if(result != 0)//Return only if the songs in different folder
-                        return result;
-                }
-                else// if(sort == SortType.LAST)
-                {
-                    result =  ((Integer)left.getDateAdded()).compareTo(right.getDateAdded());
-                    if(result != 0)//Return only if the songs in different folder
-                        return result;
-                }
+                    if (left == null || right == null) return 0;
 
-                //If both songs in the same folder compare by name;
-                result = left.getAbsolutePath().compareTo(right.getAbsolutePath());
-                return result;
-            }
-        });
+                    int result;
+                    if (sort == SortType.NAME)
+                    {
+                        return left.name().compareTo(right.name());
+                    }
+                    else if (sort == SortType.BPM)
+                    {
+                        Integer leftInt = (Integer) (int) (left.bpmShifted() * 10);
+                        Integer rightInt = (Integer) (int) (right.bpmShifted() * 10);
+                        result = leftInt.compareTo(rightInt);
+                        if (result != 0)//Return only if the songs in different folder
+                            return result;
+                    }
+                    else if (sort == SortType.DIRECTORY)
+                    {
+                        result = left.getFolderPath().compareTo(right.getFolderPath());
+                        if (result != 0)//Return only if the songs in different folder
+                            return result;
+                    }
+                    else// if(sort == SortType.LAST)
+                    {
+                        result = ((Integer) left.getDateAdded()).compareTo(right.getDateAdded());
+                        if (result != 0)//Return only if the songs in different folder
+                            return result;
+                    }
+
+                    //If both songs in the same folder compare by name;
+                    result = left.getAbsolutePath().compareTo(right.getAbsolutePath());
+                    return result;
+                }
+            });
+
+        }
+        catch (Exception e)
+        {
+            Log.e(Playlist.class.toString(), "Unable to find element");
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     @Nullable
