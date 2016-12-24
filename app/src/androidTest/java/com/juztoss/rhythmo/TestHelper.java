@@ -162,6 +162,7 @@ public class TestHelper
         }
     }
 
+    public static final int AUDIO_FILES_COUNT = 50;
     public static void copyFiles() throws Exception
     {
         RhythmoApp context = (RhythmoApp) InstrumentationRegistry.getTargetContext().getApplicationContext();
@@ -169,9 +170,18 @@ public class TestHelper
         File dirs = new File(sdCardPath);
         dirs.mkdirs();
 
-        copyRAW(R.raw.audio220, sdCardPath + "/" + getSongName(0), context);
-        copyRAW(R.raw.audio440, sdCardPath + "/" + getSongName(1), context);
-        copyRAW(R.raw.audio880, sdCardPath + "/" + getSongName(2), context);
+        for(int i = 0; i < AUDIO_FILES_COUNT; i++)
+        {
+            int songResource;
+            if(i % 3 == 0)
+                songResource = R.raw.audio220;
+            else if(i % 3 == 1)
+                songResource = R.raw.audio440;
+            else
+                songResource = R.raw.audio880;
+
+            copyRAW(songResource, sdCardPath + "/" + getSongName(i), context);
+        }
     }
 
     private static void copyRAW(int fromId, String toPath, Context context) throws IOException

@@ -54,7 +54,7 @@ public class FileWasDeleted
         if (!file2.delete()) Assert.assertTrue(false);
         if (!file3.delete()) Assert.assertTrue(false);
 
-        TestHelper.checkScreen(3, "", "", "", -1, true);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
 
         //Adding folder, click on the apply button
         onView(withId(R.id.btnAddToPlaylist)).perform(click());

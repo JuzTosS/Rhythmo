@@ -32,18 +32,18 @@ public class PlayerActivityTest
     @Test
     public void playerActivityTest()
     {
-        TestHelper.checkScreen(3, "", "", "", -1, true);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
 
         onView(allOf(withId(R.id.listView), isDisplayed()))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
-        TestHelper.checkScreen(3, getSongName(0), "RhythmoTestTemp", "120.0", 0, false);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(0), "RhythmoTestTemp", "120.0", 0, false);
 
         //Click on the next button
         onView(withId(R.id.next_button)).perform(click());
         SystemClock.sleep(1000);
 
-        TestHelper.checkScreen(3, getSongName(1), "RhythmoTestTemp", "140.0", 1, false);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(1), "RhythmoTestTemp", "140.0", 1, false);
     }
 
 }
