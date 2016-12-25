@@ -97,16 +97,14 @@ public class RhythmoApp extends Application
     }
 
     @Nullable
-    @Deprecated
     /**
-     * TODO:
-     * Is used before the cursors start to get all the data from the DB not only ID.
-     * All the code must be rewritten to get all the data from existing cursor.
+     * Make a request to DB and return a Composition object
      */
     public Composition getComposition(long id)
     {
         Cursor cursor = getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10},
+                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME,
+                        DatabaseHelper.MUSIC_LIBRARY_BPMX10, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED},
                 DatabaseHelper._ID + "= ?",
                 new String[]{Long.toString(id)},
                 null, null, null);
@@ -124,7 +122,8 @@ public class RhythmoApp extends Application
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH)),
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME)),
                         (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10)) / (float) 10,
-                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10)) / (float) 10);
+                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10)) / (float) 10,
+                        cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED)));
             }
         }
         finally
