@@ -34,7 +34,7 @@ public class FileWasDeleted
     public ActivityTestRule<PlayerActivity> mActivityRule = new ActivityTestRule<>(PlayerActivity.class);
 
     @Test
-    public void playerActivityTest() throws Exception
+    public void fileWasDeleted() throws Exception
     {
         //Adding playlist
         openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());

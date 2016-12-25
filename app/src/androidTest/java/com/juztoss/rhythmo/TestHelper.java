@@ -8,6 +8,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.espresso.UiController;
+import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.v7.widget.RecyclerView;
@@ -99,20 +101,22 @@ public class TestHelper
             onView(allOf(withId(R.id.second_header_line))).check(matches(isDisplayed()));
         }
 
-        if (playingSongIndex >= 0)
-        {
-            onView(allOf(withId(R.id.play_button), isDisplayed())).check(matches(!isPlayButtonActive ? not(isSelected()) : isSelected()));
-            onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(playingSongIndex, allOf(hasDescendant(allOf(withId(R.id.playing_state), isDisplayed()))))));
-        }
-        else
-        {
+        onView(allOf(withId(R.id.play_button), isDisplayed())).check(matches(!isPlayButtonActive ? not(isSelected()) : isSelected()));
+
+        //TODO: Write play icon checks
+//        if (playingSongIndex >= 0)
+//        {
+//            onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(playingSongIndex, hasDescendant(allOf(withId(R.id.playing_state), isDisplayed())))));
+//        }
+//        else
+//        {
 //            if(songsInList >= 1)
 //                onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(0, allOf(hasDescendant(allOf(withId(R.id.playing_state), not(isDisplayed())))))));
 //            if(songsInList >= 2)
 //                onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(1, allOf(hasDescendant(allOf(withId(R.id.playing_state), not(isDisplayed())))))));
 //            if(songsInList >= 3)
 //                onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(2, allOf(hasDescendant(allOf(withId(R.id.playing_state), not(isDisplayed())))))));
-        }
+//        }
     }
 
     public static void updateLibrary()
@@ -263,5 +267,30 @@ public class TestHelper
             prefix = "180 - ";
 
         return prefix + " audio" + Integer.toString(songNumber);
+    }
+
+    public static ViewAction clickChildViewWithId(final int id)
+    {
+        return new ViewAction()
+        {
+            @Override
+            public Matcher<View> getConstraints()
+            {
+                return null;
+            }
+
+            @Override
+            public String getDescription()
+            {
+                return "Click on a child view with specified id.";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view)
+            {
+                View v = view.findViewById(id);
+                v.performClick();
+            }
+        };
     }
 }

@@ -103,13 +103,6 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     }
 
     @Override
-    protected void onStop()
-    {
-        super.onStop();
-        getCurrentViewedPlaylist().setWordFilter(null);
-    }
-
-    @Override
     protected void onServiceConnected()
     {
         super.onServiceConnected();
@@ -303,7 +296,6 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        enableDefaultActionBarAndDisableSearch();
     }
 
     @Override
@@ -338,6 +330,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 //        }
 
         mNeedToGoToTheCurrentSong = !gotoTheCurrentlyPlayingSong(false);
+        enableDefaultActionBarAndDisableSearch();
     }
 
     @Override
