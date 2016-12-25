@@ -159,7 +159,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
                 clearQueue();
                 gotoNext(false);
             }
-        });
+        }, 1000);
     }
 
     @Nullable
@@ -320,7 +320,13 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     }
 
     private void runOnUiThread(Runnable runnable) {
+        handler.removeCallbacksAndMessages(null);
         handler.post(runnable);
+    }
+
+    private void runOnUiThread(Runnable runnable, int delayMillis) {
+        handler.removeCallbacksAndMessages(null);
+        handler.postDelayed(runnable, delayMillis);
     }
 
     @Override
@@ -334,6 +340,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             String action = intent.getAction();
             if (ACTION_COMMAND.equals(action))
             {
+                handler.removeCallbacksAndMessages(null);
                 String command = intent.getStringExtra(ACTION_NAME);
                 Log.d(getClass().toString(), "onStartCommand command: " + command);
                 if (PAUSE_PLAYBACK_ACTION.equals(command))
