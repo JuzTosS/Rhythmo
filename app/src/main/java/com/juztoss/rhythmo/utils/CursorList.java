@@ -102,7 +102,7 @@ public class CursorList implements List<Composition>, RandomAccess
     @Override
     public ListIterator<Composition> listIterator()
     {
-        return new CursorIterator(mCursor, -1);
+        return new CursorIterator(mCursor, 0);
     }
 
     @NonNull
@@ -204,8 +204,8 @@ public class CursorList implements List<Composition>, RandomAccess
             if (!hasNext())
                 throw new NoSuchElementException();
 
-            mPosition++;
             mCursor.moveToPosition(mPosition);
+            mPosition++;
             return Composition.fromCursor(mCursor);
         }
 
@@ -221,8 +221,8 @@ public class CursorList implements List<Composition>, RandomAccess
             if (!hasPrevious())
                 throw new NoSuchElementException();
 
-            mPosition--;
             mCursor.moveToPosition(mPosition);
+            mPosition--;
             return Composition.fromCursor(mCursor);
         }
 
