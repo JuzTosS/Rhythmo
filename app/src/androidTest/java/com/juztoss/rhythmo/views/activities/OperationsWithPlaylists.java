@@ -1,10 +1,11 @@
-package com.juztoss.rhythmo;
+package com.juztoss.rhythmo.views.activities;
 
 import android.app.Activity;
 import android.support.design.widget.TabLayout;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.views.activities.PlayerActivity;
 
 import org.junit.Rule;

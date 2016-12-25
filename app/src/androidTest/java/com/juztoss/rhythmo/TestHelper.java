@@ -80,29 +80,38 @@ public class TestHelper
     public static void checkScreen(int songsInList, String headerTitle, String headerDescription, String headerBpm, int playingSongIndex, boolean isPlayButtonActive)
     {
         onView(allOf(withId(R.id.listView), isDisplayed())).check(new RecyclerViewItemCountAssertion(songsInList + 1));//+1 because we have last empty element
-        onView(allOf(withId(R.id.bpm_header_label))).check(matches(withText(headerBpm)));
+
         if (headerBpm.length() > 0)
+        {
+            onView(allOf(withId(R.id.bpm_header_label))).check(matches(withText(headerBpm)));
             onView(allOf(withId(R.id.bpm_header_label))).check(matches(isDisplayed()));
+        }
 
-        onView(allOf(withId(R.id.first_header_line))).check(matches(withText(headerTitle)));
         if (headerTitle.length() > 0)
+        {
+            onView(allOf(withId(R.id.first_header_line))).check(matches(withText(headerTitle)));
             onView(allOf(withId(R.id.first_header_line))).check(matches(isDisplayed()));
+        }
 
-        onView(allOf(withId(R.id.second_header_line))).check(matches(withText(headerDescription)));
         if (headerDescription.length() > 0)
+        {
+            onView(allOf(withId(R.id.second_header_line))).check(matches(withText(headerDescription)));
             onView(allOf(withId(R.id.second_header_line))).check(matches(isDisplayed()));
+        }
 
-        onView(allOf(withId(R.id.play_button), isDisplayed())).check(matches(!isPlayButtonActive ? not(isSelected()) : isSelected()));
         if (playingSongIndex >= 0)
+        {
+            onView(allOf(withId(R.id.play_button), isDisplayed())).check(matches(!isPlayButtonActive ? not(isSelected()) : isSelected()));
             onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(playingSongIndex, allOf(hasDescendant(allOf(withId(R.id.playing_state), isDisplayed()))))));
+        }
         else
         {
-            if(songsInList >= 1)
-                onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(0, allOf(hasDescendant(allOf(withId(R.id.playing_state), not(isDisplayed())))))));
-            if(songsInList >= 2)
-                onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(1, allOf(hasDescendant(allOf(withId(R.id.playing_state), not(isDisplayed())))))));
-            if(songsInList >= 3)
-                onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(2, allOf(hasDescendant(allOf(withId(R.id.playing_state), not(isDisplayed())))))));
+//            if(songsInList >= 1)
+//                onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(0, allOf(hasDescendant(allOf(withId(R.id.playing_state), not(isDisplayed())))))));
+//            if(songsInList >= 2)
+//                onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(1, allOf(hasDescendant(allOf(withId(R.id.playing_state), not(isDisplayed())))))));
+//            if(songsInList >= 3)
+//                onView(allOf(withId(R.id.listView), isDisplayed())).check(matches(atPosition(2, allOf(hasDescendant(allOf(withId(R.id.playing_state), not(isDisplayed())))))));
         }
     }
 

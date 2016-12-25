@@ -122,7 +122,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         int firstPartLength = Integer.toString((int) bpm).length();
         spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
         mBpmLabel.setText(spannableString);
-        boolean visible = service != null && service.currentSongId() == composition.id();
+        boolean visible = service != null && service.currentSongId() == composition.id() && service.isPlaying();
         mPlayingState.setVisibility(visible ? View.VISIBLE : View.GONE);
 
         mFolderName = composition.getFolder();

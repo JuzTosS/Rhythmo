@@ -1,8 +1,9 @@
 package com.juztoss.rhythmo;
 
-import com.juztoss.rhythmo.audio.AdvancedMediaPlayer;
 import com.juztoss.rhythmo.views.activities.FileWasDeleted;
+import com.juztoss.rhythmo.views.activities.OperationsWithPlaylists;
 import com.juztoss.rhythmo.views.activities.PlayerActivityTest;
+import com.juztoss.rhythmo.views.activities.SearchTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -14,11 +15,14 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         CopyMediaToDevice.class,
         TouchToWakeUp.class,
+
         AdvancedMediaPlayerTest.class,
         SettingsTest.class,
         OperationsWithPlaylists.class,
         FileWasDeleted.class,
         PlayerActivityTest.class,
+        SearchTest.class,
+
         RemoveMediaFromDevice.class,
 })
 

@@ -79,6 +79,15 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     private int mLastViewedPlaylistIndex = -1;
 
     @Override
+    public void onBackPressed()
+    {
+        if(mIsSearchEnabled)
+            enableDefaultActionBarAndDisableSearch();
+        else
+            super.onBackPressed();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
