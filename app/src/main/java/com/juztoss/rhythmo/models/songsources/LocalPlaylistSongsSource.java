@@ -50,13 +50,13 @@ public class LocalPlaylistSongsSource extends AbstractSongsSource
 
         String order;
         if (mSortType == SortType.NAME)
-            order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_NAME;
+            order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_NAME + " COLLATE NOCASE";
         else if (mSortType == SortType.BPM)
             order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10;
         else if(mSortType == SortType.LAST)
             order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED + " DESC";
         else//mSortType = SortType.DIRECTORY
-            order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_PATH;
+            order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_PATH + " COLLATE NOCASE";
 
         if (mMinBPMX10 > 0 && mMaxBPMX10 > 0)//BPM Filter is enabled
         {
@@ -69,7 +69,7 @@ public class LocalPlaylistSongsSource extends AbstractSongsSource
                             " AND " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?" +
                             " AND " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? " +
                             ((wordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + wordFilter + "%")) +
-                            order + ", " + DatabaseHelper.MUSIC_LIBRARY_PATH,
+                            order + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + " COLLATE NOCASE",
                     new String[]{Integer.toString(mMinBPMX10 - add * 10), Integer.toString(mMaxBPMX10 + add * 10), Long.toString(mId)}
             );
         }
@@ -82,7 +82,7 @@ public class LocalPlaylistSongsSource extends AbstractSongsSource
                             " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
                             " where " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? " +
                             ((wordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + wordFilter + "%")) +
-                            order + ", " + DatabaseHelper.MUSIC_LIBRARY_PATH,
+                            order + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + " COLLATE NOCASE",
                     new String[]{Long.toString(mId)}
             );
         }

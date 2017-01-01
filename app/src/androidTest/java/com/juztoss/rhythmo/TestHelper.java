@@ -1,18 +1,22 @@
 package com.juztoss.rhythmo;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewAssertion;
-import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.juztoss.rhythmo.presenters.RhythmoApp;
@@ -24,6 +28,7 @@ import junit.framework.Assert;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,13 +38,12 @@ import java.util.concurrent.CountDownLatch;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.core.deps.guava.base.Preconditions.checkNotNull;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
-import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isSelected;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.juztoss.rhythmo.utils.SystemHelper.SEPARATOR;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
@@ -52,32 +56,8 @@ public class TestHelper
 {
 
     public static final String MUSIC_FOLDER = "RhythmoTestTemp";
-
-    public static Matcher<View> atPosition(final int position, @NonNull final Matcher<View> itemMatcher)
-    {
-        checkNotNull(itemMatcher);
-        return new BoundedMatcher<View, RecyclerView>(RecyclerView.class)
-        {
-            @Override
-            public void describeTo(Description description)
-            {
-                description.appendText("has item at position " + position + ": ");
-                itemMatcher.describeTo(description);
-            }
-
-            @Override
-            protected boolean matchesSafely(final RecyclerView view)
-            {
-                RecyclerView.ViewHolder viewHolder = view.findViewHolderForAdapterPosition(position);
-                if (viewHolder == null)
-                {
-                    // has no item on such position
-                    return false;
-                }
-                return itemMatcher.matches(viewHolder.itemView);
-            }
-        };
-    }
+    public static final String MUSIC_FOLDER_NESTED = "nestedDir";
+    public static final String MUSIC_FOLDER_NESTED_FULL = MUSIC_FOLDER + SEPARATOR + MUSIC_FOLDER_NESTED;
 
     public static void checkScreen(int songsInList, String headerTitle, String headerDescription, String headerBpm, int playingSongIndex, boolean isPlayButtonActive)
     {
@@ -119,10 +99,16 @@ public class TestHelper
 //        }
     }
 
-    public static void updateLibrary()
+    /**
+     *
+     * @param activity if not null playlists representations will be updated
+     */
+    public static void updateLibrary(@Nullable final Activity activity)
     {
+        updateMediaStore();
+
         final CountDownLatch latch = new CountDownLatch(2);
-        RhythmoApp app = (RhythmoApp) InstrumentationRegistry.getTargetContext().getApplicationContext();
+        final RhythmoApp app = (RhythmoApp) InstrumentationRegistry.getTargetContext().getApplicationContext();
         AsyncBuildLibraryTask taskBuildLib = new AsyncBuildLibraryTask(app, true, Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER + "/");
         taskBuildLib.setOnBuildLibraryProgressUpdate(new AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate()
         {
@@ -160,7 +146,22 @@ public class TestHelper
             @Override
             public void onFinishBuildingLibrary(AsyncDetectBpmByNamesTask task)
             {
-                latch.countDown();
+                if(activity != null)
+                {
+                    activity.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            app.notifyPlaylistsRepresentationUpdated();
+                            latch.countDown();
+                        }
+                    });
+                }
+                else
+                {
+                    latch.countDown();
+                }
             }
         });
         taskDetectBpmByNames.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
@@ -175,7 +176,33 @@ public class TestHelper
         }
     }
 
+    private static void updateMediaStore()
+    {
+        final CountDownLatch latch = new CountDownLatch(1);
+        RhythmoApp context = (RhythmoApp) InstrumentationRegistry.getTargetContext().getApplicationContext();
+        String sdCardPath = Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER;
+        MediaScannerConnection.scanFile(context, new String[]{sdCardPath}, null,
+                new MediaScannerConnection.OnScanCompletedListener()
+                {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri)
+                    {
+                        latch.countDown();
+                    }
+                });
+
+        try
+        {
+            latch.await();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public static final int AUDIO_FILES_COUNT = 50;
+
     public static void copyFiles() throws Exception
     {
         RhythmoApp context = (RhythmoApp) InstrumentationRegistry.getTargetContext().getApplicationContext();
@@ -183,12 +210,29 @@ public class TestHelper
         File dirs = new File(sdCardPath);
         dirs.mkdirs();
 
-        for(int i = 0; i < AUDIO_FILES_COUNT; i++)
+        for (int i = 0; i < AUDIO_FILES_COUNT / 2; i++)
         {
             int songResource;
-            if(i % 3 == 0)
+            if (i % 3 == 0)
                 songResource = R.raw.audio220;
-            else if(i % 3 == 1)
+            else if (i % 3 == 1)
+                songResource = R.raw.audio440;
+            else
+                songResource = R.raw.audio880;
+
+            copyRAW(songResource, sdCardPath + "/" + getSongName(i), context);
+        }
+
+        sdCardPath = Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER_NESTED_FULL;
+        dirs = new File(sdCardPath);
+        dirs.mkdirs();
+
+        for (int i = AUDIO_FILES_COUNT / 2; i < AUDIO_FILES_COUNT; i++)
+        {
+            int songResource;
+            if (i % 3 == 0)
+                songResource = R.raw.audio220;
+            else if (i % 3 == 1)
                 songResource = R.raw.audio440;
             else
                 songResource = R.raw.audio880;
@@ -257,16 +301,16 @@ public class TestHelper
     public static String getSongName(int songNumber)
     {
         String prefix;
-        if(songNumber == 0)
-            prefix = "120 - ";
-        else if(songNumber == 1)
+        if (songNumber == 0)
+            prefix = "80 - ";
+        else if (songNumber == 1)
             prefix = "140 - ";
-        else if(songNumber == 2)
+        else if (songNumber == 2)
             prefix = "160 - ";
         else
             prefix = "180 - ";
 
-        return prefix + " audio" + Integer.toString(songNumber);
+        return prefix + "audio" + Integer.toString(songNumber);
     }
 
     public static ViewAction clickChildViewWithId(final int id)
@@ -290,7 +334,91 @@ public class TestHelper
             {
                 View v = view.findViewById(id);
                 v.performClick();
+
             }
         };
+    }
+
+    public static RecyclerViewMatcher withRecyclerView(final int recyclerViewId)
+    {
+
+        return new RecyclerViewMatcher(recyclerViewId);
+    }
+
+    public static class RecyclerViewMatcher
+    {
+
+        private final int mRecyclerViewId;
+
+        public RecyclerViewMatcher(int recyclerViewId)
+        {
+            this.mRecyclerViewId = recyclerViewId;
+        }
+
+        public Matcher<View> atPosition(final int position)
+        {
+            return atPositionOnView(position, -1);
+        }
+
+        public Matcher<View> atPositionOnView(final int position, final int targetViewId)
+        {
+
+            return new TypeSafeMatcher<View>()
+            {
+                Resources mResources;
+                View mChildView;
+
+                public void describeTo(Description description)
+                {
+                    String idDescription = Integer.toString(mRecyclerViewId);
+                    if (mResources != null)
+                    {
+                        try
+                        {
+                            idDescription = this.mResources.getResourceName(mRecyclerViewId);
+                        }
+                        catch (Resources.NotFoundException var4)
+                        {
+                            idDescription = String.format("%s (resource name not found)", mRecyclerViewId);
+                        }
+                    }
+
+                    description.appendText("RecyclerView with id: " + idDescription + " at position: " + position);
+                }
+
+                public boolean matchesSafely(View view)
+                {
+
+                    mResources = view.getResources();
+                    if (mChildView == null)
+                    {
+                        RecyclerView recyclerView =
+                                (RecyclerView) view.getRootView().findViewById(mRecyclerViewId);
+                        if (recyclerView != null && recyclerView.getId() == mRecyclerViewId)
+                        {
+                            RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+                            if (viewHolder != null)
+                            {
+                                mChildView = viewHolder.itemView;
+                            }
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+
+                    if (targetViewId == -1)
+                    {
+                        return view == mChildView;
+                    }
+                    else
+                    {
+                        View targetView = mChildView.findViewById(targetViewId);
+                        return view == targetView;
+                    }
+                }
+            };
+        }
     }
 }

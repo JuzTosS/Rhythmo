@@ -59,14 +59,20 @@ public class FileWasDeleted
         //Adding folder, click on the apply button
         onView(withId(R.id.btnAddToPlaylist)).perform(click());
 
-        TestHelper.updateLibrary();
+        TestHelper.updateLibrary(mActivityRule.getActivity());
         //Go back to player activity
         pressBack();
 
         TestHelper.checkScreen(0, "", "", "", -1, true);
 
+        //Remove playlist
+        openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());
+        onView(withText(mActivityRule.getActivity().getString(R.string.remove_playlist))).perform(click());
+
         TestHelper.copyFiles();
-        TestHelper.updateLibrary();
+        TestHelper.updateLibrary(mActivityRule.getActivity());
+
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
 
     }
 }

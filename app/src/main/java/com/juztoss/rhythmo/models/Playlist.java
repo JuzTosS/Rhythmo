@@ -93,7 +93,7 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
                     int result;
                     if (sort == SortType.NAME)
                     {
-                        return left.name().compareTo(right.name());
+                        return left.name().compareToIgnoreCase(right.name());
                     }
                     else if (sort == SortType.BPM)
                     {
@@ -105,7 +105,7 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
                     }
                     else if (sort == SortType.DIRECTORY)
                     {
-                        result = left.getFolderPath().compareTo(right.getFolderPath());
+                        result = left.getFolderPath().compareToIgnoreCase(right.getFolderPath());
                         if (result != 0)//Return only if the songs in different folder
                             return result;
                     }
@@ -117,7 +117,7 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
                     }
 
                     //If both songs in the same folder compare by name;
-                    result = left.getAbsolutePath().compareTo(right.getAbsolutePath());
+                    result = left.name().compareToIgnoreCase(right.name());
                     return result;
                 }
             });

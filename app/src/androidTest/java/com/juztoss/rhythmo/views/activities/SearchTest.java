@@ -22,6 +22,8 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER;
+import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER_NESTED;
 import static com.juztoss.rhythmo.TestHelper.clickChildViewWithId;
 import static com.juztoss.rhythmo.TestHelper.getSongName;
 import static org.hamcrest.Matchers.allOf;
@@ -56,13 +58,13 @@ public class SearchTest
         pressBack();//Hide keyboard
         pressBack();//Disable search
 
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(43), "RhythmoTestTemp", "180.0", 43, false);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(43), MUSIC_FOLDER_NESTED, "180.0", 43, false);
 
         onView(withId(R.id.play_button)).perform(click());//Stop playback
 
         SystemClock.sleep(100);
 
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(43), "RhythmoTestTemp", "180.0", -1, true);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(43), MUSIC_FOLDER_NESTED, "180.0", -1, true);
 
         //Test relaunching activity
         onView(allOf(withId(R.id.search_menu), isDisplayed())).perform(click());
@@ -74,7 +76,7 @@ public class SearchTest
 
         pressBack();//Return to main activity
 
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(43), "RhythmoTestTemp", "180.0", -1, true);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(43), MUSIC_FOLDER_NESTED, "180.0", -1, true);
 
     }
 

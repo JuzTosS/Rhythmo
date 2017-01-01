@@ -9,15 +9,16 @@ import org.junit.Test;
 import java.io.File;
 
 import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER;
+import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER_NESTED_FULL;
 
 /**
  * Created by JuzTosS on 8/21/2016.
  */
 public class RemoveMediaFromDevice
 {
-    public static boolean doRemove()
+    private static boolean removeDir(String dirName)
     {
-        File dir = new File(Environment.getExternalStorageDirectory() + "/" + MUSIC_FOLDER);
+        File dir = new File(Environment.getExternalStorageDirectory() + "/" + dirName);
         String[] children = dir.list();
         if(children != null && children.length > 0)
         {
@@ -27,6 +28,11 @@ public class RemoveMediaFromDevice
             }
         }
         return dir.delete();
+    }
+
+    public static boolean doRemove()
+    {
+        return removeDir(MUSIC_FOLDER_NESTED_FULL) && removeDir(MUSIC_FOLDER);
     }
 
     @Test

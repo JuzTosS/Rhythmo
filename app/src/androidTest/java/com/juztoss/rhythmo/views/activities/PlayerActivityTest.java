@@ -9,6 +9,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.TestHelper;
+import com.juztoss.rhythmo.audio.BpmDetector;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER;
 import static com.juztoss.rhythmo.TestHelper.getSongName;
 import static org.hamcrest.Matchers.allOf;
 
@@ -32,22 +34,23 @@ public class PlayerActivityTest
     @Test
     public void playerActivityTest()
     {
+        SystemClock.sleep(1000);
         TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
 
         onView(allOf(withId(R.id.listView), isDisplayed()))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(0), "RhythmoTestTemp", "120.0", 0, false);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(1), MUSIC_FOLDER, "140.0", 0, false);
 
         //Click on the next button
         onView(withId(R.id.next_button)).perform(click());
         SystemClock.sleep(1000);
 
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(1), "RhythmoTestTemp", "140.0", 1, false);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(2), MUSIC_FOLDER, "160.0", 1, false);
 
         onView(withId(R.id.play_button)).perform(click());//Stop playback
 
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(1), "RhythmoTestTemp", "140.0", -1, true);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(2), MUSIC_FOLDER, "160.0", -1, true);
     }
 
 }

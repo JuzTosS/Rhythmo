@@ -31,13 +31,13 @@ public class AllSongsSource extends AbstractSongsSource
 
         String order;
         if(mSortType == SortType.NAME)
-            order = DatabaseHelper.MUSIC_LIBRARY_NAME;
+            order = DatabaseHelper.MUSIC_LIBRARY_NAME + " COLLATE NOCASE";
         else if(mSortType == SortType.BPM)
             order = DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10;
         else if(mSortType == SortType.LAST)
             order = DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED + " DESC";
         else//mSortType = SortType.DIRECTORY
-            order = DatabaseHelper.MUSIC_LIBRARY_PATH;
+            order = DatabaseHelper.MUSIC_LIBRARY_PATH + " COLLATE NOCASE";
 
         int add = mApp.getBPMFilterAdditionWindowSize();
         if (mMinBPMX10 > 0 && mMaxBPMX10 > 0)//BPM Filter is enabled
@@ -48,7 +48,7 @@ public class AllSongsSource extends AbstractSongsSource
                         + ((wordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + wordFilter + "%"))
                     , new String[]{Integer.toString(mMinBPMX10 - add * 10), Integer.toString(mMaxBPMX10 + add * 10)},
                     null, null,
-                    order + ", " + DatabaseHelper.MUSIC_LIBRARY_PATH);
+                    order + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + " COLLATE NOCASE");
         }
         else
         {
@@ -57,7 +57,7 @@ public class AllSongsSource extends AbstractSongsSource
                     (wordFilter == null) ? null : DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + wordFilter + "%")
                     , null,
                     null, null,
-                    order + ", " + DatabaseHelper.MUSIC_LIBRARY_PATH);
+                    order + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + " COLLATE NOCASE");
         }
         return mList;
     }

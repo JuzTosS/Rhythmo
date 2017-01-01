@@ -46,7 +46,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     {
         super();
         mPlaylist = playlist;
-        mCursor = playlist.getCursor();
         mActivity = activity;
         mApp = (RhythmoApp) activity.getApplicationContext();
     }
@@ -81,8 +80,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
 
         holder.setVisible(true);
 
-        mCursor.moveToPosition(position);
-        Composition composition = Composition.fromCursor(mCursor);
+        Cursor cursor = getCursor();
+        cursor.moveToPosition(position);
+        Composition composition = Composition.fromCursor(cursor);
         if (composition == null)
         {
             holder.setVisible(false);
@@ -100,8 +100,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
             }
             else
             {
-                mCursor.moveToPosition(prevPosition);
-                Composition prevComposition = Composition.fromCursor(mCursor);
+                cursor.moveToPosition(prevPosition);
+                Composition prevComposition = Composition.fromCursor(cursor);
 
                 if (prevComposition != null)
                     folderMode = !prevComposition.getFolderPath().equals(composition.getFolderPath());

@@ -30,7 +30,7 @@ public class CopyMediaToDevice
         app.getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_HAD_STARTED, true).commit();
 
         TestHelper.copyFiles();
-        TestHelper.updateLibrary();
+        TestHelper.updateLibrary(null);
 
         Assert.assertTrue(true);
     }

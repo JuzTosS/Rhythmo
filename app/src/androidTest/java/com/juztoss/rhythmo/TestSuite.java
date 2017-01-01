@@ -4,6 +4,7 @@ import com.juztoss.rhythmo.views.activities.FileWasDeleted;
 import com.juztoss.rhythmo.views.activities.OperationsWithPlaylists;
 import com.juztoss.rhythmo.views.activities.PlayerActivityTest;
 import com.juztoss.rhythmo.views.activities.SearchTest;
+import com.juztoss.rhythmo.views.activities.SortsTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -22,6 +23,7 @@ import org.junit.runners.Suite;
         FileWasDeleted.class,
         PlayerActivityTest.class,
         SearchTest.class,
+        SortsTest.class,
 
         RemoveMediaFromDevice.class,
 })
