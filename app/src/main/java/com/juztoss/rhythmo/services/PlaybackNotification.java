@@ -55,6 +55,7 @@ public class PlaybackNotification
         PendingIntent playNextActionPendingIntent = PendingIntent.getService(service, 1, playNextActionIntent, 0);
         notificationView.setOnClickPendingIntent(R.id.notification_next, playNextActionPendingIntent);
 
+        notificationBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
         notificationBuilder.setContent(notificationView);
         notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
         Notification notification = notificationBuilder.build();
