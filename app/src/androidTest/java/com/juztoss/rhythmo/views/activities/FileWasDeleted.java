@@ -71,8 +71,5 @@ public class FileWasDeleted
 
         TestHelper.copyFiles();
         TestHelper.updateLibrary(mActivityRule.getActivity());
-
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
-
     }
 }

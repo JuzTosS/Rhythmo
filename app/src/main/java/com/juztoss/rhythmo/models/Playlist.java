@@ -93,7 +93,9 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
                     int result;
                     if (sort == SortType.NAME)
                     {
-                        return left.name().compareToIgnoreCase(right.name());
+                        result = left.name().compareToIgnoreCase(right.name());
+                        if (result != 0)//Return only if the songs in different folder
+                            return result;
                     }
                     else if (sort == SortType.BPM)
                     {
@@ -118,6 +120,9 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
 
                     //If both songs in the same folder compare by name;
                     result = left.name().compareToIgnoreCase(right.name());
+                    if(result == 0)
+                        result = ((Long)left.id()).compareTo(right.id());
+
                     return result;
                 }
             });

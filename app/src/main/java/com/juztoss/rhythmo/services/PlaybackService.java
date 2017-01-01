@@ -22,10 +22,10 @@ import com.juztoss.rhythmo.models.Playlist;
 import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -76,7 +76,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private RepeatMode mRepeatMode = RepeatMode.DISABLED;
     private boolean mIsShuffleEnabled = false;
-    private Set<Integer> mAlreadyPlayedInShuffleMode = new HashSet<>();
+    private List<Long> mAlreadyPlayedInShuffleMode = new ArrayList<>();
 
     Handler handler;
 
@@ -217,16 +217,21 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         }
         else//isShuffleEnabled() == true
         {
-            int songsCount = getSongsList().getCount();
+            Cursor playlist = getSongsList();
+            int songsCount = playlist.getCount();
             if (mAlreadyPlayedInShuffleMode.size() == songsCount)
                 mAlreadyPlayedInShuffleMode.clear();
 
-            if (!mAlreadyPlayedInShuffleMode.contains(mCurrentSongIndex))
-                mAlreadyPlayedInShuffleMode.add(mCurrentSongIndex);
+            if (!mAlreadyPlayedInShuffleMode.contains(mCurrentSongId))
+                mAlreadyPlayedInShuffleMode.add(mCurrentSongId);
 
             int newSongIndex = (int) (Math.random() * songsCount);
+
+            playlist.moveToPosition(newSongIndex);
+
+            long newSongId = playlist.getLong(AbstractSongsSource.I_ID);
             int iterations = 0;
-            while (mAlreadyPlayedInShuffleMode.contains(newSongIndex) && ++iterations < songsCount)
+            while (mAlreadyPlayedInShuffleMode.contains(newSongId) && ++iterations < songsCount)
             {
                 newSongIndex++;
                 if (newSongIndex >= songsCount)
@@ -257,10 +262,20 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
         if(getSongsList() == null) return;
 
-        getSongsList().moveToPosition(mCurrentSongIndex);
-        mCurrentSongId = getSongsList().getLong(AbstractSongsSource.I_ID);
-        setSource(mCurrentPlaylistIndex, mCurrentSongId);
-        putAction(new ActionPlay(fromUser));
+        if (!isShuffleEnabled() || mAlreadyPlayedInShuffleMode.size() <= 0)
+        {
+            getSongsList().moveToPosition(mCurrentSongIndex);
+            mCurrentSongId = getSongsList().getLong(AbstractSongsSource.I_ID);
+            setSource(mCurrentPlaylistIndex, mCurrentSongId);
+            putAction(new ActionPlay(fromUser));
+        }
+        else//isShuffleEnabled() == true
+        {
+            mCurrentSongId = mAlreadyPlayedInShuffleMode.remove(mAlreadyPlayedInShuffleMode.size() - 1);
+            setSource(mCurrentPlaylistIndex, mCurrentSongId);
+            putAction(new ActionPlay(fromUser));
+        }
+
     }
 
     private void updateUI(boolean scrollToCurrent)
