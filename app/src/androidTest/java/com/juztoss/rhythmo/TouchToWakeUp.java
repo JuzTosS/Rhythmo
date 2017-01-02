@@ -21,6 +21,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.Matchers.allOf;
 
 /**
  * Created by JuzTosS on 7/29/2016.
@@ -34,7 +35,7 @@ public class TouchToWakeUp
     @Test
     public void wakeUpNeo() throws Exception
     {
-        onView(withId(R.id.shuffle_button)).perform(click());
+        openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());
         Thread.sleep(1000);
         assertTrue(true);
     }

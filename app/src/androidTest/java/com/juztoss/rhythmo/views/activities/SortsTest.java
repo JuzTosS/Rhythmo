@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.scrollToPosition;
@@ -45,7 +46,15 @@ public class SortsTest
         TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
 
         //Name sort
-        onView(allOf(withId(R.id.sort_menu), isDisplayed())).perform(click());
+        try
+        {
+            onView(allOf(withId(R.id.sort_menu), isDisplayed())).perform(click());
+        }
+        catch (Exception e)
+        {
+            openActionBarOverflowOrOptionsMenu(mActivityTestRule.getActivity());
+            onView(allOf(withText(R.string.sort), isDisplayed())).perform(click());
+        }
         onView(allOf(withText(R.string.sort_alphabetically), isDisplayed())).perform(click());
 
         List<String> songNames = new ArrayList<>();
@@ -59,7 +68,15 @@ public class SortsTest
 
 
         //BPM sort
-        onView(allOf(withId(R.id.sort_menu), isDisplayed())).perform(click());
+        try
+        {
+            onView(allOf(withId(R.id.sort_menu), isDisplayed())).perform(click());
+        }
+        catch (Exception e)
+        {
+            openActionBarOverflowOrOptionsMenu(mActivityTestRule.getActivity());
+            onView(allOf(withText(R.string.sort), isDisplayed())).perform(click());
+        }
         onView(allOf(withText(R.string.sort_by_bpm), isDisplayed())).perform(click());
 
         Collections.sort(songNames, new Comparator<String>()
@@ -79,7 +96,15 @@ public class SortsTest
 
 
         //Directories sort
-        onView(allOf(withId(R.id.sort_menu), isDisplayed())).perform(click());
+        try
+        {
+            onView(allOf(withId(R.id.sort_menu), isDisplayed())).perform(click());
+        }
+        catch (Exception e)
+        {
+            openActionBarOverflowOrOptionsMenu(mActivityTestRule.getActivity());
+            onView(allOf(withText(R.string.sort), isDisplayed())).perform(click());
+        }
         onView(allOf(withText(R.string.sort_by_folders), isDisplayed())).perform(click());
 
         List<String> songNamesFirstFolder = new ArrayList<>();

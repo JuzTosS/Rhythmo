@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -39,7 +40,16 @@ public class PlayerActivityTest
         TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
 
         //Name sort
-        onView(allOf(withId(R.id.sort_menu), isDisplayed())).perform(click());
+        try
+        {
+            onView(allOf(withId(R.id.sort_menu), isDisplayed())).perform(click());
+        }
+        catch (Exception e)
+        {
+            openActionBarOverflowOrOptionsMenu(mActivityTestRule.getActivity());
+            onView(allOf(withText(R.string.sort), isDisplayed())).perform(click());
+        }
+
         onView(allOf(withText(R.string.sort_alphabetically), isDisplayed())).perform(click());
 
         onView(allOf(withId(R.id.listView), isDisplayed()))
