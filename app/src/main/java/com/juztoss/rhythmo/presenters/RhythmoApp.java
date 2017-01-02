@@ -32,6 +32,7 @@ public class RhythmoApp extends Application
     public static final String FIRST_RUN = "FirstRun";
     public static final String LIBRARY_BUILD_HAD_STARTED = "LibraryBuildHadStarted";
     public static final String ALL_SONGS_SORT = "AllSongsSort";
+    public static final String REPEAT_MODE = "RepeatMode";
 
     public static float MIN_BPM = 25;
     public static float MAX_BPM = 250;

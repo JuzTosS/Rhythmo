@@ -691,7 +691,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             if (playbackService() == null)
                 return;
 
-            if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.DISABLED)
+            if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.DISABLED || playbackService().getRepeatMode() == PlaybackService.RepeatMode.SHUFFLE)
                 playbackService().setRepeatMode(PlaybackService.RepeatMode.ALL);
             else if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
                 playbackService().setRepeatMode(PlaybackService.RepeatMode.ONE);
@@ -711,7 +711,8 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             if (playbackService() == null)
                 return;
 
-            playbackService().setShuffleMode(!playbackService().isShuffleEnabled());
+            PlaybackService.RepeatMode newRepeatMode = playbackService().getRepeatMode() == PlaybackService.RepeatMode.SHUFFLE ? PlaybackService.RepeatMode.DISABLED : PlaybackService.RepeatMode.SHUFFLE;
+            playbackService().setRepeatMode(newRepeatMode);
             updateShuffleAndRepeatButtons();
             updateShuffleAndRepeatButtons();
         }

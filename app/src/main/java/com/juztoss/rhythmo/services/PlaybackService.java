@@ -40,7 +40,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     {
         DISABLED,
         ONE,
-        ALL
+        ALL,
+        SHUFFLE
     }
 
     public static final int NOTIFICATION_ID = 42;
@@ -75,7 +76,6 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private Timer mStopCooldown = new Timer();
 
     private RepeatMode mRepeatMode = RepeatMode.DISABLED;
-    private boolean mIsShuffleEnabled = false;
     private List<Long> mAlreadyPlayedInShuffleMode = new ArrayList<>();
 
     Handler handler;
@@ -94,31 +94,15 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         }
     };
 
-    public void setShuffleMode(boolean enabled)
-    {
-        if (enabled && !mIsShuffleEnabled)//Reset played songs
-        {
-            mAlreadyPlayedInShuffleMode.clear();
-        }
-        mIsShuffleEnabled = enabled;
-        if (mIsShuffleEnabled)
-        {
-            mRepeatMode = RepeatMode.DISABLED;
-        }
-    }
-
     public boolean isShuffleEnabled()
     {
-        return mIsShuffleEnabled;
+        return mRepeatMode == RepeatMode.SHUFFLE;
     }
 
     public void setRepeatMode(RepeatMode mode)
     {
         mRepeatMode = mode;
-        if (mRepeatMode != RepeatMode.DISABLED)
-        {
-            mIsShuffleEnabled = false;
-        }
+        mApp.getSharedPreferences().edit().putInt(RhythmoApp.REPEAT_MODE, mRepeatMode.ordinal()).apply();
     }
 
     public RepeatMode getRepeatMode()
@@ -330,6 +314,15 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         Log.d(getClass().toString(), "onCreate()");
         handler = new Handler();
         mApp = (RhythmoApp) getApplicationContext();
+        try
+        {
+            mRepeatMode = RepeatMode.values()[mApp.getSharedPreferences().getInt(RhythmoApp.REPEAT_MODE, RepeatMode.DISABLED.ordinal())];
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            mRepeatMode = RepeatMode.DISABLED;
+        }
+
         initPlayer();
         super.onCreate();
     }
