@@ -245,7 +245,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         {
             getSongsList().moveToPosition(mCurrentSongIndex);
             mCurrentSongId = getSongsList().getLong(AbstractSongsSource.I_ID);
-            setSource(mCurrentPlaylistIndex, mCurrentSongId);
+            setSource(mCurrentPlaylistIndex, mCurrentSongId, fromUser);
             putAction(new ActionPlay(fromUser));
         }
     }
@@ -266,13 +266,13 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         {
             getSongsList().moveToPosition(mCurrentSongIndex);
             mCurrentSongId = getSongsList().getLong(AbstractSongsSource.I_ID);
-            setSource(mCurrentPlaylistIndex, mCurrentSongId);
+            setSource(mCurrentPlaylistIndex, mCurrentSongId, fromUser);
             putAction(new ActionPlay(fromUser));
         }
         else//isShuffleEnabled() == true
         {
             mCurrentSongId = mAlreadyPlayedInShuffleMode.remove(mAlreadyPlayedInShuffleMode.size() - 1);
-            setSource(mCurrentPlaylistIndex, mCurrentSongId);
+            setSource(mCurrentPlaylistIndex, mCurrentSongId, fromUser);
             putAction(new ActionPlay(fromUser));
         }
 
@@ -379,7 +379,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
                     long songId = intent.getLongExtra(ACTION_SONG_ID, -1);
                     int playlistIndex = intent.getIntExtra(ACTION_PLAYLIST_INDEX, 0);
                     clearQueue();
-                    setSource(playlistIndex, songId);
+                    setSource(playlistIndex, songId, false);
                     putAction(new ActionPlay(false));
                 }
             }
@@ -456,7 +456,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     /**
      * Set index of a song that will be played
      */
-    private void setSource(int playlistIndex, long songId)
+    private void setSource(int playlistIndex, long songId, boolean scrollToCurrent)
     {
         if (mCurrentPlaylistIndex != playlistIndex)
         {
@@ -475,7 +475,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             return;
 
         getSongsList().moveToPosition(mCurrentSongIndex);
-        putAction(new ActionPrepare(Composition.fromCursor(getSongsList())));
+        putAction(new ActionPrepare(Composition.fromCursor(getSongsList()), scrollToCurrent));
     }
 
     @Override
@@ -730,11 +730,13 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         };
 
         private Composition mComposition;
+        private boolean mScrollToCurrent;
 
-        public ActionPrepare(Composition composition)
+        public ActionPrepare(Composition composition, boolean scrollToCurrent)
         {
             mComposition = composition;
             mCurrentSongId = composition.id();
+            mScrollToCurrent = scrollToCurrent;
         }
 
         @Override
@@ -743,6 +745,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             setIsPlaying(true);
             mPlayer.setOnPreparedListener(mOnPrepared);
             mPlayer.setSource(mComposition.getAbsolutePath());
+            updateUI(mScrollToCurrent);
         }
     }
 
