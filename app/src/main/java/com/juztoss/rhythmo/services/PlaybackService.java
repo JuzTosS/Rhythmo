@@ -15,7 +15,9 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.audio.AdvancedMediaPlayer;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.models.Playlist;
@@ -79,6 +81,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private List<Long> mAlreadyPlayedInShuffleMode = new ArrayList<>();
 
     Handler handler;
+    private Toast mToast;
 
     private boolean mNoisyReceiverRegistered = false;
     private final BroadcastReceiver mNoisyReceiver = new BroadcastReceiver()
@@ -103,6 +106,16 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     {
         mRepeatMode = mode;
         mApp.getSharedPreferences().edit().putInt(RhythmoApp.REPEAT_MODE, mRepeatMode.ordinal()).apply();
+        if(mRepeatMode == RepeatMode.ALL)
+            mToast.setText(R.string.repeat_mode_all);
+        else if(mRepeatMode == RepeatMode.ONE)
+            mToast.setText(R.string.repeat_mode_one);
+        else if(mRepeatMode == RepeatMode.SHUFFLE)
+            mToast.setText(R.string.repeat_mode_shuffle);
+        else// if(mRepeatMode == RepeatMode.DISABLED)
+            mToast.setText(R.string.repeat_mode_disabled);
+
+        mToast.show();
     }
 
     public RepeatMode getRepeatMode()
@@ -314,6 +327,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         Log.d(getClass().toString(), "onCreate()");
         handler = new Handler();
         mApp = (RhythmoApp) getApplicationContext();
+        mToast = Toast.makeText(mApp, null, Toast.LENGTH_SHORT);
         try
         {
             mRepeatMode = RepeatMode.values()[mApp.getSharedPreferences().getInt(RhythmoApp.REPEAT_MODE, RepeatMode.DISABLED.ordinal())];
