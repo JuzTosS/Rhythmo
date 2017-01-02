@@ -155,7 +155,6 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             }
 //                playlist.setNeedRebuild();
 //            }
-            updateTabs();
         }
     }
 

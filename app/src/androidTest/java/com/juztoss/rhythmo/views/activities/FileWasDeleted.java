@@ -2,6 +2,7 @@ package com.juztoss.rhythmo.views.activities;
 
 
 import android.os.Environment;
+import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -54,6 +55,7 @@ public class FileWasDeleted
         if (!file2.delete()) Assert.assertTrue(false);
         if (!file3.delete()) Assert.assertTrue(false);
 
+        SystemClock.sleep(1000);
         TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
 
         //Adding folder, click on the apply button

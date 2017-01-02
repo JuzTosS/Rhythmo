@@ -146,7 +146,6 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
             scrollTo(mScrollOnCreateToPosition);
             mScrollOnCreateToPosition = -1;
         }
-        mPlaylistAdapter.bind();
     }
 
     private void showSongActivity(Composition composition)

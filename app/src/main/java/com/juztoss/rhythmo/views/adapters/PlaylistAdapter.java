@@ -129,7 +129,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     @Override
     public int getItemCount()
     {
-            return getCursor().getCount() + 1;
+        return getCursor().getCount() + 1;
     }
 
     public void bind()

@@ -112,8 +112,8 @@ public class SortsTest
     {
         for(int i = 0; i < TestHelper.AUDIO_FILES_COUNT; i++)
         {
-            onView(withId(R.id.listView)).perform(scrollToPosition(i));
-            onView(allOf(withRecyclerView(R.id.listView).atPosition(i))).
+            onView(allOf(withId(R.id.listView), isDisplayed())).perform(scrollToPosition(i));
+            onView(allOf(withRecyclerView(R.id.listView).atPosition(i), isDisplayed())).
                     check(matches(hasDescendant(allOf(withId(R.id.first_line), withText(songNames.get(i))))));
         }
     }
