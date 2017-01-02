@@ -238,7 +238,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             mCurrentSongIndex = newSongIndex;
         }
 
-        if (mCurrentSongIndex >= 0)
+        if (mCurrentSongIndex >= 0 && getSongsList() != null)
         {
             getSongsList().moveToPosition(mCurrentSongIndex);
             mCurrentSongId = getSongsList().getLong(AbstractSongsSource.I_ID);
