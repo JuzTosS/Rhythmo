@@ -3,6 +3,7 @@ package com.juztoss.rhythmo.models.songsources;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.juztoss.rhythmo.R;
@@ -104,7 +105,7 @@ public class LocalPlaylistSongsSource extends AbstractSongsSource
                     ContentValues values = new ContentValues();
                     values.put(DatabaseHelper.PLAYLIST_SOURCE_ID, mId);
                     values.put(DatabaseHelper.PLAYLIST_SONG_ID, songId);
-                    mApp.getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.TABLE_PLAYLISTS, null, values);
+                    mApp.getDatabaseHelper().getWritableDatabase().insertWithOnConflict(DatabaseHelper.TABLE_PLAYLISTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 
                 } while (songIds.moveToNext());
 

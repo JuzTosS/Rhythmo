@@ -13,7 +13,7 @@ import com.juztoss.rhythmo.presenters.RhythmoApp;
 public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 {
     private static final String DATABASE_NAME = "main.db";
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 18;
 
 
     //TABLE SETTINGS
@@ -98,18 +98,29 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
                 + TABLE_PLAYLISTS + " (" +  BaseColumns._ID + " integer primary key autoincrement, "
                 + PLAYLIST_SOURCE_ID + " integer key, "
                 + PLAYLIST_POSITION + " integer, "
-                + PLAYLIST_SONG_ID + " integer); ");
+                + PLAYLIST_SONG_ID + " integer unique); ");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
-        clearAll(db);
-
-        //TODO: Remove it after beta release
+        if(oldVersion == 17 && newVersion == 18)
         {
-            ((RhythmoApp) mContext).getSharedPreferences().edit().putBoolean(RhythmoApp.FIRST_RUN, true).commit();
-            ((RhythmoApp) mContext).getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_HAD_STARTED, false).commit();
+            db.execSQL("ALTER TABLE " + TABLE_PLAYLISTS + " RENAME TO " + TABLE_PLAYLISTS + "_temp" + ";");
+
+            db.execSQL("create table "
+                    + TABLE_PLAYLISTS + " (" +  BaseColumns._ID + " integer primary key autoincrement, "
+                    + PLAYLIST_SOURCE_ID + " integer key, "
+                    + PLAYLIST_POSITION + " integer, "
+                    + PLAYLIST_SONG_ID + " integer unique); ");
+
+            //Copy playlists and remove duplicates
+            db.execSQL("INSERT OR IGNORE INTO " + TABLE_PLAYLISTS +
+                    "(" + BaseColumns._ID + ", " + PLAYLIST_SOURCE_ID + ", " + PLAYLIST_POSITION + ", " + PLAYLIST_SONG_ID + ")" +
+                    " SELECT " + BaseColumns._ID + ", " + PLAYLIST_SOURCE_ID + ", " + PLAYLIST_POSITION + ", " + PLAYLIST_SONG_ID +
+                    " FROM " + TABLE_PLAYLISTS + "_temp;");
+
+            db.execSQL("DROP TABLE " + TABLE_PLAYLISTS + "_temp");
         }
     }
 
