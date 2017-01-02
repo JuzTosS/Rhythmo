@@ -133,7 +133,7 @@ public class LocalPlaylistSongsSource extends AbstractSongsSource
         //Update generated name
         String newGeneratedName = mGeneratedName;
         Cursor cursor = mApp.getDatabaseHelper().getWritableDatabase().rawQuery(
-                "select " + DatabaseHelper.PLAYLIST_SONG_ID + " as " + DatabaseHelper._ID + ", " + DatabaseHelper.MUSIC_LIBRARY_PATH + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + ", " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + ", " + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10
+                "select " + DatabaseHelper.PLAYLIST_SONG_ID + " as " + DatabaseHelper._ID + ", " + DatabaseHelper.MUSIC_LIBRARY_PATH + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + ", " + DatabaseHelper.MUSIC_LIBRARY_BPMX10 + ", " + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + ", " + DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED
                         + " from " + DatabaseHelper.TABLE_PLAYLISTS +
                         " inner join " + DatabaseHelper.TABLE_MUSIC_LIBRARY + " on " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SONG_ID + " = " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper._ID +
                         " where " + DatabaseHelper.TABLE_PLAYLISTS + "." + DatabaseHelper.PLAYLIST_SOURCE_ID + " = ? " +

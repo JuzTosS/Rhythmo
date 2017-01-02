@@ -19,6 +19,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER;
 import static com.juztoss.rhythmo.TestHelper.getSongName;
 import static org.hamcrest.Matchers.allOf;
@@ -36,6 +37,10 @@ public class PlayerActivityTest
     {
         SystemClock.sleep(1000);
         TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
+
+        //Name sort
+        onView(allOf(withId(R.id.sort_menu), isDisplayed())).perform(click());
+        onView(allOf(withText(R.string.sort_alphabetically), isDisplayed())).perform(click());
 
         onView(allOf(withId(R.id.listView), isDisplayed()))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));

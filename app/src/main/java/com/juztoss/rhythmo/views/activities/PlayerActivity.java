@@ -632,8 +632,12 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         if (playbackService() == null) return;
 
         Composition composition = mApp.getComposition(playbackService().currentSongId());
+        View actionBarHeader = mActionBarLayout.findViewById(R.id.action_bar_header);
+        View actionBarPlaceholder = mActionBarLayout.findViewById(R.id.action_bar_placeholder);
         if (composition != null)
         {
+            actionBarHeader.setVisibility(View.VISIBLE);
+            actionBarPlaceholder.setVisibility(View.GONE);
             TextView bpmLabel = ((TextView) mActionBarLayout.findViewById(R.id.bpm_header_label));
             SpannableString spannableString = new SpannableString(String.format(Locale.US, "%.1f", playbackService().getCurrentlyPlayingBPM()));
             int firstPartLength = Integer.toString((int) composition.bpmShifted()).length();
@@ -641,6 +645,11 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             bpmLabel.setText(spannableString);
             ((TextView) mActionBarLayout.findViewById(R.id.first_header_line)).setText(composition.name());
             ((TextView) mActionBarLayout.findViewById(R.id.second_header_line)).setText(composition.getFolder());
+        }
+        else
+        {
+            actionBarHeader.setVisibility(View.GONE);
+            actionBarPlaceholder.setVisibility(View.VISIBLE);
         }
 
         mPlayButton.setSelected(!playbackService().isPlaying());
