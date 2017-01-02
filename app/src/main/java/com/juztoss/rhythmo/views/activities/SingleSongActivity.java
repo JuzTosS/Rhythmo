@@ -147,7 +147,7 @@ public class SingleSongActivity extends BasePlayerActivity
         mButtonHalf.setOnClickListener(mOnHalfClick);
         mButtonDouble = (Button) findViewById(R.id.button_double_bpm);
         mButtonDouble.setOnClickListener(mOnDoubleClick);
-        Button buttonTap = (Button) findViewById(R.id.button_tab_bpm);
+        View buttonTap = findViewById(R.id.button_tap_bpm);
         buttonTap.setOnClickListener(mOnTapClick);
 
 

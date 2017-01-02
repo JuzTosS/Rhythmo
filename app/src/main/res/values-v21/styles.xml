@@ -1,0 +1,10 @@
+<resources>
+
+    <style name="buttonBackgroundBorderless">
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="buttonBackground">
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+</resources>

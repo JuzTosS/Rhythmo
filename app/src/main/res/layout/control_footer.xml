@@ -52,7 +52,7 @@
                 android:id="@+id/shuffle_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
+                style="@style/buttonBackgroundBorderless"
                 android:padding="12dp"
                 android:src="@drawable/ic_shuffle_variant"
                 android:tint="@color/foreground"
@@ -67,7 +67,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_toLeftOf="@+id/play_button"
                 android:layout_toStartOf="@+id/play_button"
-                android:background="@null"
+                style="@style/buttonBackgroundBorderless"
                 android:padding="12dp"
                 android:src="@drawable/ic_skip_backward_black_24dp"
                 android:tint="@color/foreground"/>
@@ -79,7 +79,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/play_button"
                 android:layout_toRightOf="@+id/play_button"
-                android:background="@null"
+                style="@style/buttonBackgroundBorderless"
                 android:padding="12dp"
                 android:src="@drawable/ic_skip_forward_black_24dp"
                 android:tint="@color/foreground"/>
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:background="@null"
+                style="@style/buttonBackgroundBorderless"
                 android:src="@drawable/play_button_large"
                 android:tint="@color/foreground"/>
 
@@ -98,7 +98,7 @@
                 android:id="@+id/repeat_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
+                style="@style/buttonBackgroundBorderless"
                 android:padding="12dp"
                 android:src="@drawable/ic_repeat"
                 android:tint="@color/foreground"

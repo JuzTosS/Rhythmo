@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:id="@+id/action_bar_header"
-        android:background="@color/primary"
+        style="@style/buttonBackground"
         android:orientation="horizontal">
 
         <LinearLayout

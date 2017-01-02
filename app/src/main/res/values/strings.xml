@@ -51,5 +51,6 @@
     <string name="repeat_mode_one">Repeating current song</string>
     <string name="repeat_mode_shuffle">Shuffle is on</string>
     <string name="repeat_mode_disabled">Shuffle is off\nRepeat is off</string>
+    <string name="tap_hint">Hit \"TAP\"\nin the rhythm of the music\nto find out BPM</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

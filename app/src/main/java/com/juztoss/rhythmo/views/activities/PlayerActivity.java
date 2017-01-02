@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -31,6 +34,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -179,7 +183,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mShuffleButton.setOnClickListener(mShuffleButtonListener);
 
         mPlayButton = findViewById(R.id.play_button);
-        mPlayButton.setOnClickListener(mPlayButtonListenter);
+        mPlayButton.setOnClickListener(mPlayButtonListener);
 
         View nextButton = findViewById(R.id.next_button);
         nextButton.setOnClickListener(mNextButtonListener);
@@ -746,7 +750,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     }
 
 
-    private View.OnClickListener mPlayButtonListenter = new View.OnClickListener()
+    private View.OnClickListener mPlayButtonListener = new View.OnClickListener()
     {
         @Override
         public void onClick(View v)

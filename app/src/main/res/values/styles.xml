@@ -34,4 +34,11 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <style name="buttonBackgroundBorderless">
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+    <style name="buttonBackground">
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
 </resources>

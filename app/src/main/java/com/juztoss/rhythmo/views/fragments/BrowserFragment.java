@@ -77,6 +77,10 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
             mApp.getBrowserPresenter().setCurrent(element);
             getLoaderManager().restartLoader(0, null, mApp.getBrowserPresenter());
         }
+        else
+        {
+            onActionClick(position);
+        }
     }
 
     @Override
