@@ -12,7 +12,7 @@ android { // main settings for your application
         applicationId "com.juztoss.rhythmo"
         minSdkVersion 16 // more than 95% of all active Android devices
         targetSdkVersion 23
-        versionCode 15
+        versionCode 16
         versionName "1.0.0"
 
         ndk {
