@@ -5,8 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
-import com.juztoss.rhythmo.presenters.RhythmoApp;
-
 /**
  * Created by JuzTosS on 5/8/2016.
  */

@@ -3,6 +3,7 @@ package com.juztoss.rhythmo.services;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
@@ -57,7 +58,9 @@ public class PlaybackNotification
 
         notificationBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
         notificationBuilder.setContent(notificationView);
-        notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+
         Notification notification = notificationBuilder.build();
 
         return notification;

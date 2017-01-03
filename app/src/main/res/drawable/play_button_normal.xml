@@ -2,6 +2,4 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/icon_play_normal"
         android:state_selected="true" />
-    <item android:drawable="@drawable/icon_pause_normal"
-        android:state_selected="false"/>
 </selector>

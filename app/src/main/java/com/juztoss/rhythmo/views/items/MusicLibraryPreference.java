@@ -19,11 +19,6 @@ public class MusicLibraryPreference extends Preference
     private int mOverallProgress = 0;
     private int mMaxProgress = 0;
 
-    public MusicLibraryPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)
-    {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
     public MusicLibraryPreference(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);

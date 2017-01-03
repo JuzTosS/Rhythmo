@@ -9,7 +9,6 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.TestHelper;
-import com.juztoss.rhythmo.audio.BpmDetector;
 
 import org.junit.Rule;
 import org.junit.Test;

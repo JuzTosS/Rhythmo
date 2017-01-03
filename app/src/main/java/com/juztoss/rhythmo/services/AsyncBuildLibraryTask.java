@@ -91,16 +91,16 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         Cursor mediaStoreCursor = getSongsFromMediaStore();
-        try
+        if (mediaStoreCursor != null)
         {
-            if (mediaStoreCursor != null)
+            try
             {
                 saveMediaStoreDataToDB(mediaStoreCursor);
             }
-        }
-        finally
-        {
-            mediaStoreCursor.close();
+            finally
+            {
+                mediaStoreCursor.close();
+            }
         }
         publishProgress(UPDATE_COMPLETE);
         return null;

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:paddingRight="20dp"
-    android:background="@color/primary">
+    tools:ignore="RtlSymmetry">
 
     <EditText
         android:layout_width="match_parent"

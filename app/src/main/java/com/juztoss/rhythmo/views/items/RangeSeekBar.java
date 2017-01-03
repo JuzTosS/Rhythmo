@@ -435,7 +435,7 @@ public class RangeSeekBar<T extends Number> extends ImageView
         return true;
     }
 
-    private final void onSecondaryPointerUp(MotionEvent ev)
+    private void onSecondaryPointerUp(MotionEvent ev)
     {
         final int pointerIndex = (ev.getAction() & ACTION_POINTER_INDEX_MASK) >> ACTION_POINTER_INDEX_SHIFT;
 
@@ -451,7 +451,7 @@ public class RangeSeekBar<T extends Number> extends ImageView
         }
     }
 
-    private final void trackTouchEvent(MotionEvent event)
+    private void trackTouchEvent(MotionEvent event)
     {
         final int pointerIndex = event.findPointerIndex(mActivePointerId);
         final float x = event.getX(pointerIndex);
@@ -725,19 +725,17 @@ public class RangeSeekBar<T extends Number> extends ImageView
     /**
      * Thumb constants (min and max).
      */
-    private static enum Thumb
+    private enum Thumb
     {
         MIN, MAX
     }
-
-    ;
 
     /**
      * Utility enumeration used to convert between Numbers and doubles.
      *
      * @author Stephan Tittel (stephan.tittel@kom.tu-darmstadt.de)
      */
-    private static enum NumberType
+    private enum NumberType
     {
         LONG, DOUBLE, INTEGER, FLOAT, SHORT, BYTE, BIG_DECIMAL;
 

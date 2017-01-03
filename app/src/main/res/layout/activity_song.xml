@@ -80,7 +80,8 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="20dp"
                         android:background="@color/primary"
-                        android:text="1 / 2"/>
+                        android:text="1 / 2"
+                        tools:ignore="HardcodedText"/>
 
                     <!--Empty layout to prevent autofocus on EditText field-->
                     <LinearLayout
@@ -102,7 +103,8 @@
                         android:textStyle="bold"
                         android:textColor="@color/foreground"
                         android:background="@null"
-                        android:textSize="70dp"/>
+                        android:textSize="70dp"
+                        tools:ignore="SpUsage"/>
 
                     <Button
                         android:id="@+id/button_double_bpm"
@@ -114,7 +116,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="10dp"
-                        android:text="X 2"/>
+                        android:text="X 2"
+                        tools:ignore="HardcodedText"/>
 
                 </LinearLayout>
 
@@ -141,7 +144,8 @@
                         android:layout_gravity="center"
                         android:textStyle="bold"
                         android:textSize="40dp"
-                        android:text="TAP"/>
+                        android:text="@string/tap_button_text"
+                        tools:ignore="SpUsage"/>
 
                 </FrameLayout>
 
@@ -160,12 +164,12 @@
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="BPM"
+                    android:text="@string/bpm"
                     android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:layout_below="@+id/linearLayout"
                     android:layout_centerHorizontal="true"
-                    />
+                    tools:ignore="HardcodedText"/>
             </RelativeLayout>
 
 
@@ -188,7 +192,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Shifted bpm"
+                android:text="@string/shifted_bpm"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 
@@ -196,9 +200,6 @@
                 android:id="@+id/seekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
                 android:layout_marginBottom="32dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"

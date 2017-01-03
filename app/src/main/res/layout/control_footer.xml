@@ -166,10 +166,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
-                        android:text="BPM"
+                        android:text="@string/bpm"
                         android:textColor="@color/foregroundGrayedOut"
                         android:textSize="7sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        tools:ignore="SmallSp"/>
                 </LinearLayout>
 
                 <com.juztoss.rhythmo.views.items.RangeSeekBar
@@ -199,10 +200,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
-                        android:text="BPM"
+                        android:text="@string/bpm"
                         android:textColor="@color/foregroundGrayedOut"
                         android:textSize="7sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        tools:ignore="SmallSp"/>
                 </LinearLayout>
 
             </LinearLayout>

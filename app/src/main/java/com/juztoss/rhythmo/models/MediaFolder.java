@@ -193,11 +193,10 @@ public class MediaFolder extends BaseExplorerElement
                     String folderName = songsCursor.getString(pathIndex);
                     String songName = songsCursor.getString(songNameIndex);
 
-                    StringBuilder songPathBuilder = new StringBuilder();
-                    songPathBuilder.append(folderName);
-                    songPathBuilder.append(SystemHelper.SEPARATOR);
-                    songPathBuilder.append(songName);
-                    songs.add(new SongFile(new File(songPathBuilder.toString()), false, mApp, this));
+                    String songPath = folderName +
+                            SystemHelper.SEPARATOR +
+                            songName;
+                    songs.add(new SongFile(new File(songPath), false, mApp, this));
                 }
             }
             finally
@@ -226,7 +225,7 @@ public class MediaFolder extends BaseExplorerElement
             path = SystemHelper.SEPARATOR + current.name() + path;
             current = (MediaFolder) current.getParent();
         }
-        while (current != null && current instanceof MediaFolder);
+        while (current != null);
         return path;
     }
 

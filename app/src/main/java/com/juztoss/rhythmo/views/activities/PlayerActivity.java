@@ -1,14 +1,13 @@
 package com.juztoss.rhythmo.views.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -34,7 +32,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -174,8 +171,8 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
         mMinBPMField = (TextView) findViewById(R.id.bpm_label_min);
         mMaxBPMField = (TextView) findViewById(R.id.bpm_label_max);
-        mMinBPMField.setText("Min");
-        mMaxBPMField.setText("Max");
+        mMinBPMField.setText(R.string.min);
+        mMaxBPMField.setText(R.string.max);
 
         mRepeatButton = (ImageView) findViewById(R.id.repeat_button);
         mRepeatButton.setOnClickListener(mRepeatButtonListener);
@@ -280,6 +277,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             mFab.hide();
     }
 
+    @SuppressLint("InflateParams")
     private void setupActionBar()
     {
         mActionBarLayout = getLayoutInflater().inflate(R.layout.action_bar, null);
@@ -312,25 +310,16 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 //        intent.putExtra(BuildMusicLibraryService.DONT_DETECT_BPM, true);
 //        startService(intent);
 
-//        if (mApp.getSharedPreferences().getBoolean(RhythmoApp.FIRST_RUN, true))
-//        {
-//            mApp.getSharedPreferences().edit().putBoolean(RhythmoApp.FIRST_RUN, false).commit();
-//            Intent launchStartActivity = new Intent(this, LauncherActivity.class);
-//            startActivity(launchStartActivity);
-//        }
-//        else
-//        {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        0);
-            }
-            else
-            {
-                tryToDoFirstRunService();
-            }
-//        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    0);
+        }
+        else
+        {
+            tryToDoFirstRunService();
+        }
 
         mNeedToGoToTheCurrentSong = !gotoTheCurrentlyPlayingSong(false);
         enableDefaultActionBarAndDisableSearch();
@@ -350,7 +339,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     {
         if (!mApp.getSharedPreferences().getBoolean(RhythmoApp.LIBRARY_BUILD_HAD_STARTED, false))
         {
-            mApp.getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_HAD_STARTED, true).commit();
+            mApp.getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_HAD_STARTED, true).apply();
             Intent intent = new Intent(getApplicationContext(), BuildMusicLibraryService.class);
             getApplicationContext().startService(intent);
         }
@@ -789,20 +778,20 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             }
             else
             {
-                mMinBPMField.setText(Integer.toString(minValue));
-                mMaxBPMField.setText(Integer.toString(maxValue));
+                mMinBPMField.setText(String.format(Locale.US, "%d", minValue));
+                mMaxBPMField.setText(String.format(Locale.US, "%d", maxValue));
             }
         }
     };
 
     private SeekBar.OnSeekBarChangeListener mOnSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener()
     {
+        @SuppressLint("SetTextI18n")
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
         {
-            int timePassed = progress;
-            int timeLeft = seekBar.getMax() - (timePassed / 1000) * 1000;
-            mTimePassed.setText(DateUtils.formatElapsedTime(timePassed / 1000));
+            int timeLeft = seekBar.getMax() - (progress / 1000) * 1000;
+            mTimePassed.setText(DateUtils.formatElapsedTime(progress / 1000));
             mTimeLeft.setText("-" + DateUtils.formatElapsedTime(timeLeft / 1000));
 
             if (playbackService() != null && fromUser)

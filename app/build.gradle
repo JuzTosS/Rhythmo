@@ -11,7 +11,7 @@ android { // main settings for your application
     defaultConfig {
         applicationId "com.juztoss.rhythmo"
         minSdkVersion 16 // more than 95% of all active Android devices
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode 16
         versionName "1.0.0"
 
@@ -74,6 +74,7 @@ dependencies {
     compile 'com.android.support:support-v4:25.0.1'
     compile 'com.simplecityapps:recyclerview-fastscroll:1.0.11'
     compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
+    compile 'com.android.support:support-annotations:25.0.1'
     androidTestCompile 'com.android.support:support-annotations:25.0.1'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2')
     {
@@ -81,6 +82,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'appcompat-v7'
         exclude group: 'com.android.support', module: 'design'
+        exclude module: 'support-annotations'
     }
     androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2')
     {
@@ -88,6 +90,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'appcompat-v7'
         exclude group: 'com.android.support', module: 'design'
+        exclude module: 'support-annotations'
     }
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'junit:junit:4.12'

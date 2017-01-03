@@ -5,11 +5,7 @@ import android.content.Intent;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
-import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.services.BuildMusicLibraryService;
 
 /**
@@ -17,12 +13,6 @@ import com.juztoss.rhythmo.services.BuildMusicLibraryService;
  */
 public class ClearLibraryPreference extends Preference implements View.OnLongClickListener
 {
-
-    public ClearLibraryPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)
-    {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
     public ClearLibraryPreference(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);

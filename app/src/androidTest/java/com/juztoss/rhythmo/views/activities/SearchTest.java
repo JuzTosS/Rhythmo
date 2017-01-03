@@ -22,7 +22,6 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER;
 import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER_NESTED;
 import static com.juztoss.rhythmo.TestHelper.clickChildViewWithId;
 import static com.juztoss.rhythmo.TestHelper.getSongName;

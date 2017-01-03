@@ -1,9 +1,7 @@
 package com.juztoss.rhythmo.models;
 
 import android.database.Cursor;
-import android.media.MediaMetadataRetriever;
 import android.support.annotation.Nullable;
-import android.text.format.DateUtils;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.presenters.RhythmoApp;

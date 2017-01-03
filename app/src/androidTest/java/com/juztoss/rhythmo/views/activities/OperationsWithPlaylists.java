@@ -28,7 +28,7 @@ import static junit.framework.Assert.assertEquals;
 public class OperationsWithPlaylists
 {
     @Rule
-    public ActivityTestRule<PlayerActivity> mActivityRule = new ActivityTestRule<PlayerActivity>(PlayerActivity.class);
+    public ActivityTestRule<PlayerActivity> mActivityRule = new ActivityTestRule<>(PlayerActivity.class);
 
     private void addPlaylist()
     {

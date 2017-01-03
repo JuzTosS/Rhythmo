@@ -28,7 +28,7 @@ public class SourcesFactory
             int idIndex = sources.getColumnIndex(DatabaseHelper._ID);
             int nameIndex = sources.getColumnIndex(DatabaseHelper.SOURCE_NAME);
             int typeIndex = sources.getColumnIndex(DatabaseHelper.SOURCE_TYPE);
-            int optionsIndex = sources.getColumnIndex(DatabaseHelper.SOURCE_OPTIONS);
+//            int optionsIndex = sources.getColumnIndex(DatabaseHelper.SOURCE_OPTIONS);
             int sortIndex = sources.getColumnIndex(DatabaseHelper.SOURCE_SORT);
 
 

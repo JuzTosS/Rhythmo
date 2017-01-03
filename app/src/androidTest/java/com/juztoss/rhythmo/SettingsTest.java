@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 public class SettingsTest
 {
     @Rule
-    public ActivityTestRule<SettingsActivity> mActivityRule = new ActivityTestRule<SettingsActivity>(SettingsActivity.class);
+    public ActivityTestRule<SettingsActivity> mActivityRule = new ActivityTestRule<>(SettingsActivity.class);
 
     @Test
     public void TestAutoShiftChanged() throws Exception

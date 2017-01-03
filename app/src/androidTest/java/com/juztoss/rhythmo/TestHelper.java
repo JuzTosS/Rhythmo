@@ -16,7 +16,6 @@ import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewAssertion;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.juztoss.rhythmo.presenters.RhythmoApp;
@@ -246,7 +245,7 @@ public class TestHelper
         InputStream in = context.getResources().openRawResource(fromId);
         FileOutputStream out = new FileOutputStream(toPath);
         byte[] buff = new byte[1024];
-        int read = 0;
+        int read;
         try
         {
             while ((read = in.read(buff)) > 0)

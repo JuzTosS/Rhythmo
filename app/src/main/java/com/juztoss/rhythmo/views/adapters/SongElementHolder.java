@@ -1,6 +1,5 @@
 package com.juztoss.rhythmo.views.adapters;
 
-import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;

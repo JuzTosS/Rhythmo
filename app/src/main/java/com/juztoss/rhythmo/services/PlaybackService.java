@@ -1,5 +1,6 @@
 package com.juztoss.rhythmo.services;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -80,7 +81,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     private RepeatMode mRepeatMode = RepeatMode.DISABLED;
     private List<Long> mAlreadyPlayedInShuffleMode = new ArrayList<>();
 
-    Handler handler;
+    Handler mHandler;
     private Toast mToast;
 
     private boolean mNoisyReceiverRegistered = false;
@@ -321,11 +322,12 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         }
     }
 
+    @SuppressLint("ShowToast")
     @Override
     public void onCreate()
     {
         Log.d(getClass().toString(), "onCreate()");
-        handler = new Handler();
+        mHandler = new Handler();
         mApp = (RhythmoApp) getApplicationContext();
         mToast = Toast.makeText(mApp, null, Toast.LENGTH_SHORT);
         try
@@ -342,13 +344,13 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     }
 
     private void runOnUiThread(Runnable runnable) {
-        handler.removeCallbacksAndMessages(null);
-        handler.post(runnable);
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler.post(runnable);
     }
 
     private void runOnUiThread(Runnable runnable, int delayMillis) {
-        handler.removeCallbacksAndMessages(null);
-        handler.postDelayed(runnable, delayMillis);
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler.postDelayed(runnable, delayMillis);
     }
 
     @Override
@@ -362,7 +364,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             String action = intent.getAction();
             if (ACTION_COMMAND.equals(action))
             {
-                handler.removeCallbacksAndMessages(null);
+                mHandler.removeCallbacksAndMessages(null);
                 String command = intent.getStringExtra(ACTION_NAME);
                 Log.d(getClass().toString(), "onStartCommand command: " + command);
                 if (PAUSE_PLAYBACK_ACTION.equals(command))

@@ -1,7 +1,5 @@
 package com.juztoss.rhythmo.audio;
 
-import android.util.Log;
-
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 
 import java.util.regex.Matcher;
