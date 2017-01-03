@@ -48,7 +48,7 @@ public class AllSongsSource extends AbstractSongsSource
                         + ((wordFilter == null) ? "" : " AND " + DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + wordFilter + "%"))
                     , new String[]{Integer.toString(mMinBPMX10 - add * 10), Integer.toString(mMaxBPMX10 + add * 10)},
                     null, null,
-                    order + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + " COLLATE NOCASE" + ", " + DatabaseHelper._ID);
+                    order + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + ", " + DatabaseHelper._ID);
         }
         else
         {
@@ -57,7 +57,7 @@ public class AllSongsSource extends AbstractSongsSource
                     (wordFilter == null) ? null : DatabaseHelper.MUSIC_LIBRARY_NAME + " LIKE " + DatabaseUtils.sqlEscapeString("%" + wordFilter + "%")
                     , null,
                     null, null,
-                    order + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + " COLLATE NOCASE" + ", " + DatabaseHelper._ID);
+                    order + ", " + DatabaseHelper.MUSIC_LIBRARY_NAME + ", " + DatabaseHelper._ID);
         }
         return mList;
     }
