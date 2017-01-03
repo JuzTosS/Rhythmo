@@ -208,6 +208,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     {
         super.onResume();
         mPlaylistAdapter.bind();
+        mPlaylistAdapter.onPlaylistUpdated();
     }
 
     @Override
