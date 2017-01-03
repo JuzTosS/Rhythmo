@@ -204,9 +204,9 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     }
 
     @Override
-    public void onStart()
+    public void onResume()
     {
-        super.onStart();
+        super.onResume();
         mPlaylistAdapter.bind();
     }
 
