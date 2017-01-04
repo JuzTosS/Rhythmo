@@ -56,6 +56,7 @@ public class BuildMusicLibraryService extends Service
         mBuilder.setTicker(getResources().getString(R.string.building_music_library));
         mBuilder.setContentText("");
         mBuilder.setProgress(0, 0, true);
+        mBuilder.setShowWhen(false);
 
         mNotifyManager = (NotificationManager) mApp.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotification = mBuilder.build();

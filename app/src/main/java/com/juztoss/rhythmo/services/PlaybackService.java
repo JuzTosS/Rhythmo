@@ -2,8 +2,9 @@ package com.juztoss.rhythmo.services;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
-import android.app.Service;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,10 +12,19 @@ import android.database.Cursor;
 import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaBrowserServiceCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaButtonReceiver;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,6 +34,7 @@ import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.models.Playlist;
 import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
+import com.juztoss.rhythmo.views.activities.PlayerActivity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -37,7 +48,7 @@ import java.util.TimerTask;
  * Created by JuzTosS on 5/3/2016.
  * The heart of the player.
  */
-public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener, Playlist.IUpdateListener
+public class PlaybackService extends MediaBrowserServiceCompat implements AdvancedMediaPlayer.OnEndListener, AdvancedMediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener, Playlist.IUpdateListener
 {
     public enum RepeatMode
     {
@@ -83,6 +94,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     Handler mHandler;
     private Toast mToast;
+
+    private MediaSessionCompat mMediaSession;
 
     private boolean mNoisyReceiverRegistered = false;
     private final BroadcastReceiver mNoisyReceiver = new BroadcastReceiver()
@@ -278,7 +291,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private void updateUI(boolean scrollToCurrent)
     {
-        Log.d(getClass().toString(), "updateUI()");
+        Log.v(getClass().toString(), "updateUI()");
         Intent intent = new Intent(UPDATE_UI_ACTION);
         intent.putExtra(UPDATE_UI_ACTION_SCROLL_TO_CURRENT, scrollToCurrent);
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mApp);
@@ -290,7 +303,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private synchronized void putAction(BaseAction action)
     {
-        Log.d(getClass().toString(), "putAction() " + action.getClass().toString());
+        Log.v(getClass().toString(), "putAction() " + action.getClass().toString());
         mQueue.add(action);
         if (mActionInProgress == null)
             action.doNext();
@@ -314,19 +327,100 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         return new PlaybackServiceBinder();
     }
 
-    public class PlaybackServiceBinder extends Binder
+    private boolean hasBeenPlayedOnce()
     {
-        public PlaybackService getService()
+        return mCurrentSongId >= 0;
+    }
+
+    private MediaSessionCompat.Callback mMediaSessionCallback = new MediaSessionCompat.Callback()
+    {
+        @Override
+        public void onPlay()
         {
-            return PlaybackService.this;
+            if(hasBeenPlayedOnce())
+                startPlayback();
         }
+
+        @Override
+        public void onPause()
+        {
+            if(hasBeenPlayedOnce())
+                pausePlayback();
+        }
+
+        @Override
+        public void onSkipToNext()
+        {
+            if(hasBeenPlayedOnce())
+                gotoNext(false);
+        }
+
+        @Override
+        public void onSkipToPrevious()
+        {
+            if(hasBeenPlayedOnce())
+                gotoPrevious(false);
+        }
+    };
+
+    public MediaSessionCompat getMediaSession()
+    {
+        return mMediaSession;
+    }
+
+    private void setMediaPlaybackState(int state)
+    {
+        PlaybackStateCompat.Builder playbackStateBuilder = new PlaybackStateCompat.Builder();
+        long baseActions = PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS | PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_PLAY_PAUSE;
+        if (state == PlaybackStateCompat.STATE_PLAYING)
+            playbackStateBuilder.setActions(baseActions | PlaybackStateCompat.ACTION_PAUSE);
+        else
+            playbackStateBuilder.setActions(baseActions | PlaybackStateCompat.ACTION_PLAY);
+
+        playbackStateBuilder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0);
+        mMediaSession.setPlaybackState(playbackStateBuilder.build());
+    }
+
+    @Nullable
+    @Override
+    public BrowserRoot onGetRoot(@NonNull String clientPackageName, int clientUid, @Nullable Bundle rootHints)
+    {
+        if(TextUtils.equals(clientPackageName, getPackageName())) {
+            return new BrowserRoot(getString(R.string.app_name), null);
+        }
+
+        return null;
+    }
+
+    @Override
+    public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaBrowserCompat.MediaItem>> result)
+    {
+        result.sendResult(null);
+    }
+
+    private void initMediaSession()
+    {
+        ComponentName mediaButtonReceiver = new ComponentName(getApplicationContext(), MediaButtonReceiver.class);
+        mMediaSession = new MediaSessionCompat(getApplicationContext(), "Tag", mediaButtonReceiver, null);
+
+        mMediaSession.setCallback(mMediaSessionCallback);
+        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+        Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        mediaButtonIntent.setClass(this, MediaButtonReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, 0);
+        mMediaSession.setMediaButtonReceiver(pendingIntent);
+        mMediaSession.setMetadata(new MediaMetadataCompat.Builder().build());
+        setSessionToken(mMediaSession.getSessionToken());
+        setMediaPlaybackState(PlaybackStateCompat.STATE_STOPPED);
+        mMediaSession.setActive(true);
     }
 
     @SuppressLint("ShowToast")
     @Override
     public void onCreate()
     {
-        Log.d(getClass().toString(), "onCreate()");
+        Log.v(getClass().toString(), "onCreate()");
         mHandler = new Handler();
         mApp = (RhythmoApp) getApplicationContext();
         mToast = Toast.makeText(mApp, null, Toast.LENGTH_SHORT);
@@ -340,23 +434,19 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         }
 
         initPlayer();
+
         super.onCreate();
-    }
 
-    private void runOnUiThread(Runnable runnable) {
-        mHandler.removeCallbacksAndMessages(null);
-        mHandler.post(runnable);
-    }
-
-    private void runOnUiThread(Runnable runnable, int delayMillis) {
-        mHandler.removeCallbacksAndMessages(null);
-        mHandler.postDelayed(runnable, delayMillis);
+        initMediaSession();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Log.d(getClass().toString(), "onStartCommand(...)");
+        Log.v(getClass().toString(), "onStartCommand(...)");
+
+        MediaButtonReceiver.handleIntent(mMediaSession, intent);
+
         super.onStartCommand(intent, flags, startId);
 
         if (intent != null)
@@ -366,7 +456,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
             {
                 mHandler.removeCallbacksAndMessages(null);
                 String command = intent.getStringExtra(ACTION_NAME);
-                Log.d(getClass().toString(), "onStartCommand command: " + command);
+                Log.v(getClass().toString(), "onStartCommand command: " + command);
                 if (PAUSE_PLAYBACK_ACTION.equals(command))
                 {
                     pausePlayback();
@@ -397,6 +487,24 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         registerNoisyReceiver();
 
         return START_NOT_STICKY;
+    }
+
+    private void runOnUiThread(Runnable runnable) {
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler.post(runnable);
+    }
+
+    private void runOnUiThread(Runnable runnable, int delayMillis) {
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler.postDelayed(runnable, delayMillis);
+    }
+
+    public class PlaybackServiceBinder extends Binder
+    {
+        public PlaybackService getService()
+        {
+            return PlaybackService.this;
+        }
     }
 
     private void registerNoisyReceiver()
@@ -436,9 +544,10 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
     @Override
     public void onDestroy()
     {
-        Log.d(getClass().toString(), "onDestroy()");
+        Log.v(getClass().toString(), "onDestroy()");
         unregisterNoisyReceiver();
         cancelHideCooldown();
+        mMediaSession.release();
         mPlayer.release();
         mPlayer = null;
         super.onDestroy();
@@ -456,10 +565,23 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         if (mCurrentSongId >= 0 && getCurrentPlaylist() != null)
         {
             Composition composition = mApp.getComposition(mCurrentSongId);
+            updateMediaSessionData(composition);
             mCurrentSongIndex = Playlist.findPositionById(getSongsList(), composition, getCurrentPlaylist().getSource().getSortType());
         }
         else
             mCurrentSongIndex = -1;
+    }
+
+    private void updateMediaSessionData(Composition composition)
+    {
+        Intent launchNowPlayingIntent = new Intent(this, PlayerActivity.class);
+        PendingIntent launchNowPlayingPendingIntent = PendingIntent.getActivity(this, 4, launchNowPlayingIntent, 0);
+        mMediaSession.setSessionActivity(launchNowPlayingPendingIntent);
+
+        mMediaSession.setMetadata(new MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, composition.name())
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, composition.getFolder())
+                .build());
     }
 
     /**
@@ -502,7 +624,8 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private void setIsPlaying(boolean value)
     {
-        Log.d(getClass().toString(), "setIsPlaying: " + value);
+        Log.v(getClass().toString(), "setIsPlaying: " + value);
+        setMediaPlaybackState(value ? PlaybackStateCompat.STATE_PLAYING : PlaybackStateCompat.STATE_PAUSED);
         if (!mIsPlaying && value)
             requestAudioFocus();
 
@@ -549,7 +672,7 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
 
     private void disableService()
     {
-        Log.d(getClass().toString(), "disableService()");
+        Log.v(getClass().toString(), "disableService()");
         stopForeground(true);
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(this);
@@ -588,7 +711,20 @@ public class PlaybackService extends Service implements AdvancedMediaPlayer.OnEn
         if (isPlaying())
             pausePlayback();
         else
-            startPlayback();
+        {
+            if(hasBeenPlayedOnce())
+            {
+                startPlayback();
+            }
+            else if(getSongsList() != null)
+            {
+                clearQueue();
+                Cursor cursor = getSongsList();
+                cursor.moveToPosition(0);
+                setSource(0, cursor.getLong(AbstractSongsSource.I_ID), false);
+                putAction(new ActionPlay(false));
+            }
+        }
     }
 
     /**
