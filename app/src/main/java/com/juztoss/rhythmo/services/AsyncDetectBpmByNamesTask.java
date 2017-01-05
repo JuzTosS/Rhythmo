@@ -9,9 +9,9 @@ import com.juztoss.rhythmo.presenters.RhythmoApp;
 
 public class AsyncDetectBpmByNamesTask extends AsyncDetectBpmTaskAbstract <OnDetectBpmByNamesUpdate>
 {
-    public AsyncDetectBpmByNamesTask(RhythmoApp app)
+    public AsyncDetectBpmByNamesTask(RhythmoApp app, int playlistIndex, boolean resetBpm)
     {
-        super(app);
+        super(app, playlistIndex, resetBpm);
     }
 
     @Override

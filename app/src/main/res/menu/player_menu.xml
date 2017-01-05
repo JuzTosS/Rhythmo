@@ -29,4 +29,8 @@
         android:id="@+id/remove_playlist_menu"
         android:title="@string/remove_playlist">
     </item>
+    <item
+        android:id="@+id/detect_playlist_bpm"
+        android:title="@string/detect_playlist_bpm">
+    </item>
 </menu>

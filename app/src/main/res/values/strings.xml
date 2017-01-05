@@ -55,5 +55,6 @@
     <string name="tap_button_text">TAP</string>
     <string name="shifted_bpm">Shifted bpm</string>
     <string name="bpm">BPM</string>
+    <string name="detect_playlist_bpm">Rescan BPM in playlist</string>
     <integer name="com_vk_sdk_AppId">5527964</integer>
 </resources>

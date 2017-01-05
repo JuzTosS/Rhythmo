@@ -28,11 +28,40 @@ public class BuildMusicLibraryService extends Service
     public static final String PROGRESS_ACTION_OVERALL_PROGRESS = "OverallProgress";
     public static final String PROGRESS_ACTION_MAX_PROGRESS = "MaxProgress";
     public static final String PROGRESS_ACTION_HEADER = "Header";
-    public static final String REBUILD = "Rebuild";
+
+    /**
+     * Clear all the data in the library
+     */
+    public static final String CLEAR = "Clear";
+    /**
+     * Stops executing the currently running tasks and clear the library
+     * The other flags are ignored
+     */
     public static final String STOP_AND_CLEAR = "StopAndClear";
+    /**
+     * Disable any interaction with user
+     */
     public static final String SILENT_MODE = "SilentMode";
+    /**
+     * Disable bpm detection
+     */
     public static final String DONT_DETECT_BPM = "DontDetectBPM";
+    /**
+     * If any task is executed don't interrupt them.
+     * The new task WON'T be started
+     */
     public static final String DONT_INTERRUPT_EXIST_TASKS = "DontInterruptExistTasks";
+
+    /**
+     * Detect bpm for song only in the playlist
+     */
+    public static final String PLAYLIST_INDEX = "PlaylistIndex";
+
+    /**
+     * Reset BPM values before scanning
+     */
+    public static final String RESET_BPM = "ResetBpm";
+
 
     private RhythmoApp mApp;
     private NotificationCompat.Builder mBuilder;
@@ -76,7 +105,8 @@ public class BuildMusicLibraryService extends Service
 
         boolean stopAndClear = false;
         boolean clear = false;
-
+        boolean resetBpm = false;
+        int playlistIndex = 0;
         if(intent.getExtras() != null)
         {
             boolean dontInterruptExistTasks = intent.getExtras().getBoolean(DONT_INTERRUPT_EXIST_TASKS, false);
@@ -86,7 +116,9 @@ public class BuildMusicLibraryService extends Service
                 cancelTasks();
 
             stopAndClear = intent.getExtras().getBoolean(STOP_AND_CLEAR, false);
-            clear = intent.getExtras().getBoolean(REBUILD, false);
+            clear = intent.getExtras().getBoolean(CLEAR, false);
+            playlistIndex = intent.getExtras().getInt(PLAYLIST_INDEX, -1);
+            resetBpm = intent.getExtras().getBoolean(RESET_BPM, false);
             mSilentMode = intent.getExtras().getBoolean(SILENT_MODE, false);
             mDontDetectBPM = intent.getExtras().getBoolean(DONT_DETECT_BPM, false);
         }
@@ -106,9 +138,13 @@ public class BuildMusicLibraryService extends Service
             mNotifyManager.notify(NOTIFICATION_ID, mNotification);
         }
 
-        mTaskBuildLib = new AsyncBuildLibraryTask(mApp, clear);
-        mTaskBuildLib.setOnBuildLibraryProgressUpdate(mOnBuildLibraryUpdate);
-        mTaskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        mApp.setIsBuildingLibrary(true);
+        if(playlistIndex < 0)
+        {
+            mTaskBuildLib = new AsyncBuildLibraryTask(mApp, clear);
+            mTaskBuildLib.setOnBuildLibraryProgressUpdate(mOnBuildLibraryUpdate);
+            mTaskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+        }
 
         String key = getResources().getString(R.string.pref_recognize_bpm_from_name);
         boolean needToGetBPMByNames =  PreferenceManager.getDefaultSharedPreferences(this).getBoolean(key, true);
@@ -117,12 +153,13 @@ public class BuildMusicLibraryService extends Service
         {
             if (needToGetBPMByNames)
             {
-                mTaskDetectBpmByNames = new AsyncDetectBpmByNamesTask(mApp);
+                mTaskDetectBpmByNames = new AsyncDetectBpmByNamesTask(mApp, playlistIndex, resetBpm);
                 mTaskDetectBpmByNames.setOnBuildLibraryProgressUpdate(mOnDetectBpmByNamesUpdate);
                 mTaskDetectBpmByNames.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+                resetBpm = false;
             }
 
-            mTaskDetectBpmByData = new AsyncDetectBpmByDataTask(mApp);
+            mTaskDetectBpmByData = new AsyncDetectBpmByDataTask(mApp, playlistIndex, resetBpm);
             mTaskDetectBpmByData.setOnBuildLibraryProgressUpdate(mOnDetectBpmByDataUpdate);
             mTaskDetectBpmByData.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
         }
@@ -183,7 +220,7 @@ public class BuildMusicLibraryService extends Service
         @Override
         public void onStartBuildingLibrary(AsyncBuildLibraryTask task)
         {
-            mApp.setIsBuildingLibrary(true);
+
         }
 
         @Override
@@ -207,7 +244,7 @@ public class BuildMusicLibraryService extends Service
         @Override
         public void onStartBuildingLibrary(AsyncBuildLibraryTask task)
         {
-            mApp.setIsBuildingLibrary(true);
+
         }
 
         @Override

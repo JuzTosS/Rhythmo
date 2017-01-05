@@ -23,6 +23,8 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
     protected RhythmoApp mApp;
     int mMaxProgressValue;
     int mOverallProgress;
+    int mPlaylistIndex;
+    boolean mResetBpm;
     public List<T> mBuildLibraryProgressUpdate;
 
 
@@ -40,10 +42,12 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
 
     }
 
-    public AsyncDetectBpmTaskAbstract(RhythmoApp context)
+    public AsyncDetectBpmTaskAbstract(RhythmoApp context, int playlistIndex, boolean resetBpm)
     {
+        mResetBpm = resetBpm;
         mApp = context;
         mBuildLibraryProgressUpdate = new ArrayList<>();
+        mPlaylistIndex = playlistIndex;
     }
 
     @Override
@@ -66,9 +70,24 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
 
     private void detectSongsBpm()
     {
-        Cursor songsCursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+        Cursor songsCursor;
+
+        if (mPlaylistIndex < 0)
+        {
+            songsCursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                 new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10},
                 null, null, null, null, null);
+        }
+        else
+        {
+            if(mPlaylistIndex < mApp.getPlaylists().size())
+                songsCursor = mApp.getPlaylists().get(mPlaylistIndex).getCursor();
+            else
+            {
+                Log.e(AsyncDetectBpmTaskAbstract.class.toString(), "Wrong playlist index: " + mPlaylistIndex);
+                return;
+            }
+        }
 
         if (songsCursor.getCount() <= 0)
         {
@@ -101,7 +120,7 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
                 String name = songsCursor.getString(nameIndex);
                 String songId = songsCursor.getString(idIndex);
                 String fullPath = path + SystemHelper.SEPARATOR + name;
-                int hadDetectedBpm = songsCursor.getInt(bpmIndex);
+                int hadDetectedBpm = mResetBpm ? 0 : songsCursor.getInt(bpmIndex);
 
                 double bpm = detectBpm(hadDetectedBpm / 10.0, fullPath, name);
                 if (bpm >= RhythmoApp.MAX_BPM)
@@ -118,7 +137,7 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
                 }
 
                 int bpmX10 = (int) (bpm * 10);
-                if(bpmX10 == hadDetectedBpm)
+                if(!mResetBpm && bpmX10 == hadDetectedBpm)
                 {
                     mOverallProgress++;
                     continue;

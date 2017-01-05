@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -386,7 +387,19 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         {
             launchSortDialog();
         }
+        else if(id == R.id.detect_playlist_bpm)
+        {
+            rescanBPMForTheCurrentPlaylist();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void rescanBPMForTheCurrentPlaylist()
+    {
+        Intent intent = new Intent(this, BuildMusicLibraryService.class);
+        intent.putExtra(BuildMusicLibraryService.PLAYLIST_INDEX, mPlaylistsPager.getCurrentItem());
+        intent.putExtra(BuildMusicLibraryService.RESET_BPM, true);
+        startService(intent);
     }
 
     private TextWatcher mSearchStringChanged = new TextWatcher()
