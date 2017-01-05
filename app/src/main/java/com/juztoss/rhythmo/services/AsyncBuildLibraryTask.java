@@ -7,8 +7,10 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -23,6 +25,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by JuzTosS on 5/27/2016.
@@ -86,10 +89,37 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
     }
 
+    private void updateMediaStore()
+    {
+        final CountDownLatch latch = new CountDownLatch(1);
+        String sdCardPath = Environment.getExternalStorageDirectory().getPath();
+        MediaScannerConnection.scanFile(mApp, new String[]{sdCardPath}, null,
+                new MediaScannerConnection.OnScanCompletedListener()
+                {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri)
+                    {
+                        Log.d(AsyncBuildLibraryTask.class.toString(), "onScanCompleted: " + path + ", " + (uri == null ? "null" : uri));
+                        latch.countDown();
+                    }
+                });
+
+        try
+        {
+            latch.await();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected Void doInBackground(String... params)
     {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+
+        updateMediaStore();
         Cursor mediaStoreCursor = getSongsFromMediaStore();
         if (mediaStoreCursor != null)
         {

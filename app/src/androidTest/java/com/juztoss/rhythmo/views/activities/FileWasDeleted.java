@@ -1,8 +1,11 @@
 package com.juztoss.rhythmo.views.activities;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -32,7 +35,17 @@ import static com.juztoss.rhythmo.TestHelper.getSongName;
 public class FileWasDeleted
 {
     @Rule
-    public ActivityTestRule<PlayerActivity> mActivityRule = new ActivityTestRule<>(PlayerActivity.class);
+    public ActivityTestRule<PlayerActivity> mActivityRule = new ActivityTestRule<PlayerActivity>(PlayerActivity.class){
+        @Override
+        protected Intent getActivityIntent()
+        {
+            Context targetContext = InstrumentationRegistry.getInstrumentation()
+                    .getTargetContext();
+            Intent result = new Intent(targetContext, PlayerActivity.class);
+            result.putExtra(PlayerActivity.DISABLE_RESCAN_ON_LAUNCHING, true);
+            return result;
+        }
+    };
 
     @Test
     public void fileWasDeleted() throws Exception

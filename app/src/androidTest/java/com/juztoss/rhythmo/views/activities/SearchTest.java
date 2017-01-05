@@ -1,7 +1,10 @@
 package com.juztoss.rhythmo.views.activities;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.SystemClock;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -33,7 +36,17 @@ import static org.hamcrest.Matchers.allOf;
 public class SearchTest
 {
     @Rule
-    public ActivityTestRule<PlayerActivity> mActivityTestRule = new ActivityTestRule<>(PlayerActivity.class);
+    public ActivityTestRule<PlayerActivity> mActivityTestRule = new ActivityTestRule<PlayerActivity>(PlayerActivity.class){
+        @Override
+        protected Intent getActivityIntent()
+        {
+            Context targetContext = InstrumentationRegistry.getInstrumentation()
+                    .getTargetContext();
+            Intent result = new Intent(targetContext, PlayerActivity.class);
+            result.putExtra(PlayerActivity.DISABLE_RESCAN_ON_LAUNCHING, true);
+            return result;
+        }
+    };
 
     @Test
     public void searchTest()

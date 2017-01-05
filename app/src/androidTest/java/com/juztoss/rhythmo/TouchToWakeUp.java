@@ -1,5 +1,8 @@
 package com.juztoss.rhythmo;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -19,7 +22,17 @@ import static junit.framework.Assert.assertTrue;
 public class TouchToWakeUp
 {
     @Rule
-    public ActivityTestRule<PlayerActivity> mActivityRule = new ActivityTestRule<>(PlayerActivity.class);
+    public ActivityTestRule<PlayerActivity> mActivityRule = new ActivityTestRule<PlayerActivity>(PlayerActivity.class){
+        @Override
+        protected Intent getActivityIntent()
+        {
+            Context targetContext = InstrumentationRegistry.getInstrumentation()
+                    .getTargetContext();
+            Intent result = new Intent(targetContext, PlayerActivity.class);
+            result.putExtra(PlayerActivity.DISABLE_RESCAN_ON_LAUNCHING, true);
+            return result;
+        }
+    };
 
     @Test
     public void wakeUpNeo() throws Exception
