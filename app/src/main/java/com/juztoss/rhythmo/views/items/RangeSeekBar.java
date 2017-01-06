@@ -27,6 +27,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -93,10 +94,7 @@ public class RangeSeekBar<T extends Number> extends ImageView
     private Thumb pressedThumb = null;
     private boolean notifyWhileDragging = false;
     private OnRangeSeekBarChangeListener<T> listener;
-    /**
-     * Default color of a {@link RangeSeekBar}, #FF33B5E5. This is also known as "Ice Cream Sandwich" blue.
-     */
-    public final int DEFAULT_COLOR = getResources().getColor(R.color.foreground);
+
     /**
      * An invalid pointer id.
      */
@@ -521,7 +519,7 @@ public class RangeSeekBar<T extends Number> extends ImageView
     {
         super.onDraw(canvas);
         paint.setStyle(Style.FILL);
-        paint.setColor(getResources().getColor(R.color.foregroundGrayedOut));
+        paint.setColor(ContextCompat.getColor(getContext(), R.color.foregroundGrayedOut));
         paint.setAntiAlias(true);
 
         padding = INITIAL_PADDING + thumbHalfWidth;
@@ -535,8 +533,8 @@ public class RangeSeekBar<T extends Number> extends ImageView
                 getSelectedMaxValue().equals(getAbsoluteMaxValue()));
 
         int colorToUseForButtonsAndHighlightedLine = selectedValuesAreDefault ?
-                getResources().getColor(R.color.foregroundGrayedOut) :    // default values
-                DEFAULT_COLOR; //non default, filter is active
+                ContextCompat.getColor(getContext(), R.color.foregroundGrayedOut) :    // default values
+                ContextCompat.getColor(getContext(), R.color.foreground); //non default, filter is active
 
         // draw seek bar active range line
         mRect.left = normalizedToScreen(normalizedMinValue);

@@ -1,5 +1,6 @@
 package com.juztoss.rhythmo.views.adapters;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -112,9 +113,9 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         mSecondLine.setText(composition.getFolder());
 
         if (Math.abs(composition.bpmShifted() - composition.bpm()) >= 0.001 || !mApp.isBPMInRange(composition.bpmShifted()))
-            mBpmLabel.setTextColor(mApp.getResources().getColor(R.color.accentPrimary));
+            mBpmLabel.setTextColor(ContextCompat.getColor(mApp, R.color.accentPrimary));
         else
-            mBpmLabel.setTextColor(mApp.getResources().getColor(R.color.foreground));
+            mBpmLabel.setTextColor(ContextCompat.getColor(mApp, R.color.foreground));
 
         float bpm = mApp.getAvailableToPlayBPM(composition.bpmShifted());
         SpannableString spannableString = new SpannableString(String.format(Locale.US, "%.1f", bpm));

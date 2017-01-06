@@ -607,11 +607,11 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         //Coloring icons
         MenuItem item = menu.findItem(R.id.search_menu);
         Drawable icon = item.getIcon();
-        icon.setColorFilter(getResources().getColor(R.color.foregroundInverted), PorterDuff.Mode.SRC_ATOP);
+        icon.setColorFilter(ContextCompat.getColor(this, R.color.foregroundInverted), PorterDuff.Mode.SRC_ATOP);
 
         item = menu.findItem(R.id.sort_menu);
         icon = item.getIcon();
-        icon.setColorFilter(getResources().getColor(R.color.foregroundInverted), PorterDuff.Mode.SRC_ATOP);
+        icon.setColorFilter(ContextCompat.getColor(this, R.color.foregroundInverted), PorterDuff.Mode.SRC_ATOP);
 
         return true;
     }
@@ -732,26 +732,26 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     private void updateShuffleAndRepeatButtons()
     {
         if (playbackService() == null || !playbackService().isShuffleEnabled())
-            mShuffleButton.setColorFilter(getResources().getColor(R.color.foregroundGrayedOut));
+            mShuffleButton.setColorFilter(ContextCompat.getColor(this, R.color.foregroundGrayedOut));
         else
-            mShuffleButton.setColorFilter(getResources().getColor(R.color.accentPrimary));
+            mShuffleButton.setColorFilter(ContextCompat.getColor(this, R.color.accentPrimary));
 
         if (playbackService() == null)
             return;
 
         if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
         {
-            mRepeatButton.setColorFilter(getResources().getColor(R.color.accentPrimary));
+            mRepeatButton.setColorFilter(ContextCompat.getColor(this, R.color.accentPrimary));
             mRepeatButton.setImageResource(R.drawable.ic_repeat);
         }
         else if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ONE)
         {
-            mRepeatButton.setColorFilter(getResources().getColor(R.color.accentPrimary));
+            mRepeatButton.setColorFilter(ContextCompat.getColor(this, R.color.accentPrimary));
             mRepeatButton.setImageResource(R.drawable.ic_repeat_once);
         }
         else
         {
-            mRepeatButton.setColorFilter(getResources().getColor(R.color.foregroundGrayedOut));
+            mRepeatButton.setColorFilter(ContextCompat.getColor(this, R.color.foregroundGrayedOut));
             mRepeatButton.setImageResource(R.drawable.ic_repeat);
         }
     }

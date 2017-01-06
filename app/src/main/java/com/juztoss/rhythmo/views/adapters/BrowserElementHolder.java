@@ -1,5 +1,7 @@
 package com.juztoss.rhythmo.views.adapters;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -80,18 +82,29 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
         else
             mIcon.setVisibility(View.GONE);
 
+        Context context = itemView.getContext();
         if(element.isAddable())
         {
             mAddButton.setVisibility(View.VISIBLE);
             if (element.getAddState() == BaseExplorerElement.AddState.NOT_ADDED)
+            {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background));
                 setImageResource(R.drawable.ic_add_circle_black_36dp);
+            }
             else if (element.getAddState() == BaseExplorerElement.AddState.ADDED)
+            {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.accentSecondary));
                 setImageResource(R.drawable.ic_remove_circle_black_36dp);
+            }
             else if (element.getAddState() == BaseExplorerElement.AddState.PARTLY_ADDED)
+            {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.accentSecondaryAlpha));
                 setImageResource(R.drawable.ic_remove_circle_outline_black_36dp);
+            }
         }else
         {
             mAddButton.setVisibility(View.GONE);
+            itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background));
         }
     }
 

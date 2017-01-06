@@ -4,6 +4,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -232,7 +233,7 @@ public class SingleSongActivity extends BasePlayerActivity
         inflater.inflate(R.menu.song_activity_menu, menu);
         MenuItem item = menu.findItem(R.id.apply);
         Drawable newIcon = item.getIcon();
-        newIcon.mutate().setColorFilter(getResources().getColor(R.color.foregroundInverted), PorterDuff.Mode.SRC_IN);
+        newIcon.mutate().setColorFilter(ContextCompat.getColor(this, R.color.foregroundInverted), PorterDuff.Mode.SRC_IN);
         item.setIcon(newIcon);
         return true;
     }
