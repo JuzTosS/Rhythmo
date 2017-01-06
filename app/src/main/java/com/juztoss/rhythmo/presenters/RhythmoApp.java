@@ -36,6 +36,7 @@ public class RhythmoApp extends Application
 
     public static float MIN_BPM = 25;
     public static float MAX_BPM = 250;
+    public static float MAX_DETECTED_BPM = 145;
 
     public static float MAX_BPM_SHIFT = 30;
 

@@ -123,13 +123,13 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
                 int hadDetectedBpm = mResetBpm ? 0 : songsCursor.getInt(bpmIndex);
 
                 double bpm = detectBpm(hadDetectedBpm / 10.0, fullPath, name);
-                if (bpm >= RhythmoApp.MAX_BPM)
+                if (bpm >= RhythmoApp.MAX_DETECTED_BPM)
                 {
                     bpm = bpm / 2;
-                    if (bpm >= RhythmoApp.MAX_BPM)
+                    if (bpm >= RhythmoApp.MAX_DETECTED_BPM)
                     {
                         bpm = bpm / 2;
-                        if (bpm >= RhythmoApp.MAX_BPM)
+                        if (bpm >= RhythmoApp.MAX_DETECTED_BPM)
                         {
                             bpm = 0;//Too big value for real BPM, unset BPM for the song.
                         }
