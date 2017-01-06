@@ -80,7 +80,7 @@ public class BuildMusicLibraryService extends Service
     {
         mApp = (RhythmoApp) this.getApplicationContext();
         mBuilder = new NotificationCompat.Builder(mApp);
-        mBuilder.setSmallIcon(R.drawable.ic_play_arrow_black_36dp);
+        mBuilder.setSmallIcon(R.drawable.logo_icon_transparent_48);
         mBuilder.setContentTitle(getResources().getString(R.string.building_music_library));
         mBuilder.setTicker(getResources().getString(R.string.building_music_library));
         mBuilder.setContentText("");
@@ -322,10 +322,11 @@ public class BuildMusicLibraryService extends Service
         if(mSilentMode) return;
 
         mBuilder = new NotificationCompat.Builder(mApp);
-        mBuilder.setSmallIcon(R.drawable.ic_play_arrow_black_36dp);
+        mBuilder.setSmallIcon(R.drawable.logo_icon_transparent_48);
         mBuilder.setContentTitle(header);
         mBuilder.setTicker(header);
         mBuilder.setContentText("");
+        mBuilder.setShowWhen(false);
         mBuilder.setProgress(maxProgress, overallProgress, false);
 
         Intent launchNowPlayingIntent = new Intent(this, SettingsActivity.class);
