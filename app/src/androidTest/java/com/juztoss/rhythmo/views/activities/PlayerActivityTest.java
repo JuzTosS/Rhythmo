@@ -67,17 +67,17 @@ public class PlayerActivityTest
         onView(allOf(withId(R.id.listView), isDisplayed()))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(1), MUSIC_FOLDER, "140.0", 0, false);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(1), MUSIC_FOLDER, "110.0", 0, false);
 
         //Click on the next button
         onView(withId(R.id.next_button)).perform(click());
         SystemClock.sleep(1000);
 
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(2), MUSIC_FOLDER, "160.0", 1, false);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(2), MUSIC_FOLDER, "130.0", 1, false);
 
         onView(withId(R.id.play_button)).perform(click());//Stop playback
 
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(2), MUSIC_FOLDER, "160.0", -1, true);
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(2), MUSIC_FOLDER, "130.0", -1, true);
     }
 
 }

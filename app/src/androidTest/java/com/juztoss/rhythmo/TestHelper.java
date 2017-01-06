@@ -129,7 +129,7 @@ public class TestHelper
         });
         taskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
-        AsyncDetectBpmByNamesTask taskDetectBpmByNames = new AsyncDetectBpmByNamesTask(app);
+        AsyncDetectBpmByNamesTask taskDetectBpmByNames = new AsyncDetectBpmByNamesTask(app, -1, false);
         taskDetectBpmByNames.setOnBuildLibraryProgressUpdate(new OnDetectBpmByNamesUpdate()
         {
             @Override
@@ -303,11 +303,11 @@ public class TestHelper
         if (songNumber == 0)
             prefix = "80 - ";
         else if (songNumber == 1)
-            prefix = "140 - ";
+            prefix = "110 - ";
         else if (songNumber == 2)
-            prefix = "160 - ";
+            prefix = "130 - ";
         else
-            prefix = "180 - ";
+            prefix = "140 - ";
 
         return prefix + "audio" + Integer.toString(songNumber);
     }

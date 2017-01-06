@@ -42,6 +42,12 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
 
     }
 
+    /**
+     *
+     * @param context - a link to the RhythmoApp
+     * @param playlistIndex - index of a playlist, bpm will be detected only of songs of that playlist; -1 if no needed
+     * @param resetBpm - resets bpm values before detection
+     */
     public AsyncDetectBpmTaskAbstract(RhythmoApp context, int playlistIndex, boolean resetBpm)
     {
         mResetBpm = resetBpm;
