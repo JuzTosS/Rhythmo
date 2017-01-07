@@ -71,7 +71,7 @@ public class PlayerActivityTest
 
         //Click on the next button
         onView(withId(R.id.next_button)).perform(click());
-        SystemClock.sleep(1000);
+        SystemClock.sleep(100);
 
         TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, getSongName(2), MUSIC_FOLDER, "130.0", 1, false);
 

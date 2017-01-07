@@ -202,7 +202,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     private void gotoNext(boolean fromUser)
     {
         clearQueue();
-        if (getSongsList() == null)
+        if (getSongsList() == null || getSongsList().getCount() <= 0)
         {
             putAction(new ActionStop());
             return;
@@ -252,7 +252,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
             mCurrentSongIndex = newSongIndex;
         }
 
-        if (mCurrentSongIndex >= 0 && getSongsList() != null)
+        if (mCurrentSongIndex >= 0 && getSongsList() != null && getSongsList().getCount() > 0)
         {
             getSongsList().moveToPosition(mCurrentSongIndex);
             mCurrentSongId = getSongsList().getLong(AbstractSongsSource.I_ID);
@@ -271,7 +271,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         if (mCurrentSongIndex < 0)
             mCurrentSongIndex = 0;
 
-        if(getSongsList() == null) return;
+        if(getSongsList() == null || getSongsList().getCount() <= 0) return;
 
         if (!isShuffleEnabled() || mAlreadyPlayedInShuffleMode.size() <= 0)
         {
@@ -716,7 +716,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
             {
                 startPlayback();
             }
-            else if(getSongsList() != null)
+            else if(getSongsList() != null && getSongsList().getCount() > 0)
             {
                 clearQueue();
                 Cursor cursor = getSongsList();
