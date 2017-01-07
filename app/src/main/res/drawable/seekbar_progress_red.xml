@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@android:id/background"
+        android:drawable="@drawable/seekbar_background_red"/>
+    <item android:id="@android:id/progress">
+        <clip android:drawable="@drawable/seekbar_foreground_red" />
+    </item>
+
+</layer-list>

@@ -37,8 +37,8 @@
                 android:layout_marginTop="@dimen/seekBar_marginTop"
                 android:paddingTop="20dp"
                 android:progress="25"
-                android:progressDrawable="@drawable/seekbar_progress"
-                android:thumb="@drawable/seekbar_thumb"
+                android:progressDrawable="?seekbar_progress"
+                android:thumb="?seekbar_thumb"
                 android:thumbOffset="8dp"/>
         </FrameLayout>
 

@@ -16,6 +16,12 @@
         <item name="rColorEdgeEffect">#dddddd</item>
         <item name="rColorEdgeEffectAlpha">#99dddddd</item>
         <item name="rColorEdgeEffectInverted">#fafafa</item>
+        <item name="search_text_background">@drawable/search_text_background_red</item>
+        <item name="seekbar_background">@drawable/seekbar_background_red</item>
+        <item name="seekbar_foreground">@drawable/seekbar_foreground_red</item>
+        <item name="seekbar_thumb">@drawable/seekbar_thumb_red</item>
+        <item name="tap_button">@drawable/tap_button_red</item>
+        <item name="seekbar_progress">@drawable/seekbar_progress_red</item>
     </style>
 
     <style name="Blue" parent="Theme.AppCompat.Light.NoActionBar">
@@ -34,6 +40,12 @@
         <item name="rColorEdgeEffect">#dddddd</item>
         <item name="rColorEdgeEffectAlpha">#99dddddd</item>
         <item name="rColorEdgeEffectInverted">#fafafa</item>
+        <item name="search_text_background">@drawable/search_text_background_blue</item>
+        <item name="seekbar_background">@drawable/seekbar_background_blue</item>
+        <item name="seekbar_foreground">@drawable/seekbar_foreground_blue</item>
+        <item name="seekbar_thumb">@drawable/seekbar_thumb_blue</item>
+        <item name="tap_button">@drawable/tap_button_blue</item>
+        <item name="seekbar_progress">@drawable/seekbar_progress_blue</item>
     </style>
 
     <style name="Red.AppTheme">

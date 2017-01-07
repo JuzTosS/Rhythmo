@@ -80,9 +80,9 @@ public class RangeSeekBar<T extends Number> extends ImageView
         return bitmap;
     }
 
-    private final Bitmap thumbImage = drawableToBitmap(ContextCompat.getDrawable(getContext(), R.drawable.seekbar_thumb));
-    private final Bitmap thumbPressedImage = drawableToBitmap(ContextCompat.getDrawable(getContext(), R.drawable.seekbar_thumb));
-    private final Bitmap thumbDisabledImage = drawableToBitmap(ContextCompat.getDrawable(getContext(), R.drawable.seekbar_thumb));
+    private final Bitmap thumbImage = drawableToBitmap(SystemHelper.getDrawable(getContext(), R.attr.seekbar_thumb));
+    private final Bitmap thumbPressedImage = drawableToBitmap(SystemHelper.getDrawable(getContext(), R.attr.seekbar_thumb));
+    private final Bitmap thumbDisabledImage = drawableToBitmap(SystemHelper.getDrawable(getContext(), R.attr.seekbar_thumb));
     private final float thumbWidth = thumbImage.getWidth();
     private final float thumbHalfWidth = 0.5f * thumbWidth;
     private final float thumbHalfHeight = 0.5f * thumbImage.getHeight();

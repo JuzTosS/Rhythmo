@@ -2,9 +2,9 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/seekbar_background"/>
+        android:drawable="@drawable/seekbar_background_blue"/>
     <item android:id="@android:id/progress">
-        <clip android:drawable="@drawable/seekbar_foreground" />
+        <clip android:drawable="@drawable/seekbar_foreground_blue" />
     </item>
 
 </layer-list>

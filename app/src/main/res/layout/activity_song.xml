@@ -134,7 +134,7 @@
                         android:id="@+id/button_tap_bpm"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
-                        android:background="@drawable/tap_button"
+                        android:background="?tap_button"
                         android:layout_margin="10dp"/>
 
                     <TextView
@@ -203,8 +203,8 @@
                 android:layout_marginBottom="32dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:progressDrawable="@drawable/seekbar_progress"
-                android:thumb="@drawable/seekbar_thumb"/>
+                android:progressDrawable="?seekbar_progress"
+                android:thumb="?seekbar_thumb"/>
 
 
         </LinearLayout>

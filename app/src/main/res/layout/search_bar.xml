@@ -13,7 +13,7 @@
         android:inputType="text"
         android:selectAllOnFocus="true"
         android:textColor="?rForegroundInverted"
-        android:background="@drawable/search_text_background"
+        android:background="?search_text_background"
         android:id="@+id/search_field"
         style="@style/SongNameTextAppearance"
         android:layout_gravity="center"/>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <ripple android:color="?rPrimary">
+        <ripple android:color="#db4437">
         </ripple>
     </item>
     <item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
                android:shape="oval">
-            <solid android:color="?rPrimary"/>
+            <solid android:color="#db4437"/>
         </shape>
     </item>
 </layer-list>

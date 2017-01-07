@@ -2,9 +2,11 @@ package com.juztoss.rhythmo.utils;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.AttrRes;
+import android.support.annotation.ColorInt;
 import android.util.TypedValue;
 
 import com.juztoss.rhythmo.R;
@@ -100,7 +102,7 @@ public class SystemHelper
      * @param colorAttr
      * @return @ColorInt
      */
-    public static int getColor(Context context, @AttrRes int colorAttr)
+    public static @ColorInt int getColor(Context context, @AttrRes int colorAttr)
     {
         TypedValue typedValue = new TypedValue();
 
@@ -110,6 +112,18 @@ public class SystemHelper
         a.recycle();
 
         return color;
+    }
+
+    public static Drawable getDrawable(Context context, @AttrRes int drawableRes)
+    {
+        TypedValue typedValue = new TypedValue();
+
+        TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[]{drawableRes});
+        Drawable drawable = a.getDrawable(0);
+
+        a.recycle();
+
+        return drawable;
     }
 
     public static void updateTheme(Context ctx)
