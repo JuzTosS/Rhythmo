@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
+import com.juztoss.rhythmo.utils.SystemHelper;
 import com.juztoss.rhythmo.views.fragments.BrowserFragment;
 
 /**
@@ -62,7 +63,7 @@ public class SelectSongsActivity extends BasePlayerActivity
         inflater.inflate(R.menu.song_activity_menu, menu);
         MenuItem item = menu.findItem(R.id.apply);
         Drawable newIcon = item.getIcon();
-        newIcon.mutate().setColorFilter(ContextCompat.getColor(this, R.color.foregroundInverted), PorterDuff.Mode.SRC_IN);
+        newIcon.mutate().setColorFilter(SystemHelper.getColor(this, R.attr.rForegroundInverted), PorterDuff.Mode.SRC_IN);
         item.setIcon(newIcon);
         return true;
     }

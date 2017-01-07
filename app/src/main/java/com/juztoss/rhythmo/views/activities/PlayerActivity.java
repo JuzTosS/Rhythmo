@@ -2,6 +2,7 @@ package com.juztoss.rhythmo.views.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -49,6 +50,7 @@ import com.juztoss.rhythmo.models.songsources.SortType;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.BuildMusicLibraryService;
 import com.juztoss.rhythmo.services.PlaybackService;
+import com.juztoss.rhythmo.utils.SystemHelper;
 import com.juztoss.rhythmo.views.adapters.TabsAdapter;
 import com.juztoss.rhythmo.views.items.RangeSeekBar;
 
@@ -610,11 +612,11 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         //Coloring icons
         MenuItem item = menu.findItem(R.id.search_menu);
         Drawable icon = item.getIcon();
-        icon.setColorFilter(ContextCompat.getColor(this, R.color.foregroundInverted), PorterDuff.Mode.SRC_ATOP);
+        icon.setColorFilter(SystemHelper.getColor(this, R.attr.rForegroundInverted), PorterDuff.Mode.SRC_ATOP);
 
         item = menu.findItem(R.id.sort_menu);
         icon = item.getIcon();
-        icon.setColorFilter(ContextCompat.getColor(this, R.color.foregroundInverted), PorterDuff.Mode.SRC_ATOP);
+        icon.setColorFilter(SystemHelper.getColor(this, R.attr.rForegroundInverted), PorterDuff.Mode.SRC_ATOP);
 
         return true;
     }
@@ -735,26 +737,26 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     private void updateShuffleAndRepeatButtons()
     {
         if (playbackService() == null || !playbackService().isShuffleEnabled())
-            mShuffleButton.setColorFilter(ContextCompat.getColor(this, R.color.foregroundGrayedOut));
+            mShuffleButton.setColorFilter(SystemHelper.getColor(this, R.attr.rForegroundGrayedOut));
         else
-            mShuffleButton.setColorFilter(ContextCompat.getColor(this, R.color.accentPrimary));
+            mShuffleButton.setColorFilter(SystemHelper.getColor(this, R.attr.rAccentPrimary));
 
         if (playbackService() == null)
             return;
 
         if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
         {
-            mRepeatButton.setColorFilter(ContextCompat.getColor(this, R.color.accentPrimary));
+            mRepeatButton.setColorFilter(SystemHelper.getColor(this, R.attr.rAccentPrimary));
             mRepeatButton.setImageResource(R.drawable.ic_repeat);
         }
         else if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ONE)
         {
-            mRepeatButton.setColorFilter(ContextCompat.getColor(this, R.color.accentPrimary));
+            mRepeatButton.setColorFilter(SystemHelper.getColor(this, R.attr.rAccentPrimary));
             mRepeatButton.setImageResource(R.drawable.ic_repeat_once);
         }
         else
         {
-            mRepeatButton.setColorFilter(ContextCompat.getColor(this, R.color.foregroundGrayedOut));
+            mRepeatButton.setColorFilter(SystemHelper.getColor(this, R.attr.rForegroundGrayedOut));
             mRepeatButton.setImageResource(R.drawable.ic_repeat);
         }
     }

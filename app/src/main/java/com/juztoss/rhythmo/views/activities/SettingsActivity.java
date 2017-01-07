@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.BuildMusicLibraryService;
+import com.juztoss.rhythmo.utils.SystemHelper;
 import com.juztoss.rhythmo.views.items.MusicLibraryPreference;
 
 import de.psdev.licensesdialog.LicenseResolver;
@@ -32,13 +35,14 @@ import de.psdev.licensesdialog.licenses.License;
 /**
  * Created by JuzTosS on 5/27/2016.
  */
-public class SettingsActivity extends AppCompatActivity
+public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     private PrefsFragment mPrefsFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
+        SystemHelper.updateTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -50,6 +54,16 @@ public class SettingsActivity extends AppCompatActivity
                 mPrefsFragment).commit();
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mUpdateMusicLibraryPrefReceiver, new IntentFilter(BuildMusicLibraryService.UPDATE_PROGRESS_ACTION));
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+    {
+        if(key.equals(getResources().getString(R.string.pref_theme)))
+            recreate();
     }
 
     private BroadcastReceiver mUpdateMusicLibraryPrefReceiver = new BroadcastReceiver()
@@ -73,6 +87,8 @@ public class SettingsActivity extends AppCompatActivity
     {
         super.onDestroy();
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mUpdateMusicLibraryPrefReceiver);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
+import com.juztoss.rhythmo.utils.SystemHelper;
 
 import java.util.Locale;
 
@@ -233,7 +234,7 @@ public class SingleSongActivity extends BasePlayerActivity
         inflater.inflate(R.menu.song_activity_menu, menu);
         MenuItem item = menu.findItem(R.id.apply);
         Drawable newIcon = item.getIcon();
-        newIcon.mutate().setColorFilter(ContextCompat.getColor(this, R.color.foregroundInverted), PorterDuff.Mode.SRC_IN);
+        newIcon.mutate().setColorFilter(SystemHelper.getColor(this, R.attr.rForegroundInverted), PorterDuff.Mode.SRC_IN);
         item.setIcon(newIcon);
         return true;
     }

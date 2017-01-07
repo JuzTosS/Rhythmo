@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.BaseExplorerElement;
+import com.juztoss.rhythmo.utils.SystemHelper;
 
 /**
  * Created by JuzTosS on 6/18/2016.
@@ -88,23 +89,23 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
             mAddButton.setVisibility(View.VISIBLE);
             if (element.getAddState() == BaseExplorerElement.AddState.NOT_ADDED)
             {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background));
+                itemView.setBackgroundColor(SystemHelper.getColor(context, R.attr.rBackground));
                 setImageResource(R.drawable.ic_add_circle_black_36dp);
             }
             else if (element.getAddState() == BaseExplorerElement.AddState.ADDED)
             {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.accentSecondary));
+                itemView.setBackgroundColor(SystemHelper.getColor(context, R.attr.rAccentSecondary));
                 setImageResource(R.drawable.ic_remove_circle_black_36dp);
             }
             else if (element.getAddState() == BaseExplorerElement.AddState.PARTLY_ADDED)
             {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.accentSecondaryAlpha));
+                itemView.setBackgroundColor(SystemHelper.getColor(context, R.attr.rAccentSecondaryAlpha));
                 setImageResource(R.drawable.ic_remove_circle_outline_black_36dp);
             }
         }else
         {
             mAddButton.setVisibility(View.GONE);
-            itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background));
+            itemView.setBackgroundColor(SystemHelper.getColor(context, R.attr.rBackground));
         }
     }
 

@@ -1,18 +1,60 @@
 <resources>
 
-    <style name="AppToolBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
-        <item name="colorAccent">@color/accentPrimary</item>
-        <item name="colorControlNormal">@color/foregroundInverted</item>
-        <item name="titleTextColor">@color/foregroundInverted</item>
-        <item name="background">@color/primary</item>
+    <style name="Red" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="rPrimary">#db4437</item>
+        <item name="rPrimaryDark">#b93221</item>
+        <item name="rBackground">#fafafa</item>
+        <item name="rAccentPrimary">#0096b6</item>
+        <item name="rAccentSecondary">#fcc75a</item>
+        <item name="rAccentSecondaryAlpha">#99fcc75a</item>
+        <item name="rForegroundDark">#222222</item>
+        <item name="rForeground">#555555</item>
+        <item name="rForegroundLight">#6b6b6b</item>
+        <item name="rForegroundGrayedOut">#b5b5b5</item>
+        <item name="rForegroundInverted">#fafafa</item>
+        <item name="rForegroundInvertedGrayedOut">#e1e1e1</item>
+        <item name="rColorEdgeEffect">#dddddd</item>
+        <item name="rColorEdgeEffectAlpha">#99dddddd</item>
+        <item name="rColorEdgeEffectInverted">#fafafa</item>
     </style>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
-        <item name="colorAccent">@color/accentPrimary</item>
+    <style name="Blue" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="rPrimary">#5181b8</item>
+        <item name="rPrimaryDark">#3b5f87</item>
+        <item name="rBackground">#fafafa</item>
+        <item name="rAccentPrimary">#4873a4</item>
+        <item name="rAccentSecondary">#5181b8</item>
+        <item name="rAccentSecondaryAlpha">#993b5f87</item>
+        <item name="rForegroundDark">#222222</item>
+        <item name="rForeground">#555555</item>
+        <item name="rForegroundLight">#6b6b6b</item>
+        <item name="rForegroundGrayedOut">#b5b5b5</item>
+        <item name="rForegroundInverted">#fafafa</item>
+        <item name="rForegroundInvertedGrayedOut">#e1e1e1</item>
+        <item name="rColorEdgeEffect">#dddddd</item>
+        <item name="rColorEdgeEffectAlpha">#99dddddd</item>
+        <item name="rColorEdgeEffectInverted">#fafafa</item>
+    </style>
+
+    <style name="Red.AppTheme">
+        <item name="colorPrimary">?rPrimary</item>
+        <item name="colorPrimaryDark">?rPrimaryDark</item>
+        <item name="colorAccent">?rAccentPrimary</item>
+    </style>
+
+    <style name="Blue.AppTheme">
+        <item name="colorPrimary">?rPrimary</item>
+        <item name="colorPrimaryDark">?rPrimaryDark</item>
+        <item name="colorAccent">?rAccentPrimary</item>
+    </style>
+
+    <style name="AppToolBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">?rPrimary</item>
+        <item name="colorPrimaryDark">?rPrimaryDark</item>
+        <item name="colorAccent">?rAccentPrimary</item>
+        <item name="colorControlNormal">?rForegroundInverted</item>
+        <item name="titleTextColor">?rForegroundInverted</item>
+        <item name="background">?rPrimary</item>
     </style>
 
     <style name="BPMLabelTextAppearance" parent="@android:style/TextAppearance.Medium">

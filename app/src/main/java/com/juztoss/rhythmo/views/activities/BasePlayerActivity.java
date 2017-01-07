@@ -3,18 +3,22 @@ package com.juztoss.rhythmo.views.activities;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.services.PlaybackService;
+import com.juztoss.rhythmo.utils.SystemHelper;
 
 /**
  * Created by JuzTosS on 7/26/2016.
  */
-public class BasePlayerActivity extends AppCompatActivity
+public class BasePlayerActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {
 
     private PlaybackService mPlaybackService;
@@ -23,11 +27,20 @@ public class BasePlayerActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         Log.d(getClass().toString(), "onCreate()");
+        SystemHelper.updateTheme(this);
         super.onCreate(savedInstanceState);
 
         Intent serviceIntent = new Intent(this, PlaybackService.class);
         bindService(serviceIntent, mServiceConnection, BIND_AUTO_CREATE);
-//        startService(serviceIntent);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+    {
+        if(key.equals(getResources().getString(R.string.pref_theme)))
+            recreate();
     }
 
     @Override
@@ -36,6 +49,8 @@ public class BasePlayerActivity extends AppCompatActivity
         Log.d(getClass().toString(), "onDestroy()");
         unbindService(mServiceConnection);
         mPlaybackService = null;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.unregisterOnSharedPreferenceChangeListener(this);
         super.onDestroy();
     }
 

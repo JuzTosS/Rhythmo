@@ -27,6 +27,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -36,6 +37,7 @@ import android.view.ViewConfiguration;
 import android.widget.ImageView;
 
 import com.juztoss.rhythmo.R;
+import com.juztoss.rhythmo.utils.SystemHelper;
 
 import java.math.BigDecimal;
 
@@ -78,9 +80,9 @@ public class RangeSeekBar<T extends Number> extends ImageView
         return bitmap;
     }
 
-    private final Bitmap thumbImage = drawableToBitmap(getResources().getDrawable(R.drawable.seekbar_thumb));
-    private final Bitmap thumbPressedImage = drawableToBitmap(getResources().getDrawable(R.drawable.seekbar_thumb));
-    private final Bitmap thumbDisabledImage = drawableToBitmap(getResources().getDrawable(R.drawable.seekbar_thumb));
+    private final Bitmap thumbImage = drawableToBitmap(ContextCompat.getDrawable(getContext(), R.drawable.seekbar_thumb));
+    private final Bitmap thumbPressedImage = drawableToBitmap(ContextCompat.getDrawable(getContext(), R.drawable.seekbar_thumb));
+    private final Bitmap thumbDisabledImage = drawableToBitmap(ContextCompat.getDrawable(getContext(), R.drawable.seekbar_thumb));
     private final float thumbWidth = thumbImage.getWidth();
     private final float thumbHalfWidth = 0.5f * thumbWidth;
     private final float thumbHalfHeight = 0.5f * thumbImage.getHeight();
@@ -519,7 +521,7 @@ public class RangeSeekBar<T extends Number> extends ImageView
     {
         super.onDraw(canvas);
         paint.setStyle(Style.FILL);
-        paint.setColor(ContextCompat.getColor(getContext(), R.color.foregroundGrayedOut));
+        paint.setColor(SystemHelper.getColor(getContext(), R.attr.rForegroundGrayedOut));
         paint.setAntiAlias(true);
 
         padding = INITIAL_PADDING + thumbHalfWidth;
@@ -532,9 +534,9 @@ public class RangeSeekBar<T extends Number> extends ImageView
         boolean selectedValuesAreDefault = (getSelectedMinValue().equals(getAbsoluteMinValue()) &&
                 getSelectedMaxValue().equals(getAbsoluteMaxValue()));
 
-        int colorToUseForButtonsAndHighlightedLine = selectedValuesAreDefault ?
-                ContextCompat.getColor(getContext(), R.color.foregroundGrayedOut) :    // default values
-                ContextCompat.getColor(getContext(), R.color.foreground); //non default, filter is active
+        @ColorInt int colorToUseForButtonsAndHighlightedLine = selectedValuesAreDefault ?
+                SystemHelper.getColor(getContext(), R.attr.rForegroundGrayedOut) :    // default values
+                SystemHelper.getColor(getContext(), R.attr.rForeground); //non default, filter is active
 
         // draw seek bar active range line
         mRect.left = normalizedToScreen(normalizedMinValue);

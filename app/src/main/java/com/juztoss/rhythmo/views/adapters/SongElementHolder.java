@@ -15,6 +15,7 @@ import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.PlaybackService;
+import com.juztoss.rhythmo.utils.SystemHelper;
 
 import java.util.Locale;
 
@@ -113,9 +114,9 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         mSecondLine.setText(composition.getFolder());
 
         if (Math.abs(composition.bpmShifted() - composition.bpm()) >= 0.001 || !mApp.isBPMInRange(composition.bpmShifted()))
-            mBpmLabel.setTextColor(ContextCompat.getColor(mApp, R.color.accentPrimary));
+            mBpmLabel.setTextColor(SystemHelper.getColor(itemView.getContext(), R.attr.rAccentPrimary));
         else
-            mBpmLabel.setTextColor(ContextCompat.getColor(mApp, R.color.foreground));
+            mBpmLabel.setTextColor(SystemHelper.getColor(itemView.getContext(), R.attr.rForeground));
 
         float bpm = mApp.getAvailableToPlayBPM(composition.bpmShifted());
         SpannableString spannableString = new SpannableString(String.format(Locale.US, "%.1f", bpm));

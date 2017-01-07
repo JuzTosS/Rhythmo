@@ -9,7 +9,7 @@
             <shape android:shape="line">
                 <stroke
                     android:width="0.5dp"
-                    android:color="@color/foregroundInverted" />
+                    android:color="?rForegroundInverted" />
             </shape>
         </rotate>
     </item>

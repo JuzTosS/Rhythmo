@@ -30,7 +30,7 @@
                 style="@style/BPMLabelTextAppearance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/foregroundInverted"
+                android:textColor="?rForegroundInverted"
                 />
 
             <TextView
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="BPM"
-                android:textColor="@color/foregroundInvertedGrayedOut"
+                android:textColor="?rForegroundInvertedGrayedOut"
                 android:textSize="7sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText,SmallSp"/>
@@ -48,7 +48,7 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
-            android:background="@color/colorEdgeEffectInverted"/>
+            android:background="?rColorEdgeEffectInverted"/>
 
 
         <LinearLayout
@@ -63,7 +63,7 @@
                 style="@style/SongNameTextAppearance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/foregroundInverted"
+                android:textColor="?rForegroundInverted"
                 />
 
             <TextView
@@ -71,7 +71,7 @@
                 style="@style/SongDescriptionTextAppearance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/foregroundInverted"/>
+                android:textColor="?rForegroundInverted"/>
 
         </LinearLayout>
 

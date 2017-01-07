@@ -26,7 +26,7 @@
             <TextView
                 android:id="@+id/bpm_label"
                 style="@style/BPMLabelTextAppearance"
-                android:textColor="@color/foreground"
+                android:textColor="#555555"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="@string/bpm"
-                android:textColor="@color/foregroundGrayedOut"
+                android:textColor="#b5b5b5"
                 android:textSize="7dp"
                 android:textStyle="bold"
                 tools:ignore="SpUsage"/>
@@ -46,7 +46,7 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
-            android:background="@color/colorEdgeEffect"/>
+            android:background="#dddddd"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                     style="@style/SongNameTextAppearance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/foreground"
+                    android:textColor="#555555"
                     />
 
                 <TextView
@@ -75,7 +75,7 @@
                     style="@style/SongDescriptionTextAppearance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/foregroundGrayedOut"/>
+                    android:textColor="#b5b5b5"/>
 
             </LinearLayout>
 
@@ -87,7 +87,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="@null"
                 android:src="@drawable/ic_play_arrow_black_48dp"
-                android:tint="@color/foreground"/>
+                android:tint="#555555"/>
 
             <ImageButton
                 android:id="@+id/notification_next"
@@ -96,7 +96,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="@null"
                 android:src="@drawable/ic_skip_forward_black_48dp"
-                android:tint="@color/foreground"/>
+                android:tint="#555555"/>
         </LinearLayout>
 
     </LinearLayout>

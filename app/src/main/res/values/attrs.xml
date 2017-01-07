@@ -51,4 +51,19 @@
         <attr name="activateOnDefaultValues" format="boolean"/>
     </declare-styleable>
 
+    <attr name="rPrimary" format="reference|color"/>
+    <attr name="rPrimaryDark" format="reference|color"/>
+    <attr name="rBackground" format="reference|color"/>
+    <attr name="rAccentPrimary" format="reference|color"/>
+    <attr name="rAccentSecondary" format="reference|color"/>
+    <attr name="rAccentSecondaryAlpha" format="reference|color"/>
+    <attr name="rForegroundDark" format="reference|color"/>
+    <attr name="rForeground" format="reference|color"/>
+    <attr name="rForegroundLight" format="reference|color"/>
+    <attr name="rForegroundGrayedOut" format="reference|color"/>
+    <attr name="rForegroundInverted" format="reference|color"/>
+    <attr name="rForegroundInvertedGrayedOut" format="reference|color"/>
+    <attr name="rColorEdgeEffect" format="reference|color"/>
+    <attr name="rColorEdgeEffectAlpha" format="reference|color"/>
+    <attr name="rColorEdgeEffectInverted" format="reference|color"/>
 </resources>

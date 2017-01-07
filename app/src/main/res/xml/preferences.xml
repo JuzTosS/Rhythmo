@@ -31,6 +31,15 @@
             android:summary="@string/pref_recognize_bpm_from_name_desc"
             android:title="@string/pref_recognize_bpm_from_name"
             android:defaultValue="true"/>
+
+        <ListPreference
+            android:key="@string/pref_theme"
+            android:summary="@string/pref_theme_desc"
+            android:title="@string/pref_theme"
+            android:entries="@array/theme_entries"
+            android:entryValues="@array/theme_entry_values"
+            android:defaultValue="1"/>
+
     </PreferenceCategory>
     <PreferenceCategory
         android:key="@string/pref_about"

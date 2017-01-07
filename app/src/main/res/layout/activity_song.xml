@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:theme="@style/AppToolBarTheme"
-        android:background="@color/primary"
+        android:background="?rPrimary"
         tools:context=".views.activities.SettingsActivity"/>
 
     <ScrollView
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_margin="5dp"
-                android:background="@color/colorEdgeEffect"/>
+                android:background="?rColorEdgeEffect"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -75,11 +75,11 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/foregroundInverted"
+                        android:textColor="?rForegroundInverted"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/primary"
+                        android:background="?rPrimary"
                         android:text="1 / 2"
                         tools:ignore="HardcodedText"/>
 
@@ -101,7 +101,7 @@
                         android:nextFocusLeft="@id/bpm_text"
                         android:nextFocusUp="@id/bpm_text"
                         android:textStyle="bold"
-                        android:textColor="@color/foreground"
+                        android:textColor="?rForeground"
                         android:background="@null"
                         android:textSize="70dp"
                         tools:ignore="SpUsage"/>
@@ -111,8 +111,8 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/foregroundInverted"
-                        android:background="@color/primary"
+                        android:textColor="?rForegroundInverted"
+                        android:background="?rPrimary"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="10dp"
@@ -140,7 +140,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/foregroundInverted"
+                        android:textColor="?rForegroundInverted"
                         android:layout_gravity="center"
                         android:textStyle="bold"
                         android:textSize="40dp"
@@ -177,7 +177,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_margin="5dp"
-                android:background="@color/colorEdgeEffect"/>
+                android:background="?rColorEdgeEffect"/>
 
             <TextView
                 android:id="@+id/textView3"

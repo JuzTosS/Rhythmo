@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         style="@style/buttonBackground"
-        android:colorControlHighlight="@color/accentSecondary"
+        android:colorControlHighlight="?rAccentSecondary"
         android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:tint="@color/foreground"/>
+                android:tint="?rForeground"/>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -44,7 +44,7 @@
                     android:layout_gravity="center_vertical"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:textColor="@color/foregroundDark"
+                    android:textColor="?rForegroundDark"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
 
                 <TextView
@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:lines="1"
-                    android:textColor="@color/foregroundGrayedOut"
+                    android:textColor="?rForegroundGrayedOut"
                     android:textAppearance="?android:attr/textAppearanceSmall"/>
             </LinearLayout>
 
@@ -65,7 +65,7 @@
                 android:layout_gravity="center_vertical"
                 style="@style/buttonBackgroundBorderless"
                 android:src="@drawable/ic_add_circle_black_36dp"
-                android:tint="@color/foregroundGrayedOut"/>
+                android:tint="?rForegroundGrayedOut"/>
 
         </LinearLayout>
 
@@ -74,6 +74,6 @@
             android:layout_height="1dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:background="@color/colorEdgeEffect"/>
+            android:background="?rColorEdgeEffect"/>
     </LinearLayout>
 </FrameLayout>

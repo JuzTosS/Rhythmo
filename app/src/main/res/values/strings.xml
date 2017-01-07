@@ -37,7 +37,7 @@
     <string name="build_library_started">BPM scanning started.</string>
     <string name="build_library_finished">BPM scanning finished</string>
     <string name="clear_library_finished">BPM data has been cleared</string>
-    <string name="pref_experimental_features">Experimental features</string>
+    <string name="pref_experimental_features">Extra</string>
     <string name="min">Min</string>
     <string name="max">Max</string>
     <string name="pref_clear_library">Clear all the information about songs BPM</string>
@@ -55,4 +55,14 @@
     <string name="shifted_bpm">Shifted bpm</string>
     <string name="bpm" translatable="false">BPM</string>
     <string name="detect_playlist_bpm">Rescan BPM in playlist</string>
+    <string name="pref_theme">Color theme</string>
+    <string name="pref_theme_desc">Change the player color theme</string>
+    <string-array name="theme_entries">
+        <item>Red</item>
+        <item>Blue</item>
+    </string-array>
+    <string-array name="theme_entry_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 </resources>

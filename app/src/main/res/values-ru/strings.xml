@@ -55,4 +55,6 @@
     <string name="tap_button_text">TAP</string>
     <string name="shifted_bpm">Сдвинутый BPM</string>
     <string name="detect_playlist_bpm">Определить BPM в плейлисте</string>
+    <string name="pref_theme">Цветовая схема</string>
+    <string name="pref_theme_desc">Изменить цветовую схему плеера</string>
 </resources>

@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:inputType="text"
         android:selectAllOnFocus="true"
-        android:textColor="@color/foregroundInverted"
+        android:textColor="?rForegroundInverted"
         android:background="@drawable/search_text_background"
         android:id="@+id/search_field"
         style="@style/SongNameTextAppearance"

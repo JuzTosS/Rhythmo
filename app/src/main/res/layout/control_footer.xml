@@ -20,14 +20,14 @@
                 android:layout_height="6dp"
                 android:layout_gravity="left"
                 android:layout_marginTop="25dp"
-                android:background="@color/accentSecondaryAlpha"/>
+                android:background="?rAccentSecondaryAlpha"/>
 
             <View
                 android:layout_width="20dp"
                 android:layout_height="6dp"
                 android:layout_gravity="right"
                 android:layout_marginTop="25dp"
-                android:background="@color/colorEdgeEffectAlpha"
+                android:background="?rColorEdgeEffectAlpha"
                 />
 
             <android.support.v7.widget.AppCompatSeekBar
@@ -55,7 +55,7 @@
                 style="@style/buttonBackgroundBorderless"
                 android:padding="12dp"
                 android:src="@drawable/ic_shuffle_variant"
-                android:tint="@color/foreground"
+                android:tint="?rForeground"
                 android:layout_alignParentTop="true"
                 android:layout_toLeftOf="@+id/previous_button"
                 android:layout_toStartOf="@+id/previous_button"/>
@@ -70,7 +70,7 @@
                 style="@style/buttonBackgroundBorderless"
                 android:padding="12dp"
                 android:src="@drawable/ic_skip_backward_black_24dp"
-                android:tint="@color/foreground"/>
+                android:tint="?rForeground"/>
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/next_button"
@@ -82,7 +82,7 @@
                 style="@style/buttonBackgroundBorderless"
                 android:padding="12dp"
                 android:src="@drawable/ic_skip_forward_black_24dp"
-                android:tint="@color/foreground"/>
+                android:tint="?rForeground"/>
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/play_button"
@@ -92,7 +92,7 @@
                 android:layout_centerHorizontal="true"
                 style="@style/buttonBackgroundBorderless"
                 android:src="@drawable/play_button_large"
-                android:tint="@color/foreground"/>
+                android:tint="?rForeground"/>
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/repeat_button"
@@ -101,7 +101,7 @@
                 style="@style/buttonBackgroundBorderless"
                 android:padding="12dp"
                 android:src="@drawable/ic_repeat"
-                android:tint="@color/foreground"
+                android:tint="?rForeground"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/next_button"
                 android:layout_toEndOf="@+id/next_button"/>
@@ -133,7 +133,7 @@
             android:layout_height="1dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:background="@color/colorEdgeEffect"/>
+            android:background="?rColorEdgeEffect"/>
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -160,14 +160,14 @@
                         style="@style/BPMLabelTextAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/foreground"/>
+                        android:textColor="?rForeground"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:text="@string/bpm"
-                        android:textColor="@color/foregroundGrayedOut"
+                        android:textColor="?rForegroundGrayedOut"
                         android:textSize="7sp"
                         android:textStyle="bold"
                         tools:ignore="SmallSp"/>
@@ -194,14 +194,14 @@
                         style="@style/BPMLabelTextAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/foreground"/>
+                        android:textColor="?rForeground"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:text="@string/bpm"
-                        android:textColor="@color/foregroundGrayedOut"
+                        android:textColor="?rForegroundGrayedOut"
                         android:textSize="7sp"
                         android:textStyle="bold"
                         tools:ignore="SmallSp"/>

@@ -14,20 +14,20 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
+        android:background="?rPrimary"
         app:theme="@style/AppToolBarTheme"/>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:background="@color/primary"
+        android:background="?rPrimary"
         android:minHeight="10dp"
-        app:tabIndicatorColor="@color/accentPrimary"
+        app:tabIndicatorColor="?rAccentPrimary"
         app:tabIndicatorHeight="4dp"
         app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/foregroundInverted"
-        app:tabTextColor="@color/foregroundInvertedGrayedOut"/>
+        app:tabSelectedTextColor="?rForegroundInverted"
+        app:tabTextColor="?rForegroundInvertedGrayedOut"/>
 
     <FrameLayout
         android:layout_width="match_parent"

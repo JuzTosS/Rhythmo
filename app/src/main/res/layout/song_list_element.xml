@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:background="@color/background"
+    android:background="?rBackground"
     >
 
     <LinearLayout
@@ -37,14 +37,14 @@
                     style="@style/BPMLabelTextAppearance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/foreground"/>
+                    android:textColor="?rForeground"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:text="@string/bpm"
-                    android:textColor="@color/foregroundGrayedOut"
+                    android:textColor="?rForegroundGrayedOut"
                     android:textSize="7sp"
                     android:textStyle="bold"
                     tools:ignore="SmallSp"/>
@@ -55,7 +55,7 @@
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                android:background="@color/colorEdgeEffect"/>
+                android:background="?rColorEdgeEffect"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,7 +76,7 @@
                         style="@style/SongNameTextAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/foregroundDark"
+                        android:textColor="?rForegroundDark"
                         />
 
                     <TextView
@@ -84,7 +84,7 @@
                         style="@style/SongDescriptionTextAppearance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/foreground"
+                        android:textColor="?rForeground"
                         />
 
                 </LinearLayout>
@@ -96,7 +96,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_margin="5dp"
                     android:src="@drawable/icon_play_normal"
-                    android:tint="@color/accentPrimary"/>
+                    android:tint="?rAccentPrimary"/>
 
                 <ImageView
                     android:id="@+id/menu_button"
@@ -106,7 +106,7 @@
                     android:padding="10dp"
                     android:src="@drawable/ic_more_horiz_black_24dp"
                     style="@style/buttonBackgroundBorderless"
-                    android:tint="@color/foreground"/>
+                    android:tint="?rForeground"/>
 
             </LinearLayout>
 
@@ -117,7 +117,7 @@
             android:layout_height="1dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:background="@color/colorEdgeEffect"/>
+            android:background="?rColorEdgeEffect"/>
 
     </LinearLayout>
 

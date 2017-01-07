@@ -1,6 +1,15 @@
 package com.juztoss.rhythmo.utils;
 
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
+import android.preference.PreferenceManager;
+import android.support.annotation.AttrRes;
+import android.util.TypedValue;
+
+import com.juztoss.rhythmo.R;
+import com.juztoss.rhythmo.presenters.RhythmoApp;
+import com.juztoss.rhythmo.views.activities.PlayerActivity;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -83,5 +92,33 @@ public class SystemHelper
             return path.substring(lastIndexOfSeparator + 1);
         else
             return path;
+    }
+
+    /**
+     * Returns a color value of the current theme
+     * @param context
+     * @param colorAttr
+     * @return @ColorInt
+     */
+    public static int getColor(Context context, @AttrRes int colorAttr)
+    {
+        TypedValue typedValue = new TypedValue();
+
+        TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[]{colorAttr});
+        int color = a.getColor(0, 0);
+
+        a.recycle();
+
+        return color;
+    }
+
+    public static void updateTheme(Context ctx)
+    {
+        String key = ctx.getResources().getString(R.string.pref_theme);
+        int themeIndex = Integer.decode(PreferenceManager.getDefaultSharedPreferences(ctx).getString(key, "1"));
+        if(themeIndex == 2)
+            ctx.setTheme(R.style.Blue_AppTheme);
+        else
+            ctx.setTheme(R.style.Red_AppTheme);
     }
 }
