@@ -106,7 +106,7 @@ public class BuildMusicLibraryService extends Service
         boolean stopAndClear = false;
         boolean clear = false;
         boolean resetBpm = false;
-        int playlistIndex = 0;
+        int playlistIndex = -1;
         if(intent.getExtras() != null)
         {
             boolean dontInterruptExistTasks = intent.getExtras().getBoolean(DONT_INTERRUPT_EXIST_TASKS, false);

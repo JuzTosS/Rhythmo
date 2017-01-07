@@ -307,13 +307,16 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     {
         super.onStart();
 
-        if(getIntent().getExtras() == null || !getIntent().getBooleanExtra(DISABLE_RESCAN_ON_LAUNCHING, false))
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
         {
-            Intent intent = new Intent(this, BuildMusicLibraryService.class);
-            intent.putExtra(BuildMusicLibraryService.SILENT_MODE, true);
-            intent.putExtra(BuildMusicLibraryService.DONT_INTERRUPT_EXIST_TASKS, true);
-            intent.putExtra(BuildMusicLibraryService.DONT_DETECT_BPM, true);
-            startService(intent);
+            if (getIntent().getExtras() == null || !getIntent().getBooleanExtra(DISABLE_RESCAN_ON_LAUNCHING, false))
+            {
+                Intent intent = new Intent(this, BuildMusicLibraryService.class);
+                intent.putExtra(BuildMusicLibraryService.SILENT_MODE, true);
+                intent.putExtra(BuildMusicLibraryService.DONT_INTERRUPT_EXIST_TASKS, true);
+                intent.putExtra(BuildMusicLibraryService.DONT_DETECT_BPM, true);
+                startService(intent);
+            }
         }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
