@@ -11,7 +11,7 @@ import android.provider.BaseColumns;
 public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 {
     private static final String DATABASE_NAME = "main.db";
-    private static final int DATABASE_VERSION = 18;
+    private static final int DATABASE_VERSION = 19;
 
 
     //TABLE SETTINGS
@@ -96,13 +96,15 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
                 + TABLE_PLAYLISTS + " (" +  BaseColumns._ID + " integer primary key autoincrement, "
                 + PLAYLIST_SOURCE_ID + " integer key, "
                 + PLAYLIST_POSITION + " integer, "
-                + PLAYLIST_SONG_ID + " integer unique); ");
+                + PLAYLIST_SONG_ID + " integer, " +
+                "unique(" + PLAYLIST_SOURCE_ID + ", " + PLAYLIST_SONG_ID + ")" +
+                "); ");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
-        if(oldVersion == 17 && newVersion == 18)
+        if(oldVersion <=18 && newVersion >= 18)
         {
             db.execSQL("ALTER TABLE " + TABLE_PLAYLISTS + " RENAME TO " + TABLE_PLAYLISTS + "_temp" + ";");
 
@@ -110,7 +112,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
                     + TABLE_PLAYLISTS + " (" +  BaseColumns._ID + " integer primary key autoincrement, "
                     + PLAYLIST_SOURCE_ID + " integer key, "
                     + PLAYLIST_POSITION + " integer, "
-                    + PLAYLIST_SONG_ID + " integer unique); ");
+                    + PLAYLIST_SONG_ID + " integer, " +
+                    "unique(" + PLAYLIST_SOURCE_ID + ", " + PLAYLIST_SONG_ID + ")" +
+                    "); ");
 
             //Copy playlists and remove duplicates
             db.execSQL("INSERT OR IGNORE INTO " + TABLE_PLAYLISTS +
