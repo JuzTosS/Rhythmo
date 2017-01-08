@@ -50,6 +50,7 @@ public class FileWasDeleted
     @Test
     public void fileWasDeleted() throws Exception
     {
+        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
         //Adding playlist
         openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());
         onView(withText(mActivityRule.getActivity().getString(R.string.new_playlist))).perform(click());

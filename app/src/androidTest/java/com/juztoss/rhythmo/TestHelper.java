@@ -309,7 +309,7 @@ public class TestHelper
         else
             prefix = "140 - ";
 
-        return prefix + "audio" + Integer.toString(songNumber);
+        return prefix + "audio" + Integer.toString(songNumber) + ".mp3";
     }
 
     public static ViewAction clickChildViewWithId(final int id)
