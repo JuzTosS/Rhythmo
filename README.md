@@ -17,8 +17,8 @@ The idea is to create an audio player that can provide songs to the user by BPM
  - Auto time stretching songs to be fit in filter parameters
 
 
-## Participate in alpha testing
-If you want to participate in alpa testing, please follow the [link](https://play.google.com/apps/testing/com.juztoss.bpmplayer.dev)
+## Participate in beta testing
+If you want to participate in beta testing, please follow the [link](https://play.google.com/apps/testing/com.juztoss.bpmplayer.dev)
 
 
 ## License
