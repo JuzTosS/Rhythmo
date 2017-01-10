@@ -2,14 +2,12 @@ package com.juztoss.rhythmo.views.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -72,6 +70,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     ViewPager mPlaylistsPager;
     private FloatingActionButton mFab;
     ActionBar mActionBar;
+    EditText mEditText;
     private TextView mMinBPMField;
     private TextView mMaxBPMField;
 
@@ -247,6 +246,9 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             public void onTabSelected(TabLayout.Tab tab)
             {
                 mPlaylistsPager.setCurrentItem(tab.getPosition());
+                if(mIsSearchEnabled)
+                    getCurrentViewedPlaylist().setWordFilter(mEditText.getText().toString());
+
                 updateFab();
             }
 
@@ -434,19 +436,19 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setDisplayShowHomeEnabled(true);
 
-        EditText editText = (EditText) mSearchBarLayout.findViewById(R.id.search_field);
-        editText.addTextChangedListener(mSearchStringChanged);
+        mEditText = (EditText) mSearchBarLayout.findViewById(R.id.search_field);
+        mEditText.addTextChangedListener(mSearchStringChanged);
 
         mActionBar.setCustomView(mSearchBarLayout, mActionBarLayoutParams);
         Toolbar parent = (Toolbar) mSearchBarLayout.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
         invalidateOptionsMenu();
-        editText.requestFocus();
+        mEditText.requestFocus();
         final InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+        inputMethodManager.showSoftInput(mEditText, InputMethodManager.SHOW_IMPLICIT);
 
-        getCurrentViewedPlaylist().setWordFilter(editText.getText().toString());
+        getCurrentViewedPlaylist().setWordFilter(mEditText.getText().toString());
     }
 
     private void enableDefaultActionBarAndDisableSearch()
