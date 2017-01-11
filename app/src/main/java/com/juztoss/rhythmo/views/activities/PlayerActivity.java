@@ -316,9 +316,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             if (getIntent().getExtras() == null || !getIntent().getBooleanExtra(DISABLE_RESCAN_ON_LAUNCHING, false))
             {
                 Intent intent = new Intent(this, BuildMusicLibraryService.class);
-                intent.putExtra(BuildMusicLibraryService.SILENT_MODE, true);
-                intent.putExtra(BuildMusicLibraryService.DONT_INTERRUPT_EXIST_TASKS, true);
-                intent.putExtra(BuildMusicLibraryService.DONT_DETECT_BPM, true);
+                intent.putExtra(BuildMusicLibraryService.SCAN_MEDIA_STORE, true);
                 startService(intent);
             }
         }
@@ -354,6 +352,10 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         {
             mApp.getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_HAD_STARTED, true).apply();
             Intent intent = new Intent(getApplicationContext(), BuildMusicLibraryService.class);
+            intent.putExtra(BuildMusicLibraryService.SCAN_MEDIA_STORE, true);
+            intent.putExtra(BuildMusicLibraryService.DETECT_BPM, true);
+            intent.putExtra(BuildMusicLibraryService.ENABLE_NOTIFICATIONS, true);
+            intent.putExtra(BuildMusicLibraryService.STOP_CURRENTLY_ECECUTING, true);
             getApplicationContext().startService(intent);
         }
     }
@@ -404,8 +406,9 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     private void rescanBPMForTheCurrentPlaylist()
     {
         Intent intent = new Intent(this, BuildMusicLibraryService.class);
-        intent.putExtra(BuildMusicLibraryService.PLAYLIST_INDEX, mPlaylistsPager.getCurrentItem());
-        intent.putExtra(BuildMusicLibraryService.RESET_BPM, true);
+        intent.putExtra(BuildMusicLibraryService.DETECT_BPM_IN_PLAYLIST, mPlaylistsPager.getCurrentItem());
+        intent.putExtra(BuildMusicLibraryService.STOP_CURRENTLY_ECECUTING, true);
+        intent.putExtra(BuildMusicLibraryService.ENABLE_NOTIFICATIONS, true);
         startService(intent);
     }
 

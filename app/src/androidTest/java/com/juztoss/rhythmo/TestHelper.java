@@ -108,7 +108,9 @@ public class TestHelper
 
         final CountDownLatch latch = new CountDownLatch(2);
         final RhythmoApp app = (RhythmoApp) InstrumentationRegistry.getTargetContext().getApplicationContext();
-        AsyncBuildLibraryTask taskBuildLib = new AsyncBuildLibraryTask(app, true, Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER + "/");
+        app.getDatabaseHelper().clearAll(app.getDatabaseHelper().getWritableDatabase());
+
+        AsyncBuildLibraryTask taskBuildLib = new AsyncBuildLibraryTask(app, Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER + "/");
         taskBuildLib.setOnBuildLibraryProgressUpdate(new AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate()
         {
             @Override

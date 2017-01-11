@@ -7,7 +7,7 @@ import com.juztoss.rhythmo.presenters.RhythmoApp;
  * Created by JuzTosS on 5/27/2016.
  */
 
-public class AsyncDetectBpmByDataTask extends AsyncDetectBpmTaskAbstract<OnDetectBpmByDataUpdate>
+public class AsyncDetectBpmByDataTask extends AsyncDetectBpmTaskAbstract
 {
     public AsyncDetectBpmByDataTask(RhythmoApp app, int playlistIndex, boolean resetBpm)
     {

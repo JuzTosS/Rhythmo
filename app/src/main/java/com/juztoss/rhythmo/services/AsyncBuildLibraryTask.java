@@ -37,8 +37,6 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     private final String ERROR_OCCURRED = "ErrorOccurred";
     private final int MAX_PROGRESS_VALUE = 1000000;
     private RhythmoApp mApp;
-    private boolean mClear = false;
-    private boolean mDropTable = false;
     @Nullable
     private String mFolder;
     public ArrayList<OnBuildLibraryProgressUpdate> mBuildLibraryProgressUpdate;
@@ -47,23 +45,20 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
     private PowerManager.WakeLock mWakeLock;
 
-    public AsyncBuildLibraryTask(RhythmoApp app, boolean dropTable, @Nullable String folder)
+    public AsyncBuildLibraryTask(RhythmoApp app, @Nullable String folder)
     {
         mApp = app;
-        mDropTable = dropTable;
         mFolder = folder;
         mBuildLibraryProgressUpdate = new ArrayList<>();
     }
 
-    public AsyncBuildLibraryTask(RhythmoApp app, boolean clear)
+    public AsyncBuildLibraryTask(RhythmoApp app)
     {
-        this(app, clear, null);
+        this(app, null);
     }
 
     public interface OnBuildLibraryProgressUpdate
     {
-        void onStartBuildingLibrary(AsyncBuildLibraryTask task);
-
         void onProgressUpdate(AsyncBuildLibraryTask task,
                               int overallProgress, int maxProgress,
                               boolean mediaStoreTransferDone);
@@ -76,11 +71,6 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     protected void onPreExecute()
     {
         super.onPreExecute();
-
-        if (mBuildLibraryProgressUpdate != null)
-            for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
-                if (mBuildLibraryProgressUpdate.get(i) != null)
-                    mBuildLibraryProgressUpdate.get(i).onStartBuildingLibrary(this);
 
         PowerManager pm = (PowerManager) mApp.getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
@@ -164,19 +154,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     {
         try
         {
-            Log.d(AsyncBuildLibraryTask.class.toString(), "Start updating the library, clear = " + mClear + ", songs in mediaStore: " + mediaStoreCursor.getCount());
-
-            if(mDropTable)
-            {
-                mApp.getDatabaseHelper().clearAll(mApp.getDatabaseHelper().getWritableDatabase());
-            }
-            else if (mClear)
-            {
-                ContentValues values = new ContentValues();
-                values.put(DatabaseHelper.MUSIC_LIBRARY_BPMX10, 0);
-                values.put(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, 0);
-                mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, values, null, null);
-            }
+            Log.d(AsyncBuildLibraryTask.class.toString(), "Start updating the library, songs in mediaStore: " + mediaStoreCursor.getCount());
 
             mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
 

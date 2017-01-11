@@ -17,29 +17,32 @@ import java.util.List;
 /**
  * Created by JuzTosS on 6/26/2016.
  */
-public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbstract.OnDetectBpmUpdate> extends AsyncTask<String, String, Void>
+public abstract class AsyncDetectBpmTaskAbstract extends AsyncTask<String, String, Void>
 {
-    protected final String UPDATE_COMPLETE = "UpdateComplete";
+    private final String UPDATE_COMPLETE = "UpdateComplete";
     protected RhythmoApp mApp;
-    int mMaxProgressValue;
-    int mOverallProgress;
-    int mPlaylistIndex;
-    boolean mResetBpm;
-    public List<T> mBuildLibraryProgressUpdate;
+    private int mMaxProgressValue;
+    private int mOverallProgress;
+    private int mPlaylistIndex;
+    private boolean mResetBpm;
+    private List<Listener> mBuildLibraryProgressUpdate;
 
 
     private PowerManager.WakeLock mWakeLock;
 
-    public interface OnDetectBpmUpdate<X extends AsyncDetectBpmTaskAbstract>
+    @Override
+    protected void onProgressUpdate(String... progressParams)
     {
-        void onStartBuildingLibrary(X task);
-
-        void onProgressUpdate(X task,
-                              int overallProgress, int maxProgress,
-                              boolean mediaStoreTransferDone);
-
-        void onFinishBuildingLibrary(X task);
-
+        super.onProgressUpdate(progressParams);
+        if (mBuildLibraryProgressUpdate != null)
+            for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
+            {
+                if (mBuildLibraryProgressUpdate.get(i) != null)
+                {
+                    boolean done = progressParams.length > 0 && progressParams[0].equals(UPDATE_COMPLETE);
+                    mBuildLibraryProgressUpdate.get(i).onProgressUpdate(mOverallProgress, mMaxProgressValue, done);
+                }
+            }
     }
 
     /**
@@ -177,32 +180,11 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
     {
         super.onPreExecute();
 
-
-        if (mBuildLibraryProgressUpdate != null)
-            for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
-                if (mBuildLibraryProgressUpdate.get(i) != null)
-                    mBuildLibraryProgressUpdate.get(i).onStartBuildingLibrary(this);
-
         PowerManager pm = (PowerManager) mApp.getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 getClass().getName());
         mWakeLock.acquire();
 
-    }
-
-    @Override
-    protected void onProgressUpdate(String... progressParams)
-    {
-        super.onProgressUpdate(progressParams);
-        if (mBuildLibraryProgressUpdate != null)
-            for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
-            {
-                if (mBuildLibraryProgressUpdate.get(i) != null)
-                {
-                    boolean done = progressParams.length > 0 && progressParams[0].equals(UPDATE_COMPLETE);
-                    mBuildLibraryProgressUpdate.get(i).onProgressUpdate(this, mOverallProgress, mMaxProgressValue, done);
-                }
-            }
     }
 
     @Override
@@ -213,16 +195,29 @@ public abstract class AsyncDetectBpmTaskAbstract<T extends AsyncDetectBpmTaskAbs
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
                 if (mBuildLibraryProgressUpdate.get(i) != null)
-                    mBuildLibraryProgressUpdate.get(i).onFinishBuildingLibrary(this);
+                    mBuildLibraryProgressUpdate.get(i).onFinish();
 
     }
 
     /**
      * Setter methods.
      */
-    public void setOnBuildLibraryProgressUpdate(T buildLibraryProgressUpdate)
+    public void setOnBuildLibraryProgressUpdate(Listener buildLibraryProgressUpdate)
     {
         if (buildLibraryProgressUpdate != null)
             mBuildLibraryProgressUpdate.add(buildLibraryProgressUpdate);
+    }
+
+    public static abstract class Listener
+    {
+        void onProgressUpdate(int overallProgress, int maxProgress,
+                              boolean mediaStoreTransferDone)
+        {
+        }
+
+        void onFinish()
+        {
+        }
+
     }
 }

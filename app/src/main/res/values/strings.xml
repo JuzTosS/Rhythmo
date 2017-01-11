@@ -1,5 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="building_music_library">Building music library.\nTap to stop.</string>
+    <string name="speeding_up">Speeding up</string>
+    <string name="looking_for_new_songs">Looking for new songs</string>
     <string name="settings_title">Settings</string>
     <string name="new_playlist">New playlist</string>
     <string name="remove_playlist">Remove playlist</string>
@@ -10,8 +11,9 @@
     <string name="building_lib_already_started">Already started!</string>
     <string name="drag_handles_welcome">Drag handles to enable BPM filter</string>
     <string name="select_folder">Select folder</string>
-    <string name="detect_bpm_by_name">Detecting bpm from names.\nTap to stop.</string>
-    <string name="detect_bpm_by_data" tools:ignore="PluralsCandidate">Detecting bpm from audio data.\n%1$d of %2$d songs.\nTap to stop.</string>
+    <string name="detect_bpm" tools:ignore="PluralsCandidate">Detecting bpm</string>
+    <string name="detect_bpm_progress_notification" tools:ignore="PluralsCandidate">Detecting bpm. %1$d of %2$d songs.</string>
+    <string name="detect_bpm_progress" tools:ignore="PluralsCandidate">Detecting bpm.\n%1$d of %2$d songs.\nTap to stop.</string>
     <string name="folder_desc">"Files: %d"</string>
     <string name="pref_music_library">Music library</string>
     <string name="pref_bpm_auto_shift_range">BPM auto shift</string>

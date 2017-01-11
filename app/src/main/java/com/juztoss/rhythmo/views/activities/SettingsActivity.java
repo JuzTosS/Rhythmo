@@ -143,6 +143,10 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     if (!((RhythmoApp) getActivity().getApplicationContext()).isBuildingLibrary())
                     {
                         Intent intent = new Intent(getActivity().getApplicationContext(), BuildMusicLibraryService.class);
+                        intent.putExtra(BuildMusicLibraryService.SCAN_MEDIA_STORE, true);
+                        intent.putExtra(BuildMusicLibraryService.DETECT_BPM, true);
+                        intent.putExtra(BuildMusicLibraryService.ENABLE_NOTIFICATIONS, true);
+                        intent.putExtra(BuildMusicLibraryService.STOP_CURRENTLY_ECECUTING, true);
                         getActivity().getApplicationContext().startService(intent);
                     }
                     else

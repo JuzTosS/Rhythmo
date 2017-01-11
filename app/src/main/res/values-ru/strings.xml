@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="building_music_library">Building music library.\nTap to stop.</string>
     <string name="settings_title">Настройки</string>
     <string name="new_playlist">Создать плейлист</string>
     <string name="remove_playlist">Удалить плейлист</string>
@@ -11,8 +10,6 @@
     <string name="building_lib_already_started">В процессе!</string>
     <string name="drag_handles_welcome">Двигайте ползунки чтобы включить BPM фильтр</string>
     <string name="select_folder">Выберите папку</string>
-    <string name="detect_bpm_by_name">Определяю BPM из имён песен.\nНажмите для прерывания.</string>
-    <string name="detect_bpm_by_data" tools:ignore="PluralsCandidate">Определяю BPM песен.\n%1$d из %2$d песен.\nНажмите для прерывания.</string>
     <string name="folder_desc">"Файлы: %d"</string>
     <string name="pref_music_library">Музыка</string>
     <string name="pref_bpm_auto_shift_range">BPM автоподстройка</string>

@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Toast;
 
+import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.services.BuildMusicLibraryService;
 
 /**
@@ -32,8 +34,10 @@ public class ClearLibraryPreference extends Preference implements View.OnLongCli
     public boolean onLongClick(View v)
     {
         Intent intent = new Intent(getContext(), BuildMusicLibraryService.class);
-        intent.putExtra(BuildMusicLibraryService.STOP_AND_CLEAR, true);
+        intent.putExtra(BuildMusicLibraryService.CLEAR_BPM, true);
+        intent.putExtra(BuildMusicLibraryService.STOP_CURRENTLY_ECECUTING, true);
         getContext().startService(intent);
+        Toast.makeText(getContext().getApplicationContext(), R.string.clear_library_finished, Toast.LENGTH_SHORT).show();
         return true;
     }
 }
