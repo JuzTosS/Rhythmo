@@ -22,7 +22,7 @@ public class PlaybackNotification
     static Notification create(PlaybackService service)
     {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(service);
-        notificationBuilder.setSmallIcon(R.drawable.logo_icon_transparent_48);
+        notificationBuilder.setSmallIcon(R.drawable.ic_notification);
 
 
         Intent launchNowPlayingIntent = new Intent(service, PlayerActivity.class);

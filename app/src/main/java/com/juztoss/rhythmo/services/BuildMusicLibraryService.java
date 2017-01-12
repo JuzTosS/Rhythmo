@@ -309,7 +309,7 @@ public class BuildMusicLibraryService extends Service
         if(!mEnableNotifications) return;
 
         mBuilder = new NotificationCompat.Builder(mApp);
-        mBuilder.setSmallIcon(R.drawable.logo_icon_transparent_48);
+        mBuilder.setSmallIcon(R.drawable.ic_notification);
         mBuilder.setContentTitle(header);
         mBuilder.setTicker(header);
         mBuilder.setContentText("");
