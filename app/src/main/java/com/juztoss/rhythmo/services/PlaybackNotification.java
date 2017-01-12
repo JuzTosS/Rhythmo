@@ -19,7 +19,7 @@ import java.util.Locale;
  */
 public class PlaybackNotification
 {
-    static Notification create(PlaybackService service)
+    public static Notification create(PlaybackService service)
     {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(service);
         notificationBuilder.setSmallIcon(R.drawable.ic_notification);

@@ -10,7 +10,7 @@ import com.juztoss.rhythmo.models.DatabaseHelper;
  */
 public class MusicLibraryHelper
 {
-    RhythmoApp mApp;
+    private RhythmoApp mApp;
     public MusicLibraryHelper(RhythmoApp rhythmoApp)
     {
         mApp = rhythmoApp;

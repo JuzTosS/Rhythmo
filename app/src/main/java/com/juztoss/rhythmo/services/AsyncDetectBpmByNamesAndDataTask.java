@@ -18,7 +18,7 @@ public class AsyncDetectBpmByNamesAndDataTask extends AsyncDetectBpmTaskAbstract
     }
 
     @Override
-    double detectBpm(double oldBpm, String fullPath, String name)
+    public double detectBpm(double oldBpm, String fullPath, String name)
     {
         double newBpm = mNeedToGetBPMByNames ? BpmDetector.detectFromName(name) : 0;
         if(newBpm <= 0)

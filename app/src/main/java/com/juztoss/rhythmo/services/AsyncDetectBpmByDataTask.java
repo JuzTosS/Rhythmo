@@ -15,7 +15,7 @@ public class AsyncDetectBpmByDataTask extends AsyncDetectBpmTaskAbstract
     }
 
     @Override
-    double detectBpm(double oldBpm, String fullPath, String name)
+    public double detectBpm(double oldBpm, String fullPath, String name)
     {
         if(oldBpm <= 0)
             return BpmDetector.detectFromData(fullPath);

@@ -31,11 +31,11 @@ public class SingleSongActivity extends BasePlayerActivity
     private long mLastTapTime = 0;
     private long mTapsCount = 0;
 
-    SeekBar mSeekBar;
-    Composition mComposition;
-    Button mButtonHalf;
-    Button mButtonDouble;
-    TextView mBpmField;
+    private SeekBar mSeekBar;
+    private Composition mComposition;
+    private Button mButtonHalf;
+    private Button mButtonDouble;
+    private TextView mBpmField;
     private static final int DETECT_WINDOW_SIZE = 10;
     public static final String SONG_ID = "SongId";
 

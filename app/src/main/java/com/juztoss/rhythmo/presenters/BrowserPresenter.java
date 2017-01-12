@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class BrowserPresenter extends BasePresenter implements LoaderManager.LoaderCallbacks<List<BaseExplorerElement>>
 {
-    BaseExplorerElement mCurrent;
+    private BaseExplorerElement mCurrent;
     private OnDataChangedListener mListener;
 
     private List<BaseExplorerElement> mData;

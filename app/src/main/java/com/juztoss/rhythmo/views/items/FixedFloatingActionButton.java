@@ -26,7 +26,7 @@ public class FixedFloatingActionButton extends FloatingActionButton
     }
 
     private boolean mFabShouldBeShown;
-    FloatingActionButton.OnVisibilityChangedListener mListener = new FloatingActionButton.OnVisibilityChangedListener() {
+    private FloatingActionButton.OnVisibilityChangedListener mListener = new FloatingActionButton.OnVisibilityChangedListener() {
         @Override
         public void onShown(FloatingActionButton fab) {
             super.onShown(fab);

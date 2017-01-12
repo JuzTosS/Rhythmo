@@ -28,7 +28,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -480,7 +479,7 @@ public class RangeSeekBar<T extends Number> extends ImageView
     /**
      * This is called when the user has started touching this widget.
      */
-    void onStartTrackingTouch()
+    private void onStartTrackingTouch()
     {
         mIsDragging = true;
     }
@@ -488,7 +487,7 @@ public class RangeSeekBar<T extends Number> extends ImageView
     /**
      * This is called when the user either releases his touch or the touch is canceled.
      */
-    void onStopTrackingTouch()
+    private void onStopTrackingTouch()
     {
         mIsDragging = false;
     }

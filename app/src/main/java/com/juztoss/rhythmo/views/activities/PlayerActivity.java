@@ -67,10 +67,10 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     private TextView mTimeLeft;
     private SeekBar mSeekbar;
     private RangeSeekBar<Integer> mRangeSeekbar;
-    ViewPager mPlaylistsPager;
+    private ViewPager mPlaylistsPager;
     private FloatingActionButton mFab;
-    ActionBar mActionBar;
-    EditText mEditText;
+    private ActionBar mActionBar;
+    private EditText mEditText;
     private TextView mMinBPMField;
     private TextView mMaxBPMField;
 
@@ -633,7 +633,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         updateAll(false);
     }
 
-    BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
+    private BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
     {
         @Override
         public void onReceive(Context context, Intent intent)

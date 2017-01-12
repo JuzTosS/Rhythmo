@@ -31,7 +31,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
     private Playlist mPlaylist;
     private Cursor mCursor;
 
-    BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
+    private BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
     {
         @Override
         public void onReceive(Context context, Intent intent)

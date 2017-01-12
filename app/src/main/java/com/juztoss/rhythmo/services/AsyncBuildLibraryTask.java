@@ -187,7 +187,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                 }
 
                 public Long mId;
-                Node mParent;
+                public Node mParent;
                 public Map<String, Node> mChildren = new HashMap<>();
 
                 public Node get(String folder)

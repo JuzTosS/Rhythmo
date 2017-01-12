@@ -1,7 +1,6 @@
 package com.juztoss.rhythmo.models;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public abstract class BaseExplorerElement implements Comparable<BaseExplorerElem
     /**
      * Priorty for sorting elements
      */
-    abstract ExplorerPriority priority();
+    public abstract ExplorerPriority priority();
 
     /**
      * Must return children of this element

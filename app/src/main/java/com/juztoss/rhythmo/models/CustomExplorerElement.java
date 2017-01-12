@@ -40,7 +40,7 @@ public class CustomExplorerElement extends BaseExplorerElement
     }
 
     @Override
-    ExplorerPriority priority()
+    public ExplorerPriority priority()
     {
         return mPriority;
     }

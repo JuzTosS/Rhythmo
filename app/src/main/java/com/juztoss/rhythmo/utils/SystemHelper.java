@@ -10,8 +10,6 @@ import android.support.annotation.ColorInt;
 import android.util.TypedValue;
 
 import com.juztoss.rhythmo.R;
-import com.juztoss.rhythmo.presenters.RhythmoApp;
-import com.juztoss.rhythmo.views.activities.PlayerActivity;
 
 import java.io.File;
 import java.io.FileFilter;

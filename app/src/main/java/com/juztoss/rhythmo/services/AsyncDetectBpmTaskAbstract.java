@@ -75,9 +75,9 @@ public abstract class AsyncDetectBpmTaskAbstract extends AsyncTask<String, Strin
         return null;
     }
 
-    abstract double detectBpm(double oldBpm, String fullPath, String name);
+    public abstract double detectBpm(double oldBpm, String fullPath, String name);
 
-    private void detectSongsBpm()
+        private void detectSongsBpm()
     {
         Cursor songsCursor;
 

@@ -1,6 +1,5 @@
 package com.juztoss.rhythmo.views.adapters;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -39,7 +38,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder
     private TextView mHeaderLabel;
     private LinearLayout mRoot;
     private IOnItemClickListener mListener;
-    PopupMenu mPopupMenu;
+    private PopupMenu mPopupMenu;
     private boolean mIsFolderHeader;
     private String mFolderName;
 

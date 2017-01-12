@@ -122,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
      */
     public static class PrefsFragment extends PreferenceFragment
     {
-        MusicLibraryPreference mMusicLibraryPreference;
+        private MusicLibraryPreference mMusicLibraryPreference;
 
         @Override
         public void onCreate(Bundle savedInstanceState)

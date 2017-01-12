@@ -50,12 +50,6 @@ public class PathStoreTest
     }
 
     @Test
-    public void getAddState() throws Exception
-    {
-
-    }
-
-    @Test
     public void addAndRemove() throws Exception
     {
         PathStore store = new PathStore();

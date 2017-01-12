@@ -24,7 +24,7 @@ public class MockExplorerElement extends BaseExplorerElement
     }
 
     @Override
-    ExplorerPriority priority()
+    public ExplorerPriority priority()
     {
         return null;
     }

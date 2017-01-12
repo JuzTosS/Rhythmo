@@ -92,7 +92,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     private RepeatMode mRepeatMode = RepeatMode.DISABLED;
     private List<Long> mAlreadyPlayedInShuffleMode = new ArrayList<>();
 
-    Handler mHandler;
+    private Handler mHandler;
     private Toast mToast;
 
     private MediaSessionCompat mMediaSession;
@@ -803,14 +803,17 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     {
         mCurrentlyPlayingBPM = shiftedBpm;
 
-        if (bpm <= 10 || shiftedBpm <= 10)
+        if (bpm <= 10 || mCurrentlyPlayingBPM <= 10)
         {
-            bpm = 10;
-            shiftedBpm = 10;
+            mPlayer.setBPM(10);
+            mPlayer.setNewBPM(10);
+        }
+        else
+        {
+            mPlayer.setBPM(bpm);
+            mPlayer.setNewBPM(shiftedBpm);
         }
 
-        mPlayer.setBPM(bpm);
-        mPlayer.setNewBPM(shiftedBpm);
         updateUI(false);
     }
 
