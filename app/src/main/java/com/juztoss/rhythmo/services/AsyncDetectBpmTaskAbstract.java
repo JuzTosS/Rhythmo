@@ -115,7 +115,6 @@ public abstract class AsyncDetectBpmTaskAbstract extends AsyncTask<String, Strin
             int pathIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH);
             int bpmIndex = songsCursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10);
 
-            long lastUpdated = System.currentTimeMillis();
             for (int i = 0; i < songsCursor.getCount(); i++)
             {
                 if(isCancelled())
@@ -149,6 +148,7 @@ public abstract class AsyncDetectBpmTaskAbstract extends AsyncTask<String, Strin
                 if(!mResetBpm && bpmX10 == hadDetectedBpm)
                 {
                     mOverallProgress++;
+                    publishProgressDelayed();
                     continue;
                 }
                 ContentValues values = new ContentValues();
@@ -159,12 +159,8 @@ public abstract class AsyncDetectBpmTaskAbstract extends AsyncTask<String, Strin
                     affectedCount++;
 
                 mOverallProgress++;
-                long now = System.currentTimeMillis();
-                if (now - lastUpdated > 1000)
-                {
-                    lastUpdated = now;
-                    publishProgress();
-                }
+
+                publishProgressDelayed();
             }
         }
         finally
@@ -173,6 +169,17 @@ public abstract class AsyncDetectBpmTaskAbstract extends AsyncTask<String, Strin
         }
 
         Log.d(AsyncDetectBpmTaskAbstract.class.toString(), "affectedCount=" + affectedCount);
+    }
+
+    private long mLastUpdated = 0;
+    protected void publishProgressDelayed()
+    {
+        long now = System.currentTimeMillis();
+        if (now - mLastUpdated > 1000 || mLastUpdated <= 0)
+        {
+            mLastUpdated = now;
+            publishProgress();
+        }
     }
 
     @Override

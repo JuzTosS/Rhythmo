@@ -105,8 +105,7 @@ public class LocalPlaylistSongsSource extends AbstractSongsSource
                     ContentValues values = new ContentValues();
                     values.put(DatabaseHelper.PLAYLIST_SOURCE_ID, mId);
                     values.put(DatabaseHelper.PLAYLIST_SONG_ID, songId);
-                    long result = mApp.getDatabaseHelper().getWritableDatabase().insertWithOnConflict(DatabaseHelper.TABLE_PLAYLISTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
-                    Log.d("::::", Long.toString(result));
+                    mApp.getDatabaseHelper().getWritableDatabase().insertWithOnConflict(DatabaseHelper.TABLE_PLAYLISTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 } while (songIds.moveToNext());
 
                 mApp.getDatabaseHelper().getWritableDatabase().setTransactionSuccessful();

@@ -103,7 +103,7 @@ public class BuildMusicLibraryService extends Service
 
         boolean clearBpm = intent.getExtras().getBoolean(CLEAR_BPM, false);
         boolean stopCurrentlyExecuting = intent.getExtras().getBoolean(STOP_CURRENTLY_ECECUTING, false);
-        mEnableNotifications = intent.getExtras().getBoolean(ENABLE_NOTIFICATIONS, false);
+        boolean enableNoticications = intent.getExtras().getBoolean(ENABLE_NOTIFICATIONS, false);
         boolean detectBpm = intent.getExtras().getBoolean(DETECT_BPM, false);
         boolean scanMediaStore = intent.getExtras().getBoolean(SCAN_MEDIA_STORE, false);
         boolean scanStorage = intent.getExtras().getBoolean(SCAN_STORAGE, false);
@@ -118,6 +118,7 @@ public class BuildMusicLibraryService extends Service
 
         mApp.setIsBuildingLibrary(true);
 
+        mEnableNotifications = enableNoticications;
         if(mEnableNotifications)
         {
             Toast.makeText(this, getString(R.string.build_library_started), Toast.LENGTH_LONG).show();
@@ -165,7 +166,7 @@ public class BuildMusicLibraryService extends Service
         else if(detectBpmInPlaylist >= 0)
         {
             mTaskDetectBpmByNamesAndData = new AsyncDetectBpmByNamesAndDataTask(mApp, detectBpmInPlaylist, false, needToGetBPMByNames);
-            mTaskDetectBpmByNamesAndData.setOnBuildLibraryProgressUpdate(mOnDetectBpmByNamesUpdate);
+            mTaskDetectBpmByNamesAndData.setOnBuildLibraryProgressUpdate(mOnDetectBpmByDataUpdate);
             mTasksCounter++;
             mTaskDetectBpmByNamesAndData.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
         }
@@ -187,7 +188,11 @@ public class BuildMusicLibraryService extends Service
 
     private boolean isInProgress()
     {
-        return mTaskBuildLib != null || mTaskDetectBpmByNames != null || mTaskDetectBpmByData != null;
+        return mTaskBuildLib != null
+                || mTaskDetectBpmByNames != null
+                || mTaskDetectBpmByData != null
+                || mTaskDetectBpmByNamesAndData != null
+                || mTaskClear != null;
     }
 
     private void cancelTasks()

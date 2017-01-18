@@ -11,7 +11,7 @@
     <string name="building_lib_already_started">Already started!</string>
     <string name="drag_handles_welcome">Drag handles to enable BPM filter</string>
     <string name="select_folder">Select folder</string>
-    <string name="detect_bpm" tools:ignore="PluralsCandidate">Detecting bpm</string>
+    <string name="detect_bpm">Detecting bpm</string>
     <string name="detect_bpm_progress_notification" tools:ignore="PluralsCandidate">Detecting bpm. %1$d of %2$d songs.</string>
     <string name="detect_bpm_progress" tools:ignore="PluralsCandidate">Detecting bpm.\n%1$d of %2$d songs.\nTap to stop.</string>
     <string name="folder_desc">"Files: %d"</string>
