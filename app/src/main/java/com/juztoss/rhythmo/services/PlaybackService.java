@@ -565,14 +565,17 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         if (mCurrentSongId >= 0 && getCurrentPlaylist() != null)
         {
             Composition composition = mApp.getComposition(mCurrentSongId);
-            updateMediaSessionData(composition);
-            mCurrentSongIndex = Playlist.findPositionById(getSongsList(), composition, getCurrentPlaylist().getSource().getSortType());
+            if(composition != null)
+            {
+                updateMediaSessionData(composition);
+                mCurrentSongIndex = Playlist.findPositionById(getSongsList(), composition, getCurrentPlaylist().getSource().getSortType());
+            }
         }
         else
             mCurrentSongIndex = -1;
     }
 
-    private void updateMediaSessionData(Composition composition)
+    private void updateMediaSessionData(@NonNull Composition composition)
     {
         Intent launchNowPlayingIntent = new Intent(this, PlayerActivity.class);
         PendingIntent launchNowPlayingPendingIntent = PendingIntent.getActivity(this, 4, launchNowPlayingIntent, 0);

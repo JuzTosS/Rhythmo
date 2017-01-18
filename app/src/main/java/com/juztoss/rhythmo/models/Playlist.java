@@ -1,6 +1,7 @@
 package com.juztoss.rhythmo.models;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -77,7 +78,7 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
         setNeedRebuild();
     }
 
-    public static int findPositionById(final Cursor cursor, Composition needle, final SortType sort)
+    public static int findPositionById(final Cursor cursor, @NonNull Composition needle, final SortType sort)
     {
         if(cursor == null || cursor.getCount() <= 0) return -1;
         CursorList cursorList = new CursorList(cursor);
