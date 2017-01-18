@@ -59,6 +59,7 @@
     <string name="detect_playlist_bpm">Rescan BPM in playlist</string>
     <string name="pref_theme">Color theme</string>
     <string name="pref_theme_desc">Change the player color theme</string>
+    <string name="add_songs_hint">Add songs\nto the playlist</string>
     <string-array name="theme_entries">
         <item>Red</item>
         <item>Blue</item>

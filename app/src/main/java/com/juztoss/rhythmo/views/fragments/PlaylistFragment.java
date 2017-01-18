@@ -35,6 +35,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     private LinearLayoutManager mLayoutManager;
     private int mScrollOnCreateToPosition = -1;
     private View mHeader;
+    private View mHint;
     private volatile TextView mHeaderText;
 
     private RecyclerView.OnScrollListener mOnListScrollListener = new RecyclerView.OnScrollListener()
@@ -76,7 +77,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         mHeader.setY(headerY);
     }
 
-    private void updatePlaylistHeaderVisibility()
+    private void updatePlaylistHeaderAndHintVisibility()
     {
         if (mPlaylistAdapter.getSortType() != SortType.DIRECTORY || mPlaylistAdapter.getItemCount() <= 1)//1 - for the fake item
             mHeader.setVisibility(View.GONE);
@@ -86,6 +87,8 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
             if(getView() != null)
                 updatePlaylistHeader((RecyclerView) getView().findViewById(R.id.listView));
         }
+
+        mHint.setVisibility(mPlaylistAdapter.getItemCount() <= 1 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -101,7 +104,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         @Override
         public void onDataSetChanged()
         {
-            updatePlaylistHeaderVisibility();
+            updatePlaylistHeaderAndHintVisibility();
         }
     };
 
@@ -129,6 +132,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         mPlaylistAdapter = new PlaylistAdapter((PlayerActivity) getActivity(), mApp.getPlaylists().get(playlistIndex));
         mPlaylistAdapter.setOnDataSetChanged(mOnDataSetChanged);
 
+        mHint = getView().findViewById(R.id.hint);
         mHeader = getView().findViewById(R.id.static_footer_header);
         mHeaderText = (TextView) mHeader.findViewById(R.id.static_folder_header_text);
 
@@ -140,7 +144,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         mLayoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(mLayoutManager);
 
-        updatePlaylistHeaderVisibility();
+        updatePlaylistHeaderAndHintVisibility();
         if(mScrollOnCreateToPosition >= 0)
         {
             scrollTo(mScrollOnCreateToPosition);
