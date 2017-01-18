@@ -58,4 +58,10 @@
         <item>Красная</item>
         <item>Синяя</item>
     </string-array>
+    <string name="add_songs_hint">Добавить музыку\nв плейлист</string>
+    <string name="detect_bpm">Определяю BPM</string>
+    <string name="detect_bpm_progress">Определяю BPM.\n%1$d из %2$d песен.\nНажмите для прерывания.</string>
+    <string name="detect_bpm_progress_notification">Определяю BPM. %1$d из %2$d песен.</string>
+    <string name="looking_for_new_songs">Ищу музыку</string>
+    <string name="speeding_up">Разгоняюсь</string>
 </resources>

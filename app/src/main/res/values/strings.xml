@@ -13,7 +13,7 @@
     <string name="select_folder">Select folder</string>
     <string name="detect_bpm">Detecting bpm</string>
     <string name="detect_bpm_progress_notification" tools:ignore="PluralsCandidate">Detecting bpm. %1$d of %2$d songs.</string>
-    <string name="detect_bpm_progress" tools:ignore="PluralsCandidate">Detecting bpm.\n%1$d of %2$d songs.\nTap to stop.</string>
+    <string name="detect_bpm_progress" tools:ignore="PluralsCandidate">Detecting BPM.\n%1$d of %2$d songs.\nTap to stop.</string>
     <string name="folder_desc">"Files: %d"</string>
     <string name="pref_music_library">Music library</string>
     <string name="pref_bpm_auto_shift_range">BPM auto shift</string>
