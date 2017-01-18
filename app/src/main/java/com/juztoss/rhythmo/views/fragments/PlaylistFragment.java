@@ -78,7 +78,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
 
     private void updatePlaylistHeaderVisibility()
     {
-        if (mPlaylistAdapter.getSortType() != SortType.DIRECTORY)
+        if (mPlaylistAdapter.getSortType() != SortType.DIRECTORY || mPlaylistAdapter.getItemCount() <= 1)//1 - for the fake item
             mHeader.setVisibility(View.GONE);
         else
         {

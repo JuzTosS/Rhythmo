@@ -23,7 +23,7 @@
         android:layout_height="24dp"
         android:background="?rPrimary"
         android:minHeight="10dp"
-        app:tabIndicatorColor="?rAccentPrimary"
+        app:tabIndicatorColor="?rForegroundInverted"
         app:tabIndicatorHeight="4dp"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="?rForegroundInverted"
@@ -46,6 +46,7 @@
             android:layout_margin="@dimen/fab_margin"
             android:layout_gravity="bottom|end"
             style="@style/buttonBackgroundBorderless"
+            android:tint="?rForegroundInverted"
             android:src="@drawable/ic_add_black_36dp"
             />
 
