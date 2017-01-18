@@ -26,7 +26,6 @@ public class BasePlayerActivity extends AppCompatActivity implements SharedPrefe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
-        Log.d(getClass().toString(), "onCreate()");
         SystemHelper.updateTheme(this);
         super.onCreate(savedInstanceState);
 
@@ -46,7 +45,6 @@ public class BasePlayerActivity extends AppCompatActivity implements SharedPrefe
     @Override
     protected void onDestroy()
     {
-        Log.d(getClass().toString(), "onDestroy()");
         unbindService(mServiceConnection);
         mPlaybackService = null;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -59,7 +57,6 @@ public class BasePlayerActivity extends AppCompatActivity implements SharedPrefe
         @Override
         public void onServiceConnected(ComponentName name, IBinder service)
         {
-            Log.d(BasePlayerActivity.this.getClass().toString(), "onServiceConnected");
             mPlaybackService = ((PlaybackService.PlaybackServiceBinder) service).getService();
             BasePlayerActivity.this.onServiceConnected();
         }
@@ -67,7 +64,6 @@ public class BasePlayerActivity extends AppCompatActivity implements SharedPrefe
         @Override
         public void onServiceDisconnected(ComponentName name)
         {
-            Log.d(BasePlayerActivity.this.getClass().toString(), "onServiceDisconnected");
             mPlaybackService = null;
             BasePlayerActivity.this.onServiceDisconnected();
         }

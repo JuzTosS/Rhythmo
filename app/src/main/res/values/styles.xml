@@ -1,6 +1,10 @@
 <resources>
 
-    <style name="Red" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="Red" parent="Base">
         <item name="rPrimary">#db4437</item>
         <item name="rPrimaryDark">#b93221</item>
         <item name="rBackground">#fafafa</item>
@@ -24,7 +28,7 @@
         <item name="seekbar_progress">@drawable/seekbar_progress_red</item>
     </style>
 
-    <style name="Blue" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Blue" parent="Base">
         <item name="rPrimary">#5181b8</item>
         <item name="rPrimaryDark">#3b5f87</item>
         <item name="rBackground">#fafafa</item>
@@ -60,7 +64,7 @@
         <item name="colorAccent">?rAccentPrimary</item>
     </style>
 
-    <style name="AppToolBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppToolBarTheme" parent="Base">
         <item name="colorPrimary">?rPrimary</item>
         <item name="colorPrimaryDark">?rPrimaryDark</item>
         <item name="colorAccent">?rAccentPrimary</item>

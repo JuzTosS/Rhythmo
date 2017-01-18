@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:orientation="vertical"
+    android:background="?rBackground"
     tools:context=".views.activities.PlayerActivity">
 
     <android.support.v7.widget.Toolbar

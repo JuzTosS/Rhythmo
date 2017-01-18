@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:orientation="vertical"
+    android:background="?rBackground"
     tools:context=".views.activities.SelectSongsActivity">
 
     <android.support.v7.widget.Toolbar
