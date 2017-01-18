@@ -72,7 +72,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     public static final String PLAY_PREVIOUS_ACTION = "com.juztoss.rhythmo.action.PLAY_PREVIOUS_ACTION";
     public static final String PLAY_NEW_ACTION = "com.juztoss.rhythmo.action.PLAY_NEW_ACTION";
     public static final String UPDATE_UI_ACTION = "com.juztoss.rhythmo.action.UPDATE_UI";
-    public static final String UPDATE_UI_ACTION_SCROLL_TO_CURRENT = "UpdateUIScrollToCurrent";
+    public static final String UPDATE_UI_ACTION_SCROLL_TO_CURRENT = "com.juztoss.rhythmo.action.UPDATE_UI_ACTION_SCROLL_TO_CURRENT";
 
     private static final String DEFAULT_SAMPLE_RATE = "44100";
     private static final String DEFAULT_BUFFER_SIZE = "512";

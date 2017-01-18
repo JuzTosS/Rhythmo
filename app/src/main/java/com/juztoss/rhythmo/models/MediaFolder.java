@@ -23,7 +23,13 @@ public class MediaFolder extends BaseExplorerElement
     private long mFirstId;
     private long mLastId;
     private BaseExplorerElement mParent;
+    /**
+     *  Is true if the first folder of a compacted path contains songs
+     */
     private boolean mFirstHasSongs;
+    /**
+     *  Is true if the last folder of a compacted path contains songs
+     */
     private boolean mLastHasSongs;
     private RhythmoApp mApp;
     private List<BaseExplorerElement> mCachedChildren;

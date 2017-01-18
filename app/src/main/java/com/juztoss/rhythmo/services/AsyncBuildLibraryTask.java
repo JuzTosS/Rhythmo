@@ -260,20 +260,38 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                         songsAdded++;
                 }
 
+
+                //Create the folders tree
                 Node parentNode = folderIds;
                 for (int j = 1; j < (folders.length - 1); j++)
                 {
                     String folder = folders[j];
                     if (parentNode.mChildren.containsKey(folder))
                     {
-                        parentNode = parentNode.get(folder);
-                        continue;
+                        //Set "HasSongs" to true, for the segment that already has been added to the DB
+                        if (j == (folders.length - 2))//This is the last segment
+                        {
+                            ContentValues folderValues = new ContentValues();
+                            folderValues.put(DatabaseHelper.FOLDERS_HAS_SONGS, true);
+                            mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_FOLDERS,
+                                    folderValues,
+                                    DatabaseHelper.FOLDERS_NAME + " = ? AND " + DatabaseHelper.FOLDERS_PARENT_ID + " = ? ",
+                                    new String[]{folder, parentNode.mId.toString()});
+                            break;
+                        }
+                        else
+                        {
+                            parentNode = parentNode.get(folder);
+                            continue;
+                        }
                     }
 
                     ContentValues folderValues = new ContentValues();
                     folderValues.put(DatabaseHelper.FOLDERS_NAME, folder);
 
                     folderValues.put(DatabaseHelper.FOLDERS_PARENT_ID, parentNode.mId);
+
+                    //Set "HasSongs" to true, for the segment that is new
                     if (j == (folders.length - 2))//This is the last segment
                         folderValues.put(DatabaseHelper.FOLDERS_HAS_SONGS, true);
 
