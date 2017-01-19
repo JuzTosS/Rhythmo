@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="60dp"
-             android:orientation="horizontal"
-             android:paddingLeft="10dp"
-             tools:ignore="RtlSymmetry">
+<com.juztoss.rhythmo.views.items.NotInterceptingFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                            xmlns:tools="http://schemas.android.com/tools"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="60dp"
+                                                            android:orientation="horizontal"
+                                                            app:redirectTo="@+id/scrollView"
+                                                            android:paddingLeft="10dp"
+                                                            tools:ignore="RtlSymmetry">
 
 
 
@@ -50,30 +51,39 @@
             android:layout_margin="10dp"
             android:background="?rColorEdgeEffectInverted"/>
 
-
-        <LinearLayout
+        <HorizontalScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:id="@id/scrollView"
+            android:requiresFadingEdge="horizontal"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="none">
 
-            <TextView
-                android:id="@+id/first_header_line"
-                style="@style/SongNameTextAppearance"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="?rForegroundInverted"
-                />
+                android:layout_height="match_parent"
 
-            <TextView
-                android:id="@+id/second_header_line"
-                style="@style/SongDescriptionTextAppearance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="?rForegroundInverted"/>
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/first_header_line"
+                    style="@style/SongNameTextAppearance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?rForegroundInverted"
+                    />
+
+                <TextView
+                    android:id="@+id/second_header_line"
+                    style="@style/SongDescriptionTextAppearance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?rForegroundInverted"/>
+
+            </LinearLayout>
+        </HorizontalScrollView>
 
     </LinearLayout>
 
@@ -96,4 +106,4 @@
             app:srcCompat="@drawable/logo_title_transparent"
             android:id="@+id/imageView3"/>
     </LinearLayout>
-</FrameLayout>
+</com.juztoss.rhythmo.views.items.NotInterceptingFrameLayout>

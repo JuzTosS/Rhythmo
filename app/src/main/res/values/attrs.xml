@@ -51,6 +51,9 @@
         <attr name="activateOnDefaultValues" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="NotInterceptingFrameLayout">
+        <attr name="redirectTo" format="reference"/>
+    </declare-styleable>
     <attr name="rPrimary" format="reference|color"/>
     <attr name="rPrimaryDark" format="reference|color"/>
     <attr name="rBackground" format="reference|color"/>

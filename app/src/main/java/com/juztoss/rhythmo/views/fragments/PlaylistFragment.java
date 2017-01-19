@@ -88,7 +88,10 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
                 updatePlaylistHeader((RecyclerView) getView().findViewById(R.id.listView));
         }
 
-        mHint.setVisibility(mPlaylistAdapter.getItemCount() <= 1 ? View.VISIBLE : View.GONE);
+        if(mApp.getPlaylists().get(mPlaylistIndex).getSource().isModifyAvailable() && mPlaylistAdapter.getItemCount() <= 1)
+            mHint.setVisibility(View.VISIBLE);
+        else
+            mHint.setVisibility(View.GONE);
     }
 
     @Override
