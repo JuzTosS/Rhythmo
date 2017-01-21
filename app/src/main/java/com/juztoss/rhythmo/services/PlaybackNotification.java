@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
@@ -19,8 +20,13 @@ import java.util.Locale;
  */
 public class PlaybackNotification
 {
+    @Nullable
     public static Notification create(PlaybackService service)
     {
+        Composition composition = ((RhythmoApp) service.getApplication()).getComposition(service.currentSongId());
+        if(composition == null)
+            return null;
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(service);
         notificationBuilder.setSmallIcon(R.drawable.ic_notification);
 
@@ -35,14 +41,9 @@ public class PlaybackNotification
         else
             notificationView.setImageViewResource(R.id.notification_pause, R.drawable.ic_play_arrow_black_48dp);
 
-        Composition composition = ((RhythmoApp) service.getApplication()).getComposition(service.currentSongId());
-
-        if (composition != null)
-        {
-            notificationView.setTextViewText(R.id.first_line, composition.name());
-            notificationView.setTextViewText(R.id.second_line, composition.getFolder());
-            notificationView.setTextViewText(R.id.bpm_label, String.format(Locale.US, "%.1f", service.getCurrentlyPlayingBPM()));
-        }
+        notificationView.setTextViewText(R.id.first_line, composition.name());
+        notificationView.setTextViewText(R.id.second_line, composition.getFolder());
+        notificationView.setTextViewText(R.id.bpm_label, String.format(Locale.US, "%.1f", service.getCurrentlyPlayingBPM()));
 
         Intent switchPlaybackIntent = new Intent(service, PlaybackService.class);
         switchPlaybackIntent.setAction(PlaybackService.ACTION_COMMAND);

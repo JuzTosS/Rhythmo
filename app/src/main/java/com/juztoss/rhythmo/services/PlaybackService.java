@@ -1,6 +1,7 @@
 package com.juztoss.rhythmo.services;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -300,7 +301,9 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         broadcastManager.sendBroadcast(intent);
 
         NotificationManager notificationManager = (NotificationManager) mApp.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_ID, PlaybackNotification.create(this));
+        Notification notification = PlaybackNotification.create(this);
+        if(notification != null)
+            notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
     private synchronized void putAction(BaseAction action)
@@ -451,41 +454,37 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
 
         super.onStartCommand(intent, flags, startId);
 
-        if (intent != null)
+        if (intent != null && ACTION_COMMAND.equals(intent.getAction()))
         {
-            String action = intent.getAction();
-            if (ACTION_COMMAND.equals(action))
+            registerNoisyReceiver();
+
+            mHandler.removeCallbacksAndMessages(null);
+            String command = intent.getStringExtra(ACTION_NAME);
+            Log.v(getClass().toString(), "onStartCommand command: " + command);
+            if (PAUSE_PLAYBACK_ACTION.equals(command))
             {
-                mHandler.removeCallbacksAndMessages(null);
-                String command = intent.getStringExtra(ACTION_NAME);
-                Log.v(getClass().toString(), "onStartCommand command: " + command);
-                if (PAUSE_PLAYBACK_ACTION.equals(command))
-                {
-                    pausePlayback();
-                }
-                else if (PLAY_NEXT_ACTION.equals(command))
-                {
-                    gotoNext(true);
-                }
-                else if (PLAY_PREVIOUS_ACTION.equals(command))
-                {
-                    gotoPrevious(true);
-                }
-                else if (SWITCH_PLAYBACK_ACTION.equals(command))
-                {
-                    togglePlaybackState();
-                }
-                else if (PLAY_NEW_ACTION.equals(command))
-                {
-                    long songId = intent.getLongExtra(ACTION_SONG_ID, -1);
-                    int playlistIndex = intent.getIntExtra(ACTION_PLAYLIST_INDEX, 0);
-                    clearQueue();
-                    setSource(playlistIndex, songId, false);
-                }
+                pausePlayback();
+            }
+            else if (PLAY_NEXT_ACTION.equals(command))
+            {
+                gotoNext(true);
+            }
+            else if (PLAY_PREVIOUS_ACTION.equals(command))
+            {
+                gotoPrevious(true);
+            }
+            else if (SWITCH_PLAYBACK_ACTION.equals(command))
+            {
+                togglePlaybackState();
+            }
+            else if (PLAY_NEW_ACTION.equals(command))
+            {
+                long songId = intent.getLongExtra(ACTION_SONG_ID, -1);
+                int playlistIndex = intent.getIntExtra(ACTION_PLAYLIST_INDEX, 0);
+                clearQueue();
+                setSource(playlistIndex, songId, false);
             }
         }
-
-        registerNoisyReceiver();
 
         return START_NOT_STICKY;
     }
@@ -638,7 +637,9 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         if (mIsPlaying)
         {
             cancelHideCooldown();
-            startForeground(NOTIFICATION_ID, PlaybackNotification.create(this));
+            Notification notification = PlaybackNotification.create(this);
+            if(notification != null)
+                startForeground(NOTIFICATION_ID, notification);
         }
         else
         {
