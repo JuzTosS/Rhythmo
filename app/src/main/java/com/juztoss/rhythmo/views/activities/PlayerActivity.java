@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -111,7 +112,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     protected void onServiceConnected()
     {
         super.onServiceConnected();
-        updateAll(false);
+        updateAll(true, false);
 
         if(mNeedToGoToTheCurrentSong)
         {
@@ -630,7 +631,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     protected void onResume()
     {
         super.onResume();
-        updateAll(false);
+        updateAll(true, false);
     }
 
     private BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
@@ -638,15 +639,23 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if(intent.getExtras() != null && intent.getBooleanExtra(PlaybackService.UPDATE_UI_ACTION_SCROLL_TO_CURRENT, false))
-                updateAll(true);
-            else
-                updateAll(false);
+            boolean updateControls = false;
+            boolean scrollToCurrent = false;
+
+            if (intent.getExtras() != null)
+            {
+                updateControls = intent.getBooleanExtra(PlaybackService.UPDATE_UI_CONTROLS, false);
+                scrollToCurrent = intent.getBooleanExtra(PlaybackService.UPDATE_UI_SCROLL_TO_CURRENT, false);
+            }
+
+            updateAll(updateControls, scrollToCurrent);
         }
     };
 
-    protected void updateAll(boolean showCurrentSong)
+    protected void updateAll(boolean updateControls, boolean scrollToCurrent)
     {
+        if(!updateControls) return;
+
         mRangeSeekbar.setRangeValues(mApp.getSongsMinBpm(), mApp.getSongsMaxBpm());
 
         if (playbackService() == null) return;
@@ -665,6 +674,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             bpmLabel.setText(spannableString);
             ((TextView) mActionBarLayout.findViewById(R.id.first_header_line)).setText(composition.name());
             ((TextView) mActionBarLayout.findViewById(R.id.second_header_line)).setText(composition.getFolder());
+            ((HorizontalScrollView) mActionBarLayout.findViewById(R.id.scrollView)).scrollTo(0, 0);
         }
         else
         {
@@ -678,7 +688,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mHandler.post(mSeekbarUpdateRunnable);
         updateShuffleAndRepeatButtons();
 
-        if(showCurrentSong)
+        if(scrollToCurrent)
             showCurrentSongIfIsInFocusedPlaylist();
     }
 

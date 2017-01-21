@@ -36,7 +36,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            onPlaylistUpdated();
+            if(intent.getExtras() != null && intent.getBooleanExtra(PlaybackService.UPDATE_UI_LIST, false))
+                onPlaylistUpdated();
         }
     };
     private IOnItemClickListener mOnItemClickListener;

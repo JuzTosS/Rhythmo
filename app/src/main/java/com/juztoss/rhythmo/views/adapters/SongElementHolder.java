@@ -3,6 +3,7 @@ package com.juztoss.rhythmo.views.adapters;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.TypedValue;
 import android.view.MenuItem;
@@ -122,11 +123,17 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         int firstPartLength = Integer.toString((int) bpm).length();
         spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
         mBpmLabel.setText(spannableString);
-        boolean visible = service != null && service.currentSongId() == composition.id() && service.isPlaying();
-        mPlayingState.setVisibility(visible ? View.VISIBLE : View.GONE);
+        boolean isCurrentlyPlaying = service != null && service.currentSongId() == composition.id() && service.isPlaying();
+        mPlayingState.setVisibility(isCurrentlyPlaying ? View.VISIBLE : View.GONE);
 
         mFolderName = composition.getFolder();
         mHeaderLabel.setText(mFolderName);
+
+        mFirstLine.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        mFirstLine.setMarqueeRepeatLimit(-1);
+        mFirstLine.setSingleLine(true);
+        mFirstLine.setHorizontalFadingEdgeEnabled(true);
+        mFirstLine.setSelected(isCurrentlyPlaying);
 
         if (folderMode)
             addFolder();

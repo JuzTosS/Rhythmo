@@ -72,7 +72,9 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     public static final String PLAY_PREVIOUS_ACTION = "com.juztoss.rhythmo.action.PLAY_PREVIOUS_ACTION";
     public static final String PLAY_NEW_ACTION = "com.juztoss.rhythmo.action.PLAY_NEW_ACTION";
     public static final String UPDATE_UI_ACTION = "com.juztoss.rhythmo.action.UPDATE_UI";
-    public static final String UPDATE_UI_ACTION_SCROLL_TO_CURRENT = "com.juztoss.rhythmo.action.UPDATE_UI_ACTION_SCROLL_TO_CURRENT";
+    public static final String UPDATE_UI_SCROLL_TO_CURRENT = "com.juztoss.rhythmo.action.UPDATE_UI_SCROLL_TO_CURRENT";
+    public static final String UPDATE_UI_LIST = "com.juztoss.rhythmo.action.UPDATE_UI_LIST";
+    public static final String UPDATE_UI_CONTROLS = "com.juztoss.rhythmo.action.UPDATE_UI_CONTROLS";
 
     private static final String DEFAULT_SAMPLE_RATE = "44100";
     private static final String DEFAULT_BUFFER_SIZE = "512";
@@ -257,7 +259,6 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
             getSongsList().moveToPosition(mCurrentSongIndex);
             mCurrentSongId = getSongsList().getLong(AbstractSongsSource.I_ID);
             setSource(mCurrentPlaylistIndex, mCurrentSongId, fromUser);
-            putAction(new ActionPlay(fromUser));
         }
     }
 
@@ -278,22 +279,23 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
             getSongsList().moveToPosition(mCurrentSongIndex);
             mCurrentSongId = getSongsList().getLong(AbstractSongsSource.I_ID);
             setSource(mCurrentPlaylistIndex, mCurrentSongId, fromUser);
-            putAction(new ActionPlay(fromUser));
         }
         else//isShuffleEnabled() == true
         {
             mCurrentSongId = mAlreadyPlayedInShuffleMode.remove(mAlreadyPlayedInShuffleMode.size() - 1);
             setSource(mCurrentPlaylistIndex, mCurrentSongId, fromUser);
-            putAction(new ActionPlay(fromUser));
         }
 
     }
 
-    private void updateUI(boolean scrollToCurrent)
+    private void updateUI(boolean updateList, boolean scrollToCurrent)
     {
         Log.v(getClass().toString(), "updateUI()");
         Intent intent = new Intent(UPDATE_UI_ACTION);
-        intent.putExtra(UPDATE_UI_ACTION_SCROLL_TO_CURRENT, scrollToCurrent);
+        intent.putExtra(UPDATE_UI_SCROLL_TO_CURRENT, scrollToCurrent);
+        intent.putExtra(UPDATE_UI_LIST, updateList);
+        intent.putExtra(UPDATE_UI_CONTROLS, true);
+
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mApp);
         broadcastManager.sendBroadcast(intent);
 
@@ -479,7 +481,6 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
                     int playlistIndex = intent.getIntExtra(ACTION_PLAYLIST_INDEX, 0);
                     clearQueue();
                     setSource(playlistIndex, songId, false);
-                    putAction(new ActionPlay(false));
                 }
             }
         }
@@ -610,6 +611,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
 
         getSongsList().moveToPosition(mCurrentSongIndex);
         putAction(new ActionPrepare(Composition.fromCursor(getSongsList()), scrollToCurrent));
+        putAction(new ActionPlay(false, false));
     }
 
     @Override
@@ -725,7 +727,6 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
                 Cursor cursor = getSongsList();
                 cursor.moveToPosition(0);
                 setSource(0, cursor.getLong(AbstractSongsSource.I_ID), false);
-                putAction(new ActionPlay(false));
             }
         }
     }
@@ -735,7 +736,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
      */
     private void startPlayback()
     {
-        putAction(new ActionPlay(false));
+        putAction(new ActionPlay(true, false));
     }
 
     /**
@@ -816,8 +817,6 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
             mPlayer.setBPM(bpm);
             mPlayer.setNewBPM(shiftedBpm);
         }
-
-        updateUI(false);
     }
 
     /**
@@ -896,7 +895,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
             setIsPlaying(true);
             mPlayer.setOnPreparedListener(mOnPrepared);
             mPlayer.setSource(mComposition.getAbsolutePath());
-            updateUI(mScrollToCurrent);
+            updateUI(true, mScrollToCurrent);
         }
     }
 
@@ -905,9 +904,12 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
      */
     class ActionPlay extends BaseAction
     {
+        private boolean mNeedToUpdateList;
         private boolean mScrollToCurrent;
-        public ActionPlay(boolean scrollToCurrent)
+
+        public ActionPlay(boolean needToUpdateList, boolean scrollToCurrent)
         {
+            mNeedToUpdateList = needToUpdateList;
             mScrollToCurrent = scrollToCurrent;
         }
 
@@ -925,7 +927,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
             }
             finally
             {
-                updateUI(mScrollToCurrent);
+                updateUI(mNeedToUpdateList, mScrollToCurrent);
                 doNext();
             }
         }
@@ -941,7 +943,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         {
             setIsPlaying(false);
             mPlayer.pause();
-            updateUI(false);
+            updateUI(true, false);
             doNext();
         }
     }
@@ -957,7 +959,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
             setIsPlaying(false);
             mPlayer.pause();
             mPlayer.setPosition(0);
-            updateUI(false);
+            updateUI(true, false);
             doNext();
         }
     }
