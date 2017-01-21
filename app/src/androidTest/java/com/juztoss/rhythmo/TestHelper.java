@@ -21,7 +21,7 @@ import android.view.View;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.AsyncBuildLibraryTask;
 import com.juztoss.rhythmo.services.AsyncDetectBpmByNamesTask;
-import com.juztoss.rhythmo.services.OnDetectBpmByNamesUpdate;
+import com.juztoss.rhythmo.services.AsyncDetectBpmTaskAbstract;
 
 import junit.framework.Assert;
 
@@ -114,11 +114,6 @@ public class TestHelper
         taskBuildLib.setOnBuildLibraryProgressUpdate(new AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate()
         {
             @Override
-            public void onStartBuildingLibrary(AsyncBuildLibraryTask task)
-            {
-            }
-
-            @Override
             public void onProgressUpdate(AsyncBuildLibraryTask task, int overallProgress, int maxProgress, boolean mediaStoreTransferDone)
             {
             }
@@ -132,20 +127,10 @@ public class TestHelper
         taskBuildLib.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
         AsyncDetectBpmByNamesTask taskDetectBpmByNames = new AsyncDetectBpmByNamesTask(app, -1, false);
-        taskDetectBpmByNames.setOnBuildLibraryProgressUpdate(new OnDetectBpmByNamesUpdate()
+        taskDetectBpmByNames.setOnBuildLibraryProgressUpdate(new AsyncDetectBpmTaskAbstract.Listener()
         {
             @Override
-            public void onStartBuildingLibrary(AsyncDetectBpmByNamesTask task)
-            {
-            }
-
-            @Override
-            public void onProgressUpdate(AsyncDetectBpmByNamesTask task, int overallProgress, int maxProgress, boolean mediaStoreTransferDone)
-            {
-            }
-
-            @Override
-            public void onFinishBuildingLibrary(AsyncDetectBpmByNamesTask task)
+            public void onFinish()
             {
                 if(activity != null)
                 {

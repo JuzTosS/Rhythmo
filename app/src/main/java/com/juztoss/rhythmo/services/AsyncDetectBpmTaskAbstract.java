@@ -217,12 +217,12 @@ public abstract class AsyncDetectBpmTaskAbstract extends AsyncTask<String, Strin
 
     public static abstract class Listener
     {
-        void onProgressUpdate(int overallProgress, int maxProgress,
+        public void onProgressUpdate(int overallProgress, int maxProgress,
                               boolean mediaStoreTransferDone)
         {
         }
 
-        void onFinish()
+        public void onFinish()
         {
         }
 
