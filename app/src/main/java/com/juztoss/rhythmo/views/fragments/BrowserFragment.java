@@ -65,7 +65,7 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
         else if(element.getAddState() == BaseExplorerElement.AddState.PARTLY_ADDED)
             element.setAddState(BaseExplorerElement.AddState.NOT_ADDED);
 
-        onDataChanged();
+//        onDataChanged();
     }
 
     @Override

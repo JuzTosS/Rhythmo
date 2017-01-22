@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/browser_row_root"
     android:layout_width="match_parent"
+    tools:background="?rBackground"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -57,13 +59,13 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"/>
             </LinearLayout>
 
-            <ImageButton
+            <com.juztoss.rhythmo.views.items.FlippableButton
                 android:id="@+id/add_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
+                android:background="@null"
                 android:layout_gravity="center_vertical"
-                style="@style/buttonBackgroundBorderless"
                 android:src="@drawable/ic_add_circle_black_36dp"
                 android:tint="?rForegroundGrayedOut"/>
 
