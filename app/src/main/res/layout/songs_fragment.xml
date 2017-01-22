@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.juztoss.rhythmo.views.items.PlaylistAnimatedLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -49,6 +49,7 @@
             android:textColor="?rForegroundGrayedOut"
             android:gravity="center_horizontal"
             android:text="@string/add_songs_hint"
+            android:id="@+id/hintLabel"
             android:layout_above="@+id/appCompatImageView"
             android:layout_alignParentRight="true"
             android:paddingBottom="10dp"
@@ -73,4 +74,4 @@
 
     </RelativeLayout>
 
-</FrameLayout>
+</com.juztoss.rhythmo.views.items.PlaylistAnimatedLayout>

@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import com.juztoss.rhythmo.views.fragments.PlaylistFragment;
@@ -71,6 +72,11 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.
     public int getCount()
     {
         return mNumOfLists;
+    }
+
+    public PlaylistFragment getFragmentAt(int position)
+    {
+        return (PlaylistFragment) instantiateItem(mContainer, position);
     }
 
     public PlaylistFragment getCurrentFragment()

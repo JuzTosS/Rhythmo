@@ -51,6 +51,7 @@ import com.juztoss.rhythmo.services.BuildMusicLibraryService;
 import com.juztoss.rhythmo.services.PlaybackService;
 import com.juztoss.rhythmo.utils.SystemHelper;
 import com.juztoss.rhythmo.views.adapters.TabsAdapter;
+import com.juztoss.rhythmo.views.items.PlaylistsPageTransformer;
 import com.juztoss.rhythmo.views.items.RangeSeekBar;
 
 import java.util.List;
@@ -236,6 +237,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
 
         mPlaylistsPager = (ViewPager) findViewById(R.id.pager);
+        mPlaylistsPager.setPageTransformer(false, new PlaylistsPageTransformer());
         final TabsAdapter adapter = new TabsAdapter(getSupportFragmentManager(), mApp.getPlaylists().size());
         mPlaylistsPager.setAdapter(adapter);
         mPlaylistsPager.addOnPageChangeListener(adapter);
