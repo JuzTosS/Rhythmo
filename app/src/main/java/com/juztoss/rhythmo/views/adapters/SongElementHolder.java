@@ -1,5 +1,6 @@
 package com.juztoss.rhythmo.views.adapters;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -34,6 +35,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder
     private TextView mSecondLine;
     private TextView mBpmLabel;
     private View mPlayingState;
+    private AnimationDrawable mPlaybackAnimation;
     private int mPosition;
     private View mHeader;
     private TextView mHeaderLabel;
@@ -82,6 +84,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         mRoot = (LinearLayout) itemView.findViewById(R.id.song_list_root);
         mHeaderLabel = (TextView) mHeader.findViewById(R.id.folder_header_text);
         mPlayingState = itemView.findViewById(R.id.playing_state);
+        mPlaybackAnimation = (AnimationDrawable) mPlayingState.getBackground();
     }
 
     private final PopupMenu.OnMenuItemClickListener mMenuClickListener = new PopupMenu.OnMenuItemClickListener()
@@ -125,6 +128,10 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         mBpmLabel.setText(spannableString);
         boolean isCurrentlyPlaying = service != null && service.currentSongId() == composition.id() && service.isPlaying();
         mPlayingState.setVisibility(isCurrentlyPlaying ? View.VISIBLE : View.GONE);
+        if(isCurrentlyPlaying)
+            mPlaybackAnimation.start();
+        else
+            mPlaybackAnimation.stop();
 
         mFolderName = composition.getFolder();
         mHeaderLabel.setText(mFolderName);
