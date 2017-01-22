@@ -136,9 +136,11 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     @Override
     public void onClick(View v)
     {
-        //On fab clicked
-        Intent intent = new Intent(this, SelectSongsActivity.class);
+        int[] position = new int[2];
+        v.getLocationInWindow(position);
+        Intent intent = SelectSongsActivity.getIntent(this, position[0] + v.getWidth() / 2, position[1] + v.getHeight() / 2);
         startActivityForResult(intent, 0);
+        overridePendingTransition(0, R.anim.no_anim);
     }
 
     @Override

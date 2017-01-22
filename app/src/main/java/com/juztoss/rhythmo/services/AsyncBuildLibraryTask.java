@@ -43,8 +43,6 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
     private int mOverallProgress = 0;
 
-    private PowerManager.WakeLock mWakeLock;
-
     public AsyncBuildLibraryTask(RhythmoApp app, @Nullable String folder)
     {
         mApp = app;
@@ -64,18 +62,6 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
                               boolean mediaStoreTransferDone);
 
         void onFinishBuildingLibrary(AsyncBuildLibraryTask task);
-
-    }
-
-    @Override
-    protected void onPreExecute()
-    {
-        super.onPreExecute();
-
-        PowerManager pm = (PowerManager) mApp.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                getClass().getName());
-        mWakeLock.acquire();
 
     }
 
@@ -141,13 +127,6 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
 
         return contentResolver.query(uri, projection, selection, null, null);
-    }
-
-    @Override
-    protected void onCancelled(Void aVoid)
-    {
-        super.onCancelled(aVoid);
-        mWakeLock.release();
     }
 
     private void saveMediaStoreDataToDB(Cursor mediaStoreCursor)
@@ -356,8 +335,6 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     @Override
     protected void onPostExecute(Void arg0)
     {
-        mWakeLock.release();
-
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
                 if (mBuildLibraryProgressUpdate.get(i) != null)
