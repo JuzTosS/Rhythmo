@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/listView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:background="?rBackground"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/folderPathLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:lines="1"
+        android:ellipsize="start"
+        android:textStyle="bold"
+        tools:text="FOLDER/PATH"
+        />
+
+    <FrameLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_gravity="top"
+            android:background="@drawable/shadow_top"/>
+    </FrameLayout>
+</LinearLayout>

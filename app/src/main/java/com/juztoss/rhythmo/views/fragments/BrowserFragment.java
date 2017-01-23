@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.BaseExplorerElement;
@@ -23,6 +24,7 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
 {
     private BrowserAdapter mBrowserAdapter;
     private RhythmoApp mApp;
+    private TextView mFolderPathLabel;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
@@ -35,6 +37,8 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
         mBrowserAdapter.setOnItemClickListener(this);
         list.setAdapter(mBrowserAdapter);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mFolderPathLabel = (TextView) getView().findViewById(R.id.folderPathLabel);
 
         mApp.getBrowserPresenter().setOnDataChangedListener(this);
     }
@@ -51,6 +55,7 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
     @Override
     public void onDataChanged()
     {
+        mFolderPathLabel.setText(mApp.getBrowserPresenter().getCurrent().getFileSystemPath());
         mBrowserAdapter.update(mApp.getBrowserPresenter().getList());
     }
 
