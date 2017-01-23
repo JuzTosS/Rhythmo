@@ -35,6 +35,9 @@ public class SelectSongsActivity extends BasePlayerActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            startCircularReveal();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_song);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -43,9 +46,6 @@ public class SelectSongsActivity extends BasePlayerActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new BrowserFragment()).commit();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            startCircularReveal();
     }
 
     private void startCircularReveal()
