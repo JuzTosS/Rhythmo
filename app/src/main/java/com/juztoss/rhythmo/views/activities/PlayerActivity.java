@@ -632,13 +632,6 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         return true;
     }
 
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        updateAll(true, false);
-    }
-
     private BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver()
     {
         @Override
