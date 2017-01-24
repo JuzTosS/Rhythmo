@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.BuildMusicLibraryService;
+import com.juztoss.rhythmo.services.LibraryServiceBuilder;
 import com.juztoss.rhythmo.utils.SystemHelper;
 import com.juztoss.rhythmo.views.items.MusicLibraryPreference;
 
@@ -142,12 +143,12 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                 {
                     if (!((RhythmoApp) getActivity().getApplicationContext()).isBuildingLibrary())
                     {
-                        Intent intent = new Intent(getActivity().getApplicationContext(), BuildMusicLibraryService.class);
-                        intent.putExtra(BuildMusicLibraryService.SCAN_MEDIA_STORE, true);
-                        intent.putExtra(BuildMusicLibraryService.DETECT_BPM, true);
-                        intent.putExtra(BuildMusicLibraryService.ENABLE_NOTIFICATIONS, true);
-                        intent.putExtra(BuildMusicLibraryService.STOP_CURRENTLY_ECECUTING, true);
-                        getActivity().getApplicationContext().startService(intent);
+                        new LibraryServiceBuilder(getActivity())
+                                .scanMediaStore()
+                                .detectBpm()
+                                .enableNotifications()
+                                .stopCurrentlyExecuting()
+                                .start();
                     }
                     else
                     {

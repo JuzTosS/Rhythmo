@@ -25,7 +25,7 @@ import com.juztoss.rhythmo.views.activities.SettingsActivity;
  */
 public class BuildMusicLibraryService extends Service
 {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     public static final String UPDATE_PROGRESS_ACTION = "com.juztoss.rhythmo.action.UPDATE_PROGRESS";
     public static final String PROGRESS_ACTION_OVERALL_PROGRESS = "OverallProgress";
@@ -261,16 +261,20 @@ public class BuildMusicLibraryService extends Service
     private AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate mOnBuildLibraryUpdate = new AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate()
     {
         @Override
-        public void onProgressUpdate(AsyncBuildLibraryTask task, int overallProgress, int maxProgress, boolean mediaStoreTransferDone)
+        public void onProgressUpdate(int overallProgress, int maxProgress, boolean mediaStoreTransferDone)
         {
+            if(!mEnableNotifications) return;
+
             String header = getResources().getString(R.string.looking_for_new_songs);
             showNotification(header, overallProgress, maxProgress);
         }
 
         @Override
-        public void onFinishBuildingLibrary(AsyncBuildLibraryTask task)
+        public void onFinish(boolean wasDatabaseChanged)
         {
-            mApp.notifyPlaylistsRepresentationUpdated();
+            if(wasDatabaseChanged)
+                mApp.notifyPlaylistsRepresentationUpdated();
+
             onTaskComplete();
         }
     };

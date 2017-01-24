@@ -31,8 +31,9 @@ import java.util.concurrent.CountDownLatch;
  * Created by JuzTosS on 5/27/2016.
  */
 
-public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
+public class AsyncBuildLibraryTask extends AsyncTask<String, String, Boolean>
 {
+    private final boolean DEBUG = false;
     private final String UPDATE_COMPLETE = "UpdateComplete";
     private final String ERROR_OCCURRED = "ErrorOccurred";
     private final int MAX_PROGRESS_VALUE = 1000000;
@@ -57,11 +58,10 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
     public interface OnBuildLibraryProgressUpdate
     {
-        void onProgressUpdate(AsyncBuildLibraryTask task,
-                              int overallProgress, int maxProgress,
+        void onProgressUpdate(int overallProgress, int maxProgress,
                               boolean mediaStoreTransferDone);
 
-        void onFinishBuildingLibrary(AsyncBuildLibraryTask task);
+        void onFinish(boolean wasDatabaseChanged);
 
     }
 
@@ -72,10 +72,11 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         MediaScannerConnection.scanFile(mApp, new String[]{sdCardPath}, null,
                 new MediaScannerConnection.OnScanCompletedListener()
                 {
+
                     @Override
                     public void onScanCompleted(String path, Uri uri)
                     {
-                        Log.d(AsyncBuildLibraryTask.class.toString(), "onScanCompleted: " + path + ", " + (uri == null ? "null" : uri));
+                        if(DEBUG) Log.d(AsyncBuildLibraryTask.class.toString(), "onScanCompleted: " + path + ", " + (uri == null ? "null" : uri));
                         latch.countDown();
                     }
                 });
@@ -91,17 +92,18 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
     }
 
     @Override
-    protected Void doInBackground(String... params)
+    protected Boolean doInBackground(String... params)
     {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
 
 //        updateMediaStore();
         Cursor mediaStoreCursor = getSongsFromMediaStore();
+        boolean result = false;
         if (mediaStoreCursor != null)
         {
             try
             {
-                saveMediaStoreDataToDB(mediaStoreCursor);
+                result = saveMediaStoreDataToDB(mediaStoreCursor);
             }
             finally
             {
@@ -109,7 +111,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
             }
         }
         publishProgress(UPDATE_COMPLETE);
-        return null;
+        return result;
     }
 
     private Cursor getSongsFromMediaStore()
@@ -129,11 +131,11 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         return contentResolver.query(uri, projection, selection, null, null);
     }
 
-    private void saveMediaStoreDataToDB(Cursor mediaStoreCursor)
+    private boolean saveMediaStoreDataToDB(Cursor mediaStoreCursor)
     {
         try
         {
-            Log.d(AsyncBuildLibraryTask.class.toString(), "Start updating the library, songs in mediaStore: " + mediaStoreCursor.getCount());
+            if(DEBUG) Log.d(AsyncBuildLibraryTask.class.toString(), "Start updating the library, songs in mediaStore: " + mediaStoreCursor.getCount());
 
             mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
 
@@ -141,7 +143,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
             ContentValues cv = new ContentValues();
             cv.put(DatabaseHelper.MUSIC_LIBRARY_DELETED, 1);
             int songsMarkedAsNotUpdated = mApp.getDatabaseHelper().getWritableDatabase().update(DatabaseHelper.TABLE_MUSIC_LIBRARY, cv, DatabaseHelper.MUSIC_LIBRARY_MEDIA_ID + " >= 0", null);
-            Log.d(AsyncBuildLibraryTask.class.toString(), "Songs marked as not updated: " + songsMarkedAsNotUpdated);
+            if(DEBUG) Log.d(AsyncBuildLibraryTask.class.toString(), "Songs marked as not updated: " + songsMarkedAsNotUpdated);
 
             mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_FOLDERS, null, null);
 
@@ -282,13 +284,15 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
 
 
             }
-            Log.d(AsyncBuildLibraryTask.class.toString(), "Songs was added/updated: " + songsAdded + "/" + songsUpdated);
+            if(DEBUG) Log.d(AsyncBuildLibraryTask.class.toString(), "Songs was added/updated: " + songsAdded + "/" + songsUpdated);
 
             int songsWasRemoved = mApp.getDatabaseHelper().getWritableDatabase().delete(DatabaseHelper.TABLE_MUSIC_LIBRARY, DatabaseHelper.MUSIC_LIBRARY_DELETED + " = ?", new String[]{"1"});
-            Log.d(AsyncBuildLibraryTask.class.toString(), "Songs was removed: " + songsWasRemoved);
+            if(DEBUG) Log.d(AsyncBuildLibraryTask.class.toString(), "Songs was removed: " + songsWasRemoved);
 
             long finalSongsCount = DatabaseUtils.queryNumEntries(mApp.getDatabaseHelper().getWritableDatabase(), DatabaseHelper.TABLE_MUSIC_LIBRARY);
-            Log.d(AsyncBuildLibraryTask.class.toString(), "Final songs count: " + finalSongsCount);
+            if(DEBUG) Log.d(AsyncBuildLibraryTask.class.toString(), "Final songs count: " + finalSongsCount);
+
+            return songsAdded > 0 || songsWasRemoved > 0;
         }
         catch (SQLException e)
         {
@@ -302,7 +306,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
             mApp.getDatabaseHelper().getWritableDatabase().endTransaction();
         }
 
-
+        return false;
     }
 
     @Override
@@ -314,7 +318,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         {
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
                 if (mBuildLibraryProgressUpdate.get(i) != null)
-                    mBuildLibraryProgressUpdate.get(i).onProgressUpdate(this, mOverallProgress,
+                    mBuildLibraryProgressUpdate.get(i).onProgressUpdate(mOverallProgress,
                             MAX_PROGRESS_VALUE, true);
 
             return;
@@ -328,17 +332,17 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Void>
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
                 if (mBuildLibraryProgressUpdate.get(i) != null)
-                    mBuildLibraryProgressUpdate.get(i).onProgressUpdate(this, mOverallProgress, MAX_PROGRESS_VALUE, false);
+                    mBuildLibraryProgressUpdate.get(i).onProgressUpdate(mOverallProgress, MAX_PROGRESS_VALUE, false);
 
     }
 
     @Override
-    protected void onPostExecute(Void arg0)
+    protected void onPostExecute(Boolean wasDatabaseChanged)
     {
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
                 if (mBuildLibraryProgressUpdate.get(i) != null)
-                    mBuildLibraryProgressUpdate.get(i).onFinishBuildingLibrary(this);
+                    mBuildLibraryProgressUpdate.get(i).onFinish(wasDatabaseChanged);
 
     }
 

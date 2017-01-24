@@ -48,6 +48,7 @@ import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
 import com.juztoss.rhythmo.models.songsources.SortType;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.BuildMusicLibraryService;
+import com.juztoss.rhythmo.services.LibraryServiceBuilder;
 import com.juztoss.rhythmo.services.PlaybackService;
 import com.juztoss.rhythmo.utils.SystemHelper;
 import com.juztoss.rhythmo.views.adapters.TabsAdapter;
@@ -320,9 +321,9 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         {
             if (getIntent().getExtras() == null || !getIntent().getBooleanExtra(DISABLE_RESCAN_ON_LAUNCHING, false))
             {
-                Intent intent = new Intent(this, BuildMusicLibraryService.class);
-                intent.putExtra(BuildMusicLibraryService.SCAN_MEDIA_STORE, true);
-                startService(intent);
+                new LibraryServiceBuilder(this)
+                        .scanMediaStore()
+                        .start();
             }
         }
 
@@ -356,12 +357,12 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         if (!mApp.getSharedPreferences().getBoolean(RhythmoApp.LIBRARY_BUILD_HAD_STARTED, false))
         {
             mApp.getSharedPreferences().edit().putBoolean(RhythmoApp.LIBRARY_BUILD_HAD_STARTED, true).apply();
-            Intent intent = new Intent(getApplicationContext(), BuildMusicLibraryService.class);
-            intent.putExtra(BuildMusicLibraryService.SCAN_MEDIA_STORE, true);
-            intent.putExtra(BuildMusicLibraryService.DETECT_BPM, true);
-            intent.putExtra(BuildMusicLibraryService.ENABLE_NOTIFICATIONS, true);
-            intent.putExtra(BuildMusicLibraryService.STOP_CURRENTLY_ECECUTING, true);
-            getApplicationContext().startService(intent);
+            new LibraryServiceBuilder(this)
+                    .scanMediaStore()
+                    .detectBpm()
+                    .enableNotifications()
+                    .stopCurrentlyExecuting()
+                    .start();
         }
     }
 
@@ -410,11 +411,11 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
     private void rescanBPMForTheCurrentPlaylist()
     {
-        Intent intent = new Intent(this, BuildMusicLibraryService.class);
-        intent.putExtra(BuildMusicLibraryService.DETECT_BPM_IN_PLAYLIST, mPlaylistsPager.getCurrentItem());
-        intent.putExtra(BuildMusicLibraryService.STOP_CURRENTLY_ECECUTING, true);
-        intent.putExtra(BuildMusicLibraryService.ENABLE_NOTIFICATIONS, true);
-        startService(intent);
+        new LibraryServiceBuilder(this)
+                .detectBpmInAPlaylist(mPlaylistsPager.getCurrentItem())
+                .stopCurrentlyExecuting()
+                .enableNotifications()
+                .start();
     }
 
     private TextWatcher mSearchStringChanged = new TextWatcher()
