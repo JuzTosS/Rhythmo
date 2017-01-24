@@ -36,7 +36,7 @@ void AdvancedMediaPlayer::playerEvent(void *__unused clientData,
                                 (char *) value);
             break;
         case SuperpoweredAdvancedAudioPlayerEvent_EOF: {
-            audioSystem->onBackground();
+            this->pause();//Without a pause sometimes if UI thread is busy we can hear the beginning of the current song instead of the next
             pthread_t t;
             pthread_create(&t, NULL, &AdvancedMediaPlayer::callEndOfFile, this);
         }
