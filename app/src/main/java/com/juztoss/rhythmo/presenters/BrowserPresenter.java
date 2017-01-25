@@ -10,7 +10,9 @@ import com.juztoss.rhythmo.models.MediaFolder;
 import com.juztoss.rhythmo.models.PathStore;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by JuzTosS on 4/20/2016.
@@ -18,7 +20,7 @@ import java.util.List;
 public class BrowserPresenter extends BasePresenter implements LoaderManager.LoaderCallbacks<List<BaseExplorerElement>>
 {
     private BaseExplorerElement mCurrent;
-    private OnDataChangedListener mListener;
+    private Set<OnDataChangedListener> mListeners = new HashSet<>();
 
     private List<BaseExplorerElement> mData;
     private BaseExplorerElement mRoot;
@@ -62,8 +64,15 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
     public void onLoadFinished(Loader<List<BaseExplorerElement>> loader, List<BaseExplorerElement> data)
     {
         mData = data;
-        if (mListener != null)
-            mListener.onDataChanged();
+        notifyListeners();
+    }
+
+    private void notifyListeners()
+    {
+        for(OnDataChangedListener listener : mListeners)
+        {
+            listener.onDataChanged();
+        }
     }
 
     @Override
@@ -72,9 +81,14 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
 
     }
 
-    public void setOnDataChangedListener(OnDataChangedListener listener)
+    public void addOnDataChangedListener(OnDataChangedListener listener)
     {
-        mListener = listener;
+        mListeners.add(listener);
+    }
+
+    public void removeOnDataChangedListener(OnDataChangedListener listener)
+    {
+        mListeners.remove(listener);
     }
 
     public List<BaseExplorerElement> getList()
@@ -121,7 +135,6 @@ public class BrowserPresenter extends BasePresenter implements LoaderManager.Loa
         if (!mPathStore.isEmpty())
             return mPathStore.getPaths();
         else
-            return new String[]{mCurrent.getFileSystemPath()};
+            return new String[]{};
     }
-
 }

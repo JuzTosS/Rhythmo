@@ -1,11 +1,14 @@
 package com.juztoss.rhythmo.views.activities;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,10 +17,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 
 import com.juztoss.rhythmo.R;
+import com.juztoss.rhythmo.presenters.BrowserPresenter;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.utils.SystemHelper;
 import com.juztoss.rhythmo.views.fragments.BrowserFragment;
@@ -25,11 +30,13 @@ import com.juztoss.rhythmo.views.fragments.BrowserFragment;
 /**
  * Created by JuzTosS on 6/13/2016.
  */
-public class SelectSongsActivity extends BasePlayerActivity
+public class SelectSongsActivity extends BasePlayerActivity implements BrowserFragment.OnItemsStateChangedListener
 {
     private static final String CIRCULAR_REVEAL_X = "CIRCULAR_REVEAL_X";
     private static final String CIRCULAR_REVEAL_Y = "CIRCULAR_REVEAL_Y";
     public static final String FOLDERS_PATHS = "FoldersPaths";
+
+    private MenuItem mMenuItemApply;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -45,6 +52,39 @@ public class SelectSongsActivity extends BasePlayerActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new BrowserFragment()).commit();
+    }
+
+    @Override
+    public void onItemsStateChanged()
+    {
+        updateMenuButton();
+    }
+
+    private void updateMenuButton()
+    {
+        if (mMenuItemApply == null)
+        {
+            invalidateOptionsMenu();
+            return;
+        }
+
+        RhythmoApp app = (RhythmoApp) getApplicationContext();
+        if(app.getBrowserPresenter().getPaths().length <= 0)
+        {
+            Drawable drawable = mMenuItemApply.getIcon();
+            mMenuItemApply = null;
+            ObjectAnimator animator = ObjectAnimator.ofInt(drawable, "alpha", 255, 0);
+            animator.addListener(new AnimatorListenerAdapter()
+            {
+                @Override
+                public void onAnimationEnd(Animator animation)
+                {
+                    invalidateOptionsMenu();
+                }
+            });
+            animator.setDuration(500);
+            animator.start();
+        }
     }
 
     private void startCircularReveal()
@@ -108,12 +148,22 @@ public class SelectSongsActivity extends BasePlayerActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.song_activity_menu, menu);
-        MenuItem item = menu.findItem(R.id.apply);
-        Drawable newIcon = item.getIcon();
-        newIcon.mutate().setColorFilter(SystemHelper.getColor(this, R.attr.rForegroundInverted), PorterDuff.Mode.SRC_IN);
-        item.setIcon(newIcon);
+        RhythmoApp app = (RhythmoApp) getApplicationContext();
+        if(app.getBrowserPresenter().getPaths().length > 0)
+        {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.song_activity_menu, menu);
+            mMenuItemApply = menu.findItem(R.id.apply);
+            Drawable newIcon = mMenuItemApply.getIcon();
+            newIcon.mutate().setColorFilter(SystemHelper.getColor(this, R.attr.rForegroundInverted), PorterDuff.Mode.SRC_IN);
+            newIcon.setAlpha(0);
+            mMenuItemApply.setIcon(newIcon);
+
+            ObjectAnimator animator = ObjectAnimator.ofInt(newIcon, "alpha", 0, 255);
+            animator.setDuration(500);
+            animator.start();
+        }
+
         return true;
     }
 

@@ -40,7 +40,7 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
 
         mFolderPathLabel = (TextView) getView().findViewById(R.id.folderPathLabel);
 
-        mApp.getBrowserPresenter().setOnDataChangedListener(this);
+        mApp.getBrowserPresenter().addOnDataChangedListener(this);
     }
 
     @Override
@@ -70,7 +70,9 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
         else if(element.getAddState() == BaseExplorerElement.AddState.PARTLY_ADDED)
             element.setAddState(BaseExplorerElement.AddState.NOT_ADDED);
 
-//        onDataChanged();
+        OnItemsStateChangedListener listener = (OnItemsStateChangedListener) getActivity();
+        if(listener != null)
+            listener.onItemsStateChanged();
     }
 
     @Override
@@ -89,9 +91,21 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
     }
 
     @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        mApp.getBrowserPresenter().removeOnDataChangedListener(this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.browser_fragment, container, false);
+    }
+
+    public interface OnItemsStateChangedListener
+    {
+        void onItemsStateChanged();
     }
 
 }
