@@ -6,7 +6,7 @@ def superpowered_sdk_path = properties.getProperty('superpowered.dir')
 
 android { // main settings for your application
     compileSdkVersion = 25
-    buildToolsVersion = "23.0.3"
+    buildToolsVersion = "25.0.1"
 
     defaultConfig {
         applicationId "com.juztoss.rhythmo"

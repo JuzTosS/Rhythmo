@@ -10,7 +10,7 @@
     <item
         android:icon="@drawable/ic_sort_black_24dp"
         android:id="@+id/sort_menu"
-        app:showAsAction="ifRoom"
+        app:showAsAction="collapseActionView"
         android:title="@string/sort">
     </item>
     <item
