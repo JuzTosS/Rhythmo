@@ -1,6 +1,7 @@
 package com.juztoss.rhythmo.services;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -202,23 +203,42 @@ public class LibraryHelper
         folderValues.put(DatabaseHelper.FOLDERS_DELETED, false);
         folderValues.put(DatabaseHelper.FOLDERS_HAS_SONGS, hasSongs);
 
+        String selection = DatabaseHelper.FOLDERS_NAME + " = ? AND " + DatabaseHelper.FOLDERS_PARENT_ID + " = ? ";
+        String[] selectionArgs = new String[]{folder, Long.toString(parentId)};
+
         long folderExist = DatabaseUtils.queryNumEntries(
                 mApp.getDatabaseHelper().getWritableDatabase(),
                 DatabaseHelper.TABLE_FOLDERS,
-                DatabaseHelper.FOLDERS_NAME + " = ? AND " + DatabaseHelper.FOLDERS_PARENT_ID + " = ? ", new String[]{folder, Long.toString(parentId)}
+                selection, selectionArgs
         );
         if (folderExist > 0)
         {
-            mApp.getDatabaseHelper().getWritableDatabase().update(
-                    DatabaseHelper.TABLE_FOLDERS,
-                    folderValues,
-                    DatabaseHelper.FOLDERS_NAME + " = ? AND " + DatabaseHelper.FOLDERS_PARENT_ID + " = ? ", new String[]{folder, Long.toString(parentId)}
+            Cursor c = mApp.getDatabaseHelper().getWritableDatabase().query(
+                    DatabaseHelper.TABLE_FOLDERS, new String[]{DatabaseHelper.FOLDERS_HAS_SONGS},
+                    selection, selectionArgs, null, null, null, "1"
             );
 
-            return mApp.getDatabaseHelper().getRowId(
-                    DatabaseHelper.FOLDERS_NAME + " = ? AND " + DatabaseHelper.FOLDERS_PARENT_ID + " = ? ",
-                    new String[]{folder, Long.toString(parentId)}
-            );
+            try
+            {
+                c.moveToNext();
+                boolean hasCurrentFolderSongs = c.getInt(0) != 0;
+                folderValues.put(DatabaseHelper.FOLDERS_HAS_SONGS, hasSongs || hasCurrentFolderSongs);
+                mApp.getDatabaseHelper().getWritableDatabase().update(
+                        DatabaseHelper.TABLE_FOLDERS,
+                        folderValues,
+                        selection, selectionArgs
+                );
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                c.close();
+            }
+
+            return mApp.getDatabaseHelper().getRowId(selection, selectionArgs);
         }
         else
         {
