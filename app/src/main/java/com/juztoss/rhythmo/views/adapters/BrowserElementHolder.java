@@ -19,6 +19,7 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
     private final TextView mName;
     private final TextView mDesc;
     private final ImageView mIcon;
+    private final View mBackgroundLayer;
     private final FlippableButton mAddButton;
 
     private int mPosition;
@@ -45,6 +46,7 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
         mName = ((TextView) itemView.findViewById(R.id.name_text_view));
         mDesc = ((TextView) itemView.findViewById(R.id.desc_text_view));
         mIcon = (ImageView) itemView.findViewById(R.id.element_icon);
+        mBackgroundLayer = itemView.findViewById(R.id.rowBackgroundLayer);
         mAddButton = (FlippableButton) itemView.findViewById(R.id.add_icon);
         mAddButton.setOnClickListener(new View.OnClickListener()
         {
@@ -106,23 +108,23 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
             mAddButton.setVisibility(View.VISIBLE);
             if (element.getAddState() == BaseExplorerElement.AddState.NOT_ADDED)
             {
-                itemView.setBackgroundColor(SystemHelper.getColor(context, R.attr.rBackground));
+                mBackgroundLayer.setBackgroundColor(SystemHelper.getColor(context, R.attr.rBackground));
                 setImageResource(R.drawable.ic_add_circle_black_36dp, animate);
             }
             else if (element.getAddState() == BaseExplorerElement.AddState.ADDED)
             {
-                itemView.setBackgroundColor(SystemHelper.getColor(context, R.attr.rAccentSecondary));
+                mBackgroundLayer.setBackgroundColor(SystemHelper.getColor(context, R.attr.rAccentSecondaryAlpha));
                 setImageResource(R.drawable.ic_remove_circle_black_36dp, animate);
             }
             else if (element.getAddState() == BaseExplorerElement.AddState.PARTLY_ADDED)
             {
-                itemView.setBackgroundColor(SystemHelper.getColor(context, R.attr.rAccentSecondaryAlpha));
+                mBackgroundLayer.setBackgroundColor(SystemHelper.getColor(context, R.attr.rAccentSecondaryAlpha));
                 setImageResource(R.drawable.ic_remove_circle_outline_black_36dp, animate);
             }
         }else
         {
             mAddButton.setVisibility(View.GONE);
-            itemView.setBackgroundColor(SystemHelper.getColor(context, R.attr.rBackground));
+            mBackgroundLayer.setBackgroundColor(SystemHelper.getColor(context, R.attr.rBackground));
         }
     }
 

@@ -8,8 +8,12 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
+
+import com.juztoss.rhythmo.R;
+import com.juztoss.rhythmo.utils.SystemHelper;
 
 /**
  * Created by JuzTosS on 1/22/2017.
@@ -82,5 +86,9 @@ public class FlippableButton extends ImageButton
     public void flipInstantlyTo(@DrawableRes int res)
     {
         setImageResource(res);
+        if(res == R.drawable.ic_remove_circle_black_36dp || res == R.drawable.ic_remove_circle_outline_black_36dp)
+            setColorFilter(SystemHelper.getColor(getContext(),R.attr.rForeground));
+        else
+            setColorFilter(SystemHelper.getColor(getContext(),R.attr.rForegroundGrayedOut));
     }
 }
