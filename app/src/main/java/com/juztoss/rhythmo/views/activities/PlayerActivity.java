@@ -161,7 +161,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
             AbstractSongsSource source = playlist.getSource();
             for (String path : foldersPaths)
             {
-                source.add(mApp.getMusicLibraryHelper().getSongIdsCursor(path, true));
+                source.add(mApp.getMusicLibraryHelper().getSongIdsCursor(path));
             }
 //                playlist.setNeedRebuild();
 //            }

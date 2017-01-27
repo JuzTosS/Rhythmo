@@ -202,7 +202,7 @@ public class MediaFolder extends BaseExplorerElement
                     String songPath = folderName +
                             SystemHelper.SEPARATOR +
                             songName;
-                    songs.add(new SongFile(new File(songPath), false, mApp, this));
+                    songs.add(new SongFile(new File(songPath), mApp, this));
                 }
             }
             finally
@@ -239,7 +239,7 @@ public class MediaFolder extends BaseExplorerElement
     @Override
     public Cursor getSongIds()
     {
-        return mApp.getMusicLibraryHelper().getSongIdsCursor(resolvePath(), false);
+        return mApp.getMusicLibraryHelper().getSongIdsCursor(resolvePath());
     }
 
     @Override

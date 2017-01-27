@@ -16,6 +16,7 @@ import com.juztoss.rhythmo.models.DatabaseHelper;
 import com.juztoss.rhythmo.models.Playlist;
 import com.juztoss.rhythmo.models.songsources.AllSongsSource;
 import com.juztoss.rhythmo.models.songsources.SourcesFactory;
+import com.juztoss.rhythmo.services.LibraryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class RhythmoApp extends Application
 
     private MusicLibraryHelper mMusicLibraryHelper;
     private SharedPreferences mSharedPreferences;
+    private LibraryHelper mLibraryHelper;
 
     @Override
     public void onCreate()
@@ -59,6 +61,8 @@ public class RhythmoApp extends Application
         mDatabaseHelper = new DatabaseHelper(this);
         mBrowserPresenter = new BrowserPresenter(this);
         mPlaylists = loadPlaylists();
+        mLibraryHelper = new LibraryHelper(this);
+
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
     }
 
@@ -317,5 +321,10 @@ public class RhythmoApp extends Application
     public SharedPreferences getSharedPreferences()
     {
         return mSharedPreferences;
+    }
+
+    public LibraryHelper getLibraryHelper()
+    {
+        return mLibraryHelper;
     }
 }

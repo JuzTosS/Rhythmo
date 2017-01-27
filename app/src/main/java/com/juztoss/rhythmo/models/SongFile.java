@@ -17,18 +17,14 @@ import java.util.Set;
  */
 public class SongFile extends BaseExplorerElement
 {
-    private static final Set<String> SUPPORTED_FORMATS = new HashSet<>(Arrays.asList("wav", "mp3", "m4a", "aiff"));
-
     private File mFile;
-    private boolean mDoCheckFileSystem;
     private RhythmoApp mApp;
     private BaseExplorerElement mParent;
 
-    public SongFile(File source, boolean doCheckFileSystem, RhythmoApp app, BaseExplorerElement parent)
+    public SongFile(File source, RhythmoApp app, BaseExplorerElement parent)
     {
         mParent = parent;
         mFile = source;
-        mDoCheckFileSystem = doCheckFileSystem;
         mApp = app;
     }
 
@@ -77,21 +73,11 @@ public class SongFile extends BaseExplorerElement
         return null;
     }
 
-    public static boolean isSong(File file)
-    {
-        if(file.isDirectory()) return false;
-
-        String name = file.getName();
-        int dotPosition= name.lastIndexOf(".");
-        String extension = name.substring(dotPosition + 1, name.length());
-        return SUPPORTED_FORMATS.contains(extension);
-    }
-
     @Nullable
     @Override
     public Cursor getSongIds()
     {
-        return mApp.getMusicLibraryHelper().getSongIdsCursor(mFile.getAbsolutePath(), mDoCheckFileSystem);
+        return mApp.getMusicLibraryHelper().getSongIdsCursor(mFile.getAbsolutePath());
     }
 
     @Override

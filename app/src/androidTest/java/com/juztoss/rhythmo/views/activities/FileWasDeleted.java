@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -24,10 +25,14 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.juztoss.rhythmo.TestHelper.AUDIO_FILES_COUNT;
 import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER;
 import static com.juztoss.rhythmo.TestHelper.getSongName;
+import static com.juztoss.rhythmo.TestHelper.withRecyclerView;
+import static org.hamcrest.Matchers.allOf;
 
 
 @LargeTest
@@ -50,13 +55,22 @@ public class FileWasDeleted
     @Test
     public void fileWasDeleted() throws Exception
     {
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
+        TestHelper.checkScreen(AUDIO_FILES_COUNT, "", "", "", -1, true);
         //Adding playlist
         openActionBarOverflowOrOptionsMenu(mActivityRule.getActivity());
         onView(withText(mActivityRule.getActivity().getString(R.string.new_playlist))).perform(click());
 
         //Adding folder, click on the apply button
         onView(withId(R.id.btnAddToPlaylist)).perform(click());
+
+        //Select all
+        for(int i = 0; i < (AUDIO_FILES_COUNT / 2 + 1); i++)
+        {
+            onView(allOf(withId(R.id.listView), isDisplayed())).perform(RecyclerViewActions.scrollToPosition(i));
+            onView(allOf(withRecyclerView(R.id.listView).atPositionOnView(i, R.id.add_icon), isDisplayed())).perform(click());
+        }
+
+
         onView(withId(R.id.apply)).perform(click());
 
         String fileToDelete1 = Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER + "/" + getSongName(0);
@@ -70,7 +84,7 @@ public class FileWasDeleted
         if (!file3.delete()) Assert.assertTrue(false);
 
         SystemClock.sleep(1000);
-        TestHelper.checkScreen(TestHelper.AUDIO_FILES_COUNT, "", "", "", -1, true);
+        TestHelper.checkScreen(AUDIO_FILES_COUNT, "", "", "", -1, true);
 
         //Adding folder, click on the apply button
         onView(withId(R.id.btnAddToPlaylist)).perform(click());

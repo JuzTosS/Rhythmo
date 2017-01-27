@@ -114,12 +114,7 @@ public class TestHelper
         taskBuildLib.setOnBuildLibraryProgressUpdate(new AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate()
         {
             @Override
-            public void onProgressUpdate(AsyncBuildLibraryTask task, int overallProgress, int maxProgress, boolean mediaStoreTransferDone)
-            {
-            }
-
-            @Override
-            public void onFinishBuildingLibrary(AsyncBuildLibraryTask task)
+            public void onFinish(boolean wasDatabaseChanged)
             {
                 latch.countDown();
             }

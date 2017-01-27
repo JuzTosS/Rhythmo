@@ -51,7 +51,7 @@ public class LibraryServiceBuilder
      */
     public LibraryServiceBuilder detectBpm()
     {
-        if(mIntent.getExtras() != null && mIntent.getBooleanExtra(BuildMusicLibraryService.DETECT_BPM_IN_PLAYLIST, false))
+        if(mIntent.getExtras() != null && mIntent.getIntExtra(BuildMusicLibraryService.DETECT_BPM_IN_PLAYLIST, -1) >= 0)
         {
             throw new RuntimeException("Unable to detectBpm() in conjunction with detectBpmInAPlaylist()");
         }
@@ -70,15 +70,6 @@ public class LibraryServiceBuilder
     }
 
     /**
-     * Finds all the songs in a storage of the device
-     */
-    public LibraryServiceBuilder scanStorage()
-    {
-        mIntent.putExtra(BuildMusicLibraryService.SCAN_STORAGE, true);
-        return this;
-    }
-
-    /**
      * Detect bpm for song only in the playlist
      */
     public LibraryServiceBuilder detectBpmInAPlaylist(int playlistIndex)
@@ -88,7 +79,7 @@ public class LibraryServiceBuilder
             throw new RuntimeException("Unable to detectBpmInAPlaylist() in conjunction with detectBpm()");
         }
 
-        mIntent.putExtra(BuildMusicLibraryService.DETECT_BPM_IN_PLAYLIST, true);
+        mIntent.putExtra(BuildMusicLibraryService.DETECT_BPM_IN_PLAYLIST, playlistIndex);
         return this;
     }
 

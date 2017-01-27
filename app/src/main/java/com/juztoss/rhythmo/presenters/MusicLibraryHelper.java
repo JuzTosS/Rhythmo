@@ -16,9 +16,8 @@ public class MusicLibraryHelper
         mApp = rhythmoApp;
     }
 
-    public Cursor getSongIdsCursor(String absolutePath, boolean doCheckFileSystem)
+    public Cursor getSongIdsCursor(String absolutePath)
     {
-        //TODO: Implement doCheckFileSystem logic
         Cursor cursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
                 new String[]{DatabaseHelper._ID},
                 DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " LIKE " + DatabaseUtils.sqlEscapeString(absolutePath + "%"),
@@ -28,10 +27,8 @@ public class MusicLibraryHelper
         return cursor;
     }
 
-    public Cursor getSongIdsCursor(String absolutePath, float minBPM, float maxBPM, boolean doCheckFileSystem)
+    public Cursor getSongIdsCursor(String absolutePath, float minBPM, float maxBPM)
     {
-        //TODO: Implement doCheckFileSystem logic
-
         Cursor cursor;
         if (minBPM > 0 && maxBPM > 0)//BPM Filter is enabled
         {
