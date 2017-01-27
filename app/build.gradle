@@ -4,6 +4,13 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 def superpowered_sdk_path = properties.getProperty('superpowered.dir')
 
+apply plugin: 'maven'
+
+repositories {
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
 android { // main settings for your application
     compileSdkVersion = 25
     buildToolsVersion = "25.0.1"
@@ -73,7 +80,7 @@ dependencies {
     compile 'com.android.support:design:25.0.1'
     compile 'com.android.support:support-v4:25.0.1'
     compile 'com.simplecityapps:recyclerview-fastscroll:1.0.11'
-    compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
+    compile 'de.psdev.licensesdialog:library:1.8.2-SNAPSHOT'
     compile 'com.android.support:support-annotations:25.0.1'
     androidTestCompile 'com.android.support:support-annotations:25.0.1'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2')
