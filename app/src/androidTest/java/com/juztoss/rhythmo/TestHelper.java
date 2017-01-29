@@ -114,6 +114,12 @@ public class TestHelper
         taskBuildLib.setOnBuildLibraryProgressUpdate(new AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate()
         {
             @Override
+            public void onPartLoaded()
+            {
+
+            }
+
+            @Override
             public void onFinish(boolean wasDatabaseChanged)
             {
                 latch.countDown();
