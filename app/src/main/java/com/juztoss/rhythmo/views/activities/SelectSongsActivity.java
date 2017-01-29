@@ -41,11 +41,12 @@ public class SelectSongsActivity extends BasePlayerActivity implements BrowserFr
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_select_song);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             startCircularReveal();
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_song);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle(R.string.select_folder);

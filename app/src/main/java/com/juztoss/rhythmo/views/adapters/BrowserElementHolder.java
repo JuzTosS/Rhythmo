@@ -108,7 +108,7 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
             mAddButton.setVisibility(View.VISIBLE);
             if (element.getAddState() == BaseExplorerElement.AddState.NOT_ADDED)
             {
-                mBackgroundLayer.setBackgroundColor(SystemHelper.getColor(context, R.attr.rBackground));
+                mBackgroundLayer.setBackground(null);
                 setImageResource(R.drawable.ic_add_circle_black_36dp, animate);
             }
             else if (element.getAddState() == BaseExplorerElement.AddState.ADDED)
@@ -124,7 +124,7 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
         }else
         {
             mAddButton.setVisibility(View.GONE);
-            mBackgroundLayer.setBackgroundColor(SystemHelper.getColor(context, R.attr.rBackground));
+            mBackgroundLayer.setBackground(null);
         }
     }
 

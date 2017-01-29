@@ -1,8 +1,14 @@
 <resources>
 
     <style name="Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="Launch" parent="Base">
+        <item name="colorPrimaryDark">#b93221</item>
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
+
 
     <style name="Red" parent="Base">
         <item name="rPrimary">#db4437</item>

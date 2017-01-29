@@ -36,7 +36,7 @@ import de.psdev.licensesdialog.licenses.License;
 /**
  * Created by JuzTosS on 5/27/2016.
  */
-public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener
+public class SettingsActivity extends BasePlayerActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     private PrefsFragment mPrefsFragment;
 
