@@ -30,6 +30,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Boolean>
 {
     private final boolean DEBUG = true;
 
+    private final String PART_LOADED = "PartLoaded";
     private final String ERROR_OCCURRED = "ErrorOccurred";
     private RhythmoApp mApp;
     @Nullable
@@ -50,6 +51,8 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Boolean>
 
     public interface OnBuildLibraryProgressUpdate
     {
+        void onPartLoaded();
+
         void onFinish(boolean wasDatabaseChanged);
     }
 
@@ -92,6 +95,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Boolean>
         try
         {
             hasMediaStoreChanges = saveMediaStoreDataToDB();
+            publishProgress(PART_LOADED);
             if(mFolder == null)
                 hasMediaFileSystemChanges = saveFileSystemSongsToDB();
         }
@@ -220,6 +224,13 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Boolean>
         if (progressParams.length > 0 && progressParams[0].equals(ERROR_OCCURRED))
         {
             Toast.makeText(mApp, "Error occurred while updating the database!", Toast.LENGTH_LONG).show();
+        }
+        else if(progressParams.length > 0 && progressParams[0].equals(PART_LOADED))
+        {
+            if (mBuildLibraryProgressUpdate != null)
+                for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
+                    if (mBuildLibraryProgressUpdate.get(i) != null)
+                        mBuildLibraryProgressUpdate.get(i).onPartLoaded();
         }
     }
 

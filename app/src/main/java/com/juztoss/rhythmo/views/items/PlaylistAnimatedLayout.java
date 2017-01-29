@@ -14,6 +14,9 @@ import com.juztoss.rhythmo.R;
  * Created by JuzTosS on 1/22/2017.
  */
 
+/**
+ * This class encapsulates the logic of hiding and showing animations of a playlist view
+ */
 public class PlaylistAnimatedLayout extends FrameLayout
 {
     private static final float MIN_SCALE = 0.75f;

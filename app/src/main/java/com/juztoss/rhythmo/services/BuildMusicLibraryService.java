@@ -250,6 +250,12 @@ public class BuildMusicLibraryService extends Service
     private AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate mOnBuildLibraryUpdate = new AsyncBuildLibraryTask.OnBuildLibraryProgressUpdate()
     {
         @Override
+        public void onPartLoaded()
+        {
+            mApp.notifyPlaylistsRepresentationUpdated();
+        }
+
+        @Override
         public void onFinish(boolean wasDatabaseChanged)
         {
             if(wasDatabaseChanged)

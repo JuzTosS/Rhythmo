@@ -204,6 +204,11 @@ public class RhythmoApp extends Application
             return true;
     }
 
+    public boolean isBpmFilterEnabled()
+    {
+        return mMinBPM > 0 || mMaxBPM > 0;
+    }
+
     public void setBPMRange(float minBPM, float maxBPM)
     {
         mMinBPM = minBPM;

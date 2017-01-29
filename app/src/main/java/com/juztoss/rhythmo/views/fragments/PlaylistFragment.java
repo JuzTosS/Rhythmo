@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.juztoss.rhythmo.R;
@@ -35,7 +36,9 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     private LinearLayoutManager mLayoutManager;
     private int mScrollOnCreateToPosition = -1;
     private View mHeader;
-    private View mHint;
+    private View mHintNoSongs;
+    private View mHintNoSongsIfFiltered;
+    private ProgressBar mProgrssIndicator;
     private volatile TextView mHeaderText;
 
     private RecyclerView.OnScrollListener mOnListScrollListener = new RecyclerView.OnScrollListener()
@@ -88,10 +91,28 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
                 updatePlaylistHeader((RecyclerView) getView().findViewById(R.id.listView));
         }
 
-        if(mApp.getPlaylists().get(mPlaylistIndex).getSource().isModifyAvailable() && mPlaylistAdapter.getItemCount() <= 1)
-            mHint.setVisibility(View.VISIBLE);
+        if(mPlaylistAdapter.getItemCount() <= 1)
+        {
+            if(mApp.getPlaylists().get(mPlaylistIndex).getSource().isModifyAvailable())
+            {
+                mHintNoSongs.setVisibility(!mApp.isBpmFilterEnabled() ? View.VISIBLE : View.GONE);
+                mHintNoSongsIfFiltered.setVisibility(mApp.isBpmFilterEnabled()? View.VISIBLE : View.GONE);
+                mProgrssIndicator.setVisibility(View.GONE);
+            }
+            else
+            {
+                mHintNoSongs.setVisibility(View.GONE);
+                mHintNoSongsIfFiltered.setVisibility(View.GONE);
+                mProgrssIndicator.setVisibility(mApp.isBuildingLibrary() ? View.VISIBLE : View.GONE);
+            }
+        }
         else
-            mHint.setVisibility(View.GONE);
+        {
+            mHintNoSongs.setVisibility(View.GONE);
+            mHintNoSongsIfFiltered.setVisibility(View.GONE);
+            mProgrssIndicator.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -135,7 +156,9 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         mPlaylistAdapter = new PlaylistAdapter((PlayerActivity) getActivity(), mApp.getPlaylists().get(playlistIndex));
         mPlaylistAdapter.setOnDataSetChanged(mOnDataSetChanged);
 
-        mHint = getView().findViewById(R.id.hint);
+        mHintNoSongs = getView().findViewById(R.id.hint);
+        mHintNoSongsIfFiltered = getView().findViewById(R.id.hintFilterEnabled);
+        mProgrssIndicator = (ProgressBar) getView().findViewById(R.id.progressIndicator);
         mHeader = getView().findViewById(R.id.static_footer_header);
         mHeaderText = (TextView) mHeader.findViewById(R.id.static_folder_header_text);
 

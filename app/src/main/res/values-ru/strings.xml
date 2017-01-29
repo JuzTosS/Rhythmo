@@ -64,4 +64,5 @@
     <string name="detect_bpm_progress_notification">Определяю BPM. %1$d из %2$d песен.</string>
     <string name="looking_for_new_songs">Ищу музыку</string>
     <string name="speeding_up">Разгоняюсь</string>
+    <string name="bpm_filter_enabled">Ни одна из песен\nне попадает в диапазон\nBPM фильтра</string>
 </resources>
