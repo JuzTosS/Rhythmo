@@ -32,14 +32,9 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
     {
         super(view);
         mListener = listener;
-        view.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mListener.onItemClick(mPosition);
-                BrowserElementHolder.this.onClick();
-            }
+        view.setOnClickListener(v -> {
+            mListener.onItemClick(mPosition);
+            BrowserElementHolder.this.onClick();
         });
         mListener = listener;
 
@@ -48,14 +43,9 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
         mIcon = (ImageView) itemView.findViewById(R.id.element_icon);
         mBackgroundLayer = itemView.findViewById(R.id.rowBackgroundLayer);
         mAddButton = (FlippableButton) itemView.findViewById(R.id.add_icon);
-        mAddButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mListener.onActionClick(mPosition);
-                BrowserElementHolder.this.onClick();
-            }
+        mAddButton.setOnClickListener(v -> {
+            mListener.onActionClick(mPosition);
+            BrowserElementHolder.this.onClick();
         });
     }
 

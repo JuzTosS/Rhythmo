@@ -296,14 +296,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mActionBarLayout = getLayoutInflater().inflate(R.layout.action_bar, null);
         mSearchBarLayout = getLayoutInflater().inflate(R.layout.search_bar, null);
 
-        mActionBarLayout.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                gotoTheCurrentlyPlayingSong(true);
-            }
-        });
+        mActionBarLayout.setOnClickListener(v -> gotoTheCurrentlyPlayingSong(true));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -580,24 +573,12 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
                         getString(R.string.sort_by_date)
                 },
                 getCurrentViewedPlaylist().getSource().getSortType().ordinal(),
-                new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        getCurrentViewedPlaylist().getSource().setSortType(SortType.values()[which]);
-                        dialog.cancel();
-                    }
+                (dialog, which) -> {
+                    getCurrentViewedPlaylist().getSource().setSortType(SortType.values()[which]);
+                    dialog.cancel();
                 });
 
-        builder.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> dialog.cancel());
 
         builder.show();
     }

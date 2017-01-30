@@ -136,87 +136,72 @@ public class SettingsActivity extends BasePlayerActivity implements SharedPrefer
 
             mMusicLibraryPreference = (MusicLibraryPreference) findPreference(getString(R.string.pref_build_library));
 
-            mMusicLibraryPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override
-                public boolean onPreferenceClick(Preference preference)
+            mMusicLibraryPreference.setOnPreferenceClickListener(preference -> {
+                if (!((RhythmoApp) getActivity().getApplicationContext()).isBuildingLibrary())
                 {
-                    if (!((RhythmoApp) getActivity().getApplicationContext()).isBuildingLibrary())
-                    {
-                        new LibraryServiceBuilder(getActivity())
-                                .scanMediaStore()
-                                .detectBpm()
-                                .enableNotifications()
-                                .stopCurrentlyExecuting()
-                                .start();
-                    }
-                    else
-                    {
-                        Intent intent = new Intent(getActivity().getApplicationContext(), BuildMusicLibraryService.class);
-                        getActivity().getApplicationContext().stopService(intent);
-                    }
-                    return true;
+                    new LibraryServiceBuilder(getActivity())
+                            .scanMediaStore()
+                            .detectBpm()
+                            .enableNotifications()
+                            .stopCurrentlyExecuting()
+                            .start();
                 }
+                else
+                {
+                    Intent intent = new Intent(getActivity().getApplicationContext(), BuildMusicLibraryService.class);
+                    getActivity().getApplicationContext().stopService(intent);
+                }
+                return true;
             });
 
             Preference clearLibraryPreference = findPreference(getString(R.string.pref_clear_library));
-            clearLibraryPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override
-                public boolean onPreferenceClick(Preference preference)
-                {
-                    Toast.makeText(getActivity(), R.string.hold_hint, Toast.LENGTH_SHORT).show();
-                    return true;
-                }
+            clearLibraryPreference.setOnPreferenceClickListener(preference -> {
+                Toast.makeText(getActivity(), R.string.hold_hint, Toast.LENGTH_SHORT).show();
+                return true;
             });
 
             Preference licensePref = findPreference(getString(R.string.pref_license_button));
 
-            licensePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override
-                public boolean onPreferenceClick(Preference preference)
+            licensePref.setOnPreferenceClickListener(preference -> {
+                LicenseResolver.registerLicense(new License()
                 {
-                    LicenseResolver.registerLicense(new License()
+                    @Override
+                    public String getName()
                     {
-                        @Override
-                        public String getName()
-                        {
-                            return "http://superpowered.com/license";
-                        }
+                        return "http://superpowered.com/license";
+                    }
 
-                        @Override
-                        public String readSummaryTextFromResources(Context context)
-                        {
-                            return "http://superpowered.com/license";
-                        }
+                    @Override
+                    public String readSummaryTextFromResources(Context context)
+                    {
+                        return "http://superpowered.com/license";
+                    }
 
-                        @Override
-                        public String readFullTextFromResources(Context context)
-                        {
-                            return "http://superpowered.com/license";
-                        }
+                    @Override
+                    public String readFullTextFromResources(Context context)
+                    {
+                        return "http://superpowered.com/license";
+                    }
 
-                        @Override
-                        public String getVersion()
-                        {
-                            return "1.0";
-                        }
+                    @Override
+                    public String getVersion()
+                    {
+                        return "1.0";
+                    }
 
-                        @Override
-                        public String getUrl()
-                        {
-                            return "http://superpowered.com/license";
-                        }
-                    });
-                    new LicensesDialog.Builder(preference.getContext())
-                            .setNotices(R.raw.licenses)
-                            .setIncludeOwnLicense(true)
-                            .build()
-                            .show();
+                    @Override
+                    public String getUrl()
+                    {
+                        return "http://superpowered.com/license";
+                    }
+                });
+                new LicensesDialog.Builder(preference.getContext())
+                        .setNotices(R.raw.licenses)
+                        .setIncludeOwnLicense(true)
+                        .build()
+                        .show();
 
-                    return true;
-                }
+                return true;
             });
         }
 
@@ -225,18 +210,15 @@ public class SettingsActivity extends BasePlayerActivity implements SharedPrefer
         {
             View view = super.onCreateView(inflater, container, savedInstanceState);
             ListView listView = (ListView) view.findViewById(android.R.id.list);
-            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    ListView listView = (ListView) parent;
-                    ListAdapter listAdapter = listView.getAdapter();
-                    Object obj = listAdapter.getItem(position);
-                    if (obj != null && obj instanceof View.OnLongClickListener) {
-                        View.OnLongClickListener longListener = (View.OnLongClickListener) obj;
-                        return longListener.onLongClick(view);
-                    }
-                    return false;
+            listView.setOnItemLongClickListener((parent, view1, position, id) -> {
+                ListView listView1 = (ListView) parent;
+                ListAdapter listAdapter = listView1.getAdapter();
+                Object obj = listAdapter.getItem(position);
+                if (obj != null && obj instanceof View.OnLongClickListener) {
+                    View.OnLongClickListener longListener = (View.OnLongClickListener) obj;
+                    return longListener.onLongClick(view1);
                 }
+                return false;
             });
 
             return view;

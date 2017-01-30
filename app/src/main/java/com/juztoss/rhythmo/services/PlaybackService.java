@@ -151,28 +151,16 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     @Override
     public void onEnd()
     {
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                gotoNext(false);
-            }
-        });
+        runOnUiThread(() -> gotoNext(false));
     }
 
     @Override
     public void onError()
     {
         Log.e(getClass().toString(), "Internal player error");
-        runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                clearQueue();
-                gotoNext(false);
-            }
+        runOnUiThread(() -> {
+            clearQueue();
+            gotoNext(false);
         }, 1000);
     }
 

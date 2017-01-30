@@ -52,25 +52,13 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         mHeader = header;
         mApp = ((RhythmoApp) itemView.getContext().getApplicationContext());
         mListener = listener;
-        itemView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (mListener != null)
-                    mListener.onPlaylistItemClick(mPosition, ACTION_PLAY, mComposition);
-            }
+        itemView.setOnClickListener(v -> {
+            if (mListener != null)
+                mListener.onPlaylistItemClick(mPosition, ACTION_PLAY, mComposition);
         });
 
         View menuButton = itemView.findViewById(R.id.menu_button);
-        menuButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mPopupMenu.show();
-            }
-        });
+        menuButton.setOnClickListener(v -> mPopupMenu.show());
 
         mPopupMenu = new PopupMenu(menuButton.getContext(), menuButton);
 

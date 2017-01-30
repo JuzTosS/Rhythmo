@@ -135,14 +135,9 @@ public class TestHelper
             {
                 if(activity != null)
                 {
-                    activity.runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            app.notifyPlaylistsRepresentationUpdated();
-                            latch.countDown();
-                        }
+                    activity.runOnUiThread(() -> {
+                        app.notifyPlaylistsRepresentationUpdated();
+                        latch.countDown();
                     });
                 }
                 else
