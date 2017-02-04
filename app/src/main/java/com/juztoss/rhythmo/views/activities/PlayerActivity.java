@@ -58,24 +58,28 @@ import com.juztoss.rhythmo.views.items.RangeSeekBar;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class PlayerActivity extends BasePlayerActivity implements View.OnClickListener, ViewPager.OnPageChangeListener
 {
     public static final String DISABLE_RESCAN_ON_LAUNCHING = "DisableRescanOnLaunching";
 
     private RhythmoApp mApp;
-    private View mPlayButton;
-    private ImageView mRepeatButton;
-    private ImageView mShuffleButton;
-    private TextView mTimePassed;
-    private TextView mTimeLeft;
-    private SeekBar mSeekbar;
-    private RangeSeekBar<Integer> mRangeSeekbar;
-    private ViewPager mPlaylistsPager;
-    private FloatingActionButton mFab;
+    @BindView(R.id.play_button) protected View mPlayButton;
+    @BindView(R.id.repeat_button) protected ImageView mRepeatButton;
+    @BindView(R.id.shuffle_button) protected ImageView mShuffleButton;
+    @BindView(R.id.time_passed) protected TextView mTimePassed;
+    @BindView(R.id.time_left) protected TextView mTimeLeft;
+    @BindView(R.id.seekbar) protected SeekBar mSeekbar;
+    @BindView(R.id.bpm_ranger) protected RangeSeekBar<Integer> mRangeSeekbar;
+    @BindView(R.id.pager) protected ViewPager mPlaylistsPager;
+    @BindView(R.id.btnAddToPlaylist) protected FloatingActionButton mFab;
+    @BindView(R.id.bpm_label_min) protected TextView mMinBPMField;
+    @BindView(R.id.bpm_label_max) protected TextView mMaxBPMField;
+    @BindView(R.id.tab_layout) protected TabLayout mTabLayout;
     private ActionBar mActionBar;
     private EditText mEditText;
-    private TextView mMinBPMField;
-    private TextView mMaxBPMField;
 
     private boolean mIsSearchEnabled = false;
     private ActionBar.LayoutParams mActionBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
@@ -102,6 +106,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
         mApp = (RhythmoApp) getApplication();
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         createFab();
         setupPager();
         setupActionBar();
@@ -130,7 +135,6 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
     private void createFab()
     {
-        mFab = (FloatingActionButton) findViewById(R.id.btnAddToPlaylist);
         mFab.setOnClickListener(this);
     }
 
@@ -170,25 +174,15 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
     private void setupAllOtherUI()
     {
-        mTimePassed = (TextView) findViewById(R.id.time_passed);
-        mTimeLeft = (TextView) findViewById(R.id.time_left);
-        mSeekbar = (SeekBar) findViewById(R.id.seekbar);
         mSeekbar.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
-        mRangeSeekbar = (RangeSeekBar<Integer>) findViewById(R.id.bpm_ranger);
         mRangeSeekbar.setOnRangeSeekBarChangeListener(mOnBpmRangeChanged);
         mRangeSeekbar.setNotifyWhileDragging(true);
 
-        mMinBPMField = (TextView) findViewById(R.id.bpm_label_min);
-        mMaxBPMField = (TextView) findViewById(R.id.bpm_label_max);
         mMinBPMField.setText(R.string.min);
         mMaxBPMField.setText(R.string.max);
 
-        mRepeatButton = (ImageView) findViewById(R.id.repeat_button);
         mRepeatButton.setOnClickListener(mRepeatButtonListener);
-        mShuffleButton = (ImageView) findViewById(R.id.shuffle_button);
         mShuffleButton.setOnClickListener(mShuffleButtonListener);
-
-        mPlayButton = findViewById(R.id.play_button);
         mPlayButton.setOnClickListener(mPlayButtonListener);
 
         View nextButton = findViewById(R.id.next_button);
@@ -239,7 +233,6 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
 
-        mPlaylistsPager = (ViewPager) findViewById(R.id.pager);
         mPlaylistsPager.setPageTransformer(false, new PlaylistsPageTransformer());
         final TabsAdapter adapter = new TabsAdapter(getSupportFragmentManager(), mApp.getPlaylists().size());
         mPlaylistsPager.setAdapter(adapter);
@@ -856,9 +849,8 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
     public void updateTabNames()
     {
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         List<Playlist> playlists = mApp.getPlaylists();
-        int tabsCount = tabLayout.getTabCount();
+        int tabsCount = mTabLayout.getTabCount();
         for (int index = 0; index < playlists.size(); index++)
         {
             if(index >= tabsCount)
@@ -866,7 +858,7 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
                 Log.e(this.getClass().toString(), "Trying to update tab that doesn't exist");
                 return;
             }
-            TabLayout.Tab tab = tabLayout.getTabAt(index);
+            TabLayout.Tab tab = mTabLayout.getTabAt(index);
             tab.setText(playlists.get(index).getName());
         }
     }

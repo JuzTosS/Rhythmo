@@ -20,6 +20,9 @@ import com.juztoss.rhythmo.utils.SystemHelper;
 
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by JuzTosS on 6/18/2016.
  */
@@ -31,23 +34,25 @@ public class SongElementHolder extends RecyclerView.ViewHolder
 
     private RhythmoApp mApp;
     private Composition mComposition;
-    private TextView mFirstLine;
-    private TextView mSecondLine;
-    private TextView mBpmLabel;
-    private View mPlayingState;
-    private AnimationDrawable mPlaybackAnimation;
+    private final View mHeader;
     private int mPosition;
-    private View mHeader;
-    private TextView mHeaderLabel;
-    private LinearLayout mRoot;
+    private final PopupMenu mPopupMenu;
     private IOnItemClickListener mListener;
-    private PopupMenu mPopupMenu;
     private boolean mIsFolderHeader;
     private String mFolderName;
+
+    private AnimationDrawable mPlaybackAnimation;
+    protected TextView mHeaderLabel;
+    @BindView(R.id.first_line) protected TextView mFirstLine;
+    @BindView(R.id.second_line) protected TextView mSecondLine;
+    @BindView(R.id.bpm_label) protected TextView mBpmLabel;
+    @BindView(R.id.playing_state) protected View mPlayingState;
+    @BindView(R.id.song_list_root) protected LinearLayout mRoot;
 
     public SongElementHolder(View row, View header, IOnItemClickListener listener, boolean isModifyAvailable)
     {
         super(row);
+        ButterKnife.bind(this, itemView);
         row.setTag(this);
         mHeader = header;
         mApp = ((RhythmoApp) itemView.getContext().getApplicationContext());
@@ -58,20 +63,14 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         });
 
         View menuButton = itemView.findViewById(R.id.menu_button);
-        menuButton.setOnClickListener(v -> mPopupMenu.show());
-
         mPopupMenu = new PopupMenu(menuButton.getContext(), menuButton);
+        menuButton.setOnClickListener(v -> mPopupMenu.show());
 
         mPopupMenu.inflate(R.menu.song_menu);
         mPopupMenu.getMenu().findItem(R.id.remove).setEnabled(isModifyAvailable);
         mPopupMenu.setOnMenuItemClickListener(mMenuClickListener);
 
-        mFirstLine = (TextView) itemView.findViewById(R.id.first_line);
-        mSecondLine = (TextView) itemView.findViewById(R.id.second_line);
-        mBpmLabel = (TextView) itemView.findViewById(R.id.bpm_label);
-        mRoot = (LinearLayout) itemView.findViewById(R.id.song_list_root);
         mHeaderLabel = (TextView) mHeader.findViewById(R.id.folder_header_text);
-        mPlayingState = itemView.findViewById(R.id.playing_state);
         mPlaybackAnimation = (AnimationDrawable) mPlayingState.getBackground();
     }
 

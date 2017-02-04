@@ -2,6 +2,7 @@ package com.juztoss.rhythmo.views.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,10 @@ import com.juztoss.rhythmo.views.adapters.IOnItemClickListener;
 import com.juztoss.rhythmo.views.adapters.PlaylistAdapter;
 import com.juztoss.rhythmo.views.adapters.SongElementHolder;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by JuzTosS on 4/20/2016.
  */
@@ -35,11 +40,13 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     private RhythmoApp mApp;
     private LinearLayoutManager mLayoutManager;
     private int mScrollOnCreateToPosition = -1;
-    private View mHeader;
-    private View mHintNoSongs;
-    private View mHintNoSongsIfFiltered;
-    private ProgressBar mProgrssIndicator;
-    private volatile TextView mHeaderText;
+    @BindView(R.id.static_footer_header) protected View mHeader;
+    @BindView(R.id.hint) protected View mHintNoSongs;
+    @BindView(R.id.hintFilterEnabled) protected View mHintNoSongsIfFiltered;
+    @BindView(R.id.progressIndicator) protected ProgressBar mProgrssIndicator;
+    @BindView(R.id.static_folder_header_text) protected volatile TextView mHeaderText;
+    @BindView(R.id.listView) protected RecyclerView mList;
+    private Unbinder mUnbinder;
 
     private RecyclerView.OnScrollListener mOnListScrollListener = new RecyclerView.OnScrollListener()
     {
@@ -88,7 +95,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         {
             mHeader.setVisibility(View.VISIBLE);
             if(getView() != null)
-                updatePlaylistHeader((RecyclerView) getView().findViewById(R.id.listView));
+                updatePlaylistHeader(mList);
         }
 
         if(mPlaylistAdapter.getItemCount() <= 1)
@@ -118,19 +125,14 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
     @Override
     public void onDestroyView()
     {
-        RecyclerView list = (RecyclerView) getView().findViewById(R.id.listView);
-        list.removeOnScrollListener(mOnListScrollListener);
+        mList.removeOnScrollListener(mOnListScrollListener);
+        if(mUnbinder != null)
+            mUnbinder.unbind();
+
         super.onDestroyView();
     }
 
-    private PlaylistAdapter.IOnDataSetChanged mOnDataSetChanged = new PlaylistAdapter.IOnDataSetChanged()
-    {
-        @Override
-        public void onDataSetChanged()
-        {
-            updatePlaylistHeaderAndHintVisibility();
-        }
-    };
+    private PlaylistAdapter.IOnDataSetChanged mOnDataSetChanged = () -> updatePlaylistHeaderAndHintVisibility();
 
     public static PlaylistFragment newInstance(int playlistIndex)
     {
@@ -140,6 +142,15 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         fragment.setArguments(args);
         return fragment;
     }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        mUnbinder = ButterKnife.bind(this, view);
+    }
+
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
@@ -156,19 +167,12 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         mPlaylistAdapter = new PlaylistAdapter((PlayerActivity) getActivity(), mApp.getPlaylists().get(playlistIndex));
         mPlaylistAdapter.setOnDataSetChanged(mOnDataSetChanged);
 
-        mHintNoSongs = getView().findViewById(R.id.hint);
-        mHintNoSongsIfFiltered = getView().findViewById(R.id.hintFilterEnabled);
-        mProgrssIndicator = (ProgressBar) getView().findViewById(R.id.progressIndicator);
-        mHeader = getView().findViewById(R.id.static_footer_header);
-        mHeaderText = (TextView) mHeader.findViewById(R.id.static_folder_header_text);
-
-        RecyclerView list = (RecyclerView) getView().findViewById(R.id.listView);
-        list.addOnScrollListener(mOnListScrollListener);
+        mList.addOnScrollListener(mOnListScrollListener);
 
         mPlaylistAdapter.setOnItemClickListener(this);
-        list.setAdapter(mPlaylistAdapter);
+        mList.setAdapter(mPlaylistAdapter);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        list.setLayoutManager(mLayoutManager);
+        mList.setLayoutManager(mLayoutManager);
 
         updatePlaylistHeaderAndHintVisibility();
         if(mScrollOnCreateToPosition >= 0)

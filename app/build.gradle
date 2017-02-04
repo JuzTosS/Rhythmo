@@ -91,15 +91,17 @@ android { // main settings for your application
 }
 
 dependencies {
+    annotationProcessor ('com.jakewharton:butterknife-compiler:8.5.1')
     compile fileTree(include: ['*.jar'], dir: 'libs/')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:design:25.0.1'
-    compile 'com.android.support:support-v4:25.0.1'
+    compile 'com.android.support:support-annotations:25.1.0'
+    compile ('com.jakewharton:butterknife:8.5.1')
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:design:25.1.0'
+    compile 'com.android.support:support-v4:25.1.0'
     compile 'com.simplecityapps:recyclerview-fastscroll:1.0.11'
     compile 'de.psdev.licensesdialog:library:1.8.2-SNAPSHOT'
-    compile 'com.android.support:support-annotations:25.0.1'
-    androidTestCompile 'com.android.support:support-annotations:25.0.1'
+    androidTestCompile 'com.android.support:support-annotations:25.1.0'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2')
     {
         exclude group: 'com.android.support', module: 'recyclerview-v7'

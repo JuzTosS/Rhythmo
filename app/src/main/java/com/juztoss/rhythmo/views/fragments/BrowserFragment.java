@@ -1,6 +1,7 @@
 package com.juztoss.rhythmo.views.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,10 +12,14 @@ import android.widget.TextView;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.BaseExplorerElement;
-import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.presenters.BrowserPresenter;
+import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.views.adapters.BrowserAdapter;
 import com.juztoss.rhythmo.views.adapters.BrowserElementHolder;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 /**
@@ -24,7 +29,9 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
 {
     private BrowserAdapter mBrowserAdapter;
     private RhythmoApp mApp;
-    private TextView mFolderPathLabel;
+    @BindView(R.id.folderPathLabel)
+    protected TextView mFolderPathLabel;
+    private Unbinder mUnbinder;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
@@ -38,9 +45,23 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
         list.setAdapter(mBrowserAdapter);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mFolderPathLabel = (TextView) getView().findViewById(R.id.folderPathLabel);
-
         mApp.getBrowserPresenter().addOnDataChangedListener(this);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        mUnbinder = ButterKnife.bind(this, view);
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+
+        if(mUnbinder != null)
+            mUnbinder.unbind();
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +22,10 @@ import com.juztoss.rhythmo.utils.SystemHelper;
 
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by JuzTosS on 6/13/2016.
  */
@@ -31,11 +34,16 @@ public class SingleSongActivity extends BasePlayerActivity
     private long mLastTapTime = 0;
     private long mTapsCount = 0;
 
-    private SeekBar mSeekBar;
     private Composition mComposition;
-    private Button mButtonHalf;
-    private Button mButtonDouble;
-    private TextView mBpmField;
+
+    @BindView(R.id.seekBar) protected SeekBar mSeekBar;
+    @BindView(R.id.button_half_bpm) protected Button mButtonHalf;
+    @BindView(R.id.button_double_bpm) protected Button mButtonDouble;
+    @BindView(R.id.bpm_text) protected TextView mBpmField;
+    @BindView(R.id.toolbar) protected Toolbar mToolbar;
+    @BindView(R.id.song_name) protected TextView mNameField;
+    @BindView(R.id.shiftedBpmValue) protected TextView mBpmDesc;
+
     private static final int DETECT_WINDOW_SIZE = 10;
     public static final String SONG_ID = "SongId";
 
@@ -69,31 +77,29 @@ public class SingleSongActivity extends BasePlayerActivity
         }
     };
 
-    private View.OnClickListener mOnTapClick = new View.OnClickListener()
+    @OnClick(R.id.button_tap_bpm)
+    protected void onClick(View v)
     {
-        @Override
-        public void onClick(View v)
-        {
-            long now = System.currentTimeMillis();
-            final long MAX_INTERVAL = 2000;
-            final long interval = now - mLastTapTime;
-            mLastTapTime = now;
+        long now = System.currentTimeMillis();
+        final long MAX_INTERVAL = 2000;
+        final long interval = now - mLastTapTime;
+        mLastTapTime = now;
 
-            if (interval > MAX_INTERVAL)
-            {
-                mTapsCount = 0;
-                updateBpmField(0);
-            }
-            else
-            {
-                float currentBpm = 60 * 1000 / interval;
-                float lastBpm = mComposition.bpm();
-                updateBpmField((lastBpm * mTapsCount + currentBpm) / (mTapsCount + 1));
-                if (mTapsCount < DETECT_WINDOW_SIZE)
-                    mTapsCount++;
-            }
+        if (interval > MAX_INTERVAL)
+        {
+            mTapsCount = 0;
+            updateBpmField(0);
         }
-    };
+        else
+        {
+            float currentBpm = 60 * 1000 / interval;
+            float lastBpm = mComposition.bpm();
+            updateBpmField((lastBpm * mTapsCount + currentBpm) / (mTapsCount + 1));
+            if (mTapsCount < DETECT_WINDOW_SIZE)
+                mTapsCount++;
+        }
+    }
+
     private SeekBar.OnSeekBarChangeListener mOnSeekBarChanged = new SeekBar.OnSeekBarChangeListener()
     {
         @Override
@@ -130,8 +136,9 @@ public class SingleSongActivity extends BasePlayerActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
+        ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(R.string.song_detail_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -141,19 +148,12 @@ public class SingleSongActivity extends BasePlayerActivity
         mComposition = app.getComposition(songId);
 
         if (mComposition == null) return;
+        mNameField.setText(mComposition.getAbsolutePath());
 
-        TextView nameField = (TextView) findViewById(R.id.song_name);
-        nameField.setText(mComposition.getAbsolutePath());
-
-        mButtonHalf = (Button) findViewById(R.id.button_half_bpm);
         mButtonHalf.setOnClickListener(mOnHalfClick);
-        mButtonDouble = (Button) findViewById(R.id.button_double_bpm);
         mButtonDouble.setOnClickListener(mOnDoubleClick);
-        View buttonTap = findViewById(R.id.button_tap_bpm);
-        buttonTap.setOnClickListener(mOnTapClick);
 
 
-        mBpmField = (TextView) findViewById(R.id.bpm_text);
         mBpmField.addTextChangedListener(new TextWatcher()
         {
             @Override
@@ -179,7 +179,6 @@ public class SingleSongActivity extends BasePlayerActivity
 
             }
         });
-        mSeekBar = (SeekBar) findViewById(R.id.seekBar);
         mSeekBar.setMax((int) RhythmoApp.MAX_BPM_SHIFT * 2);
         mSeekBar.setOnSeekBarChangeListener(mOnSeekBarChanged);
         updateBpmField(mComposition.bpm());
@@ -190,9 +189,7 @@ public class SingleSongActivity extends BasePlayerActivity
     {
         int bpmShift = (int) (mComposition.bpmShifted() - mComposition.bpm());
         mSeekBar.setProgress((int) RhythmoApp.MAX_BPM_SHIFT + bpmShift);
-
-        TextView bpmDesc = (TextView) findViewById(R.id.shiftedBpmValue);
-        bpmDesc.setText(String.format(Locale.US, "%.1f (%d)", mComposition.bpmShifted(), bpmShift));
+        mBpmDesc.setText(String.format(Locale.US, "%.1f (%d)", mComposition.bpmShifted(), bpmShift));
     }
 
     private void updateEnv()
