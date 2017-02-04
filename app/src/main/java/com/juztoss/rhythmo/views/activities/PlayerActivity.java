@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -47,7 +46,6 @@ import com.juztoss.rhythmo.models.Playlist;
 import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
 import com.juztoss.rhythmo.models.songsources.SortType;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
-import com.juztoss.rhythmo.services.BuildMusicLibraryService;
 import com.juztoss.rhythmo.services.LibraryServiceBuilder;
 import com.juztoss.rhythmo.services.PlaybackService;
 import com.juztoss.rhythmo.utils.SystemHelper;
@@ -60,8 +58,9 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class PlayerActivity extends BasePlayerActivity implements View.OnClickListener, ViewPager.OnPageChangeListener
+public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPageChangeListener
 {
     public static final String DISABLE_RESCAN_ON_LAUNCHING = "DisableRescanOnLaunching";
 
@@ -74,7 +73,8 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     @BindView(R.id.seekbar) protected SeekBar mSeekbar;
     @BindView(R.id.bpm_ranger) protected RangeSeekBar<Integer> mRangeSeekbar;
     @BindView(R.id.pager) protected ViewPager mPlaylistsPager;
-    @BindView(R.id.btnAddToPlaylist) protected FloatingActionButton mFab;
+    @BindView(R.id.btnAddToPlaylist)
+    protected FloatingActionButton mAddToPlaylistBtn;
     @BindView(R.id.bpm_label_min) protected TextView mMinBPMField;
     @BindView(R.id.bpm_label_max) protected TextView mMaxBPMField;
     @BindView(R.id.tab_layout) protected TabLayout mTabLayout;
@@ -107,7 +107,6 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         mApp = (RhythmoApp) getApplication();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        createFab();
         setupPager();
         setupActionBar();
         setupAllOtherUI();
@@ -133,13 +132,8 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         return mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
     }
 
-    private void createFab()
-    {
-        mFab.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v)
+    @OnClick(R.id.btnAddToPlaylist)
+    public void onAddToPlaylistClick(View v)
     {
         int[] position = new int[2];
         v.getLocationInWindow(position);
@@ -180,15 +174,6 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
 
         mMinBPMField.setText(R.string.min);
         mMaxBPMField.setText(R.string.max);
-
-        mRepeatButton.setOnClickListener(mRepeatButtonListener);
-        mShuffleButton.setOnClickListener(mShuffleButtonListener);
-        mPlayButton.setOnClickListener(mPlayButtonListener);
-
-        View nextButton = findViewById(R.id.next_button);
-        nextButton.setOnClickListener(mNextButtonListener);
-        View previousButton = findViewById(R.id.previous_button);
-        previousButton.setOnClickListener(mPreviousButtonListener);
     }
 
     private void updateTabs()
@@ -277,10 +262,10 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
     {
         if (getCurrentViewedPlaylist().getSource().isModifyAvailable())
         {
-            mFab.show();
+            mAddToPlaylistBtn.show();
         }
         else
-            mFab.hide();
+            mAddToPlaylistBtn.hide();
     }
 
     @SuppressLint("InflateParams")
@@ -529,24 +514,12 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.selectAll();
         builder.setView(input);
-        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                String newName = input.getText().toString();
-                playlist.getSource().rename(newName);
-                updateTabNames();
-            }
+        builder.setPositiveButton(getString(R.string.dialog_ok), (dialog, which) -> {
+            String newName = input.getText().toString();
+            playlist.getSource().rename(newName);
+            updateTabNames();
         });
-        builder.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> dialog.cancel());
 
 
         input.requestFocus();
@@ -686,40 +659,34 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         }
     };
 
-    private View.OnClickListener mRepeatButtonListener = new View.OnClickListener()
+    @OnClick(R.id.repeat_button)
+    public void onRepeatClick(View v)
     {
-        @Override
-        public void onClick(View v)
-        {
-            if (playbackService() == null)
-                return;
+        if (playbackService() == null)
+            return;
 
-            if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.DISABLED || playbackService().getRepeatMode() == PlaybackService.RepeatMode.SHUFFLE)
-                playbackService().setRepeatMode(PlaybackService.RepeatMode.ALL);
-            else if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
-                playbackService().setRepeatMode(PlaybackService.RepeatMode.ONE);
-            else
-                playbackService().setRepeatMode(PlaybackService.RepeatMode.DISABLED);
+        if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.DISABLED || playbackService().getRepeatMode() == PlaybackService.RepeatMode.SHUFFLE)
+            playbackService().setRepeatMode(PlaybackService.RepeatMode.ALL);
+        else if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
+            playbackService().setRepeatMode(PlaybackService.RepeatMode.ONE);
+        else
+            playbackService().setRepeatMode(PlaybackService.RepeatMode.DISABLED);
 
-            updateShuffleAndRepeatButtons();
-            updateShuffleAndRepeatButtons();
-        }
-    };
+        updateShuffleAndRepeatButtons();
+        updateShuffleAndRepeatButtons();
+    }
 
-    private View.OnClickListener mShuffleButtonListener = new View.OnClickListener()
+    @OnClick(R.id.shuffle_button)
+    public void onShuffleClick(View v)
     {
-        @Override
-        public void onClick(View v)
-        {
-            if (playbackService() == null)
-                return;
+        if (playbackService() == null)
+            return;
 
-            PlaybackService.RepeatMode newRepeatMode = playbackService().getRepeatMode() == PlaybackService.RepeatMode.SHUFFLE ? PlaybackService.RepeatMode.DISABLED : PlaybackService.RepeatMode.SHUFFLE;
-            playbackService().setRepeatMode(newRepeatMode);
-            updateShuffleAndRepeatButtons();
-            updateShuffleAndRepeatButtons();
-        }
-    };
+        PlaybackService.RepeatMode newRepeatMode = playbackService().getRepeatMode() == PlaybackService.RepeatMode.SHUFFLE ? PlaybackService.RepeatMode.DISABLED : PlaybackService.RepeatMode.SHUFFLE;
+        playbackService().setRepeatMode(newRepeatMode);
+        updateShuffleAndRepeatButtons();
+        updateShuffleAndRepeatButtons();
+    }
 
     private void updateShuffleAndRepeatButtons()
     {
@@ -748,18 +715,14 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         }
     }
 
-
-    private View.OnClickListener mPlayButtonListener = new View.OnClickListener()
+    @OnClick(R.id.play_button)
+    public void onPlayClick(View v)
     {
-        @Override
-        public void onClick(View v)
-        {
-            Intent i = new Intent(v.getContext(), PlaybackService.class);
-            i.setAction(PlaybackService.ACTION_COMMAND);
-            i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.SWITCH_PLAYBACK_ACTION);
-            v.getContext().startService(i);
-        }
-    };
+        Intent i = new Intent(v.getContext(), PlaybackService.class);
+        i.setAction(PlaybackService.ACTION_COMMAND);
+        i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.SWITCH_PLAYBACK_ACTION);
+        v.getContext().startService(i);
+    }
 
 
     private RangeSeekBar.OnRangeSeekBarChangeListener<Integer> mOnBpmRangeChanged = new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>()
@@ -823,29 +786,23 @@ public class PlayerActivity extends BasePlayerActivity implements View.OnClickLi
         }
     };
 
-    private View.OnClickListener mNextButtonListener = new View.OnClickListener()
+    @OnClick(R.id.next_button)
+    public void onNextClick(View v)
     {
-        @Override
-        public void onClick(View v)
-        {
-            Intent i = new Intent(v.getContext(), PlaybackService.class);
-            i.setAction(PlaybackService.ACTION_COMMAND);
-            i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.PLAY_NEXT_ACTION);
-            v.getContext().startService(i);
-        }
-    };
+        Intent i = new Intent(v.getContext(), PlaybackService.class);
+        i.setAction(PlaybackService.ACTION_COMMAND);
+        i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.PLAY_NEXT_ACTION);
+        v.getContext().startService(i);
+    }
 
-    private View.OnClickListener mPreviousButtonListener = new View.OnClickListener()
+    @OnClick(R.id.previous_button)
+    public void onPreviousClick(View v)
     {
-        @Override
-        public void onClick(View v)
-        {
-            Intent i = new Intent(v.getContext(), PlaybackService.class);
-            i.setAction(PlaybackService.ACTION_COMMAND);
-            i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.PLAY_PREVIOUS_ACTION);
-            v.getContext().startService(i);
-        }
-    };
+        Intent i = new Intent(v.getContext(), PlaybackService.class);
+        i.setAction(PlaybackService.ACTION_COMMAND);
+        i.putExtra(PlaybackService.ACTION_NAME, PlaybackService.PLAY_PREVIOUS_ACTION);
+        v.getContext().startService(i);
+    }
 
     public void updateTabNames()
     {

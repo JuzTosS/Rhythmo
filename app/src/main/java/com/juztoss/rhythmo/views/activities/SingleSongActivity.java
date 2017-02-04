@@ -59,26 +59,20 @@ public class SingleSongActivity extends BasePlayerActivity
         mBpmField.setText(String.format(Locale.US, "%.1f", bpm));
     }
 
-    private View.OnClickListener mOnHalfClick = new View.OnClickListener()
+    @OnClick(R.id.button_half_bpm)
+    public void onHalfButtonClick(View v)
     {
-        @Override
-        public void onClick(View v)
-        {
-            updateBpmField(mComposition.bpm() / 2);
-        }
-    };
+        updateBpmField(mComposition.bpm() / 2);
+    }
 
-    private View.OnClickListener mOnDoubleClick = new View.OnClickListener()
+    @OnClick(R.id.button_double_bpm)
+    public void onDoubleButtonClick(View v)
     {
-        @Override
-        public void onClick(View v)
-        {
-            updateBpmField(mComposition.bpm() * 2);
-        }
-    };
+        updateBpmField(mComposition.bpm() * 2);
+    }
 
     @OnClick(R.id.button_tap_bpm)
-    protected void onClick(View v)
+    protected void onTapButtonClick(View v)
     {
         long now = System.currentTimeMillis();
         final long MAX_INTERVAL = 2000;
@@ -149,10 +143,6 @@ public class SingleSongActivity extends BasePlayerActivity
 
         if (mComposition == null) return;
         mNameField.setText(mComposition.getAbsolutePath());
-
-        mButtonHalf.setOnClickListener(mOnHalfClick);
-        mButtonDouble.setOnClickListener(mOnDoubleClick);
-
 
         mBpmField.addTextChangedListener(new TextWatcher()
         {
