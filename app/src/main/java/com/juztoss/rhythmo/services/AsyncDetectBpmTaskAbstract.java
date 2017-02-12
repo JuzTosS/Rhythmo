@@ -1,10 +1,8 @@
 package com.juztoss.rhythmo.services;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.os.PowerManager;
 import android.util.Log;
 
 import com.juztoss.rhythmo.models.DatabaseHelper;
@@ -26,9 +24,6 @@ public abstract class AsyncDetectBpmTaskAbstract extends AsyncTask<String, Strin
     private int mPlaylistIndex;
     private boolean mResetBpm;
     private List<Listener> mBuildLibraryProgressUpdate;
-
-
-    private PowerManager.WakeLock mWakeLock;
 
     @Override
     protected void onProgressUpdate(String... progressParams)
@@ -63,7 +58,6 @@ public abstract class AsyncDetectBpmTaskAbstract extends AsyncTask<String, Strin
     protected void onCancelled(Void aVoid)
     {
         super.onCancelled(aVoid);
-        mWakeLock.release();
     }
 
     @Override
@@ -183,22 +177,8 @@ public abstract class AsyncDetectBpmTaskAbstract extends AsyncTask<String, Strin
     }
 
     @Override
-    protected void onPreExecute()
-    {
-        super.onPreExecute();
-
-        PowerManager pm = (PowerManager) mApp.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                getClass().getName());
-        mWakeLock.acquire();
-
-    }
-
-    @Override
     protected void onPostExecute(Void arg0)
     {
-        mWakeLock.release();
-
         if (mBuildLibraryProgressUpdate != null)
             for (int i = 0; i < mBuildLibraryProgressUpdate.size(); i++)
                 if (mBuildLibraryProgressUpdate.get(i) != null)
