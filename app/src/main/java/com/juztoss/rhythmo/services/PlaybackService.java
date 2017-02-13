@@ -529,12 +529,32 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         }
     }
 
+    private void abandonAudioFocus()
+    {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.abandonAudioFocus(this);
+    }
+
+    private void unregisterListeners()
+    {
+        abandonAudioFocus();
+        cancelHideCooldown();
+        unregisterNoisyReceiver();
+    }
+
+    private void disableService()
+    {
+        Log.v(getClass().toString(), "disableService()");
+        stopForeground(true);
+        unregisterListeners();
+        stopSelf();
+    }
+
     @Override
     public void onDestroy()
     {
         Log.v(getClass().toString(), "onDestroy()");
-        unregisterNoisyReceiver();
-        cancelHideCooldown();
+        unregisterListeners();
         mMediaSession.release();
         mPlayer.release();
         mPlayer = null;
@@ -632,6 +652,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         else
         {
             stopForeground(false);
+            abandonAudioFocus();
             startHideCooldown();
         }
     }
@@ -662,16 +683,6 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
             mNoisyReceiverRegistered = false;
             unregisterReceiver(mNoisyReceiver);
         }
-    }
-
-    private void disableService()
-    {
-        Log.v(getClass().toString(), "disableService()");
-        stopForeground(true);
-        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        audioManager.abandonAudioFocus(this);
-        unregisterNoisyReceiver();
-        stopSelf();
     }
 
     private void cancelHideCooldown()
