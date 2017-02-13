@@ -24,7 +24,7 @@ import java.util.Set;
 
 public class LibraryHelper
 {
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     private static final Set<String> SUPPORTED_FORMATS = new HashSet<>(Arrays.asList("wav", "mp3", "m4a", "aiff"));
 

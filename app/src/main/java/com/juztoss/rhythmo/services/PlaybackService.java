@@ -59,6 +59,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         SHUFFLE
     }
 
+    public static final boolean DEBUG = false;
     public static final int NOTIFICATION_ID = 42;
 
     public static final String ACTION_COMMAND = "com.juztoss.rhythmo.action.ACTION_COMMAND";
@@ -279,7 +280,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
 
     private void updateUI(boolean updateList, boolean scrollToCurrent)
     {
-        Log.v(getClass().toString(), "updateUI()");
+        if(DEBUG) Log.v(getClass().toString(), "updateUI()");
         Intent intent = new Intent(UPDATE_UI_ACTION);
         intent.putExtra(UPDATE_UI_SCROLL_TO_CURRENT, scrollToCurrent);
         intent.putExtra(UPDATE_UI_LIST, updateList);
@@ -296,7 +297,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
 
     private synchronized void putAction(BaseAction action)
     {
-        Log.v(getClass().toString(), "putAction() " + action.getClass().toString());
+        if(DEBUG) Log.v(getClass().toString(), "putAction() " + action.getClass().toString());
         mQueue.add(action);
         if (mActionInProgress == null)
             action.doNext();
@@ -413,7 +414,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     @Override
     public void onCreate()
     {
-        Log.v(getClass().toString(), "onCreate()");
+        if(DEBUG) Log.v(getClass().toString(), "onCreate()");
         mHandler = new Handler();
         mApp = (RhythmoApp) getApplicationContext();
         mToast = Toast.makeText(mApp, null, Toast.LENGTH_SHORT);
@@ -436,7 +437,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Log.v(getClass().toString(), "onStartCommand(...)");
+        if(DEBUG) Log.v(getClass().toString(), "onStartCommand(...)");
 
         MediaButtonReceiver.handleIntent(mMediaSession, intent);
 
@@ -448,7 +449,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
 
             mHandler.removeCallbacksAndMessages(null);
             String command = intent.getStringExtra(ACTION_NAME);
-            Log.v(getClass().toString(), "onStartCommand command: " + command);
+            if(DEBUG) Log.v(getClass().toString(), "onStartCommand command: " + command);
             if (PAUSE_PLAYBACK_ACTION.equals(command))
             {
                 pausePlayback();
@@ -544,7 +545,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
 
     private void disableService()
     {
-        Log.v(getClass().toString(), "disableService()");
+        if(DEBUG) Log.v(getClass().toString(), "disableService()");
         stopForeground(true);
         unregisterListeners();
         stopSelf();
@@ -553,7 +554,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     @Override
     public void onDestroy()
     {
-        Log.v(getClass().toString(), "onDestroy()");
+        if(DEBUG) Log.v(getClass().toString(), "onDestroy()");
         unregisterListeners();
         mMediaSession.release();
         mPlayer.release();
@@ -636,7 +637,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
 
     private void setIsPlaying(boolean value)
     {
-        Log.v(getClass().toString(), "setIsPlaying: " + value);
+        if(DEBUG) Log.v(getClass().toString(), "setIsPlaying: " + value);
         setMediaPlaybackState(value ? PlaybackStateCompat.STATE_PLAYING : PlaybackStateCompat.STATE_PAUSED);
         if (!mIsPlaying && value)
             requestAudioFocus();

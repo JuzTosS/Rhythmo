@@ -114,6 +114,7 @@ public class BuildMusicLibraryService extends Service
         if(mEnableNotifications)
         {
             mApp.setIsBuildingLibrary(true);
+            mApp.notifyPlaylistsRepresentationUpdated();
             Toast.makeText(this, getString(R.string.build_library_started), Toast.LENGTH_LONG).show();
             showNotification(getResources().getString(R.string.speeding_up), 0, 0);
         }
@@ -218,7 +219,6 @@ public class BuildMusicLibraryService extends Service
             mNotifyManager.cancel(NOTIFICATION_ID);
 
         mApp.setIsBuildingLibrary(false);
-        mApp.notifyPlaylistsRepresentationUpdated();
 
         Intent intent = new Intent(UPDATE_PROGRESS_ACTION);
         intent.putExtra(PROGRESS_ACTION_HEADER, mApp.getString(R.string.build_library_desc));

@@ -334,6 +334,8 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
                     .enableNotifications()
                     .stopCurrentlyExecuting()
                     .start();
+
+            mApp.notifyPlaylistsRepresentationUpdated();
         }
     }
 

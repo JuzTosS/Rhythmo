@@ -28,7 +28,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class AsyncBuildLibraryTask extends AsyncTask<String, String, Boolean>
 {
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     private final String PART_LOADED = "PartLoaded";
     private final String ERROR_OCCURRED = "ErrorOccurred";
@@ -95,9 +95,11 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Boolean>
         try
         {
             hasMediaStoreChanges = saveMediaStoreDataToDB();
-            publishProgress(PART_LOADED);
             if(mFolder == null)
                 hasMediaFileSystemChanges = saveFileSystemSongsToDB();
+
+            if(hasMediaFileSystemChanges)
+                publishProgress(PART_LOADED);
         }
         finally
         {
