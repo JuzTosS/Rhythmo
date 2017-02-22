@@ -4,6 +4,7 @@ apply plugin: 'me.tatarka.retrolambda'
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 def superpowered_sdk_path = properties.getProperty('superpowered.dir')
+def essentia_sdk_path = properties.getProperty('essentia.dir')
 
 apply plugin: 'maven'
 
@@ -35,14 +36,20 @@ android {
         versionName "1.0.14"
 
         ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64' // these platforms cover 99% percent of all Android devices
+            abiFilters 'arm64-v8a'
+//            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64' // these platforms cover 99% percent of all Android devices
         }
 
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-16', '-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_NEON=TRUE', '-DANDROID_STL=gnustl_static', "-DPATH_TO_SUPERPOWERED:STRING=${superpowered_sdk_path}"
+                arguments '-DANDROID_PLATFORM=android-16',
+                        '-DANDROID_TOOLCHAIN=clang',
+                        '-DANDROID_ARM_NEON=TRUE',
+                        '-DANDROID_STL=gnustl_static',
+                        "-DPATH_TO_SUPERPOWERED:STRING=${superpowered_sdk_path}",
+                        "-DPATH_TO_ESSENTIA:STRING=${essentia_sdk_path}"
                 cFlags '-O3', '-fsigned-char' // full optimization, char data type is signed
-                cppFlags '-fsigned-char', "-I${superpowered_sdk_path}"
+                cppFlags '-fsigned-char', "-fexceptions", "-frtti"
             }
         }
 

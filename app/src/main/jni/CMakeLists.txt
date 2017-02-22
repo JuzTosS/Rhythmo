@@ -1,13 +1,9 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-set(
-	PATH_TO_SUPERPOWERED
-	CACHE STRING ""
-)
-
 message(${ANDROID_ABI})
 
 file(GLOB CPP_FILES "*.cpp")
+
 
 add_library(
 	AdvancedMediaPlayer
@@ -18,6 +14,7 @@ add_library(
 
 include_directories(src/main/jni)
 include_directories(${PATH_TO_SUPERPOWERED})
+include_directories(${PATH_TO_ESSENTIA})
 
 target_link_libraries(
     AdvancedMediaPlayer
@@ -25,4 +22,5 @@ target_link_libraries(
     android
     OpenSLES
     ${PATH_TO_SUPERPOWERED}/libSuperpoweredAndroid${ANDROID_ABI}.a
+    ${PATH_TO_ESSENTIA}/libessentia.a
 )

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.juztoss.rhythmo.R;
+import com.juztoss.rhythmo.audio.BpmDetector;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.models.Playlist;
 import com.juztoss.rhythmo.models.songsources.AbstractSongsSource;
@@ -339,6 +341,20 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         }
     }
 
+    boolean isBpmEqual(int first, int second, int thresold)
+    {
+        if(Math.abs(first - second) < thresold)
+            return true;
+
+        if(Math.abs(first / 2 - second) < thresold)
+            return true;
+
+        if(Math.abs(first - second / 2) < thresold)
+            return true;
+
+        return false;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -360,7 +376,38 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         }
         else if (id == R.id.rename_playlist_menu)
         {
-            launchRenameDialog();
+            Cursor cursor = getCurrentViewedPlaylist().getCursor();
+
+            int equals = 0;
+            int almostEquals = 0;
+            int notEquals = 0;
+            while(cursor.moveToNext())
+            {
+                Composition composition = Composition.fromCursor(cursor);
+                int trueBpm = (int)BpmDetector.detectFromName(composition.name());
+
+                if(isBpmEqual(trueBpm, (int)composition.bpm(), 10))
+                {
+                    equals++;
+                }
+                else if(isBpmEqual(trueBpm, (int)composition.bpm(), 15))
+                {
+                    almostEquals++;
+                }
+                else
+                {
+                    notEquals++;
+                }
+            }
+            cursor.close();
+
+            int total = equals + almostEquals + notEquals;
+            Log.d("::::::::", equals + "; " + almostEquals + "; " + notEquals);
+            Log.d("::::::::", "total: " + total);
+            Log.d("::::::::", "percent: " + (float)equals / (float)total * 100.f);
+            Log.d("::::::::", "percent: " + (float)(equals + almostEquals) / (float)total * 100.f);
+
+//            launchRenameDialog();
         }
         else if (id == R.id.remove_playlist_menu)
         {
