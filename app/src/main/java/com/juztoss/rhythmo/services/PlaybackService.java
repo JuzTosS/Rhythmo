@@ -654,7 +654,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         {
             stopForeground(false);
             abandonAudioFocus();
-            startHideCooldown();
+//            startHideCooldown();
         }
     }
 
