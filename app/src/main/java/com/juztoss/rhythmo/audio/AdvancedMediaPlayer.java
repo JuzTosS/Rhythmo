@@ -9,6 +9,8 @@ import android.util.Log;
  */
 public class AdvancedMediaPlayer
 {
+    private boolean DEBUG = false;
+
     private static int totalObjectsCreated = 0;
     public static String LIBRARY_NAME = "AdvancedMediaPlayer";
     private final int mId;
@@ -118,21 +120,21 @@ public class AdvancedMediaPlayer
      */
     private void onPrepared()
     {
-        Log.d(AdvancedMediaPlayer.class.toString(), "onPreparedCalled");
+        if(DEBUG) Log.d(AdvancedMediaPlayer.class.toString(), "onPreparedCalled");
         if(mOnPreparedListener != null)
             mOnPreparedListener.onPrepared();
     }
 
     private void onEnd()
     {
-        Log.d(AdvancedMediaPlayer.class.toString(), "onEndCalled");
+        if(DEBUG) Log.d(AdvancedMediaPlayer.class.toString(), "onEndCalled");
         if(mOnEndListener != null)
             mOnEndListener.onEnd();
     }
 
     private void onError()
     {
-        Log.d(AdvancedMediaPlayer.class.toString(), "onErrorCalled");
+        if(DEBUG) Log.d(AdvancedMediaPlayer.class.toString(), "onErrorCalled");
         if(mOnErrorListener != null)
             mOnErrorListener.onError();
     }

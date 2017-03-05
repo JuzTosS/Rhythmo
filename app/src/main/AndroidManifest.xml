@@ -24,6 +24,26 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".views.activities.PlayCustomFileActivity"
+                  android:noHistory="true"
+                  android:theme="@style/BaseNoAnim"
+                  android:taskAffinity="com.juztoss.rhythmo.playcustomfile">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content"/>
+                <data android:scheme="file"/>
+                <data android:mimeType="audio/aiff"/>
+                <data android:mimeType="audio/x-aiff"/>
+                <data android:mimeType="audio/mpeg3"/>
+                <data android:mimeType="audio/x-mpeg-3"/>
+                <data android:mimeType="audio/mpeg"/>
+                <data android:mimeType="audio/x-mpeg"/>
+                <data android:mimeType="audio/wav"/>
+                <data android:mimeType="audio/x-wav"/>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="com.juztoss.rhythmo.views.activities.SettingsActivity"
             android:launchMode="singleTop"/>

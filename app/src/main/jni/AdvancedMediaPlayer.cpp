@@ -42,12 +42,12 @@ void AdvancedMediaPlayer::playerEvent(void *__unused clientData,
         }
             break;
         case SuperpoweredAdvancedAudioPlayerEvent_JogParameter:
-            __android_log_print(ANDROID_LOG_DEBUG, "playerEvent", "JogParameter: %s",
-                                (char *) value);
+//            __android_log_print(ANDROID_LOG_DEBUG, "playerEvent", "JogParameter: %s",
+//                                (char *) value);
             break;
         case SuperpoweredAdvancedAudioPlayerEvent_DurationChanged:
-            __android_log_print(ANDROID_LOG_DEBUG, "playerEvent", "durationChanged: %s",
-                                (char *) value);
+//            __android_log_print(ANDROID_LOG_DEBUG, "playerEvent", "durationChanged: %s",
+//                                (char *) value);
             break;
         default:
             __android_log_print(ANDROID_LOG_DEBUG, "playerEvent", "unknown event: %s",
@@ -141,10 +141,18 @@ void AdvancedMediaPlayer::setPosition(unsigned int position) {
 
 
 void AdvancedMediaPlayer::setBPM(double bpm) {
-    if (mIsPrepared)
-        mPlayer->setBpm(bpm);
-    else
+    if (!mIsPrepared) {
         __android_log_print(ANDROID_LOG_DEBUG, __func__, " is called before file is loaded");
+        return;
+    }
+
+//    if (bpm > 10.0) {
+        mPlayer->setBpm(bpm);
+//    }
+//    else {
+//        __android_log_print(ANDROID_LOG_DEBUG, "setBPM", "Bpm is less than 10.0, unable to do time stretching. Bpm is = %f",
+//                            bpm);
+//    }
 }
 
 
@@ -154,13 +162,14 @@ void AdvancedMediaPlayer::setNewBPM(double bpm) {
         return;
     }
 
-    if (mPlayer->bpm > 10.0) {
+    if (mPlayer->bpm > 10.0 && bpm > 10.0) {
         double tempo = bpm / mPlayer->bpm;
         mPlayer->setTempo(tempo, true);
     }
     else {
-        __android_log_print(ANDROID_LOG_DEBUG, "setNewBPM", "Bpm is less than 10.0, unable to do time stretching. Bpm is = %f",
-                            mPlayer->bpm);
+        mPlayer->setTempo(1, true);
+//        __android_log_print(ANDROID_LOG_DEBUG, "setNewBPM", "Bpm is less than 10.0, unable to do time stretching. Bpm is = %f, new Bpm is = %f",
+//                            mPlayer->bpm, bpm);
     }
 }
 

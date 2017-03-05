@@ -167,6 +167,17 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Boolean>
         ContentResolver contentResolver = mApp.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
+        selection += " AND ("
+                + MediaStore.Audio.Media.MIME_TYPE + " = 'audio/aiff' OR "
+                + MediaStore.Audio.Media.MIME_TYPE + " = 'audio/x-aiff' OR "
+                + MediaStore.Audio.Media.MIME_TYPE + " = 'audio/mpeg3' OR "
+                + MediaStore.Audio.Media.MIME_TYPE + " = 'audio/x-mpeg-3' OR "
+                + MediaStore.Audio.Media.MIME_TYPE + " = 'audio/mpeg' OR "
+                + MediaStore.Audio.Media.MIME_TYPE + " = 'audio/x-mpeg' OR "
+                + MediaStore.Audio.Media.MIME_TYPE + " = 'audio/wav' OR "
+                + MediaStore.Audio.Media.MIME_TYPE + " = 'audio/x-wav')";
+
+
         if (mFolder != null)
             selection += " AND " + MediaStore.Audio.Media.DATA + " LIKE " + DatabaseUtils.sqlEscapeString(mFolder + "%");
 

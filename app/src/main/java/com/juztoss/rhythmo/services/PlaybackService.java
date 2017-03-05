@@ -810,8 +810,8 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
 
         if (bpm <= 10 || mCurrentlyPlayingBPM <= 10)
         {
-            mPlayer.setBPM(10);
-            mPlayer.setNewBPM(10);
+            mPlayer.setBPM(0);
+            mPlayer.setNewBPM(0);
         }
         else
         {

@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Path;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -20,6 +21,8 @@ import com.juztoss.rhythmo.services.LibraryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.R.attr.id;
 
 /**
  * Created by JuzTosS on 4/16/2016.
@@ -125,6 +128,44 @@ public class RhythmoApp extends Application
 
                 composition = new Composition(
                         id,
+                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH)),
+                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME)),
+                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10)) / (float) 10,
+                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10)) / (float) 10,
+                        cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED)));
+            }
+        }
+        finally
+        {
+            cursor.close();
+        }
+
+        return composition;
+    }
+
+    @Nullable
+    /**
+     * Make a request to DB and return a Composition object
+     */
+    public Composition getComposition(String path)
+    {
+        Cursor cursor = getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
+                new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME,
+                        DatabaseHelper.MUSIC_LIBRARY_BPMX10, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED},
+                DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + "= ?",
+                new String[]{path},
+                null, null, null);
+
+
+        Composition composition = null;
+        try
+        {
+            if (cursor.getCount() > 0)
+            {
+                cursor.moveToFirst();
+
+                composition = new Composition(
+                        cursor.getLong(cursor.getColumnIndex(DatabaseHelper._ID)),
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH)),
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME)),
                         (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10)) / (float) 10,
