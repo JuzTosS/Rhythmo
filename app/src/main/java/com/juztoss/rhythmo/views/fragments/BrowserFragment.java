@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.juztoss.rhythmo.R;
@@ -31,6 +32,13 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
     private RhythmoApp mApp;
     @BindView(R.id.folderPathLabel)
     protected TextView mFolderPathLabel;
+
+    @BindView(R.id.progressIndicator)
+    protected ProgressBar mProgressIndicator;
+
+    @BindView(R.id.listView)
+    protected RecyclerView mListView;
+
     private Unbinder mUnbinder;
 
     @Override
@@ -40,10 +48,9 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
         mApp = (RhythmoApp) getActivity().getApplicationContext();
 
         mBrowserAdapter = new BrowserAdapter(getActivity());
-        RecyclerView list = (RecyclerView) getView().findViewById(R.id.listView);
         mBrowserAdapter.setOnItemClickListener(this);
-        list.setAdapter(mBrowserAdapter);
-        list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mListView.setAdapter(mBrowserAdapter);
+        mListView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mApp.getBrowserPresenter().addOnDataChangedListener(this);
     }
@@ -68,6 +75,10 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
     public void onStart()
     {
         super.onStart();
+
+        mProgressIndicator.setVisibility(View.VISIBLE);
+        mListView.setVisibility(View.INVISIBLE);
+
         mApp.getBrowserPresenter().clearAdded();
         mApp.getBrowserPresenter().setCurrent(mApp.getBrowserPresenter().getRoot());
         getLoaderManager().initLoader(0, null, mApp.getBrowserPresenter());
@@ -76,6 +87,8 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
     @Override
     public void onDataChanged()
     {
+        mProgressIndicator.setVisibility(View.GONE);
+        mListView.setVisibility(View.VISIBLE);
         mFolderPathLabel.setText(mApp.getBrowserPresenter().getCurrent().getFileSystemPath());
         mBrowserAdapter.update(mApp.getBrowserPresenter().getList());
     }
@@ -102,6 +115,8 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
         BaseExplorerElement element = mBrowserAdapter.getItem(position);
         if(element.hasChildren())
         {
+            mProgressIndicator.setVisibility(View.VISIBLE);
+            mListView.setVisibility(View.INVISIBLE);
             mApp.getBrowserPresenter().setCurrent(element);
             getLoaderManager().restartLoader(0, null, mApp.getBrowserPresenter());
         }
