@@ -31,11 +31,11 @@ public class SongElementHolder extends RecyclerView.ViewHolder
     public static final int ACTION_PLAY = 0;
     public static final int ACTION_REMOVE = 1;
     public static final int ACTION_SHOW_DETAIL = 2;
+    public static final int ACTION_OPEN = 3;
 
     private RhythmoApp mApp;
     private Composition mComposition;
     private final View mHeader;
-    private int mPosition;
     private final PopupMenu mPopupMenu;
     private IOnItemClickListener mListener;
     private boolean mIsFolderHeader;
@@ -59,7 +59,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         mListener = listener;
         itemView.setOnClickListener(v -> {
             if (mListener != null)
-                mListener.onPlaylistItemClick(mPosition, ACTION_PLAY, mComposition);
+                mListener.onPlaylistItemClick(getAdapterPosition(), ACTION_PLAY, mComposition);
         });
 
         View menuButton = itemView.findViewById(R.id.menu_button);
@@ -82,12 +82,12 @@ public class SongElementHolder extends RecyclerView.ViewHolder
             switch (item.getItemId())
             {
                 case R.id.detail:
-                    mListener.onPlaylistItemClick(mPosition, ACTION_SHOW_DETAIL, mComposition);
+                    mListener.onPlaylistItemClick(getAdapterPosition(), ACTION_SHOW_DETAIL, mComposition);
                     break;
 
                 case R.id.remove:
                     if (mListener != null)
-                        mListener.onPlaylistItemClick(mPosition, ACTION_REMOVE, mComposition);
+                        mListener.onPlaylistItemClick(getAdapterPosition(), ACTION_REMOVE, mComposition);
                     break;
             }
             return true;
@@ -95,10 +95,16 @@ public class SongElementHolder extends RecyclerView.ViewHolder
 
     };
 
-    public void update(Composition composition, int position, PlaybackService service, boolean folderMode)
+    public void update(Composition composition, PlaybackService service, boolean folderMode)
     {
+        if(composition == null) {
+            itemView.setVisibility(View.INVISIBLE);
+            return;
+        } else {
+            itemView.setVisibility(View.VISIBLE);
+        }
+
         mComposition = composition;
-        mPosition = position;
         mFirstLine.setText(composition.name());
 
         mSecondLine.setText(composition.getFolder());

@@ -32,9 +32,15 @@ public class ParentLink extends BaseExplorerElement
     }
 
     @Override
-    public List<BaseExplorerElement> getChildren()
+    public int type()
     {
-        return mSource.getChildren();
+        return BaseExplorerElement.BACK_LINK;
+    }
+
+    @Override
+    public List<BaseExplorerElement> getChildren(boolean onlyFolders)
+    {
+        return mSource.getChildren(onlyFolders);
     }
 
     @Override
@@ -90,5 +96,10 @@ public class ParentLink extends BaseExplorerElement
     public void dispose()
     {
 
+    }
+
+    @Override
+    public BaseExplorerElement getChildFromPath(String path, boolean onlyFolders) {
+        return null;
     }
 }

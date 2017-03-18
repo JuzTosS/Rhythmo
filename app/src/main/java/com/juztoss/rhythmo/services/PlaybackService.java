@@ -166,6 +166,14 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     }
 
     @Nullable
+    public Composition getCurrentlySong() {
+        if (getSongsList() == null) return null;
+
+        getSongsList().moveToPosition(getCurrentSongIndex());
+        return Composition.fromCursor(getSongsList());
+    }
+
+    @Nullable
     private Playlist getCurrentPlaylist()
     {
         if (mCurrentPlaylistIndex < 0 || mCurrentPlaylistIndex >= mApp.getPlaylists().size())

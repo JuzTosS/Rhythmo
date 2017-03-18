@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
 
+import com.juztoss.rhythmo.views.fragments.HierarchyPlaylistFragment;
+import com.juztoss.rhythmo.views.fragments.IPlaylistFragment;
 import com.juztoss.rhythmo.views.fragments.PlaylistFragment;
 
 /**
@@ -13,6 +15,7 @@ import com.juztoss.rhythmo.views.fragments.PlaylistFragment;
  */
 public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener
 {
+    private boolean mIsBrowserMode;
     private int mNumOfLists;
     private int mCurrentPosition = 0;
     private ViewGroup mContainer;
@@ -52,10 +55,10 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.
     public void onPageSelected(int newPosition)
     {
 
-        PlaylistFragment fragmentToShow = (PlaylistFragment) instantiateItem(mContainer, newPosition);
+        IPlaylistFragment fragmentToShow = (IPlaylistFragment) instantiateItem(mContainer, newPosition);
         fragmentToShow.onScreen();
 
-        PlaylistFragment fragmentToHide = (PlaylistFragment) instantiateItem(mContainer, mCurrentPosition);
+        IPlaylistFragment fragmentToHide = (IPlaylistFragment) instantiateItem(mContainer, mCurrentPosition);
         fragmentToHide.offScreen();
 
         mCurrentPosition = newPosition;
@@ -64,7 +67,10 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.
     @Override
     public Fragment getItem(int position)
     {
-        return PlaylistFragment.newInstance(position);
+        if (position == 0 && mIsBrowserMode)
+            return HierarchyPlaylistFragment.newInstance(0);
+        else
+            return PlaylistFragment.newInstance(position);
     }
 
     @Override
@@ -73,13 +79,17 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements ViewPager.
         return mNumOfLists;
     }
 
-    public PlaylistFragment getFragmentAt(int position)
+    public IPlaylistFragment getFragmentAt(int position)
     {
-        return (PlaylistFragment) instantiateItem(mContainer, position);
+        return (IPlaylistFragment) instantiateItem(mContainer, position);
     }
 
-    public PlaylistFragment getCurrentFragment()
+    public IPlaylistFragment getCurrentFragment()
     {
-        return (PlaylistFragment) instantiateItem(mContainer, mCurrentPosition);
+        return (IPlaylistFragment) instantiateItem(mContainer, mCurrentPosition);
+    }
+
+    public void setIsBrowserMode(boolean browserMode) {
+        mIsBrowserMode = browserMode;
     }
 }

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.juztoss.rhythmo.models.DatabaseHelper;
+import com.juztoss.rhythmo.models.MediaFolder;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 
 /**
@@ -49,7 +50,7 @@ public class SourcesFactory
         return result;
     }
 
-    public static LocalPlaylistSongsSource createLocalPlaylistSongSource(RhythmoApp app)
+    public static AbstractSongsSource createLocalPlaylistSongSource(RhythmoApp app)
     {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.SOURCE_TYPE, LOCAL_PLAYLIST_SOURCE);
@@ -58,7 +59,7 @@ public class SourcesFactory
         return new LocalPlaylistSongsSource(id, app, "", SortType.DIRECTORY);
     }
 
-    public static AllSongsSource createAllSongsSource(RhythmoApp app)
+    public static AbstractSongsSource createAllSongsSource(RhythmoApp app)
     {
         return new AllSongsSource(app);
     }

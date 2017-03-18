@@ -108,7 +108,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
                     folderMode = !prevComposition.getFolderPath().equals(composition.getFolderPath());
             }
         }
-        holder.update(composition, position, mActivity.playbackService(), folderMode);
+        holder.update(composition, mActivity.playbackService(), folderMode);
     }
 
     private Cursor getCursor()

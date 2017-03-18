@@ -12,13 +12,15 @@ public class CustomExplorerElement extends BaseExplorerElement
 {
     private String mName;
     private ExplorerPriority mPriority;
+    private int mType;
     private List<BaseExplorerElement> mChildren;
 
-    public CustomExplorerElement(String name, List<BaseExplorerElement> children, ExplorerPriority priority)
+    public CustomExplorerElement(String name, List<BaseExplorerElement> children, ExplorerPriority priority, int type)
     {
         mName = name;
         mChildren = children;
         mPriority = priority;
+        mType = type;
     }
 
     @Override
@@ -46,7 +48,13 @@ public class CustomExplorerElement extends BaseExplorerElement
     }
 
     @Override
-    public List<BaseExplorerElement> getChildren()
+    public int type()
+    {
+        return mType;
+    }
+
+    @Override
+    public List<BaseExplorerElement> getChildren(boolean onlyFolders)
     {
         return mChildren;
     }
@@ -91,5 +99,10 @@ public class CustomExplorerElement extends BaseExplorerElement
     public void dispose()
     {
 
+    }
+
+    @Override
+    public BaseExplorerElement getChildFromPath(String path, boolean onlyFolders) {
+        return null;
     }
 }

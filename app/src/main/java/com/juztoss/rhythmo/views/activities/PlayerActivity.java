@@ -14,6 +14,9 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.transition.AutoTransition;
+import android.support.transition.Fade;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -32,6 +35,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -59,6 +63,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.juztoss.rhythmo.presenters.RhythmoApp.BROWSER_MODE_IN_PLAYLIST_ENABLED;
 
 public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPageChangeListener
 {
@@ -132,14 +138,23 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         return mApp.getPlaylists().get(mPlaylistsPager.getCurrentItem());
     }
 
+    @SuppressLint("ApplySharedPref")
     @OnClick(R.id.btnAddToPlaylist)
     public void onAddToPlaylistClick(View v)
     {
-        int[] position = new int[2];
-        v.getLocationInWindow(position);
-        Intent intent = SelectSongsActivity.getIntent(this, position[0] + v.getWidth() / 2, position[1] + v.getHeight() / 2);
-        startActivityForResult(intent, 0);
-        overridePendingTransition(0, R.anim.no_anim);
+        if (mPlaylistsPager.getCurrentItem() == 0) {
+            boolean isBrowserMode = mApp.getSharedPreferences().getBoolean(BROWSER_MODE_IN_PLAYLIST_ENABLED, false);
+            mApp.getSharedPreferences().edit().putBoolean(BROWSER_MODE_IN_PLAYLIST_ENABLED, !isBrowserMode).commit();
+            updateTabs();
+            updateFab();
+        } else {
+            int[] position = new int[2];
+            v.getLocationInWindow(position);
+            Intent intent = SelectSongsActivity.getIntent(this, position[0] + v.getWidth() / 2, position[1] + v.getHeight() / 2);
+            startActivityForResult(intent, 0);
+            overridePendingTransition(0, R.anim.no_anim);
+        }
+
     }
 
     @Override
@@ -189,6 +204,8 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
 
 
         TabsAdapter adapter = ((TabsAdapter) mPlaylistsPager.getAdapter());
+        boolean isBrowserMode = mApp.getSharedPreferences().getBoolean(BROWSER_MODE_IN_PLAYLIST_ENABLED, false);
+        adapter.setIsBrowserMode(isBrowserMode);
         adapter.setNumOfLists(playlists.size());
         mPlaylistsPager.setAdapter(null);
         mPlaylistsPager.setAdapter(adapter);
@@ -260,12 +277,15 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
 
     private void updateFab()
     {
-        if (getCurrentViewedPlaylist().getSource().isModifyAvailable())
-        {
-            mAddToPlaylistBtn.show();
+        if (getCurrentViewedPlaylist().getSource().isModifyAvailable()) {
+            mAddToPlaylistBtn.setImageResource(R.drawable.ic_playlist_add_black_36dp);
+        } else {
+            boolean isBrowserMode = mApp.getSharedPreferences().getBoolean(BROWSER_MODE_IN_PLAYLIST_ENABLED, false);
+            if(isBrowserMode)
+                mAddToPlaylistBtn.setImageResource(R.drawable.ic_list_black_24dp);
+            else
+                mAddToPlaylistBtn.setImageResource(R.drawable.ic_folder_black_24dp);
         }
-        else
-            mAddToPlaylistBtn.hide();
     }
 
     @SuppressLint("InflateParams")
@@ -507,7 +527,7 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
 
         mPlaylistsPager.setCurrentItem(playbackService().getCurrentPlaylistIndex());
         int songPosition = playbackService().getCurrentSongIndex() - 1;
-        adapter.getCurrentFragment().scrollTo(songPosition < 0 ? 0 : songPosition);
+        adapter.getCurrentFragment().scrollTo(songPosition < 0 ? 0 : songPosition, playbackService().getCurrentlySong());
         return true;
     }
 

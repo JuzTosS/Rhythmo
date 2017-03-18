@@ -105,6 +105,12 @@ public class MediaFolder extends BaseExplorerElement
         }
     }
 
+    @Override
+    public int type()
+    {
+        return BaseExplorerElement.FOLDER_LINK;
+    }
+
     public String name()
     {
         return mFullName;
@@ -131,7 +137,7 @@ public class MediaFolder extends BaseExplorerElement
     @Override
     public AddState getAddState()
     {
-        return mApp.getBrowserPresenter().getAddState(resolvePath(), getChildren());
+        return mApp.getBrowserPresenter().getAddState(resolvePath(), getChildren(false));
     }
 
     @Override
@@ -140,11 +146,11 @@ public class MediaFolder extends BaseExplorerElement
         if(state == AddState.ADDED)
             mApp.getBrowserPresenter().add(resolvePath());
         else if(state == AddState.NOT_ADDED)
-            mApp.getBrowserPresenter().remove(resolvePath(), getParent().getChildren());
+            mApp.getBrowserPresenter().remove(resolvePath(), getParent().getChildren(false));
     }
 
     @Override
-    public List<BaseExplorerElement> getChildren()
+    public List<BaseExplorerElement> getChildren(boolean onlyFolders)
     {
         if(mCachedChildren != null)
             return mCachedChildren;
@@ -181,11 +187,12 @@ public class MediaFolder extends BaseExplorerElement
 
         Collections.sort(result);
 
-        if (mLastHasSongs)
+        if (mLastHasSongs && !onlyFolders)
         {
             List<BaseExplorerElement> songs = new ArrayList<>();
             Cursor songsCursor = mApp.getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                    new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME},
+                    new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME,
+                            DatabaseHelper.MUSIC_LIBRARY_BPMX10, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED},
                     DatabaseHelper.MUSIC_LIBRARY_PATH + "= ?",
                     new String[]{resolvePath()},
                     null, null, null);
@@ -202,7 +209,7 @@ public class MediaFolder extends BaseExplorerElement
                     String songPath = folderName +
                             SystemHelper.SEPARATOR +
                             songName;
-                    songs.add(new SongFile(new File(songPath), mApp, this));
+                    songs.add(new SongFile(new File(songPath), mApp, this, Composition.fromCursor(songsCursor)));
                 }
             }
             finally
@@ -273,5 +280,25 @@ public class MediaFolder extends BaseExplorerElement
     public void dispose()
     {
         mApp = null;
+    }
+
+    @Override
+    public BaseExplorerElement getChildFromPath(String path, boolean onlyFolders) {
+
+        if (getFileSystemPath().equals(path))
+            return this;
+
+        List<BaseExplorerElement> children = getChildren(onlyFolders);
+        for (BaseExplorerElement element : children) {
+            if(element.type() != BaseExplorerElement.FOLDER_LINK)
+                continue;
+
+            String elementPath = element.getFileSystemPath();
+            if (path.indexOf(elementPath) == 0) {
+                return element.getChildFromPath(path, onlyFolders);
+            }
+        }
+
+        return null;
     }
 }

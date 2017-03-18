@@ -30,7 +30,7 @@ public class MockExplorerElement extends BaseExplorerElement
     }
 
     @Override
-    public List<BaseExplorerElement> getChildren()
+    public List<BaseExplorerElement> getChildren(boolean onlyFolders)
     {
         return null;
     }
@@ -91,8 +91,19 @@ public class MockExplorerElement extends BaseExplorerElement
     }
 
     @Override
+    public int type()
+    {
+        return BaseExplorerElement.FOLDER_LINK;
+    }
+
+    @Override
     public void dispose()
     {
 
+    }
+
+    @Override
+    public BaseExplorerElement getChildFromPath(String path, boolean onlyFolders) {
+        return null;
     }
 }

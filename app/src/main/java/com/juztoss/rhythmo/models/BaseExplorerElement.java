@@ -11,20 +11,30 @@ import java.util.List;
  */
 public abstract class BaseExplorerElement implements Comparable<BaseExplorerElement>
 {
+    public static final int BACK_LINK = 0;
+    public static final int FOLDER_LINK = 1;
+    public static final int SINGLE_LINK = 2;
+
     /**
-     * Dispalyed name of the element
+     * Displayed name of the element
      */
     public abstract String name();
 
     /**
-     * Priorty for sorting elements
+     * Priority for sorting elements
      */
     public abstract ExplorerPriority priority();
 
     /**
-     * Must return children of this element
+     * Return a type of the element
      */
-    public abstract List<BaseExplorerElement> getChildren();
+    public abstract int type();
+
+    /**
+     * Must return children of this element
+     * @param onlyFolders
+     */
+    public abstract List<BaseExplorerElement> getChildren(boolean onlyFolders);
 
     @Nullable
     public abstract Cursor getSongIds();
@@ -80,6 +90,15 @@ public abstract class BaseExplorerElement implements Comparable<BaseExplorerElem
      * Must clear all off links to the external objects
      */
     public abstract void dispose();
+
+    /**
+     * Must return any nested child from any level of hierarchy
+     * @param path - an absolute path
+     * @param onlyFolders
+     * @return
+     */
+    @Nullable
+    public abstract BaseExplorerElement getChildFromPath(String path, boolean onlyFolders);
 
     public enum AddState
     {

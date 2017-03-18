@@ -79,7 +79,7 @@ public class BrowserFragment extends Fragment implements BrowserElementHolder.IB
         mProgressIndicator.setVisibility(View.VISIBLE);
         mListView.setVisibility(View.INVISIBLE);
 
-        mApp.getBrowserPresenter().clearAdded();
+        mApp.getBrowserPresenter().clear();
         mApp.getBrowserPresenter().setCurrent(mApp.getBrowserPresenter().getRoot());
         getLoaderManager().initLoader(0, null, mApp.getBrowserPresenter());
     }

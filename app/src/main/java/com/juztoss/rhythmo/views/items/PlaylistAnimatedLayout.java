@@ -57,7 +57,8 @@ public class PlaylistAnimatedLayout extends FrameLayout
             {
                 mHint = findViewById(R.id.hint);
                 mHintLabel = findViewById(R.id.hintLabel);
-                mHintLabelCenterX = mHintLabel.getX();
+                if(mHintLabel != null)
+                    mHintLabelCenterX = mHintLabel.getX();
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });

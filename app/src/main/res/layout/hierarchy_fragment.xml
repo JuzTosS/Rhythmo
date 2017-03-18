@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.juztoss.rhythmo.views.items.PlaylistAnimatedLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        xmlns:tools="http://schemas.android.com/tools"
+                                                        tools:theme="@style/Red.AppTheme"
+                                                        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <RelativeLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <TextView
+            android:id="@+id/folderPathLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:ellipsize="start"
+            android:lines="1"
+            android:padding="5dp"
+            android:textStyle="bold"
+            tools:text="FOLDER/PATH"
+            />
+
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/folderPathLabel"
+            app:fastScrollPopupBgColor="?rAccentPrimary"
+            app:fastScrollPopupTextColor="@android:color/primary_text_dark"
+            app:fastScrollThumbColor="?rAccentPrimary"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_below="@id/folderPathLabel"
+            android:layout_gravity="top"
+            android:background="@drawable/shadow_top"/>
+
+    </RelativeLayout>
+
+
+    <ProgressBar
+        android:id="@+id/progressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+    </ProgressBar>
+
+</com.juztoss.rhythmo.views.items.PlaylistAnimatedLayout>

@@ -7,10 +7,7 @@ import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by JuzTosS on 4/25/2016.
@@ -19,13 +16,15 @@ public class SongFile extends BaseExplorerElement
 {
     private File mFile;
     private RhythmoApp mApp;
+    private final Composition mComposition;
     private BaseExplorerElement mParent;
 
-    public SongFile(File source, RhythmoApp app, BaseExplorerElement parent)
+    public SongFile(File source, RhythmoApp app, BaseExplorerElement parent, Composition composition)
     {
         mParent = parent;
         mFile = source;
         mApp = app;
+        mComposition = composition;
     }
 
     public String name()
@@ -49,7 +48,7 @@ public class SongFile extends BaseExplorerElement
     @Override
     public AddState getAddState()
     {
-        return mApp.getBrowserPresenter().getAddState(mFile.getAbsolutePath(), mParent.getChildren());
+        return mApp.getBrowserPresenter().getAddState(mFile.getAbsolutePath(), mParent.getChildren(false));
     }
 
     @Override
@@ -58,7 +57,7 @@ public class SongFile extends BaseExplorerElement
         if(state == AddState.ADDED)
             mApp.getBrowserPresenter().add(mFile.getAbsolutePath());
         else if(state == AddState.NOT_ADDED)
-            mApp.getBrowserPresenter().remove(mFile.getAbsolutePath(), mParent.getChildren());
+            mApp.getBrowserPresenter().remove(mFile.getAbsolutePath(), mParent.getChildren(false));
     }
 
     @Override
@@ -68,7 +67,13 @@ public class SongFile extends BaseExplorerElement
     }
 
     @Override
-    public List<BaseExplorerElement> getChildren()
+    public int type()
+    {
+        return BaseExplorerElement.SINGLE_LINK;
+    }
+
+    @Override
+    public List<BaseExplorerElement> getChildren(boolean onlyFolders)
     {
         return null;
     }
@@ -117,5 +122,14 @@ public class SongFile extends BaseExplorerElement
     public void dispose()
     {
         mApp = null;
+    }
+
+    @Override
+    public BaseExplorerElement getChildFromPath(String path, boolean onlyFolders) {
+        return null;
+    }
+
+    public Composition getComposition() {
+        return mComposition;
     }
 }

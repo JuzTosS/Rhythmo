@@ -53,16 +53,6 @@ public class Composition
         mShiftedBPM = cursor.getInt(AbstractSongsSource.I_BPM_SHIFT) / 10f;
         mDateAdded = cursor.getInt(AbstractSongsSource.I_DATE_ADDED);
     }
-    public Composition(long songId, String folderName, String songName, float bpm, float bpmShifted, int dateAdded)
-    {
-        mId = songId;
-        mFolderName = folderName;
-        mSongName = songName;
-        mAbsolutePath = folderName + SystemHelper.SEPARATOR + songName;
-        mShiftedBPM = bpmShifted;
-        mDateAdded = dateAdded;
-        mBPM = bpm;
-    }
 
     public String getAbsolutePath()
     {

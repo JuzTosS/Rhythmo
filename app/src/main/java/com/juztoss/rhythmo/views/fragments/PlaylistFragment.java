@@ -30,7 +30,7 @@ import butterknife.Unbinder;
 /**
  * Created by JuzTosS on 4/20/2016.
  */
-public class PlaylistFragment extends Fragment implements IOnItemClickListener
+public class PlaylistFragment extends Fragment implements IOnItemClickListener, IPlaylistFragment
 {
     public static String PLAYLIST_INDEX = "PlaylistID";
     private int mPlaylistIndex;
@@ -132,7 +132,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         super.onDestroyView();
     }
 
-    private PlaylistAdapter.IOnDataSetChanged mOnDataSetChanged = () -> updatePlaylistHeaderAndHintVisibility();
+    private PlaylistAdapter.IOnDataSetChanged mOnDataSetChanged = this::updatePlaylistHeaderAndHintVisibility;
 
     public static PlaylistFragment newInstance(int playlistIndex)
     {
@@ -177,7 +177,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         updatePlaylistHeaderAndHintVisibility();
         if(mScrollOnCreateToPosition >= 0)
         {
-            scrollTo(mScrollOnCreateToPosition);
+            scrollTo(mScrollOnCreateToPosition, null);
             mScrollOnCreateToPosition = -1;
         }
     }
@@ -212,6 +212,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         }
     }
 
+    @Override
     public boolean isItemVisible(int position)
     {
         int firstVisiblePos = mLayoutManager.findFirstCompletelyVisibleItemPosition();
@@ -223,7 +224,8 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         return position >= firstVisiblePos && position <= lastVisiblePos;
     }
 
-    public void scrollTo(int position)
+    @Override
+    public void scrollTo(int position, Composition composition)
     {
         if(mLayoutManager != null)
             mLayoutManager.scrollToPositionWithOffset(position, 0);
@@ -252,10 +254,12 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener
         mPlaylistAdapter.unbind();
     }
 
+    @Override
     public void onScreen()
     {
     }
 
+    @Override
     public void offScreen()
     {
     }

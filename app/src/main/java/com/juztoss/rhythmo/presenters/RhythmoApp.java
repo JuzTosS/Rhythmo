@@ -37,6 +37,8 @@ public class RhythmoApp extends Application
     public static final String LIBRARY_BUILD_HAD_STARTED = "LibraryBuildHadStarted";
     public static final String ALL_SONGS_SORT = "AllSongsSort";
     public static final String REPEAT_MODE = "RepeatMode";
+    public static final String BROWSER_MODE_IN_PLAYLIST_ENABLED = "BrowserModeInPlaylistEnabled";
+    public static final String BROWSER_MODE_PATH = "BrowserModePath";
 
     public static float MIN_BPM = 25;
     public static float MAX_BPM = 250;
@@ -126,13 +128,7 @@ public class RhythmoApp extends Application
             {
                 cursor.moveToFirst();
 
-                composition = new Composition(
-                        id,
-                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH)),
-                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME)),
-                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10)) / (float) 10,
-                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10)) / (float) 10,
-                        cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED)));
+                composition = Composition.fromCursor(cursor);
             }
         }
         finally
@@ -164,13 +160,7 @@ public class RhythmoApp extends Application
             {
                 cursor.moveToFirst();
 
-                composition = new Composition(
-                        cursor.getLong(cursor.getColumnIndex(DatabaseHelper._ID)),
-                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_PATH)),
-                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_NAME)),
-                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPMX10)) / (float) 10,
-                        (float) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10)) / (float) 10,
-                        cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED)));
+                composition = Composition.fromCursor(cursor);
             }
         }
         finally

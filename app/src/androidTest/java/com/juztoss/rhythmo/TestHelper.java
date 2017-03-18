@@ -164,14 +164,7 @@ public class TestHelper
         RhythmoApp context = (RhythmoApp) InstrumentationRegistry.getTargetContext().getApplicationContext();
         String sdCardPath = Environment.getExternalStorageDirectory().getPath() + "/" + MUSIC_FOLDER;
         MediaScannerConnection.scanFile(context, new String[]{sdCardPath}, null,
-                new MediaScannerConnection.OnScanCompletedListener()
-                {
-                    @Override
-                    public void onScanCompleted(String path, Uri uri)
-                    {
-                        latch.countDown();
-                    }
-                });
+                (path, uri) -> latch.countDown());
 
         try
         {

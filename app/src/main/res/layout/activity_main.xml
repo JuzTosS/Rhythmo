@@ -48,7 +48,7 @@
             android:layout_gravity="bottom|end"
             style="@style/buttonBackgroundBorderless"
             android:tint="?rForegroundInverted"
-            android:src="@drawable/ic_add_black_36dp"
+            android:src="@drawable/ic_list_black_24dp"
             />
 
         <View
