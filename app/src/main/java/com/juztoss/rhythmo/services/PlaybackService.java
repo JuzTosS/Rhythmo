@@ -144,7 +144,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     /**
      * @Return The id of the currently playing song
      */
-    public long currentSongId()
+    public long getCurrentSongId()
     {
         return mCurrentSongId;
     }
@@ -163,14 +163,6 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
             clearQueue();
             gotoNext(false);
         }, 1000);
-    }
-
-    @Nullable
-    public Composition getCurrentlySong() {
-        if (getSongsList() == null) return null;
-
-        getSongsList().moveToPosition(getCurrentSongIndex());
-        return Composition.fromCursor(getSongsList());
     }
 
     @Nullable

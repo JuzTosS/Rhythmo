@@ -14,9 +14,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.transition.AutoTransition;
-import android.support.transition.Fade;
-import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -35,7 +32,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -147,6 +143,7 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
             mApp.getSharedPreferences().edit().putBoolean(BROWSER_MODE_IN_PLAYLIST_ENABLED, !isBrowserMode).commit();
             updateTabs();
             updateFab();
+            getCurrentViewedPlaylist().onSourceUpdated();
         } else {
             int[] position = new int[2];
             v.getLocationInWindow(position);
@@ -526,8 +523,8 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         if (playbackService() == null) return false;
 
         mPlaylistsPager.setCurrentItem(playbackService().getCurrentPlaylistIndex());
-        int songPosition = playbackService().getCurrentSongIndex() - 1;
-        adapter.getCurrentFragment().scrollTo(songPosition < 0 ? 0 : songPosition, playbackService().getCurrentlySong());
+        Composition composition = mApp.getComposition(playbackService().getCurrentSongId());
+        adapter.getCurrentFragment().scrollTo(composition);
         return true;
     }
 
@@ -633,7 +630,7 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
 
         if (playbackService() == null) return;
 
-        Composition composition = mApp.getComposition(playbackService().currentSongId());
+        Composition composition = mApp.getComposition(playbackService().getCurrentSongId());
         View actionBarHeader = mActionBarLayout.findViewById(R.id.action_bar_header);
         View actionBarPlaceholder = mActionBarLayout.findViewById(R.id.action_bar_placeholder);
         if (composition != null)

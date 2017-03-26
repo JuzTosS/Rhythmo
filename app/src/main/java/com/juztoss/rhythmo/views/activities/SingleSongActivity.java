@@ -105,7 +105,7 @@ public class SingleSongActivity extends BasePlayerActivity
                 updateSeekBar();
                 if (playbackService() != null)
                 {
-                    if (playbackService().isPlaying() && playbackService().currentSongId() == mComposition.id())
+                    if (playbackService().isPlaying() && playbackService().getCurrentSongId() == mComposition.id())
                         playbackService().setNewPlayingBPM(mComposition.bpm(), mComposition.bpmShifted());
                 }
             }

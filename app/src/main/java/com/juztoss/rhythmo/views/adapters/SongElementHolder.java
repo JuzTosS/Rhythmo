@@ -119,7 +119,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         int firstPartLength = Integer.toString((int) bpm).length();
         spannableString.setSpan(new AbsoluteSizeSpan(10, true), firstPartLength, spannableString.length(), 0);
         mBpmLabel.setText(spannableString);
-        boolean isCurrentlyPlaying = service != null && service.currentSongId() == composition.id() && service.isPlaying();
+        boolean isCurrentlyPlaying = service != null && service.getCurrentSongId() == composition.id() && service.isPlaying();
         mPlayingState.setVisibility(isCurrentlyPlaying ? View.VISIBLE : View.GONE);
         if(isCurrentlyPlaying)
             mPlaybackAnimation.start();

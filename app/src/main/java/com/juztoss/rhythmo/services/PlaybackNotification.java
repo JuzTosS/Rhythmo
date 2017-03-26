@@ -23,7 +23,7 @@ public class PlaybackNotification
     @Nullable
     public static Notification create(PlaybackService service)
     {
-        Composition composition = ((RhythmoApp) service.getApplication()).getComposition(service.currentSongId());
+        Composition composition = ((RhythmoApp) service.getApplication()).getComposition(service.getCurrentSongId());
         if(composition == null)
             return null;
 

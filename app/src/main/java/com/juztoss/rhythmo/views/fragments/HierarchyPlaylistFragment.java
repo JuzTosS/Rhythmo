@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.BaseExplorerElement;
 import com.juztoss.rhythmo.models.Composition;
+import com.juztoss.rhythmo.models.Playlist;
 import com.juztoss.rhythmo.presenters.BrowserPresenter;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.PlaybackService;
@@ -48,7 +50,7 @@ public class HierarchyPlaylistFragment extends Fragment implements IPlaylistFrag
     private Unbinder mUnbinder;
     private int mPlaylistIndex;
     private LinearLayoutManager mLayoutManager;
-    private int mScrollOnCreateToPosition = -1;
+    private Composition mScrollOnCreate;
 
     public static HierarchyPlaylistFragment newInstance(int playlistIndex)
     {
@@ -152,10 +154,12 @@ public class HierarchyPlaylistFragment extends Fragment implements IPlaylistFrag
         mAdapter.update(mApp.getBrowserPresenter().getList());
         mFolderPathLabel.setText(mApp.getBrowserPresenter().getCurrent().getFileSystemPath());
 
-        if(mScrollOnCreateToPosition >= 0)
+        if (mScrollOnCreate != null)
         {
-            mLayoutManager.scrollToPositionWithOffset(mScrollOnCreateToPosition + mAdapter.getList().size(), 0);
-            mScrollOnCreateToPosition = -1;
+            int offset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, mApp.getResources().getDisplayMetrics());
+            int currentSongIndex = Playlist.findPositionById(mAdapter.getCursor(), mScrollOnCreate, mApp.getPlaylists().get(mPlaylistIndex).getSource().getSortType());
+            mLayoutManager.scrollToPositionWithOffset(currentSongIndex + mAdapter.getList().size(), offset);
+            mScrollOnCreate = null;
         }
     }
 
@@ -180,11 +184,14 @@ public class HierarchyPlaylistFragment extends Fragment implements IPlaylistFrag
     }
 
     @Override
-    public void scrollTo(int position, @Nullable Composition composition)
+    public void scrollTo(Composition composition)
     {
         if(composition == null) return;
 
-        mScrollOnCreateToPosition = position;
+        mScrollOnCreate = composition;
+
+        if(mApp == null)//Haven't created yet
+            return;
 
         mApp.getBrowserPresenter().clear();
         mApp.getBrowserPresenter().setCurrent(

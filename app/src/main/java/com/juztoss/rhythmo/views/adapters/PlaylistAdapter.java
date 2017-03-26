@@ -111,7 +111,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<SongElementHolder> imp
         holder.update(composition, mActivity.playbackService(), folderMode);
     }
 
-    private Cursor getCursor()
+    public Cursor getCursor()
     {
         if(mCursor == null)
             mCursor = mPlaylist.getCursor();

@@ -12,7 +12,7 @@ public interface IPlaylistFragment
 {
     boolean isItemVisible(int position);
 
-    void scrollTo(int position, @Nullable Composition composition);
+    void scrollTo(Composition composition);
 
     void onScreen();
 

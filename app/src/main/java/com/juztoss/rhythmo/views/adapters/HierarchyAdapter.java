@@ -104,7 +104,7 @@ public class HierarchyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    private Cursor getCursor() {
+    public Cursor getCursor() {
         if (mCursor == null)
             mCursor = mPlaylist.getCursor();
 
@@ -122,7 +122,7 @@ public class HierarchyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public int getItemCount()
     {
         int listSize = mFoldersList != null ? mFoldersList.size() : 0;
-        return listSize + getCursor().getCount();
+        return listSize + getCursor().getCount() + 1;
     }
 
     public void update(List<BaseExplorerElement> list)

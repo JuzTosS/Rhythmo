@@ -84,48 +84,43 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
         CursorList cursorList = new CursorList(cursor);
         try
         {
-            return Collections.binarySearch(cursorList, needle, new Comparator<Composition>()
-            {
-                @Override
-                public int compare(Composition left, Composition right)
+            return Collections.binarySearch(cursorList, needle, (left, right) -> {
+                if (left == null || right == null) return 0;
+
+                int result;
+                if (sort == SortType.NAME)
                 {
-                    if (left == null || right == null) return 0;
-
-                    int result;
-                    if (sort == SortType.NAME)
-                    {
-                        result = left.name().compareTo(right.name());
-                        if (result != 0)//Return only if the songs in different folder
-                            return result;
-                    }
-                    else if (sort == SortType.BPM)
-                    {
-                        Integer leftInt = (Integer) (int) (left.bpmShifted() * 10);
-                        Integer rightInt = (Integer) (int) (right.bpmShifted() * 10);
-                        result = leftInt.compareTo(rightInt);
-                        if (result != 0)//Return only if the songs in different folder
-                            return result;
-                    }
-                    else if (sort == SortType.DIRECTORY)
-                    {
-                        result = left.getFolderPath().compareTo(right.getFolderPath());
-                        if (result != 0)//Return only if the songs in different folder
-                            return result;
-                    }
-                    else// if(sort == SortType.LAST)
-                    {
-                        result = ((Integer) right.getDateAdded()).compareTo(left.getDateAdded());
-                        if (result != 0)//Return only if the songs in different folder
-                            return result;
-                    }
-
-                    //If both songs in the same folder compare by name;
                     result = left.name().compareTo(right.name());
-                    if(result == 0)
-                        result = ((Long)left.id()).compareTo(right.id());
-
-                    return result;
+                    if (result != 0)//Return only if the songs in different folder
+                        return result;
                 }
+                else if (sort == SortType.BPM)
+                {
+                    Integer leftInt = (Integer) (int) (left.bpmShifted() * 10);
+                    Integer rightInt = (Integer) (int) (right.bpmShifted() * 10);
+                    result = leftInt.compareTo(rightInt);
+                    if (result != 0)//Return only if the songs in different folder
+                        return result;
+                }
+                else if (sort == SortType.DIRECTORY)
+                {
+                    result = left.getFolderPath().compareTo(right.getFolderPath());
+                    if (result != 0)//Return only if the songs in different folder
+                        return result;
+                }
+                else// if(sort == SortType.LAST)
+                {
+                    result = ((Integer) right.getDateAdded()).compareTo(left.getDateAdded());
+                    if (result != 0)//Return only if the songs in different folder
+                        return result;
+                }
+
+                //If both songs in the same folder compare by name;
+                result = left.name().compareTo(right.name());
+                if(result == 0)
+                    result = ((Long)left.id()).compareTo(right.id());
+
+                return result;
             });
 
         }

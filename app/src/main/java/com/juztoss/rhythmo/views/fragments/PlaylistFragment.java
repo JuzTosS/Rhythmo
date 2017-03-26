@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.Composition;
+import com.juztoss.rhythmo.models.Playlist;
 import com.juztoss.rhythmo.models.songsources.SortType;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.services.PlaybackService;
@@ -39,7 +41,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener, 
 
     private RhythmoApp mApp;
     private LinearLayoutManager mLayoutManager;
-    private int mScrollOnCreateToPosition = -1;
+    private Composition mScrollOnCreate;
     @BindView(R.id.static_footer_header) protected View mHeader;
     @BindView(R.id.hint) protected View mHintNoSongs;
     @BindView(R.id.hintFilterEnabled) protected View mHintNoSongsIfFiltered;
@@ -175,10 +177,11 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener, 
         mList.setLayoutManager(mLayoutManager);
 
         updatePlaylistHeaderAndHintVisibility();
-        if(mScrollOnCreateToPosition >= 0)
+
+        if(mScrollOnCreate != null)
         {
-            scrollTo(mScrollOnCreateToPosition, null);
-            mScrollOnCreateToPosition = -1;
+            scrollTo(mScrollOnCreate);
+            mScrollOnCreate = null;
         }
     }
 
@@ -225,12 +228,18 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener, 
     }
 
     @Override
-    public void scrollTo(int position, Composition composition)
+    public void scrollTo(Composition composition)
     {
-        if(mLayoutManager != null)
-            mLayoutManager.scrollToPositionWithOffset(position, 0);
+        if(mLayoutManager != null) {
+            int offset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, mApp.getResources().getDisplayMetrics());
+            int currentSongPos = Playlist.findPositionById(mPlaylistAdapter.getCursor(),
+                    composition,
+                    mApp.getPlaylists().get(mPlaylistIndex).getSource().getSortType());
+
+            mLayoutManager.scrollToPositionWithOffset(currentSongPos, offset);
+        }
         else
-            mScrollOnCreateToPosition = position;
+            mScrollOnCreate = composition;
     }
 
     @Override
