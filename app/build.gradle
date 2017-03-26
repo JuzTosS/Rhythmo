@@ -31,8 +31,8 @@ android {
         applicationId "com.juztoss.rhythmo"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 31
-        versionName "1.0.14"
+        versionCode 32
+        versionName "1.0.15"
 
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64' // these platforms cover 99% percent of all Android devices
