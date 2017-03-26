@@ -154,7 +154,7 @@ public class HierarchyPlaylistFragment extends Fragment implements IPlaylistFrag
 
         if(mScrollOnCreateToPosition >= 0)
         {
-            mLayoutManager.scrollToPositionWithOffset(mScrollOnCreateToPosition, 0);
+            mLayoutManager.scrollToPositionWithOffset(mScrollOnCreateToPosition + mAdapter.getList().size(), 0);
             mScrollOnCreateToPosition = -1;
         }
     }
@@ -184,8 +184,7 @@ public class HierarchyPlaylistFragment extends Fragment implements IPlaylistFrag
     {
         if(composition == null) return;
 
-        int positionWithFolders = position + mAdapter.getList().size();
-        mScrollOnCreateToPosition = positionWithFolders;
+        mScrollOnCreateToPosition = position;
 
         mApp.getBrowserPresenter().clear();
         mApp.getBrowserPresenter().setCurrent(
