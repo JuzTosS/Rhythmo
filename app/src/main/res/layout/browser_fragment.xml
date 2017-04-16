@@ -6,12 +6,14 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical">
 
+    <!--Don't remove single line - it fixes the android TextView bug-->
     <TextView
         android:id="@+id/folderPathLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:lines="1"
+        android:singleLine="true"
         android:ellipsize="start"
         android:textStyle="bold"
         tools:text="FOLDER/PATH"

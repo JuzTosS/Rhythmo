@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
+        <!--Don't remove single line - it fixes the android TextView bug-->
         <TextView
             android:id="@+id/folderPathLabel"
             android:layout_width="match_parent"
@@ -19,6 +20,7 @@
             android:layout_alignParentTop="true"
             android:ellipsize="start"
             android:lines="1"
+            android:singleLine="true"
             android:padding="5dp"
             android:textStyle="bold"
             tools:text="FOLDER/PATH"
