@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.juztoss.rhythmo">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove"/>
 
     <application
+        android:fullBackupContent="false"
         android:name=".presenters.RhythmoApp"
         android:allowBackup="true"
         android:enabled="true"
@@ -12,6 +15,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Launch">
+        <meta-data
+            android:name="instabug.token"
+            android:value="${INSTABUG_TOKEN}"/>
         <activity
             android:name="com.juztoss.rhythmo.views.activities.PlayerActivity"
             android:enabled="true"
