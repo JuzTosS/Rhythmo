@@ -32,8 +32,8 @@ android {
         applicationId "com.juztoss.rhythmo"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 32
-        versionName "1.0.15"
+        versionCode 33
+        versionName "1.0.16"
 
         manifestPlaceholders = [INSTABUG_TOKEN: "${instabug_token}"]
 
