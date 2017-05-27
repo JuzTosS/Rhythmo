@@ -11,7 +11,8 @@ typedef enum SuperpoweredFilterType {
     SuperpoweredFilter_Bandlimited_Notch,
     SuperpoweredFilter_LowShelf,
     SuperpoweredFilter_HighShelf,
-    SuperpoweredFilter_Parametric
+    SuperpoweredFilter_Parametric,
+    SuperpoweredFilter_CustomCoefficients
 } SuperpoweredFilterType;
 
 /**
@@ -79,6 +80,15 @@ public:
  @param type Must be bandpass or notch.
  */
     void setBandlimitedParametersAndType(float frequency, float octaveWidth, SuperpoweredFilterType type);
+
+/**
+ @brief Set custom coefficients for the filter.
+ 
+ Coefficient changes will be smoothly handled.
+ 
+ @param coefficients Pointer to the 5 coefficients of the first direct form IIR filter.
+ */
+    void setCustomCoefficients(float *coefficients);
     
 /**
  @brief Turns the effect on/off.
@@ -114,6 +124,17 @@ public:
  @param numberOfSamples Should be 32 minimum.
 */
     bool process(float *input, float *output, unsigned int numberOfSamples);
+
+/**
+ @brief Processes mono audio.
+
+ @return Put something into output or not.
+
+ @param input 32-bit input buffer. Can point to the same location with output (in-place processing).
+ @param output 32-bit output buffer. Can point to the same location with input (in-place processing).
+ @param numberOfSamples Should be 32 minimum.
+*/
+    bool processMono(float *input, float *output, unsigned int numberOfSamples);
 
 protected:
     filterInternals *internals;
