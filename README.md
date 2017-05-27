@@ -1,3 +1,6 @@
+# THIS PROJECT IS NO LONGER SUPPORTED
+
+
 ![alt tag](https://github.com/JuzTosS/Rhythmo/blob/master/refs/LogoDesign.png)
 
 # Rhythmo Player
