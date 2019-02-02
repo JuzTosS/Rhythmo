@@ -33,7 +33,7 @@ extern "C" JNIEXPORT jdouble Java_com_juztoss_rhythmo_audio_BpmDetector_detect(J
         end = decoder->durationSamples;
     }
 
-    decoder->seekTo(start, false);
+    decoder->seek(start, false);
     SuperpoweredOfflineAnalyzer * analyzer = new SuperpoweredOfflineAnalyzer(decoder->samplerate, 0, decoder->durationSeconds);
 
     // Create a buffer for the 16-bit integer samples coming from the decoder.

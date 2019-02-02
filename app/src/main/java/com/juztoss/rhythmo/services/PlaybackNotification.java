@@ -1,8 +1,12 @@
 package com.juztoss.rhythmo.services;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -20,14 +24,19 @@ import java.util.Locale;
  */
 public class PlaybackNotification
 {
+
+    public static final String NOTIFICATION_CHANNEL_ID = "com.juztoss.rhythmo.playback";
+
     @Nullable
-    public static Notification create(PlaybackService service)
+    public static Notification create(PlaybackService service, String notificationChannelId)
     {
+        createNotificationChannel(service);
+
         Composition composition = ((RhythmoApp) service.getApplication()).getComposition(service.getCurrentSongId());
         if(composition == null)
             return null;
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(service);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(service, notificationChannelId);
         notificationBuilder.setSmallIcon(R.drawable.ic_notification);
 
 
@@ -66,4 +75,17 @@ public class PlaybackNotification
 
         return notification;
     }
+
+    private static void createNotificationChannel(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelName = "Playback";
+            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+            chan.setLightColor(Color.BLUE);
+            chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            assert manager != null;
+            manager.createNotificationChannel(chan);
+        }
+    }
+
 }

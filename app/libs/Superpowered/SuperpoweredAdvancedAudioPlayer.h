@@ -4,6 +4,9 @@
 struct SuperpoweredAdvancedAudioPlayerInternals;
 struct SuperpoweredAdvancedAudioPlayerBase;
 
+/**
+ @brief The compressor settings of the STEMS format.
+ */
 typedef struct stemsCompressor {
     bool enabled;
     float inputGainDb;
@@ -16,6 +19,9 @@ typedef struct stemsCompressor {
     float hpCutoffHz;
 } stemsCompressor;
 
+/**
+ @brief The limiter settings of the STEMS format.
+ */
 typedef struct stemsLimiter {
     bool enabled;
     float releaseSec;
@@ -23,6 +29,9 @@ typedef struct stemsLimiter {
     float ceilingDb;
 } stemsLimiter;
 
+/**
+ @brief Complete information about a STEMS file.
+ */
 typedef struct stemsInfo {
     char *names[4];
     char *colors[4];
@@ -45,13 +54,18 @@ typedef enum SuperpoweredAdvancedAudioPlayerJogMode {
 typedef enum SuperpoweredAdvancedAudioPlayerEvent {
     SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess,
     SuperpoweredAdvancedAudioPlayerEvent_LoadError,
-    SuperpoweredAdvancedAudioPlayerEvent_NetworkError,
+    SuperpoweredAdvancedAudioPlayerEvent_HLSNetworkError,
+    SuperpoweredAdvancedAudioPlayerEvent_ProgressiveDownloadError,
     SuperpoweredAdvancedAudioPlayerEvent_EOF,
     SuperpoweredAdvancedAudioPlayerEvent_JogParameter,
     SuperpoweredAdvancedAudioPlayerEvent_DurationChanged,
     SuperpoweredAdvancedAudioPlayerEvent_LoopEnd,
+    SuperpoweredAdvancedAudioPlayerEvent_LoopStartReverse
 } SuperpoweredAdvancedAudioPlayerEvent;
 
+/**
+ @brief Represents the properties of a HLS stream alternative.
+ */
 typedef struct hlsStreamAlternative {
     char *uri, *name, *language, *groupid;
     int bps;
@@ -64,13 +78,13 @@ typedef struct hlsStreamAlternative {
 /**
  @brief Events happen asynchronously, implement this callback to get notified.
  
- LoadSuccess, LoadError and NetworkError are called from an internal thread of this object.
+ LoadSuccess, LoadError, HLSNetworkError and ProgressiveDownloadError are called from an internal thread of this object.
  
- EOF (end of file) and ScratchControl are called from the (probably real-time) audio processing thread, you shouldn't do any expensive there.
+ EOF (end of file), LoopEnd, LoopStartReverse and ScratchControl are called from the (probably real-time) audio processing thread while actually producing/processing samples, therefore: don't do any expensive or blocking, and don't expect the player's properties updated yet (such as position).
  
- @param clientData Some custom pointer you set when you created a SuperpoweredAdvancedAudioPlayer instance.
+ @param clientData Some custom pointer you set when you created the SuperpoweredAdvancedAudioPlayer instance.
  @param event What happened (load success, load error, end of file, jog parameter).
- @param value A pointer to a stemsInfo structure or NULL for LoadSuccess (you take ownership over the strings). (const char *) for LoadError, pointing to the error message. (double *) for JogParameter in the range of 0.0 to 1.0. (bool *) for EOF, set it to true to pause playback. (bool *) for LoopEnd, set it to false to exit the loop. Don't call this instance's methods from an EOF event callback!
+ @param value A pointer to a stemsInfo structure or NULL for LoadSuccess (you take ownership over the strings). (const char *) for LoadError, pointing to the error message. (double *) for JogParameter in the range of 0.0 to 1.0. (bool *) for EOF, set it to true to pause playback. (bool *) for LoopEnd and LoopStartReverse, set it to false to exit the loop. Don't call this instance's methods from an EOF event callback!
  */
 typedef void (* SuperpoweredAdvancedAudioPlayerCallback) (void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void *value);
 
@@ -101,7 +115,7 @@ typedef void (* SuperpoweredAdvancedAudioPlayerCallback) (void *clientData, Supe
  
  - 0 latency, real-time operation,
  
- - low memory usage (5300 kb plus 200 kb for every cached point),
+ - low memory usage,
  
  - thread safety (all methods are thread-safe),
  
@@ -109,7 +123,7 @@ typedef void (* SuperpoweredAdvancedAudioPlayerCallback) (void *clientData, Supe
  
  Can not be used for offline processing. Supported file types:
  - Stereo or mono pcm WAV and AIFF (16-bit int, 24-bit int, 32-bit int or 32-bit IEEE float).
- - MP3 (all kind).
+ - MP3: MPEG-1 Layer III (sample rates: 32000 Hz, 44100 Hz, 48000 Hz). MPEG-2 is not supported.
  - AAC-LC in M4A container (iTunes).
  - AAC-LC in ADTS container (.aac).
  - Apple Lossless (on iOS only).
@@ -123,6 +137,9 @@ typedef void (* SuperpoweredAdvancedAudioPlayerCallback) (void *clientData, Supe
  @param durationSeconds The duration of the current track in seconds. Equals to UINT_MAX for live streams. Read only.
  @param waitingForBuffering Indicates if the player waits for audio data to be bufferred. Read only.
  @param playing Indicates if the player is playing or paused. Read only.
+ @param waitingForSyncMs The player is waiting silently for this amount of time from now. Default: 0 (not waiting).
+ @param willSyncMs The player is playing and waiting for this amount of time from now to sync. Default: 0 (not waiting).
+ @param audioStartMs The length of the silence at the beginning of the file.
  @param tempo The current tempo. Read only.
  @param masterTempo Time-stretching is enabled or not. Read only.
  @param pitchShift Note offset from -12 to 12. 0 means no pitch shift. Read only.
@@ -135,32 +152,42 @@ typedef void (* SuperpoweredAdvancedAudioPlayerCallback) (void *clientData, Supe
  @param looping Indicates if looping is enabled. Read only.
  @param firstBeatMs Tells where the first beat (the beatgrid) begins. Must be correct for syncing. Read only.
  @param msElapsedSinceLastBeat How many milliseconds elapsed since the last beat. Read only.
+ @param phase Reserved for future use.
+ @param quantum Reserved for future use.
+ @param bendMsOffset Reserved for future use.
  @param beatIndex Which beat has just happened (1 [1.0f-1.999f], 2 [2.0f-2.999f], 3 [3.0f-3.99f], 4 [4.0f-4.99f]). A value of 0 means "don't know". Read only.
  @param bufferStartPercent What is buffered from the original source, start point. Will always be 0 for non-network sources (files). Read only.
  @param bufferEndPercent What is buffered from the original source, end point. Will always be 1.0f for non-network sources (files). Read only.
- @param currentBps The current download speed.
+ @param currentBps For HLS only. Updated after each segment download to indicate the actual network throughput (for best stream selection).
+ @param loadErrorCode HTTP error code for SuperpoweredAdvancedAudioPlayerEvent_LoadError. The value of 1 means no internet connection.
  @param syncMode The current sync mode (off, tempo, or tempo and beat).
  @param fixDoubleOrHalfBPM If tempo is >1.4f or <0.6f, it will treat the bpm as half or double. Good for certain genres. False by default.
- @param waitForNextBeatWithBeatSync Wait for the next beat if beat-syncing is enabled. False by default.
  @param dynamicHLSAlternativeSwitching Dynamicly changing the current HLS alternative to match the available network bandwidth. Default is true.
  @param reverseToForwardAtLoopStart If looping and playback direction is reverse, reaching the beginning of the loop will change direction to forward. False by default.
+ @param getAudioStartMs If enabled, the player will try to detect the length of the silence at the beginning of the file during open() (up to 10 seconds), and set the audioStartSampleMs property accordingly.
  @param downloadSecondsAhead The HLS content download strategy: how many seconds ahead of the playback position to download. Default is HLS_DOWNLOAD_REMAINING, meaning it will download everything after the playback position, until the end. HLS_DOWNLOAD_EVERYTHING downloads before the playback position too.
  @param maxDownloadAttempts If HLS download fails, how many times to try until sleep. Default: 100. After sleep, NetworkError is called continously.
  @param minTimeStretchingTempo Will not time-stretch, just resample below this tempo. Default: 0.501f (recommended value for low CPU on older mobile devices, such as the first iPad). Set this before an open() call. 
  @param maxTimeStretchingTempo Will not time-stretch, just resample above this tempo. Default: 2.0f (recommended value for low CPU on older mobile devices, such as the first iPad).
  @param handleStems Output 4 distinct stereo pairs for Native Instruments STEMS format. Default: false (output stem 0 for STEMS).
+ @param defaultQuantum Reserved for future use.
+ @param fullyDownloadedFilePath The file system path of the fully downloaded audio file for progressive downloads. Progressive downloads are automatically removed if no SuperpoweredAdvancedAudioPlayer instance is active for the same url. This parameter provides an alternative to save the file.
+ @param tempFolderPath The path for temporary files.
 */
 class SuperpoweredAdvancedAudioPlayer {
 public:
 // READ ONLY parameters, don't set them directly, use the methods below.
     double positionMs;
     float positionPercent;
-    unsigned int positionSeconds;
+    int positionSeconds;
     double displayPositionMs;
     unsigned int durationMs;
     unsigned int durationSeconds;
     bool waitingForBuffering;
     bool playing;
+    double waitingForSyncMs;
+    double willSyncMs;
+    double audioStartMs;
 
     double tempo;
     bool masterTempo;
@@ -176,28 +203,36 @@ public:
     
     double firstBeatMs;
     double msElapsedSinceLastBeat;
+    double phase;
+    double quantum;
+    double bendMsOffset;
     float beatIndex;
 
     float bufferStartPercent;
     float bufferEndPercent;
     int currentBps;
+    int loadErrorCode;
+
+    char *fullyDownloadedFilePath;
+    static char *tempFolderPath;
 
 // READ-WRITE parameters
     SuperpoweredAdvancedAudioPlayerSyncMode syncMode;
     bool fixDoubleOrHalfBPM;
-    bool waitForNextBeatWithBeatSync;
     bool dynamicHLSAlternativeSwitching;
     bool reverseToForwardAtLoopStart;
+    bool getAudioStartMs;
     int downloadSecondsAhead;
     int maxDownloadAttempts;
     float minTimeStretchingTempo;
     float maxTimeStretchingTempo;
     bool handleStems;
+    double defaultQuantum;
 
 /**
- @brief Set the folder path for temporary files. Used for HLS only. 
+ @brief Set the folder path for temporary files. Used for HLS and progressive download only.
  
- Call this first before any player instance is created. It will create a subfolder with the name "SuperpoweredHLS" in this folder.
+ Call this first before any player instance is created. It will create a subfolder with the name "SuperpoweredAAP" in this folder.
  
  @param path File system path of the folder.
  */
@@ -220,29 +255,38 @@ public:
  @param internalBufferSizeSeconds The number of seconds to buffer internally for playback and cached points. Minimum 2, maximum 60. Default: 2.
  @param negativeSeconds The number of seconds of silence in the negative direction, before the beginning of the track.
 */
-    SuperpoweredAdvancedAudioPlayer(void *clientData, SuperpoweredAdvancedAudioPlayerCallback callback, unsigned int sampleRate, unsigned int cachedPointCount, unsigned int internalBufferSizeSeconds = 2, unsigned int negativeSeconds = 0);
+    SuperpoweredAdvancedAudioPlayer(void *clientData, SuperpoweredAdvancedAudioPlayerCallback callback, unsigned int sampleRate, unsigned char cachedPointCount, unsigned int internalBufferSizeSeconds = 2, unsigned int negativeSeconds = 0);
     ~SuperpoweredAdvancedAudioPlayer();
 /**
- @brief Opens a new audio file, with playback paused. 
+ @brief Opens an audio file with playback paused.
  
- Tempo, pitchShift, masterTempo and syncMode are NOT changed if you open a new one.
+ Tempo, pitchShift, masterTempo and syncMode are NOT changed if you open a new one. Do not call open() in the audio processing callback.
  
- @param path The full file system path of the audio file.
+ @param path Full file system path or progressive download path (http or https).
  @param customHTTPHeaders NULL terminated list of custom headers for http communication.
 */
     void open(const char *path, char **customHTTPHeaders = 0);
     
 /**
- @brief Opens a file, with playback paused.
+ @brief Opens an audio file with playback paused.
  
- Tempo, pitchShift, masterTempo and syncMode are NOT changed if you open a new one.
+ Tempo, pitchShift, masterTempo and syncMode are NOT changed if you open a new one. Do not call open() in the audio processing callback.
  
- @param path The full file system path of the file.
+ @param path Full file system path or progressive download path (http or https).
  @param offset The byte offset inside the file.
  @param length The byte length from the offset.
  @param customHTTPHeaders NULL terminated list of custom headers for http communication.
 */
     void open(const char *path, int offset, int length, char **customHTTPHeaders = 0);
+/**
+ @brief Opens a HTTP Live Streaming stream with playback paused.
+ 
+ Tempo, pitchShift, masterTempo and syncMode are NOT changed if you open a new one. Do not call openHLS() in the audio processing callback.
+ 
+ @param url URL of the stream.
+ @param customHTTPHeaders NULL terminated list of custom headers for http communication.
+ */
+    void openHLS(const char *url, char **customHTTPHeaders = 0);
 
 /**
  @brief Starts playback.
@@ -275,8 +319,10 @@ public:
  @param ms Position in milliseconds.
  @param andStop If true, stops playback.
  @param synchronisedStart If andStop is false, a beat-synced start is possible.
+ @param forceDefaultQuantum Reserved for future use.
+ @param preferWaitingforSynchronisedStart Wait or start immediately when synchronized.
  */
-    void setPosition(double ms, bool andStop, bool synchronisedStart);
+    void setPosition(double ms, bool andStop, bool synchronisedStart, bool forceDefaultQuantum = false, bool preferWaitingforSynchronisedStart = false);
 /**
  @brief Cache a position for zero latency seeking. It will cache around +/- 1 second around this point.
  
@@ -292,8 +338,10 @@ public:
  @param jumpToStartMs If the playhead is within the loop, jump to startMs or not.
  @param pointID Looping caches startMs, so you can specify a pointID too (or set to 255 if you don't care).
  @param synchronisedStart Beat-synced start.
+ @param forceDefaultQuantum Reserved for future use.
+ @param preferWaitingforSynchronisedStart Wait or start immediately when synchronized.
  */
-    bool loop(double startMs, double lengthMs, bool jumpToStartMs, unsigned char pointID, bool synchronisedStart);
+    bool loop(double startMs, double lengthMs, bool jumpToStartMs, unsigned char pointID, bool synchronisedStart, bool forceDefaultQuantum = false, bool preferWaitingforSynchronisedStart = false);
 /**
  @brief Loop from a start to an end point.
      
@@ -302,8 +350,10 @@ public:
  @param jumpToStartMs If the playhead is within the loop, jump to startMs or not.
  @param pointID Looping caches startMs, so you can specify a pointID too (or set to 255 if you don't care).
  @param synchronisedStart Beat-synced start.
+ @param forceDefaultQuantum Reserved for future use.
+ @param preferWaitingforSynchronisedStart Wait or start immediately when synchronized.
 */
-    bool loopBetween(double startMs, double endMs, bool jumpToStartMs, unsigned char pointID, bool synchronisedStart);
+    bool loopBetween(double startMs, double endMs, bool jumpToStartMs, unsigned char pointID, bool synchronisedStart, bool forceDefaultQuantum = false, bool preferWaitingforSynchronisedStart = false);
 /**
  @brief Exits from the current loop.
  
@@ -352,7 +402,7 @@ public:
  @param value The cumulated ticks value.
  @param bendStretch Use time-stretching for bending or not (false makes it "audible").
  @param bendMaxPercent The maximum tempo change for pitch bend, should be between 0.01f and 0.3f (1% and 30%).
- @param bendHoldMs How long to maintain the bended state. A value >= 1000 will hold until endContinuousPitchBend is called.
+ @param bendHoldMs How long to maintain the bent state. A value >= 1000 will hold until endContinuousPitchBend is called.
  @param parameterMode True: if there was no jogTouchBegin, SuperpoweredAdvancedAudioPlayerJogMode_Parameter applies. False: if there was no jogTouchBegin, SuperpoweredAdvancedAudioPlayerJogMode_PitchBend applies.
 */
     void jogTick(int value, bool bendStretch, float bendMaxPercent, unsigned int bendHoldMs, bool parameterMode);
@@ -397,13 +447,17 @@ public:
  @param maxPercent The maximum tempo change for pitch bend, should be between 0.01f and 0.3f (1% and 30%).
  @param bendStretch Use time-stretching for bending or not (false makes it "audible").
  @param faster Playback speed change direction.
- @param holdMs How long to maintain the bended state. A value >= 1000 will hold until endContinuousPitchBend is called.
+ @param holdMs How long to maintain the bent state. A value >= 1000 will hold until endContinuousPitchBend is called.
 */
     void pitchBend(float maxPercent, bool bendStretch, bool faster, unsigned int holdMs);
 /**
  @brief Ends pitch bend.
  */
     void endContinuousPitchBend();
+/**
+ @brief Reserved for future use.
+ */
+    void resetBendMsOffset();
 /**
  @brief Call when scratching starts.
  
@@ -447,6 +501,13 @@ public:
  Call this after a media server reset or audio session interrupt to resume playback.
 */
     void onMediaserverInterrupt();
+/**
+ @brief Reserved for future use.
+
+ @param phase Reserved for future use.
+ @param quantum Reserved for future use.
+ */
+    double getMsDifference(double phase, double quantum);
 
 /**
  @brief Processes the audio, stereo version.
@@ -459,8 +520,10 @@ public:
  @param volume 0.0f is silence, 1.0f is "original volume". Changes are automatically smoothed between consecutive processes.
  @param masterBpm A bpm value to sync with. Use 0.0f for no syncing.
  @param masterMsElapsedSinceLastBeat How many milliseconds elapsed since the last beat on the other stuff we are syncing to. Use -1.0 to ignore.
+ @param phase Reserved for future use.
+ @param quantum Reserved for future use.
 */
-    bool process(float *buffer, bool bufferAdd, unsigned int numberOfSamples, float volume = 1.0f, double masterBpm = 0.0f, double masterMsElapsedSinceLastBeat = -1.0);
+    bool process(float *buffer, bool bufferAdd, unsigned int numberOfSamples, float volume = 1.0f, double masterBpm = 0.0f, double masterMsElapsedSinceLastBeat = -1.0, double phase = -1.0, double quantum = -1.0);
 
 /**
  @brief Processes the audio, multi-channel version.
@@ -472,9 +535,11 @@ public:
  @param numberOfSamples The number of samples to provide.
  @param volumes 0.0f is silence, 1.0f is "original volume". Changes are automatically smoothed between consecutive processes.
  @param masterBpm A bpm value to sync with. Use 0.0f for no syncing.
- @param masterMsElapsedSinceLastBeat How many milliseconds elapsed since the last beat on the other stuff we are syncing to. Use -1.0 to ignore.
+ @param masterMsElapsedSinceLastBeat How many milliseconds elapsed since the last beat on the other audio we are syncing to. Use -1.0 to ignore.
+ @param phase Reserved for future use.
+ @param quantum Reserved for future use.
  */
-    bool processMulti(float **buffers, bool *bufferAdds, unsigned int numberOfSamples, float *volumes, double masterBpm = 0.0f, double masterMsElapsedSinceLastBeat = -1.0);
+    bool processMulti(float **buffers, bool *bufferAdds, unsigned int numberOfSamples, float *volumes, double masterBpm = 0.0f, double masterMsElapsedSinceLastBeat = -1.0, double phase = -1.0, double quantum = -1.0);
     
 private:
     SuperpoweredAdvancedAudioPlayerInternals *internals;

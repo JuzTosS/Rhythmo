@@ -11,9 +11,9 @@ struct echoInternals;
  
  @param dry >= 0.0f and <= 1.0f. Read only.
  @param wet >= 0.0f and <= 1.0f. Read only.
- @param bpm >= 60.0f and <= 240.0f. Read-write.
- @param beats Delay in beats, >= 0.125f and <= 2.0f. Read-write.
- @param decay >= 0.0f and <= 1.0f. Read-write.
+ @param bpm >= 40.0f and <= 250.0f. Read-write.
+ @param beats Delay in beats, >= 0.03125f and <= 2.0f. Read-write.
+ @param decay >= 0.0f and <= 0.99f. Read-write.
  */
 class SuperpoweredEcho: public SuperpoweredFX {
 public:
@@ -40,8 +40,11 @@ public:
  @brief Create an echo instance with the current sample rate value.
  
  Enabled is false by default, use enable(true) to enable.
+ 
+ @param samplerate The current sample rate.
+ @param maximumSamplerate Maximum sample rate to support. Affects memory usage.
  */
-    SuperpoweredEcho(unsigned int samplerate);
+    SuperpoweredEcho(unsigned int samplerate, unsigned int maximumSamplerate = 96000);
     ~SuperpoweredEcho();
     
 /**
@@ -54,6 +57,19 @@ public:
  @brief Reset all internals, sets the instance as good as new and turns it off.
  */
     void reset();
+    
+/**
+ @brief Processes the audio.
+ 
+ It's not locked when you call other methods from other threads, and they not interfere with process() at all.
+ 
+ @return Put something into output or not.
+ 
+ @param input 32-bit interleaved stereo input buffer. Can point to the same location with output (in-place processing). Special case: input can be NULL, echo will output the tail only this case.
+ @param output 32-bit interleaved stereo output buffer. Can point to the same location with input (in-place processing).
+ @param numberOfFrames Number of frames to process. Recommendations for best performance: multiply of 4, minimum 64.
+ */
+    bool process(float *input, float *output, unsigned int numberOfFrames);
 
 /**
  @brief Processes the audio.
@@ -64,9 +80,10 @@ public:
  
  @param input 32-bit interleaved stereo input buffer. Can point to the same location with output (in-place processing). Special case: input can be NULL, echo will output the tail only this case.
  @param output 32-bit interleaved stereo output buffer. Can point to the same location with input (in-place processing).
- @param numberOfSamples Should be 16 minimum, and a multiply of 8.
+ @param numberOfFrames Number of frames to process. Recommendations for best performance: multiply of 4, minimum 64.
+ @param fx Optional. If not NULL, the audio processing of fx (such as a SuperpoweredFilter) will be used to pass audio from input to the internal buffer.
 */
-    bool process(float *input, float *output, unsigned int numberOfSamples);
+    bool process(float *input, float *output, unsigned int numberOfFrames, SuperpoweredFX *fx);
     
 private:
     echoInternals *internals;

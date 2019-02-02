@@ -1,13 +1,16 @@
 package com.juztoss.rhythmo.services;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -77,11 +80,26 @@ public class BuildMusicLibraryService extends Service
     private AsyncDetectBpmTaskAbstract mTaskDetectBpmByNamesAndData;
     private AsyncClearLibraryTask mTaskClear;
 
+    public static final String NOTIFICATION_CHANNEL_ID = "com.juztoss.rhythmo.build";
+
+    private static void createNotificationChannel(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelName = "Build library";
+            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+            chan.setLightColor(Color.BLUE);
+            chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            assert manager != null;
+            manager.createNotificationChannel(chan);
+        }
+    }
+
     @Override
     public void onCreate()
     {
+        createNotificationChannel(this);
         mApp = (RhythmoApp) this.getApplicationContext();
-        mBuilder = new NotificationCompat.Builder(mApp);
+        mBuilder = new NotificationCompat.Builder(mApp, NOTIFICATION_CHANNEL_ID);
         mNotifyManager = (NotificationManager) mApp.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
@@ -303,7 +321,7 @@ public class BuildMusicLibraryService extends Service
     {
         if(!mEnableNotifications) return;
 
-        mBuilder = new NotificationCompat.Builder(mApp);
+        mBuilder = new NotificationCompat.Builder(mApp, NOTIFICATION_CHANNEL_ID);
         mBuilder.setSmallIcon(R.drawable.ic_notification);
         mBuilder.setContentTitle(header);
         mBuilder.setTicker(header);

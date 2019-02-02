@@ -31,7 +31,7 @@ void AdvancedMediaPlayer::playerEvent(void *__unused clientData,
             pthread_t t;
             pthread_create(&t, NULL, &AdvancedMediaPlayer::callOnError, this);
             break;
-        case SuperpoweredAdvancedAudioPlayerEvent_NetworkError:
+        case SuperpoweredAdvancedAudioPlayerEvent_HLSNetworkError:
             __android_log_print(ANDROID_LOG_DEBUG, "playerEvent", "Network error: %s",
                                 (char *) value);
             break;

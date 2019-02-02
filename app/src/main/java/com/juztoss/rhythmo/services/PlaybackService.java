@@ -2,6 +2,7 @@ package com.juztoss.rhythmo.services;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Build;
@@ -43,6 +45,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.juztoss.rhythmo.services.PlaybackNotification.NOTIFICATION_CHANNEL_ID;
 
 
 /**
@@ -108,7 +112,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         public void onReceive(Context context, Intent intent)
         {
             String action = intent.getAction();
-            if (action.equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+            if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(action))
             {
                 pausePlayback();
             }
@@ -290,8 +294,8 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         broadcastManager.sendBroadcast(intent);
 
         NotificationManager notificationManager = (NotificationManager) mApp.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = PlaybackNotification.create(this);
-        if(notification != null)
+        Notification notification = PlaybackNotification.create(this, NOTIFICATION_CHANNEL_ID);
+        if (notification != null && notificationManager != null)
             notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
@@ -646,7 +650,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
         if (mIsPlaying)
         {
             cancelHideCooldown();
-            Notification notification = PlaybackNotification.create(this);
+            Notification notification = PlaybackNotification.create(this, NOTIFICATION_CHANNEL_ID);
             if(notification != null)
                 startForeground(NOTIFICATION_ID, notification);
         }

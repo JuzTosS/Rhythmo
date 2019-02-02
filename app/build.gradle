@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -12,10 +11,6 @@ buildscript {
     repositories {
         mavenCentral()
     }
-
-    dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.5.0'
-    }
 }
 
 repositories {
@@ -25,13 +20,15 @@ repositories {
     }
 }
 android {
-    compileSdkVersion = 25
-    buildToolsVersion = '25.0.2'
+    flavorDimensions "default"
+
+    compileSdkVersion = 28
+    buildToolsVersion = '28.0.3'
 
     defaultConfig {
         applicationId "com.juztoss.rhythmo"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode 33
         versionName "1.0.16"
 
@@ -43,7 +40,7 @@ android {
 
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_PLATFORM=android-16', '-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_NEON=TRUE', '-DANDROID_STL=gnustl_static', "-DPATH_TO_SUPERPOWERED:STRING=${superpowered_sdk_path}"
+                arguments '-DANDROID_PLATFORM=android-16', '-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_NEON=TRUE', '-DANDROID_STL=c++_static', "-DPATH_TO_SUPERPOWERED:STRING=${superpowered_sdk_path}"
                 cFlags '-O3', '-fsigned-char' // full optimization, char data type is signed
                 cppFlags '-fsigned-char', "-I${superpowered_sdk_path}"
             }
@@ -95,17 +92,17 @@ android {
 
 dependencies {
     annotationProcessor ('com.jakewharton:butterknife-compiler:8.5.1')
-    compile fileTree(include: ['*.jar'], dir: 'libs/')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:support-annotations:25.3.1'
-    compile ('com.jakewharton:butterknife:8.5.1')
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.simplecityapps:recyclerview-fastscroll:1.0.11'
-    compile 'de.psdev.licensesdialog:library:1.8.2-SNAPSHOT'
-    androidTestCompile 'com.android.support:support-annotations:25.3.1'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2')
+    implementation fileTree(include: ['*.jar'], dir: 'libs/')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:support-annotations:28.0.0'
+    implementation ('com.jakewharton:butterknife:8.5.1')
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.simplecityapps:recyclerview-fastscroll:1.0.11'
+    implementation 'de.psdev.licensesdialog:library:1.8.2-SNAPSHOT'
+    androidTestImplementation 'com.android.support:support-annotations:28.0.0'
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2')
     {
         exclude group: 'com.android.support', module: 'recyclerview-v7'
         exclude group: 'com.android.support', module: 'support-v4'
@@ -113,7 +110,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'design'
         exclude module: 'support-annotations'
     }
-    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2')
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:2.2.2')
     {
         exclude group: 'com.android.support', module: 'recyclerview-v7'
         exclude group: 'com.android.support', module: 'support-v4'
@@ -121,8 +118,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'design'
         exclude module: 'support-annotations'
     }
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'junit:junit:4.12'
 
-    compile 'com.instabug.library:instabug:4.0.7'
+    implementation 'com.instabug.library:instabug:4.0.7'
 }
