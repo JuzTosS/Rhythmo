@@ -1,10 +1,15 @@
 package com.juztoss.rhythmo;
 
 import android.os.Environment;
-import android.test.InstrumentationTestCase;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
 import com.juztoss.rhythmo.audio.AdvancedMediaPlayer;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -12,18 +17,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER;
 import static com.juztoss.rhythmo.TestHelper.getSongName;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-public class AdvancedMediaPlayerTest extends InstrumentationTestCase
-{
+@RunWith(AndroidJUnit4.class)
+public class AdvancedMediaPlayerTest {
+    public AdvancedMediaPlayerTest() {
+        super();
+    }
+
     private static String mPath;
     private static AdvancedMediaPlayer mPlayer;
     private static AdvancedMediaPlayer mPlayer2;
 
-    @Override
-    public void setUp() throws Exception
+    @Before
+    public void setUp()
     {
-        super.setUp();
-
         System.loadLibrary(AdvancedMediaPlayer.LIBRARY_NAME);
         mPlayer = new AdvancedMediaPlayer(44100, 400);
         mPlayer2 = new AdvancedMediaPlayer(48000, 500);
@@ -32,10 +42,9 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         mPath = Environment.getExternalStorageDirectory() + "/" + MUSIC_FOLDER + "/" + getSongName(1);
     }
 
-    @Override
-    protected void tearDown() throws Exception
+    @After
+    public void tearDown()
     {
-        super.tearDown();
         mPlayer.release();
         mPlayer2.release();
     }
@@ -92,7 +101,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         mPlayer.setOnErrorListener(null);
     }
 
-    public void doPlayback(AdvancedMediaPlayer player, CountDownLatch playbackFinished) throws Exception
+    private void doPlayback(AdvancedMediaPlayer player, CountDownLatch playbackFinished) throws Exception
     {
         final CountDownLatch signal = new CountDownLatch(1);
         player.setOnErrorListener(() -> {
@@ -123,6 +132,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         playbackFinished.countDown();
     }
 
+    @Test
     public void testPlayback() throws Exception
     {
         final CountDownLatch signal = new CountDownLatch(2);
@@ -165,6 +175,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         assertTrue("Non zero signal count!", signal.getCount() == 0);
     }
 
+    @Test
     public void testPlaybackPauseThenTheSamePlayback() throws Exception
     {
         for(int i = 0; i < 3; i++)
@@ -173,7 +184,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         }
     }
 
-    public void playbackPauseThenTheSamePlaybackStep(int iteration) throws Exception
+    private void playbackPauseThenTheSamePlaybackStep(int iteration) throws Exception
     {
         final CountDownLatch signal = new CountDownLatch(1);
         Runnable run = () -> {
@@ -224,6 +235,7 @@ public class AdvancedMediaPlayerTest extends InstrumentationTestCase
         assertTrue("Non zero signal count! for iteration: " + iteration, signal.getCount() == 0);
     }
 
+    @Test
     public void testBPM() throws Exception
     {
         final CountDownLatch signal = new CountDownLatch(1);

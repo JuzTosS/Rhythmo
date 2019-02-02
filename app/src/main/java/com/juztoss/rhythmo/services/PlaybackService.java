@@ -2,7 +2,6 @@ package com.juztoss.rhythmo.services;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -11,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Build;
@@ -59,6 +57,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     {
         DISABLED,
         ONE,
+        SINGLE,
         ALL,
         SHUFFLE
     }
@@ -134,8 +133,11 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
             mToast.setText(R.string.repeat_mode_one);
         else if(mRepeatMode == RepeatMode.SHUFFLE)
             mToast.setText(R.string.repeat_mode_shuffle);
-        else// if(mRepeatMode == RepeatMode.DISABLED)
+        else if (mRepeatMode == RepeatMode.DISABLED)
             mToast.setText(R.string.repeat_mode_disabled);
+        else// if(mRepeatMode == RepeatMode.SINGLE)
+            mToast.setText(R.string.repeat_mode_single);
+
 
         mToast.show();
     }
@@ -198,7 +200,10 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     private void gotoNext(boolean fromUser)
     {
         clearQueue();
-        if (getSongsList() == null || getSongsList().getCount() <= 0)
+        if (getSongsList() == null
+                || getSongsList().getCount() <= 0
+                || (!fromUser && mRepeatMode == RepeatMode.SINGLE)
+        )
         {
             putAction(new ActionStop());
             return;

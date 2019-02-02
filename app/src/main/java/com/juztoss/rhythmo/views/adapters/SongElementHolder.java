@@ -5,6 +5,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.TypedValue;
 import android.view.MenuItem;
@@ -107,7 +108,7 @@ public class SongElementHolder extends RecyclerView.ViewHolder
         mComposition = composition;
         mFirstLine.setText(composition.name());
 
-        mSecondLine.setText(composition.getFolder());
+        mSecondLine.setText(formatLength(composition.getLength()) + " | " + composition.getFolder());
 
         if (Math.abs(composition.bpmShifted() - composition.bpm()) >= 0.001 || !mApp.isBPMInRange(composition.bpmShifted()))
             mBpmLabel.setTextColor(SystemHelper.getColor(itemView.getContext(), R.attr.rAccentPrimary));
@@ -139,6 +140,10 @@ public class SongElementHolder extends RecyclerView.ViewHolder
             addFolder();
         else
             removeFolder();
+    }
+
+    private String formatLength(int length) {
+        return DateUtils.formatElapsedTime(length / 1000);
     }
 
     private void removeFolder()

@@ -56,8 +56,10 @@ public class LocalPlaylistSongsSource extends AbstractSongsSource
             order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10;
         else if(mSortType == SortType.LAST)
             order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED + " DESC";
-        else//mSortType = SortType.DIRECTORY
+        else if(mSortType == SortType.DIRECTORY)
             order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_PATH;
+        else //mSortType == SortType.DURATION
+            order = " order by " + DatabaseHelper.TABLE_MUSIC_LIBRARY + "." + DatabaseHelper.MUSIC_LIBRARY_LENGTH;
 
         if (mMinBPMX10 > 0 && mMaxBPMX10 > 0)//BPM Filter is enabled
         {

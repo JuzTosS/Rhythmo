@@ -19,6 +19,7 @@ public class Composition
     private float mBPM;
     private float mShiftedBPM;
     private int mDateAdded;
+    private int mLength;
 
     public static Composition fromCursor(Cursor cursor)
     {
@@ -52,6 +53,7 @@ public class Composition
         mBPM = cursor.getInt(AbstractSongsSource.I_BPM) / 10f;
         mShiftedBPM = cursor.getInt(AbstractSongsSource.I_BPM_SHIFT) / 10f;
         mDateAdded = cursor.getInt(AbstractSongsSource.I_DATE_ADDED);
+        mLength = cursor.getInt(AbstractSongsSource.I_LENGTH);
     }
 
     public String getAbsolutePath()
@@ -101,5 +103,9 @@ public class Composition
     public int getDateAdded()
     {
         return mDateAdded;
+    }
+
+    public int getLength() {
+        return mLength;
     }
 }

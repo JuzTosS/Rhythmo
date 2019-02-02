@@ -12,7 +12,7 @@ import android.provider.BaseColumns;
 public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
 {
     private static final String DATABASE_NAME = "main.db";
-    private static final int DATABASE_VERSION = 20;
+    private static final int DATABASE_VERSION = 21;
 
 
     //TABLE SETTINGS
@@ -31,6 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
     public static final String MUSIC_LIBRARY_BPM_SHIFTEDX10 = "bpmShiftedX10";
     public static final String MUSIC_LIBRARY_DELETED = "deleted";
     public static final String MUSIC_LIBRARY_DATE_ADDED = "date_added";
+    public static final String MUSIC_LIBRARY_LENGTH = "length";
 
     //TABLE FOLDERS
     public static final String TABLE_FOLDERS = "folders";
@@ -77,7 +78,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
                 + MUSIC_LIBRARY_BPMX10 + " integer key not null default 0, "
                 + MUSIC_LIBRARY_BPM_SHIFTEDX10 + " integer key not null default 0, "
                 + MUSIC_LIBRARY_DELETED + " boolean key,"
-                + MUSIC_LIBRARY_DATE_ADDED + " int key);");
+                + MUSIC_LIBRARY_DATE_ADDED + " int key,"
+                + MUSIC_LIBRARY_LENGTH + " int key);");
 
         db.execSQL("create table "
                 + TABLE_FOLDERS + " (" +  BaseColumns._ID + " integer primary key autoincrement, "
@@ -116,6 +118,52 @@ public class DatabaseHelper extends SQLiteOpenHelper implements BaseColumns
         {
             migrateTo20(db);
         }
+
+        if(oldVersion <= 20)
+        {
+            migrateTo21(db);
+        }
+    }
+
+    private void migrateTo21(SQLiteDatabase db)
+    {
+        db.beginTransaction();
+        //TABLE_MUSIC_LIBRARY
+        db.execSQL("ALTER TABLE " + TABLE_MUSIC_LIBRARY + " RENAME TO " + TABLE_MUSIC_LIBRARY + "_temp" + ";");
+
+        db.execSQL("create table "
+                + TABLE_MUSIC_LIBRARY + " (" + BaseColumns._ID + " integer primary key autoincrement, "
+                + MUSIC_LIBRARY_PATH + " text key, "
+                + MUSIC_LIBRARY_NAME + " text key, "
+                + MUSIC_LIBRARY_FULL_PATH + " text key unique, "
+                + MUSIC_LIBRARY_BPMX10 + " integer key not null default 0, "
+                + MUSIC_LIBRARY_BPM_SHIFTEDX10 + " integer key not null default 0, "
+                + MUSIC_LIBRARY_DELETED + " boolean key, "
+                + MUSIC_LIBRARY_DATE_ADDED + " int key, "
+                + MUSIC_LIBRARY_LENGTH + " int key default 0);");
+
+        db.execSQL("INSERT OR IGNORE INTO " + TABLE_MUSIC_LIBRARY +
+                "(" + BaseColumns._ID + ", " + MUSIC_LIBRARY_PATH + ", " + MUSIC_LIBRARY_NAME + ", " + MUSIC_LIBRARY_FULL_PATH + ", " + MUSIC_LIBRARY_BPMX10 + ", "
+                + MUSIC_LIBRARY_BPM_SHIFTEDX10 + ", " + MUSIC_LIBRARY_DELETED + ", " + MUSIC_LIBRARY_DATE_ADDED + ")" +
+                " SELECT " + BaseColumns._ID + ", " + MUSIC_LIBRARY_PATH + ", " + MUSIC_LIBRARY_NAME + ", " + MUSIC_LIBRARY_FULL_PATH + ", " + MUSIC_LIBRARY_BPMX10 + ", "
+                + MUSIC_LIBRARY_BPM_SHIFTEDX10 + ", " + MUSIC_LIBRARY_DELETED + ", " + MUSIC_LIBRARY_DATE_ADDED +
+                " FROM " + TABLE_MUSIC_LIBRARY + "_temp;");
+
+        db.execSQL("DROP TABLE " + TABLE_MUSIC_LIBRARY + "_temp");
+
+        //TABLE_FOLDERS
+        db.execSQL("DROP TABLE " + TABLE_FOLDERS);
+        db.execSQL("create table "
+                + TABLE_FOLDERS + " (" +  BaseColumns._ID + " integer primary key autoincrement, "
+                + FOLDERS_NAME + " text, "
+                + FOLDERS_DELETED + " boolean key,"
+                + FOLDERS_PARENT_ID + " integer key, "
+                + FOLDERS_HAS_SONGS + " boolean, "
+                + "unique(" + FOLDERS_NAME + ", " + FOLDERS_PARENT_ID + ")" +
+                "); ");
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     private void migrateTo20(SQLiteDatabase db)

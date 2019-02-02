@@ -108,9 +108,15 @@ public class Playlist implements AbstractSongsSource.AbstractSourceUpdatedListen
                     if (result != 0)//Return only if the songs in different folder
                         return result;
                 }
-                else// if(sort == SortType.LAST)
+                else if(sort == SortType.LAST)
                 {
                     result = ((Integer) right.getDateAdded()).compareTo(left.getDateAdded());
+                    if (result != 0)//Return only if the songs in different folder
+                        return result;
+                } else {//sort == SortType.DURATION
+                    Integer leftInt = left.getLength();
+                    Integer rightInt = right.getLength();
+                    result = leftInt.compareTo(rightInt);
                     if (result != 0)//Return only if the songs in different folder
                         return result;
                 }

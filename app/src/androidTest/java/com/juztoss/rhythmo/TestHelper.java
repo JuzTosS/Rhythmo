@@ -46,6 +46,7 @@ import static com.juztoss.rhythmo.utils.SystemHelper.SEPARATOR;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by JuzTosS on 12/19/2016.

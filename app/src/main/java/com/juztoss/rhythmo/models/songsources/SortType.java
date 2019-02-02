@@ -9,4 +9,5 @@ public enum SortType
     BPM,
     DIRECTORY,
     LAST,
+    DURATION
 }

@@ -162,7 +162,8 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Boolean>
         String projection[] = {
                 MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.DATE_ADDED};
+                MediaStore.Audio.Media.DATE_ADDED,
+                MediaStore.Audio.Media.DURATION};
 
         ContentResolver contentResolver = mApp.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;

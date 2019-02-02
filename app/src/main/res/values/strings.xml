@@ -34,6 +34,7 @@
     <string name="sort_by_bpm">BPM</string>
     <string name="sort_by_folders">Directories</string>
     <string name="sort_by_date">Date</string>
+    <string name="sort_by_duration">Duration</string>
     <string name="sort_dialog_title">Sort by</string>
     <string name="sort">Sorting</string>
     <string name="build_library_started">BPM scanning started.</string>
@@ -50,6 +51,7 @@
     <string name="hold_hint" type="id">Hold it!</string>
     <string name="repeat_mode_all">Repeating all songs</string>
     <string name="repeat_mode_one">Repeating current song</string>
+    <string name="repeat_mode_single">Repeating current song and stop</string>
     <string name="repeat_mode_shuffle">Shuffle is on</string>
     <string name="repeat_mode_disabled">Shuffle is off\nRepeat is off</string>
     <string name="tap_hint">Hit \"TAP\"\nin the rhythm of the music\nto find out BPM</string>

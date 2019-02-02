@@ -30,6 +30,7 @@
     <string name="sort_by_bpm">По BPM</string>
     <string name="sort_by_folders">По папкам</string>
     <string name="sort_by_date">По дате</string>
+    <string name="sort_by_duration">По длительности</string>
     <string name="sort_dialog_title">Сортировка</string>
     <string name="sort">Сортировка</string>
     <string name="build_library_started">Сканирование начато.</string>
@@ -46,6 +47,7 @@
     <string name="hold_hint" type="id">Зажмите!</string>
     <string name="repeat_mode_all">Повтор всех песен</string>
     <string name="repeat_mode_one">Повтор текущей песни</string>
+    <string name="repeat_mode_single">Повтор текущей песни и остановка</string>
     <string name="repeat_mode_shuffle">Случаеное воспроизведение</string>
     <string name="repeat_mode_disabled">Случаеное воспроизведение/повтор выключены</string>
     <string name="tap_hint">Нажимайте \"TAP\"\nв ритме музыки\nдля определения BPM</string>

@@ -74,14 +74,16 @@ public class AllSongsSource extends AbstractSongsSource
             order = DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10;
         else if(mSortType == SortType.LAST)
             order = DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED + " DESC";
-        else//mSortType = SortType.DIRECTORY
+        else if(mSortType == SortType.DIRECTORY)
             order = DatabaseHelper.MUSIC_LIBRARY_PATH;
+        else //mSortType == SortType.DURATION
+            order = DatabaseHelper.MUSIC_LIBRARY_LENGTH;
 
         int add = mApp.getBPMFilterAdditionWindowSize();
         if (mMinBPMX10 > 0 && mMaxBPMX10 > 0)//BPM Filter is enabled
         {
             mList = mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                    new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED},
+                    new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED, DatabaseHelper.MUSIC_LIBRARY_LENGTH},
                     DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " >= ?" + " AND " + DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10 + " <= ?"
                             + (filter.isEmpty() ? "" : (" AND " + filter))
                     , new String[]{Integer.toString(mMinBPMX10 - add * 10), Integer.toString(mMaxBPMX10 + add * 10)},
@@ -91,7 +93,7 @@ public class AllSongsSource extends AbstractSongsSource
         else
         {
             mList = mApp.getDatabaseHelper().getWritableDatabase().query(DatabaseHelper.TABLE_MUSIC_LIBRARY,
-                    new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED},
+                    new String[]{DatabaseHelper._ID, DatabaseHelper.MUSIC_LIBRARY_PATH, DatabaseHelper.MUSIC_LIBRARY_NAME, DatabaseHelper.MUSIC_LIBRARY_BPMX10, DatabaseHelper.MUSIC_LIBRARY_BPM_SHIFTEDX10, DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED, DatabaseHelper.MUSIC_LIBRARY_LENGTH},
                             filter
                     , null,
                     null, null,

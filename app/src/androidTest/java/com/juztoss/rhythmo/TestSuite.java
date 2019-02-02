@@ -17,7 +17,6 @@ import org.junit.runners.Suite;
         CopyMediaToDevice.class,
         TouchToWakeUp.class,
 
-        AdvancedMediaPlayerTest.class,
         SettingsTest.class,
         OperationsWithPlaylists.class,
         FileWasDeleted.class,

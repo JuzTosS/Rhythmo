@@ -18,6 +18,7 @@ public abstract class AbstractSongsSource
     public static final int I_BPM = 3;
     public static final int I_BPM_SHIFT = 4;
     public static final int I_DATE_ADDED = 5;
+    public static final int I_LENGTH = 6;
 
     private AbstractSourceUpdatedListener mListener;
 

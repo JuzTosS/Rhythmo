@@ -561,7 +561,8 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
                         getString(R.string.sort_alphabetically),
                         getString(R.string.sort_by_bpm),
                         getString(R.string.sort_by_folders),
-                        getString(R.string.sort_by_date)
+                        getString(R.string.sort_by_date),
+                        getString(R.string.sort_by_duration)
                 },
                 getCurrentViewedPlaylist().getSource().getSortType().ordinal(),
                 (dialog, which) -> {
@@ -690,10 +691,13 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         if (playbackService() == null)
             return;
 
-        if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.DISABLED || playbackService().getRepeatMode() == PlaybackService.RepeatMode.SHUFFLE)
+        if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.DISABLED
+                || playbackService().getRepeatMode() == PlaybackService.RepeatMode.SHUFFLE)
             playbackService().setRepeatMode(PlaybackService.RepeatMode.ALL);
         else if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ALL)
             playbackService().setRepeatMode(PlaybackService.RepeatMode.ONE);
+        else if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.ONE)
+            playbackService().setRepeatMode(PlaybackService.RepeatMode.SINGLE);
         else
             playbackService().setRepeatMode(PlaybackService.RepeatMode.DISABLED);
 
@@ -707,7 +711,10 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         if (playbackService() == null)
             return;
 
-        PlaybackService.RepeatMode newRepeatMode = playbackService().getRepeatMode() == PlaybackService.RepeatMode.SHUFFLE ? PlaybackService.RepeatMode.DISABLED : PlaybackService.RepeatMode.SHUFFLE;
+        PlaybackService.RepeatMode newRepeatMode =
+                playbackService().getRepeatMode() == PlaybackService.RepeatMode.SHUFFLE
+                        ? PlaybackService.RepeatMode.DISABLED
+                        : PlaybackService.RepeatMode.SHUFFLE;
         playbackService().setRepeatMode(newRepeatMode);
         updateShuffleAndRepeatButtons();
         updateShuffleAndRepeatButtons();
@@ -732,6 +739,10 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         {
             mRepeatButton.setColorFilter(SystemHelper.getColor(this, R.attr.rAccentPrimary));
             mRepeatButton.setImageResource(R.drawable.ic_repeat_once);
+        }
+        else if (playbackService().getRepeatMode() == PlaybackService.RepeatMode.SINGLE) {
+            mRepeatButton.setColorFilter(SystemHelper.getColor(this, R.attr.rAccentPrimary));
+            mRepeatButton.setImageResource(R.drawable.ic_repeat_single);
         }
         else
         {

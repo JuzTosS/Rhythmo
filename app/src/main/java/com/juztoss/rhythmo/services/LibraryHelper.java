@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
 import com.juztoss.rhythmo.models.DatabaseHelper;
@@ -17,6 +18,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static java.lang.Integer.getInteger;
 
 /**
  * Created by JuzTosS on 1/27/2017.
@@ -63,15 +66,16 @@ public class LibraryHelper
      *
      * @param pathToSong
      * @param dateAdded
+     * @param duration in ms
      */
-    private Result addSong(String pathToSong, int dateAdded)
+    private Result addSong(String pathToSong, int dateAdded, int duration)
     {
         if (!mHasBegun)
             throw new RuntimeException("begin() must be called before any addSong(...) invocations");
 
         mApp.getDatabaseHelper().getWritableDatabase().beginTransaction();
 
-        Result result = addSongToLibrary(pathToSong, dateAdded);
+        Result result = addSongToLibrary(pathToSong, dateAdded, duration);
         if (result == Result.ADDED || result == Result.UPDATED)
             addSongToTree(pathToSong);
 
@@ -92,7 +96,16 @@ public class LibraryHelper
         if (!file.exists())
             return Result.NOT_ADDED;
 
-        return addSong(file.getAbsolutePath(), (int) (file.lastModified() / 1000f));
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(file.getAbsolutePath());
+        int duration = 0;
+        try {
+            String durationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            duration = getInteger(durationString);
+        } catch (Exception ignored) {
+        }
+
+        return addSong(file.getAbsolutePath(), (int) (file.lastModified() / 1000f), duration);
     }
 
 
@@ -116,10 +129,10 @@ public class LibraryHelper
         if (!file.exists())
             return Result.NOT_ADDED;
 
-        return addSong(cursor.fullName(), cursor.dateAdded());
+        return addSong(cursor.fullName(), cursor.dateAdded(), cursor.duration());
     }
 
-    private Result addSongToLibrary(String songFileFullPath, int dateAdded)
+    private Result addSongToLibrary(String songFileFullPath, int dateAdded, int duration)
     {
         String[] folders = songFileFullPath.split(SystemHelper.SEPARATOR);
         StringBuilder b = new StringBuilder(songFileFullPath);
@@ -135,6 +148,7 @@ public class LibraryHelper
         values.put(DatabaseHelper.MUSIC_LIBRARY_FULL_PATH, songFileFullPath);
         values.put(DatabaseHelper.MUSIC_LIBRARY_DATE_ADDED, dateAdded);
         values.put(DatabaseHelper.MUSIC_LIBRARY_DELETED, false);
+        values.put(DatabaseHelper.MUSIC_LIBRARY_LENGTH, duration);
 
         //Add all the entries to the database to build the songs library.
         long songExist = DatabaseUtils.queryNumEntries(mApp.getDatabaseHelper().getWritableDatabase(), DatabaseHelper.TABLE_MUSIC_LIBRARY, DatabaseHelper.MUSIC_LIBRARY_FULL_PATH + " = ?", new String[]{songFileFullPath});

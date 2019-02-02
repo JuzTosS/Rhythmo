@@ -8,7 +8,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.suitebuilder.annotation.LargeTest;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.TestHelper;
@@ -28,7 +27,6 @@ import static com.juztoss.rhythmo.TestHelper.getSongName;
 import static org.hamcrest.Matchers.allOf;
 
 
-@LargeTest
 @RunWith(AndroidJUnit4.class)
 public class PlayerActivityTest
 {
