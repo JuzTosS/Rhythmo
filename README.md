@@ -11,8 +11,6 @@ The idea is to create an audio player that can provide songs to the user by BPM
 
 [![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/badge_new.png)](https://play.google.com/store/apps/details?id=com.juztoss.rhythmo)
 
-[![VK group(Russian!)](https://vk.com/images/share_32.png)](https://new.vk.com/rhythmoplayer)
- 
 ##Features
  - Auto detecting songs BPM
  - Filter songs by BPM
