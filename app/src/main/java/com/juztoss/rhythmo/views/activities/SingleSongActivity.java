@@ -3,8 +3,6 @@ package com.juztoss.rhythmo.views.activities;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -15,16 +13,15 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 import com.juztoss.rhythmo.utils.SystemHelper;
 
 import java.util.Locale;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by JuzTosS on 6/13/2016.
@@ -36,13 +33,13 @@ public class SingleSongActivity extends BasePlayerActivity
 
     private Composition mComposition;
 
-    @BindView(R.id.seekBar) protected SeekBar mSeekBar;
-    @BindView(R.id.button_half_bpm) protected Button mButtonHalf;
-    @BindView(R.id.button_double_bpm) protected Button mButtonDouble;
-    @BindView(R.id.bpm_text) protected TextView mBpmField;
-    @BindView(R.id.toolbar) protected Toolbar mToolbar;
-    @BindView(R.id.song_name) protected TextView mNameField;
-    @BindView(R.id.shiftedBpmValue) protected TextView mBpmDesc;
+    protected SeekBar mSeekBar;
+    protected Button mButtonHalf;
+    protected Button mButtonDouble;
+    protected TextView mBpmField;
+    protected Toolbar mToolbar;
+    protected TextView mNameField;
+    protected TextView mBpmDesc;
 
     private static final int DETECT_WINDOW_SIZE = 10;
     public static final String SONG_ID = "SongId";
@@ -59,19 +56,16 @@ public class SingleSongActivity extends BasePlayerActivity
         mBpmField.setText(String.format(Locale.US, "%.1f", bpm));
     }
 
-    @OnClick(R.id.button_half_bpm)
     public void onHalfButtonClick(View v)
     {
         updateBpmField(mComposition.bpm() / 2);
     }
 
-    @OnClick(R.id.button_double_bpm)
     public void onDoubleButtonClick(View v)
     {
         updateBpmField(mComposition.bpm() * 2);
     }
 
-    @OnClick(R.id.button_tap_bpm)
     protected void onTapButtonClick(View v)
     {
         long now = System.currentTimeMillis();
@@ -130,7 +124,18 @@ public class SingleSongActivity extends BasePlayerActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song);
-        ButterKnife.bind(this);
+
+        findViewById(R.id.button_half_bpm).setOnClickListener(this::onHalfButtonClick);
+        findViewById(R.id.button_double_bpm).setOnClickListener(this::onDoubleButtonClick);
+        findViewById(R.id.button_tap_bpm).setOnClickListener(this::onTapButtonClick);
+
+        mSeekBar = findViewById(R.id.seekBar);
+        mButtonHalf = findViewById(R.id.button_half_bpm);
+        mButtonDouble = findViewById(R.id.button_double_bpm);
+        mBpmField = findViewById(R.id.bpm_text);
+        mToolbar = findViewById(R.id.toolbar);
+        mNameField = findViewById(R.id.song_name);
+        mBpmDesc = findViewById(R.id.shiftedBpmValue);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(R.string.song_detail_title);

@@ -2,7 +2,7 @@ package com.juztoss.rhythmo.models.songsources;
 
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.BaseExplorerElement;

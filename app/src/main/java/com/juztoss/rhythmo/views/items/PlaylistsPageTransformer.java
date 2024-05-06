@@ -1,7 +1,8 @@
 package com.juztoss.rhythmo.views.items;
 
-import android.support.v4.view.ViewPager;
 import android.view.View;
+
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Created by JuzTosS on 1/22/2017.

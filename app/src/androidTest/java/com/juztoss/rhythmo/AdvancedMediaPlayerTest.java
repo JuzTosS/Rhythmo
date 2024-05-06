@@ -1,7 +1,7 @@
 package com.juztoss.rhythmo;
 
 import android.os.Environment;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 import android.util.Log;
 
 import com.juztoss.rhythmo.audio.AdvancedMediaPlayer;

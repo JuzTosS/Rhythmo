@@ -9,7 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -166,7 +166,7 @@ public class AsyncBuildLibraryTask extends AsyncTask<String, String, Boolean>
                 MediaStore.Audio.Media.DURATION};
 
         ContentResolver contentResolver = mApp.getContentResolver();
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Uri uri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
 
         if (mFolder != null)

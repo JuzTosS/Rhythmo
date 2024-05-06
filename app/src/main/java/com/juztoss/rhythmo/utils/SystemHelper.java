@@ -5,9 +5,10 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.annotation.AttrRes;
-import android.support.annotation.ColorInt;
 import android.util.TypedValue;
+
+import androidx.annotation.AttrRes;
+import androidx.annotation.ColorInt;
 
 import com.juztoss.rhythmo.R;
 

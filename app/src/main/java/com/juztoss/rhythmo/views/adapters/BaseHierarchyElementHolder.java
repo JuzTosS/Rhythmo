@@ -1,7 +1,8 @@
 package com.juztoss.rhythmo.views.adapters;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.juztoss.rhythmo.models.BaseExplorerElement;
 import com.juztoss.rhythmo.services.PlaybackService;

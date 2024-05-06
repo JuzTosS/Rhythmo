@@ -1,7 +1,8 @@
 package com.juztoss.rhythmo.models.songsources;
 
 import android.database.Cursor;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 /**
  * Created by JuzTosS on 6/22/2016.

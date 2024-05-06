@@ -1,6 +1,6 @@
 package com.juztoss.rhythmo.models;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.juztoss.rhythmo.utils.SystemHelper;
 

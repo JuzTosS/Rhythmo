@@ -2,16 +2,17 @@ package com.juztoss.rhythmo.views.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.Composition;
@@ -24,10 +25,6 @@ import com.juztoss.rhythmo.views.activities.SingleSongActivity;
 import com.juztoss.rhythmo.views.adapters.IOnItemClickListener;
 import com.juztoss.rhythmo.views.adapters.PlaylistAdapter;
 import com.juztoss.rhythmo.views.adapters.SongElementHolder;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by JuzTosS on 4/20/2016.
@@ -42,13 +39,12 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener, 
     private RhythmoApp mApp;
     private LinearLayoutManager mLayoutManager;
     private Composition mScrollOnCreate;
-    @BindView(R.id.static_footer_header) protected View mHeader;
-    @BindView(R.id.hint) protected View mHintNoSongs;
-    @BindView(R.id.hintFilterEnabled) protected View mHintNoSongsIfFiltered;
-    @BindView(R.id.progressIndicator) protected ProgressBar mProgrssIndicator;
-    @BindView(R.id.static_folder_header_text) protected volatile TextView mHeaderText;
-    @BindView(R.id.listView) protected RecyclerView mList;
-    private Unbinder mUnbinder;
+    protected View mHeader;
+    protected View mHintNoSongs;
+    protected View mHintNoSongsIfFiltered;
+    protected ProgressBar mProgrssIndicator;
+    protected volatile TextView mHeaderText;
+    protected RecyclerView mList;
 
     private RecyclerView.OnScrollListener mOnListScrollListener = new RecyclerView.OnScrollListener()
     {
@@ -127,9 +123,7 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener, 
     @Override
     public void onDestroyView()
     {
-        mList.removeOnScrollListener(mOnListScrollListener);
-        if(mUnbinder != null)
-            mUnbinder.unbind();
+        mList.removeOnScrollListener(mOnListScrollListener);;
 
         super.onDestroyView();
     }
@@ -149,7 +143,13 @@ public class PlaylistFragment extends Fragment implements IOnItemClickListener, 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        mUnbinder = ButterKnife.bind(this, view);
+
+        mHeader = view.findViewById(R.id.static_footer_header);
+        mHintNoSongs = view.findViewById(R.id.hint);
+        mHintNoSongsIfFiltered = view.findViewById(R.id.hintFilterEnabled);
+        mProgrssIndicator = view.findViewById(R.id.progressIndicator);
+        mHeaderText = view.findViewById(R.id.static_folder_header_text);
+        mList = view.findViewById(R.id.listView);
     }
 
 

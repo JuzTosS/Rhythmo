@@ -2,10 +2,6 @@ package com.juztoss.rhythmo.views.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,11 +22,12 @@ import com.juztoss.rhythmo.views.adapters.HierarchyAdapter;
 import com.juztoss.rhythmo.views.adapters.IOnItemClickListener;
 import com.juztoss.rhythmo.views.adapters.SongElementHolder;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 import static com.juztoss.rhythmo.views.fragments.PlaylistFragment.PLAYLIST_INDEX;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by JuzTosS on 3/5/2017.
@@ -38,16 +35,14 @@ import static com.juztoss.rhythmo.views.fragments.PlaylistFragment.PLAYLIST_INDE
 
 public class HierarchyPlaylistFragment extends Fragment implements IPlaylistFragment, BrowserPresenter.OnDataChangedListener, IOnItemClickListener
 {
-    @BindView(R.id.progressIndicator)
     protected ProgressBar mProgressIndicator;
-    @BindView(R.id.listView)
+
     protected RecyclerView mListView;
-    @BindView(R.id.folderPathLabel)
+
     protected TextView mFolderPathLabel;
 
     private HierarchyAdapter mAdapter;
     private RhythmoApp mApp;
-    private Unbinder mUnbinder;
     private int mPlaylistIndex;
     private LinearLayoutManager mLayoutManager;
     private Composition mScrollOnCreate;
@@ -59,6 +54,15 @@ public class HierarchyPlaylistFragment extends Fragment implements IPlaylistFrag
         args.putInt(PLAYLIST_INDEX, playlistIndex);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        mProgressIndicator = view.findViewById(R.id.progressIndicator);
+        mListView = view.findViewById(R.id.listView);
+        mFolderPathLabel = view.findViewById(R.id.folderPathLabel);
     }
 
     @Override
@@ -115,24 +119,6 @@ public class HierarchyPlaylistFragment extends Fragment implements IPlaylistFrag
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        mUnbinder = ButterKnife.bind(this, view);
-    }
-
-    @Override
-    public void onDestroyView()
-    {
-        super.onDestroyView();
-
-        if (mUnbinder != null) {
-            mUnbinder.unbind();
-            mUnbinder = null;
-        }
-    }
-
-    @Override
     public void onStart()
     {
         super.onStart();
@@ -144,8 +130,6 @@ public class HierarchyPlaylistFragment extends Fragment implements IPlaylistFrag
     @Override
     public void onDataChanged()
     {
-        if(mUnbinder == null) return;//The view is destroyed
-
         mProgressIndicator.setVisibility(View.GONE);
         mListView.setVisibility(View.VISIBLE);
 

@@ -11,16 +11,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.SpannableString;
@@ -40,6 +30,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.models.Playlist;
@@ -56,30 +48,35 @@ import com.juztoss.rhythmo.views.items.RangeSeekBar;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 import static com.juztoss.rhythmo.presenters.RhythmoApp.BROWSER_MODE_IN_PLAYLIST_ENABLED;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewpager.widget.ViewPager;
 
 public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPageChangeListener
 {
     public static final String DISABLE_RESCAN_ON_LAUNCHING = "DisableRescanOnLaunching";
 
     private RhythmoApp mApp;
-    @BindView(R.id.play_button) protected View mPlayButton;
-    @BindView(R.id.repeat_button) protected ImageView mRepeatButton;
-    @BindView(R.id.shuffle_button) protected ImageView mShuffleButton;
-    @BindView(R.id.time_passed) protected TextView mTimePassed;
-    @BindView(R.id.time_left) protected TextView mTimeLeft;
-    @BindView(R.id.seekbar) protected SeekBar mSeekbar;
-    @BindView(R.id.bpm_ranger) protected RangeSeekBar<Integer> mRangeSeekbar;
-    @BindView(R.id.pager) protected ViewPager mPlaylistsPager;
-    @BindView(R.id.btnAddToPlaylist)
+    protected View mPlayButton;
+    protected ImageView mRepeatButton;
+    protected ImageView mShuffleButton;
+    protected TextView mTimePassed;
+    protected TextView mTimeLeft;
+    protected SeekBar mSeekbar;
+    protected RangeSeekBar<Integer> mRangeSeekbar;
+    protected ViewPager mPlaylistsPager;
+
     protected FloatingActionButton mAddToPlaylistBtn;
-    @BindView(R.id.bpm_label_min) protected TextView mMinBPMField;
-    @BindView(R.id.bpm_label_max) protected TextView mMaxBPMField;
-    @BindView(R.id.tab_layout) protected TabLayout mTabLayout;
+    protected TextView mMinBPMField;
+    protected TextView mMaxBPMField;
+    protected TabLayout mTabLayout;
     private ActionBar mActionBar;
     private EditText mEditText;
 
@@ -108,7 +105,27 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
 
         mApp = (RhythmoApp) getApplication();
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+
+        findViewById(R.id.btnAddToPlaylist).setOnClickListener(this::onAddToPlaylistClick);
+        findViewById(R.id.repeat_button).setOnClickListener(this::onRepeatClick);
+        findViewById(R.id.shuffle_button).setOnClickListener(this::onShuffleClick);
+        findViewById(R.id.play_button).setOnClickListener(this::onPlayClick);
+        findViewById(R.id.next_button).setOnClickListener(this::onNextClick);
+        findViewById(R.id.previous_button).setOnClickListener(this::onPreviousClick);
+
+        mPlayButton = findViewById(R.id.play_button);
+        mRepeatButton = findViewById(R.id.repeat_button);
+        mShuffleButton = findViewById(R.id.shuffle_button);
+        mTimePassed = findViewById(R.id.time_passed);
+        mTimeLeft = findViewById(R.id.time_left);
+        mSeekbar = findViewById(R.id.seekbar);
+        mRangeSeekbar = findViewById(R.id.bpm_ranger);
+        mPlaylistsPager = findViewById(R.id.pager);
+        mAddToPlaylistBtn = findViewById(R.id.btnAddToPlaylist);
+        mMinBPMField = findViewById(R.id.bpm_label_min);
+        mMaxBPMField = findViewById(R.id.bpm_label_max);
+        mTabLayout = findViewById(R.id.tab_layout);
+
         setupPager();
         setupActionBar();
         setupAllOtherUI();
@@ -135,7 +152,6 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
     }
 
     @SuppressLint("ApplySharedPref")
-    @OnClick(R.id.btnAddToPlaylist)
     public void onAddToPlaylistClick(View v)
     {
         if (mPlaylistsPager.getCurrentItem() == 0) {
@@ -157,6 +173,7 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK)
         {
             String[] foldersPaths = data.getStringArrayExtra(SelectSongsActivity.FOLDERS_PATHS);
@@ -311,7 +328,7 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
     {
         super.onStart();
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED)
         {
             if (getIntent().getExtras() == null || !getIntent().getBooleanExtra(DISABLE_RESCAN_ON_LAUNCHING, false))
             {
@@ -321,10 +338,10 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
             }
         }
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    new String[]{Manifest.permission.READ_MEDIA_AUDIO},
                     0);
         }
         else
@@ -685,7 +702,6 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         }
     };
 
-    @OnClick(R.id.repeat_button)
     public void onRepeatClick(View v)
     {
         if (playbackService() == null)
@@ -705,7 +721,6 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         updateShuffleAndRepeatButtons();
     }
 
-    @OnClick(R.id.shuffle_button)
     public void onShuffleClick(View v)
     {
         if (playbackService() == null)
@@ -751,7 +766,6 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         }
     }
 
-    @OnClick(R.id.play_button)
     public void onPlayClick(View v)
     {
         Intent i = new Intent(v.getContext(), PlaybackService.class);
@@ -822,7 +836,6 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         }
     };
 
-    @OnClick(R.id.next_button)
     public void onNextClick(View v)
     {
         Intent i = new Intent(v.getContext(), PlaybackService.class);
@@ -831,7 +844,6 @@ public class PlayerActivity extends BasePlayerActivity implements ViewPager.OnPa
         v.getContext().startService(i);
     }
 
-    @OnClick(R.id.previous_button)
     public void onPreviousClick(View v)
     {
         Intent i = new Intent(v.getContext(), PlaybackService.class);

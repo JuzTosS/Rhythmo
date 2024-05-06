@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.SystemClock;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.TestHelper;
@@ -20,18 +20,20 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
-import static android.support.test.espresso.Espresso.pressBack;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
+import static androidx.test.espresso.Espresso.pressBack;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.Espresso.onView;
 import static com.juztoss.rhythmo.TestHelper.AUDIO_FILES_COUNT;
 import static com.juztoss.rhythmo.TestHelper.MUSIC_FOLDER;
 import static com.juztoss.rhythmo.TestHelper.getSongName;
 import static com.juztoss.rhythmo.TestHelper.withRecyclerView;
 import static org.hamcrest.Matchers.allOf;
+
+import androidx.test.runner.AndroidJUnit4;
 
 
 @RunWith(AndroidJUnit4.class)

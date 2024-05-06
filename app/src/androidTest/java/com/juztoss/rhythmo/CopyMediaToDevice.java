@@ -1,9 +1,10 @@
 package com.juztoss.rhythmo;
 
 import android.annotation.SuppressLint;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.rule.ServiceTestRule;
-import android.support.test.runner.AndroidJUnit4;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.rule.ServiceTestRule;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.juztoss.rhythmo.presenters.RhythmoApp;
 

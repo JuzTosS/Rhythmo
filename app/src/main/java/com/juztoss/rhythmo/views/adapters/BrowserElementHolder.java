@@ -1,29 +1,27 @@
 package com.juztoss.rhythmo.views.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.BaseExplorerElement;
 import com.juztoss.rhythmo.utils.SystemHelper;
 import com.juztoss.rhythmo.views.items.FlippableButton;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by JuzTosS on 6/18/2016.
  */
 public class BrowserElementHolder extends RecyclerView.ViewHolder
 {
-    @BindView(R.id.name_text_view) protected TextView mName;
-    @BindView(R.id.desc_text_view) protected TextView mDesc;
-    @BindView(R.id.element_icon) protected ImageView mIcon;
-    @BindView(R.id.rowBackgroundLayer) protected View mBackgroundLayer;
-    @BindView(R.id.add_icon) protected FlippableButton mAddButton;
+    protected TextView mName;
+    protected TextView mDesc;
+    protected ImageView mIcon;
+    protected View mBackgroundLayer;
+    protected FlippableButton mAddButton;
 
     private int mPosition;
     private int mImageRes;
@@ -34,7 +32,11 @@ public class BrowserElementHolder extends RecyclerView.ViewHolder
     public BrowserElementHolder(View view, IBrowserElementClickListener listener)
     {
         super(view);
-        ButterKnife.bind(this, itemView);
+        mName = view.findViewById(R.id.name_text_view);
+        mDesc = view.findViewById(R.id.desc_text_view);
+        mIcon = view.findViewById(R.id.element_icon);
+        mBackgroundLayer = view.findViewById(R.id.rowBackgroundLayer);
+        mAddButton = view.findViewById(R.id.add_icon);
         mListener = listener;
         view.setOnClickListener(v -> {
             mListener.onItemClick(mPosition);

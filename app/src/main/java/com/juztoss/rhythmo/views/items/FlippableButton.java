@@ -7,10 +7,10 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.widget.ImageButton;
+
+import androidx.annotation.DrawableRes;
+import androidx.appcompat.widget.AppCompatImageButton;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.utils.SystemHelper;
@@ -19,7 +19,7 @@ import com.juztoss.rhythmo.utils.SystemHelper;
  * Created by JuzTosS on 1/22/2017.
  */
 
-public class FlippableButton extends ImageButton
+public class FlippableButton extends AppCompatImageButton
 {
     private AnimatorSet mAnimatorSet;
 
@@ -38,11 +38,6 @@ public class FlippableButton extends ImageButton
         super(context, attrs, defStyleAttr);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public FlippableButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)
-    {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
 
     public void flipTo(@DrawableRes final int res)
     {

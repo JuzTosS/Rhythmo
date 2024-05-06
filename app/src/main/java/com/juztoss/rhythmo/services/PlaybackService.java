@@ -1,5 +1,7 @@
 package com.juztoss.rhythmo.services;
 
+import static android.app.PendingIntent.FLAG_MUTABLE;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -16,13 +18,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.media.MediaBrowserServiceCompat;
+import androidx.media.session.MediaButtonReceiver;
+
 import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaBrowserServiceCompat;
 import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
@@ -411,7 +414,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
 
         Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
         mediaButtonIntent.setClass(this, MediaButtonReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, mediaButtonIntent, FLAG_MUTABLE);
         mMediaSession.setMediaButtonReceiver(pendingIntent);
         mMediaSession.setMetadata(new MediaMetadataCompat.Builder().build());
         setSessionToken(mMediaSession.getSessionToken());
@@ -596,7 +599,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Advanc
     private void updateMediaSessionData(@NonNull Composition composition)
     {
         Intent launchNowPlayingIntent = new Intent(this, PlayerActivity.class);
-        PendingIntent launchNowPlayingPendingIntent = PendingIntent.getActivity(this, 4, launchNowPlayingIntent, 0);
+        PendingIntent launchNowPlayingPendingIntent = PendingIntent.getActivity(this, 4, launchNowPlayingIntent, FLAG_MUTABLE);
         mMediaSession.setSessionActivity(launchNowPlayingPendingIntent);
 
         mMediaSession.setMetadata(new MediaMetadataCompat.Builder()

@@ -1,8 +1,6 @@
 package com.juztoss.rhythmo.views.adapters;
 
 import android.graphics.drawable.AnimationDrawable;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -13,6 +11,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.Composition;
 import com.juztoss.rhythmo.presenters.RhythmoApp;
@@ -21,8 +22,6 @@ import com.juztoss.rhythmo.utils.SystemHelper;
 
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by JuzTosS on 6/18/2016.
@@ -44,16 +43,22 @@ public class SongElementHolder extends RecyclerView.ViewHolder
 
     private AnimationDrawable mPlaybackAnimation;
     protected TextView mHeaderLabel;
-    @BindView(R.id.first_line) protected TextView mFirstLine;
-    @BindView(R.id.second_line) protected TextView mSecondLine;
-    @BindView(R.id.bpm_label) protected TextView mBpmLabel;
-    @BindView(R.id.playing_state) protected View mPlayingState;
-    @BindView(R.id.song_list_root) protected LinearLayout mRoot;
+    protected TextView mFirstLine;
+    protected TextView mSecondLine;
+    protected TextView mBpmLabel;
+    protected View mPlayingState;
+    protected LinearLayout mRoot;
 
     public SongElementHolder(View row, View header, IOnItemClickListener listener, boolean isModifyAvailable)
     {
         super(row);
-        ButterKnife.bind(this, itemView);
+
+        mFirstLine = itemView.findViewById(R.id.first_line);
+        mSecondLine = itemView.findViewById(R.id.second_line);
+        mBpmLabel = itemView.findViewById(R.id.bpm_label);
+        mPlayingState = itemView.findViewById(R.id.playing_state);
+        mRoot = itemView.findViewById(R.id.song_list_root);
+
         row.setTag(this);
         mHeader = header;
         mApp = ((RhythmoApp) itemView.getContext().getApplicationContext());

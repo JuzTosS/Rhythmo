@@ -1,9 +1,10 @@
 package com.juztoss.rhythmo.views.items;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * Created by JuzTosS on 7/27/2016.

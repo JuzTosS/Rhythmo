@@ -10,15 +10,12 @@ import android.widget.ProgressBar;
 
 import com.juztoss.rhythmo.R;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by JuzTosS on 9/25/2016.
  */
 public class MusicLibraryPreference extends Preference
 {
-    @BindView(R.id.progressBar) protected ProgressBar mProgressBar;
+    protected ProgressBar mProgressBar;
     private int mOverallProgress = 0;
     private int mMaxProgress = 0;
 
@@ -56,7 +53,7 @@ public class MusicLibraryPreference extends Preference
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
         }
 
-        ButterKnife.bind(this, view);
+        mProgressBar = view.findViewById(R.id.progressBar);
         updateProgressBar();
     }
 

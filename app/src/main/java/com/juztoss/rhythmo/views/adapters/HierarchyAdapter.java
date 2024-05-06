@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +25,9 @@ import java.util.List;
 import static com.juztoss.rhythmo.models.BaseExplorerElement.BACK_LINK;
 import static com.juztoss.rhythmo.models.BaseExplorerElement.FOLDER_LINK;
 import static com.juztoss.rhythmo.models.BaseExplorerElement.SINGLE_LINK;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by JuzTosS on 4/20/2016.

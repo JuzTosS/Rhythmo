@@ -1,5 +1,7 @@
 package com.juztoss.rhythmo.services;
 
+import static android.app.PendingIntent.FLAG_MUTABLE;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,9 +15,10 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.util.Log;
 import android.widget.Toast;
 
@@ -333,7 +336,7 @@ public class BuildMusicLibraryService extends Service
         launchNowPlayingIntent.putExtra(PROGRESS_ACTION_HEADER, header);
         launchNowPlayingIntent.putExtra(PROGRESS_ACTION_OVERALL_PROGRESS, overallProgress);
         launchNowPlayingIntent.putExtra(PROGRESS_ACTION_MAX_PROGRESS, maxProgress);
-        PendingIntent launchNowPlayingPendingIntent = PendingIntent.getActivity(this, 0, launchNowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent launchNowPlayingPendingIntent = PendingIntent.getActivity(this, 0, launchNowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT | FLAG_MUTABLE);
         mBuilder.setContentIntent(launchNowPlayingPendingIntent);
 
         mNotification = mBuilder.build();

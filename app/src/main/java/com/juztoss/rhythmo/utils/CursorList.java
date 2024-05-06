@@ -1,7 +1,7 @@
 package com.juztoss.rhythmo.utils;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.juztoss.rhythmo.models.Composition;
 

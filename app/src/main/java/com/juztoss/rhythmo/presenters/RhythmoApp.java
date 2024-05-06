@@ -9,11 +9,10 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.instabug.library.Instabug;
-import com.instabug.library.invocation.InstabugInvocationEvent;
+import androidx.annotation.Nullable;
+
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.audio.AdvancedMediaPlayer;
 import com.juztoss.rhythmo.models.Composition;
@@ -63,18 +62,6 @@ public class RhythmoApp extends Application
     public void onCreate()
     {
         super.onCreate();
-        try {
-            ApplicationInfo app = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-            Bundle bundle = app.metaData;
-            new Instabug.Builder(this, bundle.getString("instabug.token"))
-                    .setInvocationEvent(InstabugInvocationEvent.SHAKE)
-                    .build();
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            Log.e(RhythmoApp.class.toString(), "Unable to initialize instabug");
-        }
-
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
         mMusicLibraryHelper = new MusicLibraryHelper(this);
         mDatabaseHelper = new DatabaseHelper(this);

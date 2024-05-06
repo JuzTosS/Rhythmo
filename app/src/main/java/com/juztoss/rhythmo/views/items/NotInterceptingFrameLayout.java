@@ -4,12 +4,13 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.support.annotation.IdRes;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import androidx.annotation.IdRes;
 
 import com.juztoss.rhythmo.R;
 
@@ -20,7 +21,8 @@ import com.juztoss.rhythmo.R;
 public class NotInterceptingFrameLayout extends FrameLayout
 {
     private View mClickableChild;
-    @IdRes private int mClickableChildId;
+    @IdRes
+    private int mClickableChildId;
     private GestureDetector mGestureDetector;
 
     public NotInterceptingFrameLayout(Context context)

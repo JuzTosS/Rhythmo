@@ -8,8 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+
 import android.widget.RemoteViews;
 
 import com.juztoss.rhythmo.R;
@@ -41,7 +42,7 @@ public class PlaybackNotification
 
 
         Intent launchNowPlayingIntent = new Intent(service, PlayerActivity.class);
-        PendingIntent launchNowPlayingPendingIntent = PendingIntent.getActivity(service, 0, launchNowPlayingIntent, 0);
+        PendingIntent launchNowPlayingPendingIntent = PendingIntent.getActivity(service, 0, launchNowPlayingIntent, PendingIntent.FLAG_MUTABLE);
         notificationBuilder.setContentIntent(launchNowPlayingPendingIntent);
 
         RemoteViews notificationView = new RemoteViews(service.getPackageName(), R.layout.notification_layout);
@@ -57,13 +58,13 @@ public class PlaybackNotification
         Intent switchPlaybackIntent = new Intent(service, PlaybackService.class);
         switchPlaybackIntent.setAction(PlaybackService.ACTION_COMMAND);
         switchPlaybackIntent.putExtra(PlaybackService.ACTION_NAME, PlaybackService.SWITCH_PLAYBACK_ACTION);
-        PendingIntent switchPlaybackPendingIntent = PendingIntent.getService(service, 0, switchPlaybackIntent, 0);
+        PendingIntent switchPlaybackPendingIntent = PendingIntent.getService(service, 0, switchPlaybackIntent, PendingIntent.FLAG_MUTABLE);
         notificationView.setOnClickPendingIntent(R.id.notification_pause, switchPlaybackPendingIntent);
 
         Intent playNextActionIntent = new Intent(service, PlaybackService.class);
         playNextActionIntent.setAction(PlaybackService.ACTION_COMMAND);
         playNextActionIntent.putExtra(PlaybackService.ACTION_NAME, PlaybackService.PLAY_NEXT_ACTION);
-        PendingIntent playNextActionPendingIntent = PendingIntent.getService(service, 1, playNextActionIntent, 0);
+        PendingIntent playNextActionPendingIntent = PendingIntent.getService(service, 1, playNextActionIntent, PendingIntent.FLAG_MUTABLE);
         notificationView.setOnClickPendingIntent(R.id.notification_next, playNextActionPendingIntent);
 
         notificationBuilder.setPriority(NotificationCompat.PRIORITY_MAX);

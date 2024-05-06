@@ -7,20 +7,18 @@ import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.models.MediaFolder;
 import com.juztoss.rhythmo.services.PlaybackService;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by JuzTosS on 4/20/2016.
  */
 public class HierarchyFolderElementHolder extends BaseHierarchyElementHolder<MediaFolder> {
 
-    @BindView(R.id.name_text_view) TextView mName;
-    @BindView(R.id.desc_text_view) TextView mDesc;
+    TextView mName;
+    TextView mDesc;
 
     public HierarchyFolderElementHolder(View itemView, IOnItemClickListener listener) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
+        mName = itemView.findViewById(R.id.name_text_view);
+        mDesc = itemView.findViewById(R.id.desc_text_view);
 
         itemView.setOnClickListener(v -> {
             listener.onPlaylistItemClick(getAdapterPosition(), ACTION_OPEN, null);

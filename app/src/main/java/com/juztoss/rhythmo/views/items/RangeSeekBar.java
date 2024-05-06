@@ -27,13 +27,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
+
+import androidx.annotation.ColorInt;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.juztoss.rhythmo.R;
 import com.juztoss.rhythmo.utils.SystemHelper;
@@ -53,7 +55,7 @@ import java.math.BigDecimal;
  * @author Alex Florescu (florescu@yahoo-inc.com)
  * @author Michael Keppler (bananeweizen@gmx.de)
  */
-public class RangeSeekBar<T extends Number> extends ImageView
+public class RangeSeekBar<T extends Number> extends AppCompatImageView
 {
 
     public static final Integer DEFAULT_MINIMUM = 0;
